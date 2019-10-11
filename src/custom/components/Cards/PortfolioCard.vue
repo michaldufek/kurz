@@ -6,9 +6,9 @@
           <h4 class="card-title">{{title}}</h4>
           <li v-for="strategyName in strategies.names" style="list-style-type: none;">
             {{strategyName}}
-            <base-button  type="secondary" size="1" fill>live</base-button>
+            <base-button  type="secondary" size="1" fill>{{$t('research.portfolioManager.live')}}</base-button>
             <!-- v-if="strategies.enableLive" -->
-            <base-button type="secondary" fill>store</base-button>        
+            <base-button type="secondary" fill>{{$t('research.portfolioManager.store')}}</base-button>        
             <!-- v-if="strategies.enableStore" -->
             <br/>
           </li>

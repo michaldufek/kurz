@@ -1,18 +1,18 @@
 <template>
   <div>
-    <portfolio-card title="Designed Portfolio"
+    <portfolio-card :title="$t('research.portfolioManager.designedPortfolio')"
                     :strategies="designedPortfolioData.strategies"
                     :stats="designedPortfolioData.stats"
                     :errored="designedPortfolioData.errored"
                     :loading="designedPortfolioData.loading">
     </portfolio-card>
-    <portfolio-card title="Live Portfolio"
+    <portfolio-card :title="$t('research.portfolioManager.livePortfolio')"
                     :strategies="livePortfolioData.strategies"
                     :stats="livePortfolioData.stats"
                     :errored="livePortfolioData.errored"
                     :loading="livePortfolioData.loading">
     </portfolio-card>
-    <portfolio-card title="Optimal Portfolio"
+    <portfolio-card :title="$t('research.portfolioManager.optimalPortfolio')"
                     :strategies="optimalPortfolioData.strategies"
                     :stats="optimalPortfolioData.stats"
                     :errored="optimalPortfolioData.errored"

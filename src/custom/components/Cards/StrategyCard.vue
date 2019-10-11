@@ -8,10 +8,10 @@
             <!-- to-do: errored and loading sections not working -->
             <!-- to-do: use it also in another custom cards -->
             <section v-if="errored">
-              <p>Omlouváme se, nejsme schopní získat v tento moment graf vývoje stavu účtu. Prosím, skuste později.</p>
+              <p>{{$t('errorPrefix') + " " + $t('dashboard.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
             <section v-else>
-              <div v-if="loading">Načítaní grafu vývoje stavu účtu...</div>
+              <div v-if="loading">{{$t('loading') + " " + $t('dashboard.chart').toLowerCase() + "..."}}</div>
               <line-chart v-if="!loading" style="height: 100%"
                           ref="bigChart"
                           chart-id="big-line-chart"
@@ -27,19 +27,19 @@
       <div class="col-lg-4 col-md-12">
         <card class="card">
           <section v-if="errored">
-            <p>Omlouváme se, nejsme schopní získat v tento moment informace o statistikách. Prosím, skuste později.</p>
+            <p>{{$t('errorPrefix') + " " + $t('dashboard.performanceStatistics').toLowerCase() + ". " + $t('errorSuffix')}}</p>
           </section>
           <section v-else>
-            <div v-if="loading">Načítaní statistik...</div>
+            <div v-if="loading">{{$t('loading') + " " + $t('dashboard.performanceStatistics').toLowerCase() + "..."}}</div>
             <div v-else>
                 <div style="width:50%; float: left;">
-                  <p>{{$t('dashboard.details.strategy.ytd')}}: {{stats.ytd}}</p>
-                  <p>{{$t('dashboard.details.strategy.cagr')}}: {{stats.cagr}}</p>
-                  <p>{{$t('dashboard.details.strategy.sr')}}: {{stats.sr}}</p>
+                  <p>{{$t('ytd')}}: {{stats.ytd}}</p>
+                  <p>{{$t('cagr')}}: {{stats.cagr}}</p>
+                  <p>{{$t('sharpeRatio')}}: {{stats.sr}}</p>
                 </div>
                 <div style="width:50%; float: right;">
-                  <p>{{$t('dashboard.details.strategy.maxDD')}}: {{stats.maxdd}}</p>
-                  <p>{{$t('dashboard.details.strategy.equityOuts')}}: {{stats.equityOuts}}</p>
+                  <p>{{$t('maxDD')}}: {{stats.maxdd}}</p>
+                  <p>{{$t('equityOuts')}}: {{stats.equityOuts}}</p>
                 </div>
             </div>
           </section>

@@ -10,10 +10,10 @@
           <br/>
           <div class="chart-area">
             <!-- <section v-if="statsChartErrored">
-      <p>Omlouváme se, nejsme schopní získat v tento moment graf vývoje stavu účtu. Prosím, skuste později.</p>
+      <p>{{$t('errorPrefix') + " " + $t('dashboard.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
     </section>
     <section v-else> -->
-      <div v-if="statsChartLoading">Načítaní grafu vývoje stavu účtu...</div>
+      <div v-if="statsChartLoading">{{$t('loading') + " " + $t('dashboard.chart').toLowerCase() + "..."}}</div>
             <line-chart v-if="!statsChartLoading" style="height: 100%"
                         ref="bigChart"
                         chart-id="big-line-chart"
@@ -35,10 +35,10 @@
           <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.lastTradesTable.title')}}</h4>
           <div>
             <section v-if="tradesOrdersErrored">
-              <p>Omlouváme se, nejsme schopní získat v tento moment informace o obchodech. Prosím, skuste později.</p>
+              <p>{{$t('errorPrefix') + " " + $t('dashboard.dashboard.lastTradesTable.title').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
             <section v-else>
-              <div v-if="tradesOrdersLoading">Načítaní obchodů...</div>
+              <div v-if="tradesOrdersLoading">{{$t('loading') + " " + $t('dashboard.dashboard.lastTradesTable.title').toLowerCase() + "..."}}</div>
               <div v-else>
                 <base-table :data="tradesData"
                             :columns="$t('dashboard.dashboard.lastTradesTable.columns')"
@@ -54,10 +54,10 @@
           <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.pendingOrdersTable.title')}}</h4>
           <div>
             <section v-if="tradesOrdersErrored">
-              <p>Omlouváme se, nejsme schopní získat v tento moment informace o pokynech. Prosím, skuste později.</p>
+              <p>{{$t('errorPrefix') + " " + $t('dashboard.dashboard.pendingOrdersTable.title').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
             <section v-else>
-              <div v-if="tradesOrdersLoading">Načítaní pokynů...</div>
+              <div v-if="tradesOrdersLoading">{{$t('loading') + " " + $t('dashboard.dashboard.pendingOrdersTable.title').toLowerCase() + "..."}}</div>
               <div v-else>
                 <base-table :data="ordersData"
                             :columns="$t('dashboard.dashboard.pendingOrdersTable.columns')"
@@ -70,13 +70,13 @@
       </div>
       <div class="col-lg-4 col-md-12">
         <card class="card" :header-classes="{'text-right': isRTL}">
-          <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.performanceStatisticsTable.title')}}</h4>
+          <h4 slot="header" class="card-title">{{$t('dashboard.performanceStatistics')}}</h4>
           <div class="table-responsive">
             <section v-if="statsChartErrored">
-              <p>Omlouváme se, nejsme schopní získat v tento moment informace o statistikách. Prosím, skuste později.</p>
+              <p>{{$t('errorPrefix') + " " + $t('dashboard.performanceStatistics').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
             <section v-else>
-              <div v-if="statsChartLoading">Načítaní statistik...</div>
+              <div v-if="statsChartLoading">{{$t('loading') + " " + $t('dashboard.performanceStatistics').toLowerCase() + "..."}}</div>
               <div v-else>
                 <base-table :data="statsData"
                             :columns="$t('dashboard.dashboard.performanceStatisticsTable.columns')"

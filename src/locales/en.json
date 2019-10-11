@@ -1,9 +1,19 @@
-{ 
+{
+  "loading": "Loading of",
+  "errorPrefix": "We are sorry, at this moment we are unable to get", 
+  "errorSuffix": "Please, try again later.",
+  "ytd": "YTD",
+  "cagr": "CAGR",
+  "sharpeRatio": "Sharpe Ratio",
+  "maxDD": "Max DrawDown",
+  "equityOuts": "Equity Outs.",
   "dashboard": { 
     "title": "Dashboard",
-    "dashboard": {
+    "chart": "Chart of composite equity",
+    "performanceStatistics": "Performance statistics",
+    "dashboard": {      
       "lastTradesTable": {
-        "title": "Last Trades",
+        "title": "Last trades",
         "columns": [
           "Date",
           "Trade Type",
@@ -12,7 +22,7 @@
         ]
       },
       "pendingOrdersTable": {
-        "title": "Pending Orders",
+        "title": "Pending orders",
         "columns": [
           "Date",
           "Trade Type",
@@ -21,7 +31,6 @@
         ]
       },
       "performanceStatisticsTable": {
-        "title": "Performance Statistics",
         "columns": [
           " ",
           "3 Months",
@@ -36,20 +45,16 @@
           "Equity Outstanding"
         ]
       }
-    },
-    "details": {
-      "strategy": {
-        "ytd": "YTD",
-        "cagr": "CAGR",
-        "sr": "Sharpe Ratio",
-        "maxDD": "Max DrawDown",
-        "equityOuts": "Equity Outstanding"
-      }
     }
   },
   "research": { 
     "title": "Research",
     "portfolioManager": {
+      "designedPortfolio": "Designed Portfolio",
+      "livePortfolio": "Live Portfolio",
+      "optimalPortfolio": "Optimal Portfolio",
+      "live": "live",
+      "store": "store",
       "statsTable": {
         "columns": [
           "Performance statistics",
@@ -65,9 +70,25 @@
         }
       }
     },
+    "wareHouse": {
+      "premiumStrategies": "Premium Strategies",
+      "myStrategies": "My Strategies",
+      "select": "select",
+      "remove": "remove"
+    },
     "stockPickingLab": {
       "filters": {
-        "title": "Filters"
+        "title": "Filters",
+        "metrics": "Metrics",
+        "currency": "Currency",
+        "exchange": "Exchange",
+        "index": "Index",
+        "dividend": "Dividend",
+        "riskProfile": "Risk profile",
+        "sampleMetrics": "Unselected metrics with very long title",
+        "sector": "Sector",
+        "metricsSettings": "Metrics Settings",
+        "applyFilters": "Apply Filters"
       },
       "results": {
         "title": "Results"
