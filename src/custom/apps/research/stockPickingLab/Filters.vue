@@ -57,7 +57,6 @@
   import { BaseRadio } from "@/components";
 
   export default {
-    name: "filters-content",
     components: {
       BaseRadio
     }

@@ -10,13 +10,13 @@
             <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.results.stock').toLowerCase() + "..."}}</div>
             <div v-else>
                 <div style="width:50%; float: left;">
-                  <p>{{$t('ytd')}}: {{stats.ytd}}</p>
                   <p>{{$t('cagr')}}: {{stats.cagr}}</p>
-                  <p>{{$t('sharpeRatio')}}: {{stats.sr}}</p>
+                  <p>{{$t('stdDev')}}: {{stats.stdDev}}</p>
                 </div>
                 <div style="width:50%; float: right;">
-                  <p>{{$t('maxDD')}}: {{stats.maxdd}}</p>
-                  <p>{{$t('equityOuts')}}: {{stats.equityOuts}}</p>
+                  <p>{{$t('sharpeRatio')}}: {{stats.sharpeRatio}}</p>                  
+                  <p>{{$t('recoveryDDtime')}}: {{stats.recoveryDDtime}}</p>
+                  <p>{{$t('maxDD')}}: {{stats.maxDD}}</p>
                 </div>
             </div>
           </section>

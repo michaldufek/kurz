@@ -8,15 +8,16 @@
         </div>
       </div>
     </nav>
-    <filters-content></filters-content>
+    <dashboard-content @click.native="toggleSidebar">
+    </dashboard-content>
   </div>
 </template>
 <script>
-  import FiltersContent from "@/custom/apps/research/stockPickingLab/Filters.vue";
+  import DashboardContent from "@/layout/dashboard/Content.vue";
 
   export default {
     components: {
-      FiltersContent
+      DashboardContent
     }
   };
 </script>

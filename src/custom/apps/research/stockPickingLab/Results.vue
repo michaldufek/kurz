@@ -27,6 +27,20 @@
     },
     methods: {        
       initStocksData() {
+        this.stocksData = [
+          {
+            title: "AAPL (Apple Inc.)",
+            statsData: {
+              cagr: 4.3,
+              stdDev: 7.64,
+              sharpeRatio: 5,
+              recoveryDDtime: 5345,
+              maxDD: 45
+            },
+            chartData: null,
+            loading: false
+          }
+        ];
       }
     },    
     mounted() {
