@@ -91,7 +91,9 @@
         "applyFilters": "Apply Filters"
       },
       "results": {
-        "title": "Results"
+        "title": "Results",
+        "stock": "Stock",
+        "chart": "Stock chart"
       }
     }
   },

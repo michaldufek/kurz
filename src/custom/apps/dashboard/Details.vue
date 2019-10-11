@@ -13,8 +13,6 @@
 </template>
 <script>
   import StrategyCard from '@/custom/components/Cards/StrategyCard.vue';
-  import * as chartConfigs from '@/components/Charts/config';
-  import config from '@/config';
   import axios from '@/../node_modules/axios';
 
   export default {

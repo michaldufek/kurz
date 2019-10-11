@@ -1,32 +1,36 @@
 <template>
   <div>
-    <router-link class="navbar-brand" to="/stockPickingLab/filters">{{$t("dashboard.title")}}</router-link>
-    <router-link class="navbar-brand" to="/stockPickingLab/results" style="margin-left: 140px;">{{$t("research.title")}}</router-link>    
-  </div>
+    <ul>
+      <li v-for="stockData in stocksData" style="list-style-type: none;">
+        <stock-card :title="stockData.title"
+                    :stats="stockData.statsData"
+                    :chartData="stockData.chartData"                    
+                    :errored="stockData.errored"
+                    :loading="stockData.loading">
+        </stock-card>
+      </li>
+    </ul>
+  </div> 
 </template>
 <script>
-  import { BaseButton } from "@/components";
+  import StockCard from '@/custom/components/Cards/StockCard.vue';
+  import axios from '@/../node_modules/axios';
 
   export default {
     components: {
-      BaseButton        
+      StockCard        
     },
     data() {
-      return {    
+      return { 
+        stocksData: []   
       }
     },
     methods: {        
-      initPremiumStrategiesData() {
-      },
-      initLivePortfolioData() {
-      },
-      initPortfoliosData() {
-        this.initPremiumStrategiesData();
-        this.initMyStrategiesData();
+      initStocksData() {
       }
     },    
     mounted() {
-      this.initStategiesData();
+      this.initStocksData();
     }
   };
 </script>
