@@ -1,13 +1,13 @@
-import DashboardLayout from "@/custom/layout/dashboard/DashboardLayout.vue";
-import ResearchLayout from "@/custom/layout/research/ResearchLayout.vue";
+import DashboardLayout from "@/custom/layout/DashboardLayout.vue";
+import ResearchLayout from "@/custom/layout/ResearchLayout.vue";
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
 // SubViews
-const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/pages/Dashboard.vue");
-const Details = () => import(/* webpackChunkName: "details" */"@/custom/pages/Details.vue");
-const PortfolioManager = () => import(/* webpackChunkName: "portfolio manager" */"@/custom/pages/PortfolioManager.vue");
-const WareHouse = () => import(/* webpackChunkName: "ware house" */"@/custom/pages/WareHouse.vue");
+const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/pages/dashboard/Dashboard.vue");
+const Details = () => import(/* webpackChunkName: "details" */"@/custom/pages/dashboard/Details.vue");
+const PortfolioManager = () => import(/* webpackChunkName: "portfolio manager" */"@/custom/pages/research/PortfolioManager.vue");
+const WareHouse = () => import(/* webpackChunkName: "ware house" */"@/custom/pages/research/WareHouse.vue");
 
 const routes = [
   {
