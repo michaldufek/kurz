@@ -6,10 +6,10 @@
           <h4 class="card-title">{{$t('research.wareHouse.premiumStrategies')}}</h4>
           <li v-for="strategyName in premiumStrategies" style="list-style-type: none;">
             {{strategyName}}
-            <base-button  type="secondary" size="1" fill>{{$t('research.wareHouse.selectButton')}}</base-button>
+            <base-button  type="secondary" size="1" fill>{{$t('research.wareHouse.select')}}</base-button>
             <!-- to-do: export to Portfolio manager/Designed portfolio -->
             <!-- to-do: v-if="strategies.enableLive" -->
-            <base-button type="secondary" fill>{{$t('research.wareHouse.removeButton')}}</base-button>        
+            <base-button type="secondary" fill>{{$t('research.wareHouse.remove')}}</base-button>        
             <!-- v-if="strategies.enableStore" -->
             <br/>
           </li>

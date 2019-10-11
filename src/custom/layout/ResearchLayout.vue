@@ -27,6 +27,7 @@ import TopNavbar from "@/layout/dashboard/TopNavbar.vue";
 import ContentFooter from "@/layout/dashboard/ContentFooter.vue";
 import DashboardContent from "@/layout/dashboard/Content.vue";
 import MobileMenu from "@/layout/dashboard/MobileMenu";
+
 export default {
   components: {
     TopNavbar,

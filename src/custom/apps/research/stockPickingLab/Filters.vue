@@ -1,61 +1,65 @@
 <template>
   <div>
-    <div>
+    <div style="float: left; margin-top: 50px; width: 50%;">
       <h4>{{$t('research.stockPickingLab.filters.metrics')}}</h4>
-      <ul style="list-style-type: none;">
+      <ul style="list-style-type: none; padding-left: 0px;">
         <li >
-          <base-checkbox></base-checkbox>{{$t('research.stockPickingLab.filters.currency')}}
+          <base-checkbox>{{$t('research.stockPickingLab.filters.currency')}}</base-checkbox>
         </li>
         <li >
-          <base-checkbox></base-checkbox>{{$t('research.stockPickingLab.filters.exchange') + "/" + $t('research.stockPickingLab.filters.index')}}
+          <base-checkbox>{{$t('research.stockPickingLab.filters.exchange') + "/" + $t('research.stockPickingLab.filters.index')}}</base-checkbox>
         </li>
         <li >
-          <base-checkbox></base-checkbox>{{$t('research.stockPickingLab.filters.dividend')}}
+          <base-checkbox>{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
         </li>
         <li >
-          <base-checkbox></base-checkbox>{{$t('research.stockPickingLab.filters.riskProfile')}}
+          <base-checkbox>{{$t('research.stockPickingLab.filters.riskProfile')}}</base-checkbox>
         </li>
         <li >
-          <base-checkbox></base-checkbox>{{$t('research.stockPickingLab.filters.sampleMetrics')}}
+          <base-checkbox>{{$t('research.stockPickingLab.filters.sampleMetrics')}}</base-checkbox>
         </li>
       </ul>
       <base-button type="secondary" fill>{{$t('research.stockPickingLab.filters.metricsSettings')}}</base-button>        
     </div>
-    <div>
+    <div style="float: right; margin-top: 50px; width: 50%;">
       <h4>{{$t('research.stockPickingLab.filters.title')}}</h4>
-      <ul style="list-style-type: none;">
-        <li >
-          {{$t('research.stockPickingLab.filters.currency')}}
-          <base-dropdown></base-dropdown>
-        </li>
-        <li >
-          {{$t('research.stockPickingLab.filters.exchange')}}
-          <base-dropdown></base-dropdown>
-        </li>
-        <li >
-          {{$t('research.stockPickingLab.filters.index')}}
-          <base-radio></base-radio>
-        </li>
-        <li >
-          {{$t('research.stockPickingLab.filters.dividend')}}
-          <base-radio></base-radio>
-        </li>
-        <li >
-          {{$t('research.stockPickingLab.filters.riskProfile')}}
-          <base-dropdown></base-dropdown>
-        </li>
-        <li >
-          {{$t('research.stockPickingLab.filters.sector')}}
-          <base-dropdown></base-dropdown>
-        </li>
-      </ul>
+      <table>
+        <tr>
+          <td>{{$t('research.stockPickingLab.filters.currency')}}</td>
+          <td><base-dropdown></base-dropdown></td>
+        </tr>
+        <tr>
+          <td>{{$t('research.stockPickingLab.filters.exchange')}}</td>
+          <td><base-dropdown></base-dropdown></td>
+        </tr>
+        <tr>
+          <td>{{$t('research.stockPickingLab.filters.index')}}</td>
+          <td><base-radio></base-radio></td>
+        </tr>
+        <tr>
+          <td>{{$t('research.stockPickingLab.filters.dividend')}}</td>
+          <td><base-radio></base-radio></td>
+        </tr>
+        <tr>
+          <td>{{$t('research.stockPickingLab.filters.riskProfile')}}</td>
+          <td><base-dropdown></base-dropdown></td>
+        </tr>
+        <tr>
+          <td>{{$t('research.stockPickingLab.filters.sector')}}</td>
+          <td><base-dropdown></base-dropdown></td>
+        </tr>
+      </table>
       <base-button type="secondary" fill>{{$t('research.stockPickingLab.filters.applyFilters')}}</base-button>        
     </div>
   </div>
 </template>
 <script>
+  import { BaseRadio } from "@/components";
+
   export default {
+    name: "filters-content",
     components: {
+      BaseRadio
     }
   };
 </script>
