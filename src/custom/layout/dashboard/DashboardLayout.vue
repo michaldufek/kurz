@@ -1,0 +1,42 @@
+<template>
+  <div class="wrapper">
+    <side-bar>
+      <template slot="links">
+        <sidebar-link to="/dashboard" :name="$t('sidebar.dashboard')" icon="tim-icons icon-coins"/>
+        <sidebar-link to="/details" :name="$t('sidebar.details')" icon="tim-icons icon-sound-wave"/>
+      </template>
+    </side-bar>
+    <div class="main-panel">
+      <top-navbar></top-navbar>
+
+      <dashboard-content @click.native="toggleSidebar">
+
+      </dashboard-content>
+
+      <content-footer></content-footer>
+    </div>
+  </div>
+</template>
+<style lang="scss">
+</style>
+<script>
+import TopNavbar from "@/layout/dashboard/TopNavbar.vue";
+import ContentFooter from "@/layout/dashboard/ContentFooter.vue";
+import DashboardContent from "@/layout/dashboard/Content.vue";
+import MobileMenu from "@/layout/dashboard/MobileMenu";
+export default {
+  components: {
+    TopNavbar,
+    ContentFooter,
+    DashboardContent,
+    MobileMenu
+  },
+  methods: {
+    toggleSidebar() {
+      if (this.$sidebar.showSidebar) {
+        this.$sidebar.displaySidebar(false);
+      }
+    }
+  }
+};
+</script>

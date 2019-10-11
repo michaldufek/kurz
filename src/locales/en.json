@@ -1,0 +1,84 @@
+{ 
+  "dashboard": { 
+    "title": "Dashboard",
+    "dashboard": {
+      "lastTradesTable": {
+        "title": "Last Trades",
+        "columns": [
+          "Date",
+          "Trade Type",
+          "Result (%)",
+          "Result (USD)"
+        ]
+      },
+      "pendingOrdersTable": {
+        "title": "Pending Orders",
+        "columns": [
+          "Date",
+          "Trade Type",
+          "Target (USD)",
+          "Stop Loss (USD)"
+        ]
+      },
+      "performanceStatisticsTable": {
+        "title": "Performance Statistics",
+        "columns": [
+          " ",
+          "3 Months",
+          "12 Months",
+          "Since Inception"
+        ],
+        "lines": [
+          "YTD",
+          "CAGR",
+          "Sharpe Ratio",
+          "Max DrawDown",
+          "Equity Outstanding"
+        ]
+      }
+    },
+    "details": {
+      "strategy": {
+        "ytd": "YTD",
+        "cagr": "CAGR",
+        "sr": "Sharpe Ratio",
+        "maxDD": "Max DrawDown",
+        "equityOuts": "Equity Outstanding"
+      }
+    }
+  },
+  "research": { 
+    "title": "Research",
+    "portfolioManager": {
+      "statsTable": {
+        "columns": [
+          "Performance statistics",
+          "Risk statistics"
+        ],
+        "rows": {
+          "cagr": "CAGR",
+          "sr": "SR",
+          "equityOuts": "Equity outs.",
+          "maxDD": "MaxDD",
+          "beta": "Beta",
+          "alfa": "Alfa"
+        }
+      }
+    }
+  },
+  "sidebar": {
+    "title": "Creative Tim",
+    "details": "Details",
+    "shortTitle": "CT",
+    "dashboard": "Dashboard",
+    "portfolioManager": "Portfolio Manager",
+    "wareHouse": "Ware House",
+    "icons": "Icons",
+    "maps": "Maps",
+    "notifications": "Notifications",
+    "userProfile": "User Profile",
+    "tableList": "Table List",
+    "typography": "Typography",
+    "rtlSupport": "RTL Support"
+  }
+}
