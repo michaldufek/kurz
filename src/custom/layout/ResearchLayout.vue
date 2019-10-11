@@ -3,7 +3,10 @@
     <side-bar>
       <template slot="links">
         <sidebar-link to="/portfolioManager" :name="$t('sidebar.portfolioManager')" icon="tim-icons icon-chart-pie-36"/>
-        <sidebar-link to="/wareHouse" :name="$t('sidebar.wareHouse')" icon="tim-icons icon-tap-02"/>
+        <sidebar-link to="/stockPickingLab" :name="$t('sidebar.stockPickingLab')" icon="tim-icons icon-tap-02"/>
+        <!-- <sidebar-link to="/patternLab" :name="$t('sidebar.patternLab')" icon="tim-icons icon-tap-02"/>
+        <sidebar-link to="/relativeValuesLab" :name="$t('sidebar.relativeValuesLab')" icon="tim-icons icon-tap-02"/> -->
+        <sidebar-link to="/wareHouse" :name="$t('sidebar.wareHouse')" icon="tim-icons icon-paper"/>
       </template>
     </side-bar>
     <div class="main-panel">

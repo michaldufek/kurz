@@ -64,14 +64,25 @@
           "alfa": "Alfa"
         }
       }
+    },
+    "stockPickingLab": {
+      "filters": {
+        "title": "Filters"
+      },
+      "results": {
+        "title": "Results"
+      }
     }
   },
   "sidebar": {
-    "title": "Creative Tim",
-    "details": "Details",
-    "shortTitle": "CT",
+    "title": "Financial Research Software",
+    "shortTitle": "FRS",
     "dashboard": "Dashboard",
+    "details": "Details",    
     "portfolioManager": "Portfolio Manager",
+    "stockPickingLab": "StockPicking Lab",
+    "patternLab": "Pattern Lab",
+    "relativeValuesLab": "RelativeValues Lab",
     "wareHouse": "Ware House",
     "icons": "Icons",
     "maps": "Maps",

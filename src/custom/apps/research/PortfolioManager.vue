@@ -18,6 +18,7 @@
                     :errored="optimalPortfolioData.errored"
                     :loading="optimalPortfolioData.loading">
     </portfolio-card>
+    <!-- to-do: stats as a source from Ware house? -->
   </div>
 </template>
 <script>

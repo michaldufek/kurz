@@ -7,7 +7,8 @@
           <li v-for="strategyName in premiumStrategies" style="list-style-type: none;">
             {{strategyName}}
             <base-button  type="secondary" size="1" fill>select</base-button>
-            <!-- v-if="strategies.enableLive" -->
+            <!-- to-do: export to Portfolio manager/Designed portfolio -->
+            <!-- to-do: v-if="strategies.enableLive" -->
             <base-button type="secondary" fill>remove</base-button>        
             <!-- v-if="strategies.enableStore" -->
             <br/>

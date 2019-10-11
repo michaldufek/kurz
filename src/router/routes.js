@@ -4,10 +4,15 @@ import ResearchLayout from "@/custom/layout/ResearchLayout.vue";
 import NotFound from "@/pages/NotFoundPage.vue";
 
 // SubViews
-const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/pages/dashboard/Dashboard.vue");
-const Details = () => import(/* webpackChunkName: "details" */"@/custom/pages/dashboard/Details.vue");
-const PortfolioManager = () => import(/* webpackChunkName: "portfolio manager" */"@/custom/pages/research/PortfolioManager.vue");
-const WareHouse = () => import(/* webpackChunkName: "ware house" */"@/custom/pages/research/WareHouse.vue");
+const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/apps/dashboard/Dashboard.vue");
+const Details = () => import(/* webpackChunkName: "details" */"@/custom/apps/dashboard/Details.vue");
+const PortfolioManager = () => import(/* webpackChunkName: "portfolio manager" */"@/custom/apps/research/PortfolioManager.vue");
+const StockPickingLab = () => import(/* webpackChunkName: "stockPicking lab" */"@/custom/apps/research/StockPickingLab.vue");
+const StockPickingLabFilters = () => import(/* webpackChunkName: "stockPicking lab filters" */"@/custom/apps/research/stockPickingLab/Filters.vue");
+const StockPickingLabResults = () => import(/* webpackChunkName: "stockPicking lab results" */"@/custom/apps/research/stockPickingLab/Results.vue");
+// const PatternLab = () => import(/* webpackChunkName: "pattern lab" */"@/custom/apps/research/PatternLab.vue");
+// const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValues lab" */"@/custom/apps/research/RelativeValuesLab.vue");
+const WareHouse = () => import(/* webpackChunkName: "ware house" */"@/custom/apps/research/WareHouse.vue");
 
 const routes = [
   {
@@ -37,19 +42,31 @@ const routes = [
         name: "portfolioManager",
         component: PortfolioManager
       },   
+      {
+        path: "/stockPickingLab",
+        name: "stockPickingLab",
+        component: StockPickingLab,
+        children: [
+          {
+            path: "/stockPickingLab/filters",
+            name: "stockPickingLabFilters",
+            component: StockPickingLabFilters          
+          },
+          {
+            path: "/stockPickingLab/results",
+            name: "stockPickingLabResults",
+            component: StockPickingLabResults          
+          }
+        ]
+      },
       // {
-      //   path: "stockPickingLab",
-      //   name: "stockPickingLab",
-      //   component: StockPickingLab
-      // },
-      // {
-      //   path: "patternLab",
+      //   path: "/patternLab",
       //   name: "patternLab",
       //   component: PatternLab
       // },
       // {
-      //   path: "relativeValues lab",
-      //   name: "relativeValues lab",
+      //   path: "/relativeValuesLab",
+      //   name: "relativeValuesLab",
       //   component: RelativeValuesLab
       // },
       {

@@ -14,7 +14,7 @@
           </button>
         </div>
         <router-link class="navbar-brand" to="/dashboard">{{$t("dashboard.title")}}</router-link>
-        <router-link class="navbar-brand" style="margin-left: 140px;" to="/research">{{$t("research.title")}}</router-link>
+        <router-link class="navbar-brand" to="/research" style="margin-left: 140px;">{{$t("research.title")}}</router-link>
       </div>
       <button class="navbar-toggler" type="button"
               @click="toggleMenu"

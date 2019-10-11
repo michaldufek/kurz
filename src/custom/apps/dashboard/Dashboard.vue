@@ -4,6 +4,10 @@
     <div class="row">
       <div class="col-12">
         <card type="chart">
+          <div class="card-header">
+            <h5 class="card-title"><i class="tim-icons icon-heart-2 text-success"></i>  Updated every minute</h5>
+          </div>
+          <br/>
           <div class="chart-area">
             <!-- <section v-if="statsChartErrored">
       <p>Omlouváme se, nejsme schopní získat v tento moment graf vývoje stavu účtu. Prosím, skuste později.</p>
@@ -18,6 +22,7 @@
                         :gradient-stops="bigLineChart.gradientStops"
                         :extra-options="bigLineChart.extraOptions">
             </line-chart>
+            <!-- to-do: interactive chart - sounds etc. -->
             <!-- </section> -->
           </div>
         </card>
@@ -131,6 +136,7 @@
     },
     methods: {
       initTradesOrdersTablesData() {
+        // to-do: get right sources
         axios
         .get("https://app1.objectively.info/api/mfreport")
         .then(response => {
