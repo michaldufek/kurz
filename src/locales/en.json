@@ -86,10 +86,6 @@
         "exchange": "Exchange",
         "index": "Index",
         "dividend": "Dividend",
-        "yesNoValues": [
-          "Yes",
-          "No"
-        ],
         "riskProfile": "Risk profile",
         "sampleMetrics": "Unselected metrics with very long title",
         "sector": "Sector",
@@ -97,13 +93,14 @@
         "applyFilters": "Apply Filters",
         "currencies": [
           "USD",
-          "CAD"
-        ],
+          "EUR"
+        ],        
         "exchanges": [
           "NYQ",
           "NMS",
           "ASE"
-        ]
+        ],
+        "all": "All"
       },
       "results": {
         "title": "Results",
