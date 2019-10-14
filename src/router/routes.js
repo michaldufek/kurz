@@ -6,13 +6,13 @@ import NotFound from "@/pages/NotFoundPage.vue";
 // SubViews
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/apps/dashboard/Dashboard.vue");
 const Details = () => import(/* webpackChunkName: "details" */"@/custom/apps/dashboard/Details.vue");
-const PortfolioManager = () => import(/* webpackChunkName: "portfolio manager" */"@/custom/apps/research/PortfolioManager.vue");
-const StockPickingLab = () => import(/* webpackChunkName: "stockPicking lab" */"@/custom/apps/research/StockPickingLab.vue");
-const StockPickingLabFilters = () => import(/* webpackChunkName: "stockPicking lab filters" */"@/custom/apps/research/stockPickingLab/Filters.vue");
-const StockPickingLabResults = () => import(/* webpackChunkName: "stockPicking lab results" */"@/custom/apps/research/stockPickingLab/Results.vue");
-// const PatternLab = () => import(/* webpackChunkName: "pattern lab" */"@/custom/apps/research/PatternLab.vue");
-// const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValues lab" */"@/custom/apps/research/RelativeValuesLab.vue");
-const WareHouse = () => import(/* webpackChunkName: "ware house" */"@/custom/apps/research/WareHouse.vue");
+const PortfolioManager = () => import(/* webpackChunkName: "portfolioManager" */"@/custom/apps/research/PortfolioManager.vue");
+const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@/custom/apps/research/StockPickingLab.vue");
+const StockPickingLabFilters = () => import(/* webpackChunkName: "stockPickingLabFilters" */"@/custom/apps/research/stockPickingLab/Filters.vue");
+const StockPickingLabResults = () => import(/* webpackChunkName: "stockPickingLabResults" */"@/custom/apps/research/stockPickingLab/Results.vue");
+// const PatternLab = () => import(/* webpackChunkName: "patternLab" */"@/custom/apps/research/PatternLab.vue");
+// const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
+const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
 
 const routes = [
   {
