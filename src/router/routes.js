@@ -8,8 +8,6 @@ const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/apps
 const Details = () => import(/* webpackChunkName: "details" */"@/custom/apps/dashboard/Details.vue");
 const PortfolioManager = () => import(/* webpackChunkName: "portfolioManager" */"@/custom/apps/research/PortfolioManager.vue");
 const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@/custom/apps/research/StockPickingLab.vue");
-const StockPickingLabFilters = () => import(/* webpackChunkName: "stockPickingLabFilters" */"@/custom/apps/research/stockPickingLab/Filters.vue");
-const StockPickingLabResults = () => import(/* webpackChunkName: "stockPickingLabResults" */"@/custom/apps/research/stockPickingLab/Results.vue");
 // const PatternLab = () => import(/* webpackChunkName: "patternLab" */"@/custom/apps/research/PatternLab.vue");
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
@@ -45,19 +43,7 @@ const routes = [
       {
         path: "/stockPickingLab",
         name: "stockPickingLab",
-        component: StockPickingLab,
-        children: [
-          {
-            path: "/stockPickingLab/filters",
-            name: "stockPickingLabFilters",
-            component: StockPickingLabFilters          
-          },
-          {
-            path: "/stockPickingLab/results",
-            name: "stockPickingLabResults",
-            component: StockPickingLabResults          
-          }
-        ]
+        component: StockPickingLab
       },
       // {
       //   path: "/patternLab",

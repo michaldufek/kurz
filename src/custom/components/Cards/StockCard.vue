@@ -9,6 +9,7 @@
           <section v-else>
             <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.results.stock').toLowerCase() + "..."}}</div>
             <div v-else>
+                <h4 class="card-title">{{title}}</h4>
                 <div style="width:50%; float: left;">
                   <p>{{$t('cagr')}}: {{stats.cagr}}</p>
                   <p>{{$t('stdDev')}}: {{stats.stdDev}}</p>
@@ -24,7 +25,6 @@
       </div>
       <div class="col-lg-8 col-md-12">
         <card type="chart">
-          <h4 slot="header" class="card-title">{{chartData.title}}</h4>
           <div class="chart-area">
             <!-- to-do: errored and loading sections not working -->
             <!-- to-do: use it also in another custom cards -->
