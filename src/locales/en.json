@@ -19,6 +19,7 @@
     "signInCredentials": "Or sign in with credentials",
     "email": "Email",
     "password": "Password (use 'frspass')",
+    "badLogin": "Bad login information",
     "remember": "Remember me"
   },
   "dashboard": { 

@@ -1,14 +1,13 @@
 <template>
   <div class="row">
-    <!-- <base-button block type="default" class=" mb-3" @click="modals.modal3 = true">
-        Form
-    </base-button> -->
-    <p v-if="error" class="error">Bad login information</p>
-    <!-- :show.sync="modals.loginModal" -->
-    <modal :show="true"
+    <!-- :show.sync="modals.loginModalShow" -->
+    <modal id="loginModal"
+           :show="modals.loginModalShow"
            :showClose="false"    
            body-classes="p-0"
            modal-classes="modal-dialog-centered modal-sm"
+           class="animated"
+           :class="{ shake: isShaking }"
            :onClose="login">
         <card type="secondary"
                 header-classes="bg-white pb-5"
@@ -49,6 +48,7 @@
                                 v-model="pass"
                                 @keyup.enter="login">
                     </base-input>
+                    <p v-if="error" style="color: red;">{{$t('login.badLogin')}}</p>
                     <base-checkbox>
                         {{$t('login.remember')}}
                     </base-checkbox>
@@ -64,6 +64,7 @@
 <script>
 import { Modal } from '@/components';
 import auth from '@/router/auth'
+import '../assets/css/shake.css'
 
 export default {
     components: {
@@ -72,31 +73,40 @@ export default {
     data() {
       return {
         modals: {
-            loginModal: true
+            loginModalShow: false
         },
         email: 'joe@example.com',
         pass: '',
-        error: false
+        error: false,
+        isShaking: false
       };
     },
     methods: {
         login () {
             auth.login(this.email, this.pass, loggedIn => {
                 if (!loggedIn) {
+                    this.shakeModal()
                     this.error = true
                 } else {
                     this.$router.replace(this.$route.query.redirect || '/')
                 }
             })
         },
-        // shakeModal(){
-        //     $('#loginModal .modal-dialog').addClass('shake');
-        //             $('.error').addClass('alert alert-danger').html("Invalid email/password combination");
-        //             $('input[type="password"]').val('');
-        //             setTimeout( function(){ 
-        //                 $('#loginModal .modal-dialog').removeClass('shake'); 
-        //     }, 1000 );
-        // }
+        shakeModal(){
+            this.isShaking = true
+            setTimeout(() => { 
+                this.isShaking = false
+            }, 1000 );
+            this.pass = ''
+        },
+        openLoginModal(){
+            setTimeout(() => {
+                this.modals.loginModalShow = true  
+            }, 230);
+        }
+    },
+    mounted() {
+      this.openLoginModal();
     }
 }
 </script>

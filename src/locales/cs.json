@@ -19,6 +19,7 @@
     "signInCredentials": "Nebo přímo",
     "email": "Email",
     "password": "Heslo",
+    "badLogin": "Nesprávné údaje",
     "remember": "Zapamatovat"
   },
   "dashboard": { 
