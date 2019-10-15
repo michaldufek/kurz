@@ -1,5 +1,6 @@
 import DashboardLayout from "@/custom/layout/DashboardLayout.vue";
 import ResearchLayout from "@/custom/layout/ResearchLayout.vue";
+import Settings from "@/custom/apps/Settings.vue";
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
@@ -61,7 +62,12 @@ const routes = [
         component: WareHouse
       }   
     ]
-  },  
+  },
+  ,
+  {
+    path: "/settings",
+    component: Settings
+  },
   { path: "*", component: NotFound },
 ];
 

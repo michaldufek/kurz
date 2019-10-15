@@ -1,0 +1,132 @@
+{
+  "loading": "Načítání",
+  "errorPrefix": "Omlouváme se, nejsme schopní získat data k", 
+  "errorSuffix": "Prosím, zkuste později.",
+  "ytd": "YTD",
+  "cagr": "CAGR",
+  "sharpeRatio": "Sharpe Ratio",
+  "maxDD": "Max DrawDown",
+  "equityOuts": "Vlastní Kap.",
+  "stdDev": "Std. Dev.",
+  "recoveryDDtime": "Recovery DD Time",  
+  "settings": {
+    "title": "Nastavení",
+    "metrics": "Metriky",
+    "save": "Uložit"
+  },
+  "dashboard": { 
+    "title": "Dashboard",
+    "chart": "Graf složené equity",
+    "performanceStatistics": "Výkon - statistiky",
+    "dashboard": {      
+      "lastTradesTable": {
+        "title": "Poslední obchody",
+        "columns": [
+          "Datum",
+          "Typ Obchodu",
+          "Výsledek (%)",
+          "Výsledek (USD)"
+        ]
+      },
+      "pendingOrdersTable": {
+        "title": "Čekající pokyny",
+        "columns": [
+          "Datum",
+          "Typ Obchodu",
+          "Cíl (USD)",
+          "Stop Loss (USD)"
+        ]
+      },
+      "performanceStatisticsTable": {
+        "columns": [
+          " ",
+          "3 Měsíce",
+          "12 Měsíců",
+          "Od Vstupu"
+        ],
+        "lines": [
+          "YTD",
+          "CAGR",
+          "Sharpe Ratio",
+          "Max DrawDown",
+          "Vlastní Kapitál"
+        ]
+      }
+    }
+  },
+  "research": { 
+    "title": "Výzkum",
+    "portfolioManager": {
+      "designedPortfolio": "Navržené Portfolio",
+      "livePortfolio": "Živé Portfolio",
+      "optimalPortfolio": "Optimální Portfolio",
+      "live": "živé",
+      "store": "uložit",
+      "statsTable": {
+        "columns": [
+          "Výkon - statistiky",
+          "Risk - statistiky"
+        ],
+        "rows": {
+          "cagr": "CAGR",
+          "sr": "SR",
+          "equityOuts": "Vlastní Kap.",
+          "maxDD": "MaxDD",
+          "beta": "Beta",
+          "alfa": "Alfa"
+        }
+      }
+    },
+    "wareHouse": {
+      "premiumStrategies": "Prémiové Strategie",
+      "myStrategies": "Moje Strategie",
+      "select": "vybrat",
+      "remove": "odstranit"
+    },
+    "stockPickingLab": {
+      "filters": {
+        "title": "Filtre",
+        "currency": "Měna",
+        "exchange": "Burza",
+        "index": "Index",
+        "dividend": "Dividenda",
+        "riskProfile": "Risk profil",
+        "sampleMetrics": "Unselected metrics with very long title",
+        "sector": "Sektor",
+        "metricsSettings": "Nastavení Metrik",
+        "currencies": [
+          "USD",
+          "EUR"
+        ],        
+        "exchanges": [
+          "NYQ",
+          "NMS",
+          "ASE"
+        ],
+        "riskProfiles": [
+          "Dynamické",
+          "Optimální"
+        ],
+        "all": "All"
+      },
+      "results": {
+        "title": "Výsledky",
+        "stock": "Akce",
+        "chart": "Graf akce"
+      }
+    }
+  },
+  "sidebar": {
+    "title": "Financial Research Software",
+    "shortTitle": "FRS",
+    "dashboard": "Dashboard",
+    "details": "Detaily",    
+    "portfolioManager": "Portfolio Manažer",
+    "stockPickingLab": "StockPicking Lab",
+    "patternLab": "Pattern Lab",
+    "relativeValuesLab": "RelativeValues Lab",
+    "wareHouse": "Sklad Strategií",
+    "notifications": "Notifikace",
+    "userProfile": "Profil"
+  }
+}

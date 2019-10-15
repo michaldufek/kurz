@@ -9,6 +9,11 @@
   "equityOuts": "Equity Outs.",
   "stdDev": "Std. Dev.",
   "recoveryDDtime": "Recovery DD Time",  
+  "settings": {
+    "title": "Settings",
+    "metrics": "Metrics",
+    "save": "Save"
+  },
   "dashboard": { 
     "title": "Dashboard",
     "chart": "Chart of composite equity",
@@ -81,7 +86,6 @@
     "stockPickingLab": {
       "filters": {
         "title": "Filters",
-        "metrics": "Metrics",
         "currency": "Currency",
         "exchange": "Exchange",
         "index": "Index",
@@ -99,6 +103,10 @@
           "NYQ",
           "NMS",
           "ASE"
+        ],
+        "riskProfiles": [
+          "Dynamic",
+          "Optimal"
         ],
         "all": "All"
       },

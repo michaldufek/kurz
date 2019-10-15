@@ -1,35 +1,14 @@
 <template>
   <div>
-     <div>
-      <div style="float: left; margin-top: 50px; width: 50%;">
-        <h4>{{$t('research.stockPickingLab.filters.metrics')}}</h4>
-        <ul style="list-style-type: none; padding-left: 0px;">
-          <li >
-            <base-checkbox>{{$t('research.stockPickingLab.filters.currency')}}</base-checkbox>
-          </li>
-          <li >
-            <base-checkbox>{{$t('research.stockPickingLab.filters.exchange') + "/" + $t('research.stockPickingLab.filters.index')}}</base-checkbox>
-          </li>
-          <li >
-            <base-checkbox>{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
-          </li>
-          <li >
-            <base-checkbox>{{$t('research.stockPickingLab.filters.riskProfile')}}</base-checkbox>
-          </li>
-          <li >
-            <base-checkbox>{{$t('research.stockPickingLab.filters.sampleMetrics')}}</base-checkbox>
-          </li>
-        </ul>
-        <base-button type="secondary" fill>{{$t('research.stockPickingLab.filters.metricsSettings')}}</base-button>        
-      </div>
+     <div>      
       <div style="float: right; margin-top: 50px; width: 50%;">
-        <h4>{{$t('research.stockPickingLab.filters.title')}}</h4>
+        <!-- <h4>{{$t('research.stockPickingLab.filters.title')}}</h4> -->
         <table>
           <tr>
             <td>
               <base-dropdown title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
                 <ul>
-                  <li v-for="currency in (selectedCurrency ? [$t('research.stockPickingLab.filters.all')].concat($t('research.stockPickingLab.filters.currencies')) : $t('research.stockPickingLab.filters.currencies'))">
+                  <li v-for="currency in getCurrencies">
                     <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
                   </li>
                 </ul>
@@ -40,7 +19,7 @@
             <td>
               <base-dropdown title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
                 <ul>
-                  <li v-for="exchange in (selectedExchange ? [$t('research.stockPickingLab.filters.all')].concat($t('research.stockPickingLab.filters.exchanges')) : $t('research.stockPickingLab.filters.exchanges'))">
+                  <li v-for="exchange in getExchanges">
                     <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
                   </li>
                 </ul>
@@ -51,16 +30,16 @@
             <base-checkbox>{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
           </tr>
           <tr>
-            <base-checkbox>{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
+            <base-checkbox @click="isDividend = !isDividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
           </tr>
           <tr>
             <td>
-              <base-dropdown title-classes="btn btn-secondary" :title="$t('research.stockPickingLab.filters.riskProfile')">
-                <!-- <ul>
-                  <li v-for="currency in $t('research.stockPickingLab.filters.exchanges')">
-                    <a class="dropdown-item" href="#">{{exchange}}</a>
+              <base-dropdown title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
+                <ul>
+                  <li v-for="riskProfile in getRiskProfiles">
+                    <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
                   </li>
-                </ul> -->
+                </ul>
               </base-dropdown>
             </td>
           </tr>
@@ -108,7 +87,9 @@
       return { 
         stocksData: [],
         selectedCurrency: null,
-        selectedExchange: null
+        selectedExchange: null,
+        selectedRiskProfile: null,
+        isDividend: false
       }
     },
     methods: {        
@@ -121,7 +102,8 @@
               title: result.symbol + " (" + result.info.shortName + ")",
               filterData: {
                 currency: result.info.currency,
-                exchange: result.info.exchange
+                exchange: result.info.exchange,
+                hasDividend: result.info.dividendDate !== null
               },              
               statsData: {
                 cagr: result.compute.cagr,
@@ -158,6 +140,12 @@
         if (exchange === this.$t('research.stockPickingLab.filters.all')) {
           this.selectedExchange = null          
         }
+      },
+      selectRiskProfile(riskProfile) {
+        this.selectedRiskProfile = riskProfile;
+        if (riskProfile === this.$t('research.stockPickingLab.filters.all')) {
+          this.selectedRiskProfile = null          
+        }
       }
     },    
     computed: {
@@ -169,9 +157,27 @@
           if (this.selectedExchange && stockData.filterData.exchange !== this.selectedExchange) {
             return false
           }
+          if (this.isDividend && !stockData.filterData.hasDividend) {
+            return false
+          }
 
           return true
         })
+      },
+      getExchanges() {
+        return this.selectedExchange 
+               ? [this.$t('research.stockPickingLab.filters.all')].concat(this.$t('research.stockPickingLab.filters.exchanges')) 
+               : this.$t('research.stockPickingLab.filters.exchanges')
+      },
+      getCurrencies() {
+        return this.selectedCurrency 
+               ? [this.$t('research.stockPickingLab.filters.all')].concat(this.$t('research.stockPickingLab.filters.currencies'))
+               : this.$t('research.stockPickingLab.filters.currencies')
+      },
+      getRiskProfiles() {
+        return this.selectedRiskProfile
+               ? [this.$t('research.stockPickingLab.filters.all')].concat(this.$t('research.stockPickingLab.filters.riskProfiles'))
+               : this.$t('research.stockPickingLab.filters.riskProfiles')
       }
     },
     mounted() {
