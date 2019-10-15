@@ -26,6 +26,7 @@
         <base-dropdown style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
           <ul>
             <li v-for="riskProfile in getRiskProfiles">
+              <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
               <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
             </li>
           </ul>

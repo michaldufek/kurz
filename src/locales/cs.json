@@ -10,12 +10,16 @@
   "stdDev": "Std. Dev.",
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
-    "title": "Nastavení",
     "save": "Uložit",
     "darkMode": "Temný režim"
-  },  
-  "profile": {
-    "title": "Profile"
+  },
+  "login": {
+    "signIn": "Přihlásit se",
+    "with": " pomocí",
+    "signInCredentials": "Nebo přímo",
+    "email": "Email",
+    "password": "Heslo",
+    "remember": "Zapamatovat"
   },
   "dashboard": { 
     "title": "Dashboard",
@@ -115,6 +119,11 @@
         "all": "All"
       }
     }
+  },  
+  "topNavBar": {
+    "profile": "Profil",
+    "settings": "Nastavení",
+    "logout": "Odhlásit"
   },
   "sidebar": {
     "title": "Financial Research Software",

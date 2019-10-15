@@ -10,12 +10,16 @@
   "stdDev": "Std. Dev.",
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
-    "title": "Settings",
     "save": "Save",
     "darkMode": "Dark Mode"
-  },  
-  "profile": {
-    "title": "Profile"
+  },
+  "login": {
+    "signIn": "Sign in",
+    "with": "with",
+    "signInCredentials": "Or sign in with credentials",
+    "email": "Email",
+    "password": "Password (use 'frspass')",
+    "remember": "Remember me"
   },
   "dashboard": { 
     "title": "Dashboard",
@@ -116,6 +120,11 @@
         "all": "All"
       }
     }
+  },  
+  "topNavBar": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log Out"
   },
   "sidebar": {
     "title": "Financial Research Software",

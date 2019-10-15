@@ -86,14 +86,14 @@
                 </p>
               </a>
               <li class="nav-link">
-                <a href="/profile" class="nav-item dropdown-item">{{$t('profile.title')}}</a>
+                <a href="/profile" class="nav-item dropdown-item">{{$t('topNavBar.profile')}}</a>
               </li>
               <li class="nav-link">
-                <a href="/settings" class="nav-item dropdown-item">{{$t('settings.title')}}</a>
+                <a href="/settings" class="nav-item dropdown-item">{{$t('topNavBar.settings')}}</a>
               </li>
               <div class="dropdown-divider"></div>
               <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Log out</a>
+                <a href="/logout" class="nav-item dropdown-item">{{$t('topNavBar.logout')}}</a>
               </li>
             </base-dropdown>
           </ul>
