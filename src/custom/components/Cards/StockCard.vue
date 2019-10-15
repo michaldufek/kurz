@@ -4,10 +4,10 @@
       <div class="col-lg-4 col-md-12">
         <card class="card">
           <section v-if="errored">
-            <p>{{$t('errorPrefix') + " " + $t('research.stockPickingLab.results.stock').toLowerCase() + ". " + $t('errorSuffix')}}</p>
+            <p>{{$t('errorPrefix') + " " + $t('research.stockPickingLab.stock').toLowerCase() + ". " + $t('errorSuffix')}}</p>
           </section>
           <section v-else>
-            <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.results.stock').toLowerCase() + "..."}}</div>
+            <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.stock').toLowerCase() + "..."}}</div>
             <div v-else>
                 <h4 class="card-title">{{title}}</h4>
                 <div style="width:50%; float: left;">
@@ -29,10 +29,10 @@
             <!-- to-do: errored and loading sections not working -->
             <!-- to-do: use it also in another custom cards -->
             <section v-if="errored">
-              <p>{{$t('errorPrefix') + " " + $t('research.stockPickingLab.results.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
+              <p>{{$t('errorPrefix') + " " + $t('research.stockPickingLab.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
             <section v-else>
-              <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.results.chart').toLowerCase() + "..."}}</div>
+              <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.chart').toLowerCase() + "..."}}</div>
               <line-chart v-if="!loading" style="height: 100%"
                           ref="bigChart"
                           chart-id="big-line-chart"

@@ -1,61 +1,43 @@
 <template>
   <div>
      <div>      
-      <div style="float: right; margin-top: 50px; width: 50%;">
-        <!-- <h4>{{$t('research.stockPickingLab.filters.title')}}</h4> -->
-        <table>
-          <tr>
-            <td>
-              <base-dropdown title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
-                <ul>
-                  <li v-for="currency in getCurrencies">
-                    <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
-                  </li>
-                </ul>
-              </base-dropdown>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <base-dropdown title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
-                <ul>
-                  <li v-for="exchange in getExchanges">
-                    <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
-                  </li>
-                </ul>
-              </base-dropdown>
-            </td>
-          </tr>
-          <tr>
-            <base-checkbox>{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
-          </tr>
-          <tr>
-            <base-checkbox @click="isDividend = !isDividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
-          </tr>
-          <tr>
-            <td>
-              <base-dropdown title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
-                <ul>
-                  <li v-for="riskProfile in getRiskProfiles">
-                    <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
-                  </li>
-                </ul>
-              </base-dropdown>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <base-dropdown title-classes="btn btn-secondary" :title="$t('research.stockPickingLab.filters.sector')">
-                <!-- <ul>
-                  <li v-for="currency in $t('research.stockPickingLab.filters.exchanges')">
-                    <a class="dropdown-item" href="#">{{exchange}}</a>
-                  </li>
-                </ul> -->
-              </base-dropdown>
-            </td>
-          </tr>
-        </table>
-        <!-- <base-button type="secondary" fill>{{$t('research.stockPickingLab.filters.applyFilters')}}</base-button>         -->
+      <div style="margin-left: 40px;">
+       
+        <base-dropdown style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
+          <ul>
+            <li v-for="currency in getCurrencies">
+              <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
+            </li>
+          </ul>
+        </base-dropdown>
+  
+        <base-dropdown style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
+          <ul>
+            <li v-for="exchange in getExchanges">
+              <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
+            </li>
+          </ul>
+        </base-dropdown>
+  
+        <base-checkbox style="float: left; width: 10%" v-model="isIndex">{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
+  
+        <base-checkbox style="float: left; width: 10%" v-model="isDividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
+  
+        <base-dropdown style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
+          <ul>
+            <li v-for="riskProfile in getRiskProfiles">
+              <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
+            </li>
+          </ul>
+        </base-dropdown>
+  
+        <base-dropdown style="float: left; width: 15%" title-classes="btn btn-secondary" :title="$t('research.stockPickingLab.filters.sector')">
+          <!-- <ul>
+            <li v-for="currency in $t('research.stockPickingLab.filters.exchanges')">
+              <a class="dropdown-item" href="#">{{exchange}}</a>
+            </li>
+          </ul> -->
+        </base-dropdown>
       </div>
     </div> 
     <div style="float: left;margin-top: 100px;">
@@ -89,7 +71,8 @@
         selectedCurrency: null,
         selectedExchange: null,
         selectedRiskProfile: null,
-        isDividend: false
+        isDividend: false,
+        isIndex: false
       }
     },
     methods: {        
@@ -128,7 +111,7 @@
         .finally(() => {
           // this.stocksData = data;
         });
-      },
+      }, // to-do: add comments
       selectCurrency(currency) {
         this.selectedCurrency = currency;
         if (currency === this.$t('research.stockPickingLab.filters.all')) {

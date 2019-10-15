@@ -86,7 +86,7 @@
                 </p>
               </a>
               <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Profile</a>
+                <a href="/profile" class="nav-item dropdown-item">{{$t('profile.title')}}</a>
               </li>
               <li class="nav-link">
                 <a href="/settings" class="nav-item dropdown-item">{{$t('settings.title')}}</a>

@@ -3,7 +3,7 @@
     <side-bar>
       <template slot="links">
         <sidebar-link to="/dashboard" :name="$t('sidebar.dashboard')" icon="tim-icons icon-coins"/>
-        <sidebar-link to="/details" :name="$t('sidebar.details')" icon="tim-icons icon-sound-wave"/>
+        <sidebar-link to="/details" :name="$t('sidebar.details')" icon="tim-icons icon-chart-bar-32"/>
       </template>
     </side-bar>
     <div class="main-panel">

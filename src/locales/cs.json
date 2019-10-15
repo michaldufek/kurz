@@ -11,8 +11,11 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "title": "Nastavení",
-    "metrics": "Metriky",
-    "save": "Uložit"
+    "save": "Uložit",
+    "darkMode": "Temný režim"
+  },  
+  "profile": {
+    "title": "Profile"
   },
   "dashboard": { 
     "title": "Dashboard",
@@ -84,8 +87,8 @@
       "remove": "odstranit"
     },
     "stockPickingLab": {
+      "metrics": "StockPicking Lab Metriky",
       "filters": {
-        "title": "Filtre",
         "currency": "Měna",
         "exchange": "Burza",
         "index": "Index",
@@ -107,12 +110,9 @@
           "Dynamické",
           "Optimální"
         ],
-        "all": "All"
-      },
-      "results": {
-        "title": "Výsledky",
         "stock": "Akce",
-        "chart": "Graf akce"
+        "chart": "Graf akce",
+        "all": "All"
       }
     }
   },

@@ -11,8 +11,11 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "title": "Settings",
-    "metrics": "Metrics",
-    "save": "Save"
+    "save": "Save",
+    "darkMode": "Dark Mode"
+  },  
+  "profile": {
+    "title": "Profile"
   },
   "dashboard": { 
     "title": "Dashboard",
@@ -84,8 +87,8 @@
       "remove": "remove"
     },
     "stockPickingLab": {
+      "metrics": "StockPicking Lab Metrics",
       "filters": {
-        "title": "Filters",
         "currency": "Currency",
         "exchange": "Exchange",
         "index": "Index",
@@ -108,12 +111,9 @@
           "Dynamic",
           "Optimal"
         ],
-        "all": "All"
-      },
-      "results": {
-        "title": "Results",
         "stock": "Stock",
-        "chart": "Stock chart"
+        "chart": "Stock chart",
+        "all": "All"
       }
     }
   },

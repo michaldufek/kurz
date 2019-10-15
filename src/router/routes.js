@@ -1,6 +1,5 @@
 import DashboardLayout from "@/custom/layout/DashboardLayout.vue";
 import ResearchLayout from "@/custom/layout/ResearchLayout.vue";
-import Settings from "@/custom/apps/Settings.vue";
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
@@ -12,6 +11,8 @@ const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@
 // const PatternLab = () => import(/* webpackChunkName: "patternLab" */"@/custom/apps/research/PatternLab.vue");
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
+const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
+const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
 
 const routes = [
   {
@@ -60,14 +61,17 @@ const routes = [
         path: "/wareHouse",
         name: "wareHouse",
         component: WareHouse
-      }   
+      }  
     ]
   },
-  ,
   {
     path: "/settings",
     component: Settings
   },
+  {
+    path: "/profile",
+    component: Profile
+  },  
   { path: "*", component: NotFound },
 ];
 
