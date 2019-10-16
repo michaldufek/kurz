@@ -11,12 +11,14 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "save": "Uložit",
+    "resetPass": "Resetovat Heslo",
     "darkMode": "Temný režim"
   },
   "login": {
     "signIn": "Přihlásit se",
     "with": " pomocí",
     "signInCredentials": "Nebo přímo",
+    "userName": "Užívatelské jméno",
     "email": "Email",
     "password": "Heslo",
     "badLogin": "Nesprávné údaje",
@@ -121,7 +123,7 @@
       }
     }
   },  
-  "topNavBar": {
+  "userMenu": {
     "profile": "Profil",
     "settings": "Nastavení",
     "logout": "Odhlásit"

@@ -11,14 +11,16 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "save": "Save",
+    "resetPass": "Reset Password",
     "darkMode": "Dark Mode"
   },
   "login": {
     "signIn": "Sign in",
     "with": "with",
     "signInCredentials": "Or sign in with credentials",
+    "userName": "User Name",
     "email": "Email",
-    "password": "Password (use 'frspass')",
+    "password": "Password",
     "badLogin": "Bad login information",
     "remember": "Remember me"
   },
@@ -122,7 +124,7 @@
       }
     }
   },  
-  "topNavBar": {
+  "userMenu": {
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Log Out"

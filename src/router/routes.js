@@ -96,11 +96,12 @@ const routes = [
     path: "/login",
     component: Login
   },
-  { path: '/logout',
-      beforeEnter (to, from, next) {
-        auth.logout()
-        next('/')
-      }
+  { 
+    path: '/logout',
+    beforeEnter (to, from, next) {
+      auth.logout()
+      next('/')
+    }
   },
   {
     path: "/settings",
