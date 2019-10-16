@@ -11,18 +11,23 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "save": "Uložit",
-    "resetPass": "Resetovat Heslo",
     "darkMode": "Temný režim"
   },
   "login": {
     "signIn": "Přihlásit se",
-    "with": " pomocí",
+    "with": "pomocí",
     "signInCredentials": "Nebo přímo",
     "userName": "Užívatelské jméno",
     "email": "Email",
     "password": "Heslo",
-    "badLogin": "Nesprávné údaje",
-    "remember": "Zapamatovat"
+    "passwordAgain": "Heslo znovu",
+    "resetPass": "Resetovat Heslo",
+    "remember": "Zapamatovat",
+    "lookingTo": "Chcete si",
+    "createAccount": "vytvořit konto ?",
+    "register": "Registrovat",
+    "alreadyAccount": "Již máte konto?",
+    "login": "Přihlašte se."
   },
   "dashboard": { 
     "title": "Dashboard",

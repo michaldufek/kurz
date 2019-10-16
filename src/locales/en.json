@@ -11,7 +11,6 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "save": "Save",
-    "resetPass": "Reset Password",
     "darkMode": "Dark Mode"
   },
   "login": {
@@ -21,8 +20,14 @@
     "userName": "User Name",
     "email": "Email",
     "password": "Password",
-    "badLogin": "Bad login information",
-    "remember": "Remember me"
+    "passwordAgain": "Password again",
+    "resetPass": "Reset Password",
+    "remember": "Remember me",
+    "lookingTo": "Looking to",
+    "createAccount": "create an account ?",
+    "register": "Register",
+    "alreadyAccount": "Already have an account?",
+    "login": "Log in."
   },
   "dashboard": { 
     "title": "Dashboard",

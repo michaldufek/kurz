@@ -93,13 +93,14 @@ export default {
     },
 
     register (credentials, cb) {
+      cb = arguments[arguments.length - 1]
       registerRoutine(credentials)
       .then(res => {
-        if (cb) cb(res)
+        if (cb) cb(true, res)
         this.onChange(false)
       })
       .catch(err => {
-        if (cb) cb(err)
+        if (cb) cb(false, err)
         this.onChange(false)        
       })
     },
