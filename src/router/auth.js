@@ -1,8 +1,10 @@
 /* globals localStorage */
 import axios from '@/../node_modules/axios';
 
+const urlBase = "frs.analyticalplatform.com/rest-auth/"
+
 const loginRoutine = credentials => new Promise ((resolve, reject) => {
-  axios({url: 'authLogin', data: credentials, method: 'POST' })
+  axios({url: urlBase + 'login', data: credentials, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('user-token', token) // store the token in localstorage
@@ -15,7 +17,7 @@ const loginRoutine = credentials => new Promise ((resolve, reject) => {
 });
 
 const logoutRoutine = () => new Promise ((resolve, reject) => {
-  axios({url: 'authLogout', method: 'GET' })
+  axios({url: urlBase + 'logout', method: 'POST' })
   .then(resp => {
     delete localStorage.token
     resolve(resp)
@@ -26,7 +28,7 @@ const logoutRoutine = () => new Promise ((resolve, reject) => {
 });
 
 const resetPassRoutine = email => new Promise ((resolve, reject) => {
-  axios({url: 'authResetPass', data: email, method: 'POST' })
+  axios({url: urlBase + 'reset', data: email, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -36,7 +38,7 @@ const resetPassRoutine = email => new Promise ((resolve, reject) => {
 });
 
 const registerRoutine = credentials => new Promise ((resolve, reject) => {
-  axios({url: 'authRegister', data: credentials, method: 'POST' })
+  axios({url: urlBase + 'registration', data: credentials, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -83,11 +85,11 @@ export default {
     resetPass (email, cb) {
       resetPassRoutine(email)
       .then(res => {
-        if (cb) cb(res)
+        if (cb) cb(true, res)
         this.onChange(false)
       })
       .catch(err => {
-        if (cb) cb(err)
+        if (cb) cb(false, err)
         this.onChange(false)        
       })
     },

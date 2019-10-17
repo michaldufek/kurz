@@ -57,6 +57,7 @@
                     </base-input>
                     <div class="text-center">
                         <p :class="{ error: error }">{{message}}</p>                    
+                        <!-- to-do: red color not working -->
                         <base-button v-if="error" type="link" @click="resetPass">{{$t('login.resetPass')}}</base-button>
                     </div>
                     <base-checkbox>
