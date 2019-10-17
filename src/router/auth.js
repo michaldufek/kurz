@@ -1,10 +1,10 @@
 /* globals localStorage */
 import axios from '@/../node_modules/axios';
 
-const urlBase = "frs.analyticalplatform.com/rest-auth/"
+const urlBase = "https://frs.analyticalplatform.com/rest-auth/"
 
-const loginRoutine = credentials => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'login', data: credentials, method: 'POST' })
+const loginRoutine = (userName, email, pass) => new Promise ((resolve, reject) => {
+  axios({url: urlBase + 'login/', data: { "username": userName, "email": email, "password": pass }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('user-token', token) // store the token in localstorage
@@ -48,20 +48,33 @@ const registerRoutine = credentials => new Promise ((resolve, reject) => {
 });
 
 export default {    
-    login (credentials, cb) {
+    login (userName, email, pass, cb) {
       cb = arguments[arguments.length - 1]
       if (localStorage.token) {
         if (cb) cb(true)
         this.onChange(true)
         return
       }
-      loginRoutine(credentials)
+      loginRoutine(userName, email, pass)
       .then(() => {
         if (cb) cb(true)
         this.onChange(true)
       })
       .catch(err => {
-        if (cb) cb(false, err)
+        let msg = ''
+        if ("username" in err.response.data) {
+          msg += 'User name: ' + err.response.data.username[0]
+        }
+        if ("email" in err.response.data) {
+          msg += 'Email: ' + err.response.data.email[0]
+        }
+        if ("password" in err.response.data) {
+          msg += 'Password: ' + err.response.data.password[0]
+        }
+        if ("non_field_errors" in err.response.data) {
+          msg += err.response.data.non_field_errors[0]
+        }        
+        if (cb) cb(false, msg)
         this.onChange(false)        
       })
     },
