@@ -31,6 +31,12 @@
 <script>
   export default {
     components: {
+    },
+    methods: {
+      changeLocale() {
+          this.$i18n.locale = this.$i18n.locale === 'en' ? 'cs' : 'en'
+          // $root.$i18n.locale
+      }
     }
   }
 </script>

@@ -19,7 +19,7 @@ const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
 
-import auth from './auth'
+import auth from '@/custom/assets/js/auth'
 
 function requireAuth (to, from, next) {
   if (!auth.loggedIn()) {

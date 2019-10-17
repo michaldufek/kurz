@@ -56,7 +56,7 @@
                                 @keyup.enter="logIn">
                     </base-input>
                     <div class="text-center">
-                        <p style="color: red" :class="{ error: error }">{{message}}</p>                    
+                        <p style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</p>                    
                         <!-- to-do: red color not working -->
                         <base-button v-if="error" type="link" @click="resetPass">{{$t('login.resetPass')}}</base-button>
                     </div>
@@ -117,7 +117,7 @@
                                 @keyup.enter="register">
                     </base-input>
                     <div class="text-center">
-                        <p style="color: red" :class="{ error: error }">{{message}}</p>                    
+                        <p style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</p>                    
                         <base-button type="primary" class="my-4" @click="register">{{$t('login.register')}}</base-button>
                         <small><p style="color: gray;">{{$t('login.alreadyAccount')}} <a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p></small>
                     </div>
@@ -129,7 +129,7 @@
 </template>
 <script>
 import { Modal } from '@/components';
-import auth from '@/router/auth'
+import auth from '@/custom/assets/js/auth'
 import '../assets/css/shake.css'
 
 export default {
