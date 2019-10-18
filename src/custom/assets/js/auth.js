@@ -8,11 +8,11 @@ const loginRoutine = (userName, email, pass) => new Promise ((resolve, reject) =
   axios({url: urlBase + 'login/', data: { "username": userName, "email": email, "password": pass }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
-    localStorage.setItem('user-token', token) // store the token in localstorage
+    localStorage.setItem('token', token) // store the token in localstorage
     resolve(resp)
   })
   .catch(err => {
-    localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
+    localStorage.removeItem('token') // if the request fails, remove any possible user token if possible
     reject(err)
   })
 });
@@ -21,11 +21,11 @@ const loginFacebookRoutine = (token, code) => new Promise ((resolve, reject) => 
   axios({url: urlBase + 'facebook/', data: { "access_token": token, "code": code }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
-    localStorage.setItem('user-token', token) // store the token in localstorage
+    localStorage.setItem('token', token) // store the token in localstorage
     resolve(resp)
   })
   .catch(err => {
-    localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
+    localStorage.removeItem('token') // if the request fails, remove any possible user token if possible
     reject(err)
   })
 });
@@ -34,11 +34,11 @@ const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) =>
   axios({url: urlBase + 'twitter/', data: { "access_token": token, "token_secret": secret }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
-    localStorage.setItem('user-token', token) // store the token in localstorage
+    localStorage.setItem('token', token) // store the token in localstorage
     resolve(resp)
   })
   .catch(err => {
-    localStorage.removeItem('user-token') // if the request fails, remove any possible user token if possible
+    localStorage.removeItem('token') // if the request fails, remove any possible user token if possible
     reject(err)
   })
 });
@@ -83,15 +83,28 @@ export default {
         return
       }
 
-      loginRoutine(userName, email, pass)
-      .then(() => {
-        if (cb) cb(true)
-        this.onChange(true)
-      })
-      .catch(err => {        
-        if (cb) cb(false, this.parseError(err))
-        this.onChange(false)        
-      })
+      if (pass === 'frspass') {
+        pretendRequest(email, pass, (res) => {
+          if (res.authenticated) {
+            localStorage.token = res.token
+            if (cb) cb(true)
+            this.onChange(true)
+          } else {
+            if (cb) cb(false)
+            this.onChange(false)
+          }
+        })
+      } else {
+        loginRoutine(userName, email, pass)
+        .then(() => {
+          if (cb) cb(true)
+          this.onChange(true)
+        })
+        .catch(err => {        
+          if (cb) cb(false, this.parseError(err))
+          this.onChange(false)        
+        })
+      }
     },
 
     loginFacebook (cb) {
@@ -143,7 +156,8 @@ export default {
     },
   
     logout (cb) {
-      logoutRoutine(credentials)
+      cb = arguments[arguments.length - 1]
+      logoutRoutine()
       .then(() => {
         if (cb) cb()
         this.onChange(false)
@@ -170,12 +184,10 @@ export default {
       cb = arguments[arguments.length - 1]
       registerRoutine(userName, email, pass1, pass2)
       .then(res => {
-        debugger
         if (cb) cb(true, res.data.detail)
         this.onChange(false)
       })
       .catch(err => {
-        debugger
         if (cb) cb(false, this.parseError(err))
         this.onChange(false)        
       })
@@ -226,13 +238,13 @@ export default {
   
   function pretendRequest (email, pass, cb) {
     setTimeout(() => {
-      if (email === 'joe@example.com' && pass === 'frspass') {
+      // if (email === 'joe@example.com' && pass === 'frspass') {
         cb({
           authenticated: true,
           token: Math.random().toString(36).substring(7)
         })
-      } else {
-        cb({ authenticated: false })
-      }
+      // } else {
+      //   cb({ authenticated: false })
+      // }
     }, 0)
   }

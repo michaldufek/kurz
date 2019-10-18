@@ -19,7 +19,7 @@
     "signInCredentials": "Or sign in with credentials",
     "userName": "User name",
     "email": "Email",
-    "password": "Password",
+    "password": "Password (hint: use 'frspass')",
     "passwordAgain": "Password again",
     "resetPass": "Reset Password",
     "remember": "Remember me",

@@ -19,7 +19,7 @@
     "signInCredentials": "Nebo přímo",
     "userName": "Uživatelské jméno",
     "email": "Email",
-    "password": "Heslo",
+    "password": "Heslo (tip: použi 'frspass')",
     "passwordAgain": "Heslo znovu",
     "resetPass": "Resetovat Heslo",
     "remember": "Zapamatovat",
