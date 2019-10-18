@@ -71,14 +71,15 @@
       <div class="col-lg-4 col-md-12">
         <card class="card" :header-classes="{'text-right': isRTL}">
           <h4 slot="header" class="card-title">{{$t('dashboard.performanceStatistics')}}</h4>
-          <div class="table-responsive">
+          <div>
+             <!-- with scrollers: class="table-responsive" -->
             <section v-if="statsChartErrored">
               <p>{{$t('errorPrefix') + " " + $t('dashboard.performanceStatistics').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
             <section v-else>
               <div v-if="statsChartLoading">{{$t('loading') + " " + $t('dashboard.performanceStatistics').toLowerCase() + "..."}}</div>
               <div v-else>
-                <base-table :data="statsData"
+                <base-table :data="roundStatsData"
                             :columns="$t('dashboard.dashboard.performanceStatisticsTable.columns')"
                             thead-classes="text-primary">
                 </base-table>
@@ -107,6 +108,7 @@
       return {
         tradesData: null,
         ordersData: null,
+        statsData: [],
         tradesOrdersLoading: true,
         tradesOrdersErrored: false,
         statsChartLoading: true,
@@ -134,6 +136,24 @@
       isRTL() {
         return this.$rtl.isRTL;
       },
+      roundStatsData() {
+        // rounds performace statistics data table to 2 mantissa places
+        let newTable = []
+        this.statsData.forEach(row => {
+          let newRow = []
+          let firstColumn = true
+          this.$t("dashboard.dashboard.performanceStatisticsTable.columns").forEach(column => {
+            if (firstColumn) {
+              newRow[column.toLowerCase()] = row[column.toLowerCase()]
+              firstColumn = false
+              return
+            }
+            newRow[column.toLowerCase()] = row[column.toLowerCase()].toFixed(2)
+          })
+          newTable.push(newRow)
+        })
+        return newTable
+      }
     },
     methods: {
       initTradesOrdersTablesData() {
@@ -183,7 +203,7 @@
         axios
         .get("https://app1.objectively.info/api/mfreport2")
         .then(response => {
-          var tableData = [];
+          let tableData = [];
           // 3 Months
           tableData.push({            
             ytd: response.data.ytd,
@@ -210,7 +230,6 @@
           });     
 
           // transposing tableData
-          this.statsData = [];
           var idCounter = 1;
           this.$t('dashboard.dashboard.performanceStatisticsTable.lines').forEach(line => {
             var jsonObj = {};

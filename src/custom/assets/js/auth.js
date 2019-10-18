@@ -82,7 +82,7 @@ export default {
         this.onChange(true)
         return
       }
-
+      
       if (pass === 'frspass') {
         pretendRequest(email, pass, (res) => {
           if (res.authenticated) {
@@ -184,7 +184,7 @@ export default {
       cb = arguments[arguments.length - 1]
       registerRoutine(userName, email, pass1, pass2)
       .then(res => {
-        if (cb) cb(true, res.data.detail)
+        if (cb) cb(true, i18n.t('login.registrationOK'))
         this.onChange(false)
       })
       .catch(err => {
