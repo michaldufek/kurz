@@ -46,7 +46,7 @@ const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) =>
 const logoutRoutine = () => new Promise ((resolve, reject) => {
   axios({url: urlBase + 'logout/', method: 'POST' })
   .then(resp => {
-    delete localStorage.token
+    localStorage.removeItem('token')
     resolve(resp)
   })
   .catch(err => {

@@ -99,8 +99,9 @@ const routes = [
   { 
     path: '/logout',
     beforeEnter (to, from, next) {
-      auth.logout()
-      next('/')
+      auth.logout(() => {
+        next('/')
+      })
     }
   },
   {
