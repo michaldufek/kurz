@@ -3,7 +3,10 @@
     <!-- <card class="card"> to-do: must be in one card --> 
       <div class="col-lg-8 col-md-12">
         <card type="chart">
-          <h4 slot="header" class="card-title">{{chartData.title}}</h4>
+          <div class="card-header">
+            <h4 slot="header" class="card-title" style="float: left; margin-bottom: 20px">{{chartData.title}}</h4>
+            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2 text-success"></i>  Updated 3 minutes ago</h5>
+          </div>
           <div class="chart-area">
             <!-- to-do: errored and loading sections not working -->
             <!-- to-do: use it also in another custom cards -->
@@ -33,13 +36,13 @@
             <div v-if="loading">{{$t('loading') + " " + $t('dashboard.performanceStatistics').toLowerCase() + "..."}}</div>
             <div v-else>
                 <div style="width:50%; float: left;">
-                  <p>{{$t('ytd')}}: {{stats.ytd}}</p>
-                  <p>{{$t('cagr')}}: {{stats.cagr}}</p>
-                  <p>{{$t('sharpeRatio')}}: {{stats.sr}}</p>
+                  <p>{{$t('ytd')}}: {{stats.ytd | roundToFixed}}</p>
+                  <p>{{$t('cagr')}}: {{stats.cagr | roundToFixed}}</p>
+                  <p>{{$t('sharpeRatio')}}: {{stats.sr | roundToFixed}}</p>
                 </div>
                 <div style="width:50%; float: right;">
-                  <p>{{$t('maxDD')}}: {{stats.maxdd}}</p>
-                  <p>{{$t('equityOuts')}}: {{stats.equityOuts}}</p>
+                  <p>{{$t('maxDD')}}: {{stats.maxdd | roundToFixed}}</p>
+                  <p>{{$t('equityOuts')}}: {{stats.equityOuts | roundToFixed}}</p>
                 </div>
             </div>
           </section>
@@ -86,6 +89,11 @@ export default {
           }        
       }
   },
+  filters: {
+    roundToFixed(value) {
+      return value.toFixed(2)
+    }
+  }
 };
 </script>
 <style>

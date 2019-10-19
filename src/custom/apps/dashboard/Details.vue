@@ -14,6 +14,7 @@
 <script>
   import StrategyCard from '@/custom/components/Cards/StrategyCard.vue';
   import axios from '@/../node_modules/axios';
+  import helper from '@/custom/assets/js/helper';
 
   export default {
     components: {
@@ -53,7 +54,7 @@
                 datasets: [{
                   data: response.data.equity
                 }],
-                labels: response.data.time
+                labels: helper.formatDatetimes(response.data.time)
               }
             },
             statsData: {

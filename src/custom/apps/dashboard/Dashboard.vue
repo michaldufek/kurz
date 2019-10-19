@@ -5,7 +5,7 @@
       <div class="col-12">
         <card type="chart">
           <div class="card-header">
-            <h5 class="card-title"><i class="tim-icons icon-heart-2 text-success"></i>  Updated every minute</h5>
+            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2 text-success"></i>  Updated 3 minutes ago</h5>
           </div>
           <br/>
           <div class="chart-area">
@@ -13,7 +13,7 @@
       <p>{{$t('errorPrefix') + " " + $t('dashboard.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
     </section>
     <section v-else> -->
-      <div v-if="statsChartLoading">{{$t('loading') + " " + $t('dashboard.chart').toLowerCase() + "..."}}</div>
+      <div v-if="statsChartLoading" style="text-align: center;">{{$t('loading') + " " + $t('dashboard.chart').toLowerCase() + "..."}}</div>
             <line-chart v-if="!statsChartLoading" style="height: 100%"
                         ref="bigChart"
                         chart-id="big-line-chart"
@@ -98,6 +98,7 @@
   import { BaseTable } from "@/components";
   import config from '@/config';
   import axios from '@/../node_modules/axios';
+  import helper from '@/custom/assets/js/helper';
 
   export default {
     components: {
@@ -167,7 +168,7 @@
             tradesTableData.push({
               id: idCounter++,
               // symbol: openTrade.contract.symbol,
-              date: openTrade.contract.lastTradeDateOrContractMonth,
+              date: helper.formatDateOnly(openTrade.contract.lastTradeDateOrContractMonth),
               "trade type": openTrade.order.action,
               "result (usd)": openTrade.order.auxPrice,
               "result (%)": null
@@ -179,7 +180,7 @@
           response.data.fills.forEach(fill => {
             ordersTableData.push({
               id: idCounter++,
-              symbol: fill.contract.symbol,
+              date: helper.formatDate(fill.time),
               "trade type": fill.execution.side,
               "target (usd)": null,
               "stop loss (usd)": null
@@ -258,7 +259,7 @@
               pointRadius: 4,
               data: response.data.equity
             }],
-            labels: response.data.time
+            labels: helper.formatDatetimes(response.data.time)
           }
           this.bigLineChart.chartData = chartData;
         })

@@ -11,13 +11,13 @@
             <div v-else>
                 <h4 class="card-title">{{title}}</h4>
                 <div style="width:50%; float: left;">
-                  <p>{{$t('cagr')}}: {{stats.cagr}}</p>
-                  <p>{{$t('stdDev')}}: {{stats.stdDev}}</p>
+                  <p>{{$t('cagr')}}: {{stats.cagr | roundToFixed}}</p>
+                  <p>{{$t('stdDev')}}: {{stats.stdDev | roundToFixed}}</p>
                 </div>
                 <div style="width:50%; float: right;">
-                  <p>{{$t('sharpeRatio')}}: {{stats.sharpeRatio}}</p>                  
-                  <p>{{$t('recoveryDDtime')}}: {{stats.recoveryDDtime}}</p>
-                  <p>{{$t('maxDD')}}: {{stats.maxDD}}</p>
+                  <p>{{$t('sharpeRatio')}}: {{stats.sharpeRatio | roundToFixed}}</p>                  
+                  <p>{{$t('recoveryDDtime')}}: {{stats.recoveryDDtime | roundToFixed}}</p>
+                  <p>{{$t('maxDD')}}: {{stats.maxDD | roundToFixed}}</p>
                 </div>
             </div>
           </section>
@@ -90,6 +90,11 @@ export default {
           }        
       }
   },
+  filters: {
+    roundToFixed(value) {
+      return value.toFixed(2)
+    }
+  }
 };
 </script>
 <style>
