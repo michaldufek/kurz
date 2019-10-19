@@ -89,11 +89,6 @@ export default {
               gradientStops: [1, 0.4, 0]
           }        
       }
-  },
-  filters: {
-    roundToFixed(value) {
-      return value.toFixed(2)
-    }
   }
 };
 </script>

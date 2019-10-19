@@ -21,9 +21,14 @@ import router from "./router/index";
 import BlackDashboard from "./plugins/blackDashboard";
 import i18n from "./i18n"
 import './registerServiceWorker'
+import helper from '@/custom/assets/js/helper';
+
 Vue.use(BlackDashboard);
 Vue.use(VueRouter);
 Vue.use(RouterPrefetch);
+
+// global filter on the Vue instance
+Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
 
 /* eslint-disable no-new */
 new Vue({
