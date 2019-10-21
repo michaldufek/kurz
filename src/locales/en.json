@@ -31,6 +31,10 @@
     "register": "Register",
     "registrationOK": "User successfully registered.",
     "alreadyAccount": "Already have an account?",
+    "registerSuccess": "Registration verification successful.",
+    "registerFail": "Registration verification failed.",
+    "resetSuccess": "Reset password verification successful.",
+    "resetFail": "Reset password verification failed.",
     "login": "Log in."
   },
   "dashboard": { 

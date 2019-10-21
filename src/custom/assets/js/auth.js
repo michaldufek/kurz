@@ -2,6 +2,7 @@
 import axios from '@/../node_modules/axios';
 import i18n from "@/i18n"
 
+
 const urlBase = "https://frs.analyticalplatform.com/rest-auth/"
 
 const loginRoutine = (userName, email, pass) => new Promise ((resolve, reject) => {
@@ -73,6 +74,27 @@ const registerRoutine = (userName, email, pass1, pass2) => new Promise ((resolve
     reject(err)
   })
 });
+
+const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
+  axios({url: urlBase + 'registration/verify-email/', data: { "key": key }, method: 'POST' })
+  .then(resp => {
+    resolve(resp)
+  })
+  .catch(err => {
+    reject(err)
+  })
+});
+
+const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, reject) => {
+  axios({url: urlBase + 'reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
+  .then(resp => {
+    resolve(resp)
+  })
+  .catch(err => {
+    reject(err)
+  })
+});
+
 
 export default {    
     login (userName, email, pass, cb) {
@@ -160,7 +182,7 @@ export default {
       logoutRoutine()
       .then(() => {
         if (cb) cb()
-        this.onChange(false)
+        this.onChange(true)
       })
     },
   
@@ -172,10 +194,23 @@ export default {
       resetPassRoutine(email)
       .then(res => {
         if (cb) cb(true, res.data.detail)
-        this.onChange(false)
+        this.onChange(true)
       })
       .catch(err => {
         if (cb) cb(false, this.parseError(err, false))
+        this.onChange(false)        
+      })
+    },
+
+    verifyReset (cb) {
+      cb = arguments[arguments.length - 1]
+      verifyResetRoutine(this.$route.query.uid, this.$route.query.token, this.$route.query.pass1, this.$route.query.pass2)
+      .then(res => {
+        if (cb) cb(true)
+        this.onChange(true)
+      })
+      .catch(err => {
+        if (cb) cb(false)
         this.onChange(false)        
       })
     },
@@ -185,10 +220,23 @@ export default {
       registerRoutine(userName, email, pass1, pass2)
       .then(res => {
         if (cb) cb(true, i18n.t('login.registrationOK'))
-        this.onChange(false)
+        this.onChange(true)
       })
       .catch(err => {
         if (cb) cb(false, this.parseError(err))
+        this.onChange(false)        
+      })
+    },
+
+    verifyRegister (cb) {
+      cb = arguments[arguments.length - 1]
+      verifyRegisterRoutine(this.$route.query.key)
+      .then(res => {
+        if (cb) cb(true)
+        this.onChange(true)
+      })
+      .catch(err => {
+        if (cb) cb(false)
         this.onChange(false)        
       })
     },

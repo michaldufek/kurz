@@ -125,6 +125,32 @@
             </template>
         </card>
     </modal>
+
+    <modal :show="modals.verifyModalShow.value"
+           :showClose="false"    
+           body-classes="p-0"
+           modal-classes="modal-dialog-centered modal-sm"
+           class="animated"
+           :class="{ shake: isShaking }"
+           :onClose="logIn">
+        <card type="secondary"
+                header-classes="bg-white pb-5"
+                body-classes="px-lg-5 py-lg-5"
+                class="border-0 mb-0">
+            <template>
+                <form role="form">                    
+                    <div class="text-center">
+                        <h4 style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</h4>   
+                        <div v-if="error" class="text-center">
+                            <p style="color: gray;">{{$t('login.alreadyAccount')}} <a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
+                            <p style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p>
+                        </div>                 
+                        <p v-else style="color: gray;"><a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
+                    </div>
+                </form>
+            </template>
+        </card>
+    </modal>
   </div>
 </template>
 <script>
@@ -141,7 +167,8 @@ export default {
         modals: {
             loginModalShow: { value: false },
             resetPassModalShow: { value: false },
-            registerModalShow: { value: false }
+            registerModalShow: { value: false },
+            verifyModalShow: { value: false }
         },
         userName: '',
         email: 'joe@example.com',
@@ -199,14 +226,43 @@ export default {
         openRegisterModal(){
             this.openModal(this.modals.registerModalShow)
         },
-        openModal(modal){
+        openVerifyRegisterModal(success){
+            let msg = ''
+            let err = false
+
+            if (success === 'true') {
+                msg = this.$i18n.t('login.registerSuccess')
+            } else {
+                this.shakeModal()
+                err = true
+                msg = this.$i18n.t('login.registerFail')
+            }
+            
+            this.openModal(this.modals.verifyModalShow, msg, err)
+        },
+        openVerifyResetModal(success){
+            let msg = ''
+            let err = false
+
+            if (success === 'true') {
+                msg = this.$i18n.t('login.resetSuccess')
+            } else {
+                this.shakeModal()
+                err = true
+                msg = this.$i18n.t('login.resetFail')
+            }
+            
+            this.openModal(this.modals.verifyModalShow, msg, err)
+        },
+        openModal(modal, msg, err){
             for (var otherModal in this.modals) {
                 if (this.modals.hasOwnProperty(otherModal)) {           
                     this.modals[otherModal].value = false
                 }
             }
-            this.error = false
-            this.message = ''
+
+            this.error = err ? err : false
+            this.message = msg
 
             setTimeout(() => {
                 modal.value = true  
@@ -214,7 +270,13 @@ export default {
         }
     },
     mounted() {
-      this.openLoginModal();
+        if ("verifyRegister" in this.$route.query) {
+            this.openVerifyRegisterModal(this.$route.query.verifyRegister)
+        } else if ("verifyReset" in this.$route.query) {
+            this.openVerifyResetModal(this.$route.query.verifyReset)
+        } else {
+            this.openLoginModal();
+        }
     }
 }
 </script>

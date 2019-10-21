@@ -9,8 +9,6 @@ const Contact = () => import(/* webpackChunkName: "contact" */"@/custom/apps/Con
 const Login = () => import(/* webpackChunkName: "login" */"@/custom/apps/Login.vue");
 const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
-const AccountVerify = () => import(/* webpackChunkName: "accountVerify" */"@/custom/apps/AccountVerify.vue");
-const ResetVerify = () => import(/* webpackChunkName: "resetVerify" */"@/custom/apps/ResetVerify.vue");
 
 // SubViews
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/apps/dashboard/Dashboard.vue");
@@ -23,6 +21,7 @@ const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps
 
 import auth from '@/custom/assets/js/auth'
 
+
 function requireAuth (to, from, next) {
   if (!auth.loggedIn()) {
     next({
@@ -33,6 +32,25 @@ function requireAuth (to, from, next) {
     next()
   }
 }
+
+function verifyRegister (to, from, next) {
+  auth.verifyRegister( (success) => {
+    next({
+      path: '/login?verifyRegister=' + success,
+      query: { redirect: to.fullPath }
+    })
+  }) 
+}
+
+function verifyReset (to, from, next) {
+  auth.verifyReset( (success) => {
+    next({
+      path: '/login?verifyReset=' + success,
+      query: { redirect: to.fullPath }
+    })
+  }) 
+}
+
 
 const routes = [
   // landing pages
@@ -130,12 +148,12 @@ const routes = [
     redirect: "/",
     children: [
       {
-        path: "/fe/account-verify",
-        component: AccountVerify
+        path: "/fe/verify-register",
+        beforeEnter: verifyRegister
       },
       {
-        path: "/fe/reset-verify",
-        component: ResetVerify
+        path: "/fe/verify-reset",
+        beforeEnter: verifyReset
       }
     ]
   },

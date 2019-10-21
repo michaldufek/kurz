@@ -31,6 +31,10 @@
     "register": "Registrovat",
     "registrationOK": "Uživatel byl úspěšně zaregistrován.",
     "alreadyAccount": "Již máte konto?",
+    "registerSuccess": "Ověření registrace proběhlo úspěšně.",
+    "registerFail": "Ověření registrace zlyhalo.",
+    "resetSuccess": "Ověření resetu hesla proběhlo úspěšně.",
+    "resetFail": "Ověření resetu hesla zlyhalo.",
     "login": "Přihlašte se."
   },
   "dashboard": { 
