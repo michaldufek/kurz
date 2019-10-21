@@ -114,7 +114,7 @@
         tradesOrdersErrored: false,
         statsChartLoading: true,
         statsChartErrored: false,
-        mins2Reload: 3,
+        mins2Reload: 10,
         bigLineChart: 
         {
           allData: [

@@ -2,10 +2,12 @@
   <div>
     <ul>
       <li v-for="strategyData in strategiesData" style="list-style-type: none;">
-        <strategy-card :chartData="strategyData.chartData"
-                       :stats="strategyData.statsData"
-                       :errored="strategyData.errored"
+        <strategy-card :title="strategyData.title"
+                       :chartData="strategyData.chartData"
+                       :statsData="strategyData.statsData"
+                       :error="strategyData.error"
                        :loading="strategyData.loading">
+                       <!-- to-do: :mins2Reload="strategyData.mins2Reload" -->
         </strategy-card>
       </li>
     </ul>
@@ -44,38 +46,39 @@
       //   });
       // },
       initStrategy(title, apiUrl) {
+        let reportData = {
+          title: title,
+          loading: true
+        }
+        let strategyNr = this.strategiesData.push(reportData) - 1;
+
         axios
         .get(apiUrl)
         .then(response => {
-          this.reportData = {
-            chartData: {
-              title: title,
-              chartData: {
-                datasets: [{
-                  data: response.data.equity
-                }],
-                labels: helper.formatDatetimes(response.data.time)
-              }
-            },
-            statsData: {
-              ytd: response.data.ytd,
-              cagr: response.data.cagr,
-              sr: response.data.sharpe,
-              maxdd: response.data.maxdd,
-              equityOuts: -33.821
-            }
-          };
+          reportData.chartData = {
+            datasets: [{
+              data: response.data.equity
+            }],
+            labels: helper.formatDatetimes(response.data.time)
+          }
+          reportData.statsData = {
+            ytd: response.data.ytd,
+            cagr: response.data.cagr,
+            sr: response.data.sharpe,
+            maxdd: response.data.maxdd,
+            equityOuts: -33.821
+          }
         })
         .catch(error => {
           console.log(error);
-          this.reportData.errored = true;
+          reportData.error = true;
         })
         .finally(() => {
-          this.reportData.loading = false;
-          this.strategiesData.push(this.reportData);
+          reportData.loading = false;
+          this.strategiesData[strategyNr] = reportData;
         });
       },
-      initStrategiesData() {
+      initStrategiesData() {        
         this.initStrategy("MF Report", "https://app1.objectively.info/api/mfreport2");
         this.initStrategy("UVXY Report", "https://app1.objectively.info/api/uvxyreport2");
         // to-do: generalized axios call
