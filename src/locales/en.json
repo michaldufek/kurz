@@ -1,7 +1,10 @@
 {
+  "siteTitle": "Financial Research Software",
   "loading": "Loading of",
   "errorPrefix": "We are sorry, at this moment we are unable to get", 
   "errorSuffix": "Please, try again later.",
+  "chartUpdatedPrefix": "Updated",
+  "chartUpdatedSuffix": "min ago",
   "ytd": "YTD",
   "cagr": "CAGR",
   "sharpeRatio": "Sharpe Ratio",

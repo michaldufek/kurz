@@ -4,13 +4,13 @@
       <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
+          <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-          </button>
-          <router-link :to="{path:'/'}" class="navbar-brand">Site title</router-link>
+          </button> -->
+          <router-link :to="{path:'/'}" class="navbar-brand">{{$t('siteTitle')}}</router-link>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->

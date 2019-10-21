@@ -9,6 +9,8 @@ const Contact = () => import(/* webpackChunkName: "contact" */"@/custom/apps/Con
 const Login = () => import(/* webpackChunkName: "login" */"@/custom/apps/Login.vue");
 const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
+const AccountVerify = () => import(/* webpackChunkName: "accountVerify" */"@/custom/apps/AccountVerify.vue");
+const ResetVerify = () => import(/* webpackChunkName: "resetVerify" */"@/custom/apps/ResetVerify.vue");
 
 // SubViews
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/apps/dashboard/Dashboard.vue");
@@ -33,14 +35,18 @@ function requireAuth (to, from, next) {
 }
 
 const routes = [
+  // landing pages
   { 
     path: '/about', 
+    name: 'about',
     component: About 
   },
   { 
     path: '/contact', 
+    name: 'contact',
     component: Contact 
   },
+  // logged in pages
   {
     path: "/",
     component: DashboardLayout,
@@ -91,7 +97,21 @@ const routes = [
       }  
     ],
     beforeEnter: requireAuth
-  },  
+  },
+  // user settings & profile pages
+  {
+    path: "/settings",
+    name: "settings",
+    component: Settings,
+    beforeEnter: requireAuth
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profile,
+    beforeEnter: requireAuth
+  },
+  // login & registration pages
   {
     path: "/login",
     component: Login
@@ -104,16 +124,22 @@ const routes = [
       })
     }
   },
+  // reset & registration verification pages
   {
-    path: "/settings",
-    component: Settings,
-    beforeEnter: requireAuth
+    path: "/fe",
+    redirect: "/",
+    children: [
+      {
+        path: "/fe/account-verify",
+        component: AccountVerify
+      },
+      {
+        path: "/fe/reset-verify",
+        component: ResetVerify
+      }
+    ]
   },
-  {
-    path: "/profile",
-    component: Profile,
-    beforeEnter: requireAuth
-  },
+  // all other pages
   { path: "*", component: NotFound },
 ];
 

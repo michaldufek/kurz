@@ -43,13 +43,6 @@
         langs: [ 'en', 'cs' ] 
       }
     }
-    // methods: {
-      // changeLocale() {
-      //   // to-do: connect to a language switcher radio
-      //   this.$i18n.locale = this.$i18n.locale === 'en' ? 'cs' : 'en'
-      //   // $root.$i18n.locale
-      // }
-    // }
   }
 </script>
 <style>

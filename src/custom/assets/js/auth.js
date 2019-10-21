@@ -83,7 +83,7 @@ export default {
         return
       }
       
-      if (pass === 'frspass') {
+      if (pass === 'frspass') { // to-do: temporary, delete in production !!!
         pretendRequest(email, pass, (res) => {
           if (res.authenticated) {
             localStorage.token = res.token

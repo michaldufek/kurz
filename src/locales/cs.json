@@ -1,7 +1,10 @@
 {
+  "siteTitle": "Financial Research Software",
   "loading": "Načítání",
   "errorPrefix": "Omlouváme se, nejsme schopní získat data k", 
   "errorSuffix": "Prosím, zkuste později.",
+  "chartUpdatedPrefix": "Aktualizováno před",
+  "chartUpdatedSuffix": "min",
   "ytd": "YTD",
   "cagr": "CAGR",
   "sharpeRatio": "Sharpe Ratio",

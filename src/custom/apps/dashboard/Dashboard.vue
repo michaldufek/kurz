@@ -5,7 +5,7 @@
       <div class="col-12">
         <card type="chart">
           <div class="card-header">
-            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2 text-success"></i>  Updated 3 minutes ago</h5>
+            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2 text-success"></i>  {{$t('chartUpdatedPrefix') + ' ' + mins2Reload + $t('chartUpdatedSuffix')}}</h5>
           </div>
           <br/>
           <div class="chart-area">
@@ -114,6 +114,7 @@
         tradesOrdersErrored: false,
         statsChartLoading: true,
         statsChartErrored: false,
+        mins2Reload: 3,
         bigLineChart: 
         {
           allData: [
