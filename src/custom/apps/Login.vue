@@ -242,7 +242,8 @@ export default {
             })
         },
         resetPassComplete() {
-            auth.verifyReset(this.$route.query.uid, this.$route.query.token, this.pass1, this.pass2, (success, msg) => {
+            auth.verifyReset(this.$route.params.uid, this.$route.params.token, this.pass1, this.pass2, (success, msg) => {
+                this.error = false
                 if (!success) {
                     this.shakeModal()
                     this.error = true
@@ -279,7 +280,7 @@ export default {
             let msg = ''
             let err = false
 
-            if (success === 'true') {
+            if (success) {
                 msg = this.$i18n.t('login.registerSuccess')
             } else {
                 this.shakeModal()
@@ -310,9 +311,11 @@ export default {
         }
     },
     mounted() {
-        if ("verifyRegister" in this.$route.query) {
-            this.openVerifyRegisterModal(this.$route.query.verifyRegister)
-        } else if ("resetPass" in this.$route.query) {
+        if ("key" in this.$route.params) {
+            auth.verifyRegister(this.$route.params.key, (success) => {  
+                this.openVerifyRegisterModal(success)
+            })
+        } else if ("uid" in this.$route.params && "token" in this.$route.params) {
             this.openResetPassModal()
         } else {
             this.openLoginModal();

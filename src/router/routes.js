@@ -33,23 +33,6 @@ function requireAuth (to, from, next) {
   }
 }
 
-function verifyRegister (to, from, next) {
-  auth.verifyRegister(to.query.key, (success) => {  
-    next({
-      path: '/login?verifyRegister=' + success,
-      query: { redirect: to.fullPath }
-    })
-  }) 
-}
-
-function resetPass (to, from, next) {
-  next({
-    path: '/login?resetPass=&uid=' + to.query.uid + '&token=' + to.query.token,
-    query: { redirect: to.fullPath }
-  })
-}
-
-
 const routes = [
   // landing pages
   { 
@@ -140,20 +123,14 @@ const routes = [
       })
     }
   },
-  // reset & registration verification pages
+  // password reset & registration verification pages
   {
-    path: "/fe",
-    redirect: "/",
-    children: [
-      {
-        path: "/fe/verify-register",
-        beforeEnter: verifyRegister
-      },
-      {
-        path: "/fe/verify-reset",
-        beforeEnter: resetPass
-      }
-    ]
+    path: "/fe/verify-register/:key",
+    component: Login
+  },
+  {
+    path: "/fe/verify-reset/:uid/:token",
+    component: Login
   },
   // all other pages
   { path: "*", component: NotFound },
