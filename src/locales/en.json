@@ -118,7 +118,6 @@
         "sampleMetrics": "Unselected metrics with very long title",
         "sector": "Sector",
         "metricsSettings": "Metrics Settings",
-        "applyFilters": "Apply Filters",
         "currencies": [
           "USD",
           "EUR"

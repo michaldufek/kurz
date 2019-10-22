@@ -36,7 +36,7 @@
               <line-chart v-if="!loading" style="height: 100%"
                           ref="bigChart"
                           chart-id="big-line-chart"
-                          :chart-data="chartData.chartData"
+                          :chart-data="chartData"
                           :gradient-colors="bigLineChart.gradientColors"
                           :gradient-stops="bigLineChart.gradientStops"
                           :extra-options="bigLineChart.extraOptions">
@@ -73,7 +73,26 @@ export default {
     },
     chartData: {
       type: Object,
-      default: () => {},
+      default: () => {
+        return {
+          datasets: [{
+            fill: true,
+            borderColor: null, // config.colors.primary
+            borderWidth: 2,
+            borderDash: [],
+            borderDashOffset: 0.0,
+            pointBackgroundColor: null, // config.colors.primary
+            pointBorderColor: 'rgba(255,255,255,0)',
+            pointHoverBackgroundColor: null, // config.colors.primary
+            pointBorderWidth: 20,
+            pointHoverRadius: 4,
+            pointHoverBorderWidth: 15,
+            pointRadius: 4,
+            data: [] // numbers
+          }],
+          labels: [] // datetimes
+        }
+      },
       description: "Chart data"
     },
     errored: false,
@@ -83,7 +102,6 @@ export default {
       return {
           bigLineChart: 
           {
-              chartData: null,
               extraOptions: chartConfigs.purpleChartOptions,
               gradientColors: config.colors.primaryGradient,
               gradientStops: [1, 0.4, 0]
