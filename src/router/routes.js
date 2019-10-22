@@ -117,11 +117,7 @@ const routes = [
   },
   { 
     path: '/logout',
-    beforeEnter (to, from, next) {
-      auth.logout(() => {
-        next('/')
-      })
-    }
+    component: Login
   },
   // password reset & registration verification pages
   {

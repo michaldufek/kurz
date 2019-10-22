@@ -2,12 +2,6 @@
 import axios from '@/../node_modules/axios';
 import i18n from "@/i18n"
 
-if (process.env.NODE_ENV === 'production') {
-  axios.defaults.headers.common = {
-    'X-Requested-With': 'XMLHttpRequest',
-    'X-CSRF-TOKEN': window.csrf_token
-  };
-}
 const urlBase = "https://frs.analyticalplatform.com/rest-auth/"
 
 const loginRoutine = (userName, email, pass) => new Promise ((resolve, reject) => {
@@ -101,7 +95,14 @@ const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, 
 });
 
 
-export default {    
+export default {  
+    init(csrf_token) {
+      axios.defaults.headers.common = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrf_token
+      };
+    },
+
     login (userName, email, pass, cb) {
       cb = arguments[arguments.length - 1]
       if (localStorage.token) {

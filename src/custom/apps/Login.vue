@@ -311,6 +311,13 @@ export default {
         }
     },
     mounted() {
+        if (process.env.NODE_ENV === 'production') {
+            this.$csrf.set(Math.floor(Math.random() * 1000000000) + 1)
+            auth.init(this.$csrf.get())
+        } else {
+            console.log('In Dev Mode - CSRF token not set')
+        }
+
         if ("key" in this.$route.params) {
             auth.verifyRegister(this.$route.params.key, (success) => {  
                 this.openVerifyRegisterModal(success)
@@ -318,6 +325,7 @@ export default {
         } else if ("uid" in this.$route.params && "token" in this.$route.params) {
             this.openResetPassModal()
         } else {
+            auth.logout()
             this.openLoginModal();
         }
     }
