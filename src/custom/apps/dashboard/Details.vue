@@ -5,9 +5,9 @@
         <strategy-card :title="strategyData.title"
                        :chartData="strategyData.chartData"
                        :statsData="strategyData.statsData"
-                       :error="strategyData.error"
+                       :live="strategyData.live"
                        :loading="strategyData.loading">
-                       <!-- to-do: :mins2Reload="strategyData.mins2Reload" -->
+                       <!-- :updatedMinsAgo="strategyData.updatedMinsAgo"> -->
         </strategy-card>
       </li>
     </ul>
@@ -28,29 +28,15 @@
       };
     },
     methods: {
-      // to-do: generalize axios call
-      // getStrategy(apiUrl, transformResponse) {
-      //   axios
-      //   .get(apiUrl)
-      //   .then(response => {
-      //     this.strategyData = transformResponse(response);          
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //     this.strategyData.errored = true;
-      //   })
-      //   .finally(() => {
-      //     console.log("finally");
-      //     this.strategyData.loading = false;
-      //     this.strategiesData.push(this.strategyData);
-      //   });
-      // },
-      initStrategy(title, apiUrl) {
+      loadStrategy(title, apiUrl, strategyNr, chartTimer) {
         let reportData = {
           title: title,
           loading: true
         }
-        let strategyNr = this.strategiesData.push(reportData) - 1;
+        if (strategyNr === undefined) {          
+          // push it so it appears in data (ie. in child component) and save its number to update it after loaded
+          strategyNr = this.strategiesData.push(reportData) - 1;
+        }
 
         axios
         .get(apiUrl)
@@ -71,41 +57,46 @@
         })
         .catch(error => {
           console.log(error);
-          reportData.error = true;
+          reportData.live = false;
+
+          // if error reload this strategy data after shorter timeout
+          setTimeout(() => { 
+            this.loadStrategy(title, apiUrl, strategyNr)
+          }, 1000 * 60 * 5 ); // * 8 // 5 minutes
         })
         .finally(() => {
           reportData.loading = false;
+          reportData.live = true;
+          reportData.updatedMinsAgo = 0
+
+          // data loaded OK so update child component
           this.strategiesData[strategyNr] = reportData;
+
+          // set timer for StrategyCard component minutes counting
+          if (chartTimer) {
+            clearInterval(chartTimer)
+          }
+          var chartTimer = setInterval(() => { 
+            // to-do: force child render because of minutes update (but not this way!)
+            // let temp = this.strategiesData
+            // this.strategiesData = null
+            this.strategiesData[strategyNr].updatedMinsAgo++
+            // this.strategiesData = temp
+          }, 1000 * 60 ); //  // every minute
+
+          // reload this strategy data after timeout
+          setTimeout(() => { 
+            this.loadStrategy(title, apiUrl, strategyNr, chartTimer)
+          }, 1000 * 60 * 10 ); // * 15 // 10 minutes
         });
       },
-      initStrategiesData() {        
-        this.initStrategy("MF Report", "https://app1.objectively.info/api/mfreport2");
-        this.initStrategy("UVXY Report", "https://app1.objectively.info/api/uvxyreport2");
-        // to-do: generalized axios call
-        // this.getStrategy("https://app1.objectively.info/api/mfreport2", (response) => { 
-        //   return {
-        //     chartData: {
-        //       title: "MF Report",
-        //       chartData: {
-        //       datasets: [{
-        //         data: response.data.equity
-        //       }],
-        //       labels: response.data.time
-        //     },
-        //     statsData: {
-        //       ytd: response.data.ytd,
-        //       cagr: response.data.cagr,
-        //       sr: response.data.sharpe,
-        //       maxdd: response.data.maxdd,
-        //       equityOuts: -33.821
-        //     }
-        //     }
-        //   };
-        // });
+      initStrategies() {        
+        this.loadStrategy("MF Report", "https://app1.objectively.info/api/mfreport2");
+        this.loadStrategy("UVXY Report", "https://app1.objectively.info/api/uvxyreport2");
       }
     },
     mounted() {
-      this.initStrategiesData();
+      this.initStrategies();
     }
   }
 </script>

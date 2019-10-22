@@ -5,6 +5,7 @@
   "errorSuffix": "Prosím, zkuste později.",
   "chartUpdatedPrefix": "Aktualizováno před",
   "chartUpdatedSuffix": "min",
+  "chartNeverUpdated": "Ještě neaktualizováno",
   "ytd": "YTD",
   "cagr": "CAGR",
   "sharpeRatio": "Sharpe Ratio",

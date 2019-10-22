@@ -214,7 +214,7 @@ export default {
             this.isShaking = true
             setTimeout(() => { 
                 this.isShaking = false
-            }, 1000 );
+            }, 500 ); // half minute
             this.pass = ''
         },
         openLoginModal(){

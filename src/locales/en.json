@@ -5,6 +5,7 @@
   "errorSuffix": "Please, try again later.",
   "chartUpdatedPrefix": "Updated",
   "chartUpdatedSuffix": "min ago",
+  "chartNeverUpdated": "Never updated",
   "ytd": "YTD",
   "cagr": "CAGR",
   "sharpeRatio": "Sharpe Ratio",
