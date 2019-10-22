@@ -15,7 +15,9 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "save": "Save",
-    "darkMode": "Dark Mode"
+    "darkMode": "Dark Mode",
+    "general": "General",
+    "language": "Language"
   },
   "login": {
     "signIn": "Sign in",
@@ -143,19 +145,13 @@
   "sidebar": {
     "title": "Financial Research Software",
     "shortTitle": "FRS",
-    "dashboard": "Dashboard",
     "details": "Details",    
     "portfolioManager": "Portfolio Manager",
     "stockPickingLab": "StockPicking Lab",
     "patternLab": "Pattern Lab",
     "relativeValuesLab": "RelativeValues Lab",
     "wareHouse": "Ware House",
-    "icons": "Icons",
-    "maps": "Maps",
     "notifications": "Notifications",
-    "userProfile": "User Profile",
-    "tableList": "Table List",
-    "typography": "Typography",
-    "rtlSupport": "RTL Support"
+    "userProfile": "User Profile"
   }
 }

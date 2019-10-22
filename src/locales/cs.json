@@ -15,7 +15,9 @@
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
     "save": "Uložit",
-    "darkMode": "Temný režim"
+    "darkMode": "Temný režim",
+    "general": "Obecní",
+    "language": "Jazyk"
   },
   "login": {
     "signIn": "Přihlásit se",
@@ -143,7 +145,6 @@
   "sidebar": {
     "title": "Financial Research Software",
     "shortTitle": "FRS",
-    "dashboard": "Dashboard",
     "details": "Detaily",    
     "portfolioManager": "Portfolio Manažer",
     "stockPickingLab": "StockPicking Lab",

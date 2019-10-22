@@ -23,14 +23,21 @@
           </ul>
         </card>
       </div>            
+
+      <div class="col-md-4">
+        <card>
+          <h5 class="title">{{$t('settings.general')}}</h5>
+          <div class="locale-changer">
+            <!-- to-do: working globally except landing pages -->
+            <p style="float: left; margin-right: 10px;">{{$t('settings.language')}}:</p>
+            <select v-model="$root.$i18n.locale">
+              <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
+            </select>
+          </div>
+          <base-checkbox style="margin-top: 20px;">{{$t('settings.darkMode')}}</base-checkbox>
+        </card>
+      </div>
     </div>
-    <div class="locale-changer">
-      <!-- to-do: not working globally now -->
-      <select v-model="$root.$i18n.locale">
-        <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
-      </select>
-    </div>
-    <base-checkbox style="margin-bottom: 30px;">{{$t('settings.darkMode')}}</base-checkbox>
     <base-button style="margin-left: 20px;" type="secondary" fill>{{$t('settings.save')}}</base-button>        
   </div>
 </template>

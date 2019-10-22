@@ -2,8 +2,8 @@
   <div class="wrapper">
     <side-bar>
       <template slot="links">
-        <sidebar-link to="/dashboard" :name="$t('dashboard.title')" icon="tim-icons icon-coins"/>
-        <sidebar-link to="/details" :name="$t('sidebar.details')" icon="tim-icons icon-chart-bar-32"/>
+        <sidebar-link to="/profile" :name="$t('sidebar.userProfile')" icon="tim-icons icon-single-02"/>
+        <sidebar-link to="/settings" :name="$t('userMenu.settings')" icon="tim-icons icon-settings-gear-63"/>
       </template>
     </side-bar>
     <div class="main-panel">

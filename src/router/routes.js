@@ -1,6 +1,7 @@
 // LayoutViews
 import DashboardLayout from "@/custom/layout/DashboardLayout.vue";
 import ResearchLayout from "@/custom/layout/ResearchLayout.vue";
+import SettingsLayout from "@/custom/layout/SettingsLayout.vue";
 
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
@@ -99,15 +100,21 @@ const routes = [
   },
   // user settings & profile pages
   {
-    path: "/settings",
-    name: "settings",
-    component: Settings,
-    beforeEnter: requireAuth
-  },
-  {
     path: "/profile",
-    name: "profile",
-    component: Profile,
+    component: SettingsLayout,
+    redirect: "/profile",
+    children: [
+      {
+        path: "/profile",
+        name: "profile",
+        component: Profile        
+      },   
+      {
+        path: "/settings",
+        name: "settings",
+        component: Settings
+      }      
+    ],
     beforeEnter: requireAuth
   },
   // login & registration pages
