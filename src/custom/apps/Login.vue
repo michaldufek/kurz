@@ -4,8 +4,9 @@
     <modal :show="modals.loginModalShow.value"
            :showClose="false"    
            body-classes="p-0"
-           modal-classes="modal-dialog-centered modal-sm"
-           class="animated"
+           modal-classes="modal-sm"
+           :centered="false"
+           class="animated"          
            :class="{ shake: isShaking }">
         <card type="secondary"
                 header-classes="bg-white pb-5"
@@ -75,7 +76,8 @@
     <modal :show="modals.registerModalShow.value"
            :showClose="false"    
            body-classes="p-0"
-           modal-classes="modal-dialog-centered modal-sm"
+           modal-classes="modal-sm"
+           :centered="false"
            class="animated"
            :class="{ shake: isShaking }"
            :onClose="logIn">
@@ -129,7 +131,8 @@
     <modal :show="modals.resetPassModalShow.value"
            :showClose="false"    
            body-classes="p-0"
-           modal-classes="modal-dialog-centered modal-sm"
+           modal-classes="modal-sm"
+           :centered="false"
            class="animated"
            :class="{ shake: isShaking }"
            :onClose="logIn">
@@ -172,7 +175,8 @@
     <modal :show="modals.verifyRegisterModalShow.value"
            :showClose="false"    
            body-classes="p-0"
-           modal-classes="modal-dialog-centered modal-sm"
+           modal-classes="modal-sm"
+           :centered="false"
            class="animated"
            :class="{ shake: isShaking }"
            :onClose="logIn">
