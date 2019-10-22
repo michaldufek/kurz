@@ -34,7 +34,7 @@ function requireAuth (to, from, next) {
 }
 
 function verifyRegister (to, from, next) {
-  auth.verifyRegister( (success) => {
+  auth.verifyRegister(to.query.key, (success) => {  
     next({
       path: '/login?verifyRegister=' + success,
       query: { redirect: to.fullPath }
@@ -42,13 +42,11 @@ function verifyRegister (to, from, next) {
   }) 
 }
 
-function verifyReset (to, from, next) {
-  auth.verifyReset( (success) => {
-    next({
-      path: '/login?verifyReset=' + success,
-      query: { redirect: to.fullPath }
-    })
-  }) 
+function resetPass (to, from, next) {
+  next({
+    path: '/login?resetPass=&uid=' + to.query.uid + '&token=' + to.query.token,
+    query: { redirect: to.fullPath }
+  })
 }
 
 
@@ -153,7 +151,7 @@ const routes = [
       },
       {
         path: "/fe/verify-reset",
-        beforeEnter: verifyReset
+        beforeEnter: resetPass
       }
     ]
   },

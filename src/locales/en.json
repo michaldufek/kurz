@@ -30,12 +30,10 @@
     "lookingTo": "Looking to",
     "createAccount": "create an account ?",
     "register": "Register",
-    "registrationOK": "User successfully registered.",
+    "registrationSent": "Check your email for registration verification.",
     "alreadyAccount": "Already have an account?",
     "registerSuccess": "Registration verification successful.",
     "registerFail": "Registration verification failed.",
-    "resetSuccess": "Reset password verification successful.",
-    "resetFail": "Reset password verification failed.",
     "login": "Log in."
   },
   "dashboard": { 

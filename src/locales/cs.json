@@ -30,12 +30,10 @@
     "lookingTo": "Chcete si",
     "createAccount": "vytvořit konto ?",
     "register": "Registrovat",
-    "registrationOK": "Uživatel byl úspěšně zaregistrován.",
+    "registrationSent": "Zkontrolujte email pro verifikaci registrace.",
     "alreadyAccount": "Již máte konto?",
     "registerSuccess": "Ověření registrace proběhlo úspěšně.",
     "registerFail": "Ověření registrace zlyhalo.",
-    "resetSuccess": "Ověření resetu hesla proběhlo úspěšně.",
-    "resetFail": "Ověření resetu hesla zlyhalo.",
     "login": "Přihlašte se."
   },
   "dashboard": { 

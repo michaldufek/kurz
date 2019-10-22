@@ -126,7 +126,50 @@
         </card>
     </modal>
 
-    <modal :show="modals.verifyModalShow.value"
+    <modal :show="modals.resetPassModalShow.value"
+           :showClose="false"    
+           body-classes="p-0"
+           modal-classes="modal-dialog-centered modal-sm"
+           class="animated"
+           :class="{ shake: isShaking }"
+           :onClose="logIn">
+        <card type="secondary"
+                header-classes="bg-white pb-5"
+                body-classes="px-lg-5 py-lg-5"
+                class="border-0 mb-0">
+            <template>
+                <div class="text-center text-muted mb-4">
+                    {{$t('login.resetPass') + " " + $t('login.with')}}
+                </div>
+                <form role="form">                    
+                    <base-input alternative
+                                type="password"
+                                :placeholder="$t('login.password')"
+                                addon-left-icon="ni ni-lock-circle-open"
+                                v-model="pass1"
+                                @keyup.enter="resetPassComplete">
+                    </base-input>
+                    <base-input alternative
+                                type="password"
+                                :placeholder="$t('login.passwordAgain')"
+                                addon-left-icon="ni ni-lock-circle-open"
+                                v-model="pass2"
+                                @keyup.enter="resetPassComplete">
+                    </base-input>
+                    <div class="text-center">
+                        <p style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</p>                    
+                        <base-button type="primary" class="my-4" @click="resetPassComplete">{{$t('login.resetPass')}}</base-button>
+                        <div class="text-center">
+                            <p v-if="error" style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p>
+                            <p style="color: gray;"><a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
+                        </div>                                         
+                    </div>
+                </form>
+            </template>
+        </card>
+    </modal>
+
+    <modal :show="modals.verifyRegisterModalShow.value"
            :showClose="false"    
            body-classes="p-0"
            modal-classes="modal-dialog-centered modal-sm"
@@ -141,11 +184,8 @@
                 <form role="form">                    
                     <div class="text-center">
                         <h4 style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</h4>   
-                        <div v-if="error" class="text-center">
-                            <p style="color: gray;">{{$t('login.alreadyAccount')}} <a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
-                            <p style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p>
-                        </div>                 
-                        <p v-else style="color: gray;"><a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
+                        <p v-if="error" style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p>           
+                        <p style="color: gray;"><a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
                     </div>
                 </form>
             </template>
@@ -166,9 +206,9 @@ export default {
       return {
         modals: {
             loginModalShow: { value: false },
-            resetPassModalShow: { value: false },
             registerModalShow: { value: false },
-            verifyModalShow: { value: false }
+            resetPassModalShow: { value: false },
+            verifyRegisterModalShow: { value: false }
         },
         userName: '',
         email: 'joe@example.com',
@@ -195,6 +235,15 @@ export default {
         resetPass () {
             auth.resetPass(this.email, (resetted, msg) => {
                 if (!resetted) {
+                    this.shakeModal()
+                    this.error = true
+                }
+                this.message = msg
+            })
+        },
+        resetPassComplete() {
+            auth.verifyReset(this.$route.query.uid, this.$route.query.token, this.pass1, this.pass2, (success, msg) => {
+                if (!success) {
                     this.shakeModal()
                     this.error = true
                 }
@@ -238,21 +287,10 @@ export default {
                 msg = this.$i18n.t('login.registerFail')
             }
             
-            this.openModal(this.modals.verifyModalShow, msg, err)
+            this.openModal(this.modals.verifyRegisterModalShow, msg, err)
         },
-        openVerifyResetModal(success){
-            let msg = ''
-            let err = false
-
-            if (success === 'true') {
-                msg = this.$i18n.t('login.resetSuccess')
-            } else {
-                this.shakeModal()
-                err = true
-                msg = this.$i18n.t('login.resetFail')
-            }
-            
-            this.openModal(this.modals.verifyModalShow, msg, err)
+        openResetPassModal(){
+            this.openModal(this.modals.resetPassModalShow)
         },
         openModal(modal, msg, err){
             for (var otherModal in this.modals) {
@@ -263,6 +301,8 @@ export default {
 
             this.error = err ? err : false
             this.message = msg
+            this.pass1 = ''
+            this.pass2 = ''
 
             setTimeout(() => {
                 modal.value = true  
@@ -272,8 +312,8 @@ export default {
     mounted() {
         if ("verifyRegister" in this.$route.query) {
             this.openVerifyRegisterModal(this.$route.query.verifyRegister)
-        } else if ("verifyReset" in this.$route.query) {
-            this.openVerifyResetModal(this.$route.query.verifyReset)
+        } else if ("resetPass" in this.$route.query) {
+            this.openResetPassModal()
         } else {
             this.openLoginModal();
         }

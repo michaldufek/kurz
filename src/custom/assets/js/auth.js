@@ -91,7 +91,7 @@ const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
 });
 
 const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
+  axios({url: urlBase + 'password/reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -207,15 +207,15 @@ export default {
       })
     },
 
-    verifyReset (cb) {
+    verifyReset (uid, token, pass1, pass2, cb) {
       cb = arguments[arguments.length - 1]
-      verifyResetRoutine(this.$route.query.uid, this.$route.query.token, this.$route.query.pass1, this.$route.query.pass2)
+      verifyResetRoutine(uid, token, pass1, pass2)
       .then(res => {
-        if (cb) cb(true)
+        if (cb) cb(true, res.data.detail)
         this.onChange(true)
       })
       .catch(err => {
-        if (cb) cb(false)
+        if (cb) cb(false, this.parseError(err, false))
         this.onChange(false)        
       })
     },
@@ -224,7 +224,7 @@ export default {
       cb = arguments[arguments.length - 1]
       registerRoutine(userName, email, pass1, pass2)
       .then(res => {
-        if (cb) cb(true, i18n.t('login.registrationOK'))
+        if (cb) cb(true, i18n.t('login.registrationSent'))
         this.onChange(true)
       })
       .catch(err => {
@@ -233,9 +233,9 @@ export default {
       })
     },
 
-    verifyRegister (cb) {
+    verifyRegister (key, cb) {
       cb = arguments[arguments.length - 1]
-      verifyRegisterRoutine(this.$route.query.key)
+      verifyRegisterRoutine(key)
       .then(res => {
         if (cb) cb(true)
         this.onChange(true)
@@ -278,6 +278,18 @@ export default {
           msg += i18n.t('login.passwordAgain') + ': ' 
         }
         msg += err.response.data.password2[0] + '\n'
+      }
+      if ("new_password1" in err.response.data) {
+        if (verbose) {
+          msg += i18n.t('login.password') + ': ' 
+        }
+        msg += err.response.data.new_password1[0] + '\n'
+      }
+      if ("new_password2" in err.response.data) {
+        if (verbose) {
+          msg += i18n.t('login.passwordAgain') + ': ' 
+        }
+        msg += err.response.data.new_password2[0] + '\n'
       }
       if ("non_field_errors" in err.response.data) {
         msg += err.response.data.non_field_errors[0] + '\n'
