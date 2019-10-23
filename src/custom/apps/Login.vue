@@ -315,6 +315,7 @@ export default {
         }
     },
     mounted() {
+        console.log('PACKAGE_VERSION is ' + process.env.PACKAGE_VERSION)
         if (process.env.NODE_ENV === 'production') {
             this.$csrf.set(Math.floor(Math.random() * 1000000000) + 1)
             auth.init(this.$csrf.get())

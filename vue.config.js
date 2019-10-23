@@ -1,4 +1,12 @@
 const webpack = require('webpack');
+const fs = require('fs')
+const packageJson = fs.readFileSync('./package.json')
+const version = JSON.parse(packageJson).version || 0
+fs.writeFile("./public/version.txt", version, function(err) {
+  if(err) {
+      return console.log('Error writing version.txt file: ' + err);
+  }
+}); 
 
 module.exports = {
   lintOnSave: false,
@@ -13,6 +21,11 @@ module.exports = {
     plugins: [
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 6
+      }),
+      new webpack.DefinePlugin({
+        'process.env': {
+          PACKAGE_VERSION: '"' + version + '"'
+        }
       })
     ]
   },
