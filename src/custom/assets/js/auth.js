@@ -1,6 +1,7 @@
 /* globals localStorage */
 import axios from '@/../node_modules/axios';
 import i18n from "@/i18n"
+import Cookies from 'js-cookie'
 
 const urlBase = "https://frs.analyticalplatform.com/rest-auth/"
 
@@ -44,9 +45,10 @@ const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) =>
 });
 
 const logoutRoutine = () => new Promise ((resolve, reject) => {
+  localStorage.removeItem('token')
+
   axios({url: urlBase + 'logout/', method: 'POST' })
   .then(resp => {
-    localStorage.removeItem('token')
     resolve(resp)
   })
   .catch(err => {
@@ -97,22 +99,19 @@ const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, 
 
 export default {  
     init() {
-      console.log('Setting axios header \'X-CSRF-TOKEN\': ' + this.readCookie('csrftoken'))
+      if (process.env.NODE_ENV === 'production') {
+        var cokieName = 'csrftoken'
+      } else {
+        cokieName = '_xsrf'
+        console.log('In Dev Mode')
+      }
+
+      let csrfToken = Cookies.get(cokieName)        
+      console.log('Setting axios header \'X-CSRFToken\': ' + csrfToken)
       axios.defaults.headers.common = {
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-TOKEN': this.readCookie('csrftoken')
+        'X-CSRFToken': csrfToken
       };
-    },
-
-    readCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-        }
-        return null;
     },
   
     login (userName, email, pass, cb) {

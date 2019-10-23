@@ -315,12 +315,7 @@ export default {
         }
     },
     mounted() {
-        console.log('PACKAGE_VERSION is ' + process.env.PACKAGE_VERSION)
-        if (process.env.NODE_ENV === 'production') {
-            auth.init()
-        } else {
-            console.log('In Dev Mode - CSRF token not set')
-        }
+        auth.init()
 
         if ("key" in this.$route.params) {
             auth.verifyRegister(this.$route.params.key, (success) => {  
