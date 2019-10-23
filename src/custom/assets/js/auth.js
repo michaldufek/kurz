@@ -96,13 +96,25 @@ const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, 
 
 
 export default {  
-    init(csrf_token) {
+    init() {
+      console.log('Setting axios header \'X-CSRF-TOKEN\': ' + this.readCookie('csrftoken'))
       axios.defaults.headers.common = {
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-TOKEN': csrf_token
+        'X-CSRF-TOKEN': this.readCookie('csrftoken')
       };
     },
 
+    readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    },
+  
     login (userName, email, pass, cb) {
       cb = arguments[arguments.length - 1]
       if (localStorage.token) {
