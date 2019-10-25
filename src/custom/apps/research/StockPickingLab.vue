@@ -48,7 +48,9 @@
           <stock-card :title="stockData.title"
                       :stats="stockData.statsData"
                       :errored="stockData.errored"
-                      :loading="stockData.loading">
+                      :loading="stockData.loading"
+                      :live="stockData.live"
+                      :updateTs="stockData.updateTs">
                       <!-- to-do: :chartData="stockData.chartData"                     -->
           </stock-card>
         </li>
@@ -103,7 +105,9 @@
                 }],
                 labels: [] //response.data.time
               },
-              loading: false
+              loading: false,
+              live: true,
+              updateTs: Date.now()
             });
           });          
         })

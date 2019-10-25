@@ -30,6 +30,7 @@ Vue.use(RouterPrefetch);
 
 // global filter on the Vue instance
 Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
+Vue.filter(helper.chartUpdateTsText.name, helper.chartUpdateTsText)
 
 /* eslint-disable no-new */
 new Vue({

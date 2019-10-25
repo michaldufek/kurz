@@ -25,13 +25,16 @@
       </div>
       <div class="col-lg-8 col-md-12">
         <card type="chart">
+          <div class="card-header">
+            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updateTs | chartUpdateTsText}}</h5>
+          </div>
           <div class="chart-area">
             <!-- to-do: errored and loading sections not working -->
             <!-- to-do: use it also in another custom cards -->
-            <section v-if="errored">
+            <!-- <section v-if="errored">
               <p>{{$t('errorPrefix') + " " + $t('research.stockPickingLab.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
-            <section v-else>
+            <section v-else> -->
               <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.chart').toLowerCase() + "..."}}</div>
               <line-chart v-if="!loading" style="height: 100%"
                           ref="bigChart"
@@ -41,7 +44,7 @@
                           :gradient-stops="bigLineChart.gradientStops"
                           :extra-options="bigLineChart.extraOptions">
               </line-chart>
-            </section>
+            <!-- </section> -->
           </div>
         </card>
       </div>      
@@ -96,7 +99,17 @@ export default {
       description: "Chart data"
     },
     errored: false,
-    loading: true            
+    loading: true,
+    live: {
+      type: Boolean,
+      default: false,
+      description: "Whether we have connection to data source"
+    },
+    updateTs: {
+      type: Number,
+      default: null,
+      description: "TimeStamp of last update"
+    }          
   },
   data() {
       return {

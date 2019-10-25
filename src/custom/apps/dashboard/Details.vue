@@ -6,8 +6,8 @@
                        :chartData="strategyData.chartData"
                        :statsData="strategyData.statsData"
                        :live="strategyData.live"
-                       :loading="strategyData.loading">
-                       <!-- :updatedMinsAgo="strategyData.updatedMinsAgo"> -->
+                       :loading="strategyData.loading"
+                       :updateTs="strategyData.updateTs">
         </strategy-card>
       </li>
     </ul>
@@ -45,7 +45,7 @@
             datasets: [{
               data: response.data.equity
             }],
-            labels: helper.formatDatetimes(response.data.time)
+            labels: helper.formatDateTimes(response.data.time)
           }
           reportData.statsData = {
             ytd: response.data.ytd,
@@ -67,26 +67,14 @@
         .finally(() => {
           reportData.loading = false;
           reportData.live = true;
-          reportData.updatedMinsAgo = 0
-
+          reportData.updateTs = Date.now()
+          
           // data loaded OK so update child component
           this.strategiesData[strategyNr] = reportData;
 
-          // set timer for StrategyCard component minutes counting
-          if (chartTimer) {
-            clearInterval(chartTimer)
-          }
-          var chartTimer = setInterval(() => { 
-            // to-do: force child render because of minutes update (but not this way!)
-            // let temp = this.strategiesData
-            // this.strategiesData = null
-            this.strategiesData[strategyNr].updatedMinsAgo++
-            // this.strategiesData = temp
-          }, 1000 * 60 ); //  // every minute
-
           // reload this strategy data after timeout
           setTimeout(() => { 
-            this.loadStrategy(title, apiUrl, strategyNr, chartTimer)
+            this.loadStrategy(title, apiUrl, strategyNr)
           }, 1000 * 60 * 10 ); // * 15 // 10 minutes
         });
       },

@@ -5,7 +5,7 @@
       <div class="col-12">
         <card type="chart">
           <div class="card-header">
-            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2 text-success"></i>  {{$t('chartUpdatedPrefix') + ' ' + mins2Reload + $t('chartUpdatedSuffix')}}</h5>
+            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updateTs | chartUpdateTsText}}</h5>
           </div>
           <br/>
           <div class="chart-area">
@@ -31,7 +31,7 @@
   
      <div class="row">      
       <div class="col-lg-4 col-md-12">
-        <card class="card" :header-classes="{'text-right': isRTL}">
+        <card class="card">
           <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.lastTradesTable.title')}}</h4>
           <div>
             <section v-if="tradesOrdersErrored">
@@ -50,7 +50,7 @@
         </card>
       </div>
      <div class="col-lg-4 col-md-12">  
-        <card class="card" :header-classes="{'text-right': isRTL}">
+        <card class="card">
           <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.pendingOrdersTable.title')}}</h4>
           <div>
             <section v-if="tradesOrdersErrored">
@@ -69,7 +69,7 @@
         </card>
       </div>
       <div class="col-lg-4 col-md-12">
-        <card class="card" :header-classes="{'text-right': isRTL}">
+        <card class="card">
           <h4 slot="header" class="card-title">{{$t('dashboard.performanceStatistics')}}</h4>
           <div>
              <!-- with scrollers: class="table-responsive" -->
@@ -99,6 +99,7 @@
   import config from '@/config';
   import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';
+  import i18n from "@/i18n"
 
   export default {
     components: {
@@ -114,7 +115,8 @@
         tradesOrdersErrored: false,
         statsChartLoading: true,
         statsChartErrored: false,
-        mins2Reload: 10,
+        updateTs: null,
+        live: false,
         bigLineChart: 
         {
           allData: [
@@ -132,12 +134,6 @@
       }
     },
     computed: {
-      enableRTL() {
-        return this.$route.query.enableRTL;
-      },
-      isRTL() {
-        return this.$rtl.isRTL;
-      },
       roundStatsData() {
         // rounds performace statistics data table to 2 mantissa places
         let newTable = []
@@ -260,7 +256,7 @@
               pointRadius: 4,
               data: response.data.equity
             }],
-            labels: helper.formatDatetimes(response.data.time)
+            labels: helper.formatDateTimes(response.data.time)
           }
           this.bigLineChart.chartData = chartData;
         })
@@ -268,23 +264,27 @@
           console.log(error);
           this.statsChartErrored = true;
         })
-        .finally(() => (this.statsChartLoading = false));
+        .finally(() => {
+          this.statsChartLoading = false
+          this.updateTs = Date.now()
+          this.live = true
+        });
       }
     },    
     mounted() {
       this.i18n = this.$i18n;
-      if (this.enableRTL) {
-        this.i18n.locale = 'ar';
-        this.$rtl.enableRTL();
-      }
+      // if (this.enableRTL) {
+      //   this.i18n.locale = 'ar';
+      //   this.$rtl.enableRTL();
+      // }
       this.initTradesOrdersTablesData();
       this.initStatsTablesData();
     },
     beforeDestroy() {
-      if (this.$rtl.isRTL) {
-        this.i18n.locale = 'en';
-        this.$rtl.disableRTL();
-      }
+      // if (this.$rtl.isRTL) {
+      //   this.i18n.locale = 'en';
+      //   this.$rtl.disableRTL();
+      // }
     }
   };
 </script>

@@ -5,8 +5,7 @@
         <card type="chart">
           <div class="card-header">
             <h4 slot="header" class="card-title" style="float: left; margin-bottom: 20px">{{title}}</h4>
-            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updatedMinsText}}</h5>
-            <!-- to-do: minute/minutes change acc.to mins2Reload filter -->
+            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updateTs | chartUpdateTsText}}</h5>
           </div>
           <div class="chart-area">
             <!-- to-do: errored and loading sections not working -->
@@ -118,10 +117,10 @@ export default {
       default: false,
       description: "Whether we have connection to data source"
     },
-    updatedMinsAgo: {
+    updateTs: {
       type: Number,
-      default: 10,//-1,
-      description: "Minutes from last data reload"
+      default: null,
+      description: "TimeStamp of last update"
     }
   },
   data() {
@@ -137,12 +136,6 @@ export default {
   computed: {
     isError() {
       return !this.live && !this.chartData.datasets[0].data.length
-    },
-    updatedMinsText() {
-      return this.updatedMinsAgo < 0 
-             ? this.$t('chartNeverUpdated')
-             : this.$t('chartUpdatedPrefix') + ' ' + this.updatedMinsAgo + this.$t('chartUpdatedSuffix') 
-             
     }
   }
 };
