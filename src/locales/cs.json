@@ -2,7 +2,7 @@
   "siteTitle": "Financial Research Software",
   "loading": "Načítání",
   "errorPrefix": "Omlouváme se, nejsme schopní získat data k", 
-  "errorSuffix": "Prosím, zkuste později.",
+  "errorSuffix": "Zkusíme to později...",
   "chartUpdatedPrefix": "Aktualizováno o",
   "chartNeverUpdated": "Ještě neaktualizováno",
   "ytd": "YTD",
@@ -45,7 +45,7 @@
       "lastTradesTable": {
         "title": "Poslední obchody",
         "columns": [
-          "Datum",
+          "Datum a Čas",
           "Typ Obchodu",
           "Výsledek (%)",
           "Výsledek (USD)"

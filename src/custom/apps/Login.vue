@@ -201,6 +201,7 @@
 import { Modal } from '@/components';
 import auth from '@/custom/assets/js/auth'
 import '../assets/css/shake.css'
+import constants from '@/custom/assets/js/constants'
 
 export default {
     components: {
@@ -268,7 +269,7 @@ export default {
             this.isShaking = true
             setTimeout(() => { 
                 this.isShaking = false
-            }, 500 ); // half minute
+            }, constants.shakeInterval );
             this.pass = ''
         },
         openLoginModal(){
@@ -311,7 +312,7 @@ export default {
 
             setTimeout(() => {
                 modal.value = true  
-            }, 230);
+            }, constants.modalShowInterval );
         }
     },
     mounted() {

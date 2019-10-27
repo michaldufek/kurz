@@ -2,7 +2,7 @@
   "siteTitle": "Financial Research Software",
   "loading": "Loading of",
   "errorPrefix": "We are sorry, at this moment we are unable to get", 
-  "errorSuffix": "Please, try again later.",
+  "errorSuffix": "We'll try again later...",
   "chartUpdatedPrefix": "Updated at",
   "chartNeverUpdated": "Never updated",
   "ytd": "YTD",
@@ -45,7 +45,7 @@
       "lastTradesTable": {
         "title": "Last trades",
         "columns": [
-          "Date",
+          "Date and Time",
           "Trade Type",
           "Result (%)",
           "Result (USD)"

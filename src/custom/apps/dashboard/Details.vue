@@ -17,6 +17,7 @@
   import StrategyCard from '@/custom/components/Cards/StrategyCard.vue';
   import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';
+  import constants from '@/custom/assets/js/constants';
 
   export default {
     components: {
@@ -62,7 +63,7 @@
           // if error reload this strategy data after shorter timeout
           setTimeout(() => { 
             this.loadStrategy(title, apiUrl, strategyNr)
-          }, 1000 * 60 * 5 ); // * 8 // 5 minutes
+          }, constants.dataReloadInterval / 2 );
         })
         .finally(() => {
           reportData.loading = false;
@@ -75,7 +76,7 @@
           // reload this strategy data after timeout
           setTimeout(() => { 
             this.loadStrategy(title, apiUrl, strategyNr)
-          }, 1000 * 60 * 10 ); // * 15 // 10 minutes
+          }, constants.dataReloadInterval );
         });
       },
       initStrategies() {        
