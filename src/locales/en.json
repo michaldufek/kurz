@@ -13,10 +13,10 @@
   "stdDev": "Std. Dev.",
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
-    "save": "Save",
     "darkMode": "Dark Mode",
     "general": "General",
-    "language": "Language"
+    "language": "Language",
+    "clearAll": "Clear all settings"
   },
   "login": {
     "signIn": "Sign in",
@@ -114,7 +114,6 @@
         "index": "Index",
         "dividend": "Dividend",
         "riskProfile": "Risk profile",
-        "sampleMetrics": "Unselected metrics with very long title",
         "sector": "Sector",
         "metricsSettings": "Metrics Settings",
         "currencies": [
@@ -130,6 +129,7 @@
           "Dynamic",
           "Optimal"
         ],
+        "sectors": [],
         "stock": "Stock",
         "chart": "Stock chart",
         "all": "All"
@@ -142,7 +142,6 @@
     "logout": "Log Out"
   },
   "sidebar": {
-    "title": "Financial Research Software",
     "shortTitle": "FRS",
     "details": "Details",    
     "portfolioManager": "Portfolio Manager",

@@ -13,10 +13,10 @@
   "stdDev": "Std. Dev.",
   "recoveryDDtime": "Recovery DD Time",  
   "settings": {
-    "save": "Uložit",
     "darkMode": "Temný režim",
     "general": "Obecní",
-    "language": "Jazyk"
+    "language": "Jazyk",
+    "clearAll": "Smazat všechna nastavení"
   },
   "login": {
     "signIn": "Přihlásit se",
@@ -114,7 +114,6 @@
         "index": "Index",
         "dividend": "Dividenda",
         "riskProfile": "Risk profil",
-        "sampleMetrics": "Unselected metrics with very long title",
         "sector": "Sektor",
         "metricsSettings": "Nastavení Metrik",
         "currencies": [
@@ -130,6 +129,7 @@
           "Dynamické",
           "Optimální"
         ],
+        "sectors": [],
         "stock": "Akce",
         "chart": "Graf akce",
         "all": "All"
@@ -142,7 +142,6 @@
     "logout": "Odhlásit"
   },
   "sidebar": {
-    "title": "Financial Research Software",
     "shortTitle": "FRS",
     "details": "Detaily",    
     "portfolioManager": "Portfolio Manažer",
