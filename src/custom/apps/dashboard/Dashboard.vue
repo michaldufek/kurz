@@ -3,29 +3,12 @@
 
     <div class="row">
       <div class="col-12">
-        <card type="chart">
-          <div class="card-header">
-            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updateTs | chartUpdateTsText}}</h5>
-          </div>
-          <br/>
-          <div class="chart-area" style="height: 400px">
-            <section v-if="isChartError" style="text-align: center">
-              <p >{{$t('errorPrefix') + " " + $t('dashboard.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
-            </section>
-            <section v-else>
-              <DualRingLoader v-if="statsLoading" :color="'#54f1d2'" style="width: 80px; height: 80px;position: absolute;top: 40%;left: 45%;" />
-              <!-- <div  style="text-align: center;">{{$t('loading') + " " + $t('dashboard.chart').toLowerCase() + "..."}}</div> -->
-              <line-chart ref="bigChart"
-                          chart-id="big-line-chart"
-                          :chart-data="bigLineChart.chartData"
-                          :gradient-colors="bigLineChart.gradientColors"
-                          :gradient-stops="bigLineChart.gradientStops"
-                          :extra-options="bigLineChart.extraOptions">
-              </line-chart>
-              <!-- to-do: interactive chart - sounds etc. -->
-            </section>
-          </div>
-        </card>
+        <fancy-chart :chartData="chart.data"
+                     :updateTs="chart.updateTs"
+                     :live="chart.live"
+                     :loading="statsLoading"
+                     :error="statsError">
+        </fancy-chart>
       </div>
     </div>
   
@@ -93,23 +76,18 @@
   </div>
 </template>
 <script>
-  import LineChart from '@/components/Charts/LineChart';
-  import * as chartConfigs from '@/components/Charts/config';
   import { BaseTable } from "@/components";
-  import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
-
+  import FancyChart from '@/custom/components/FancyChart';
   import config from '@/config';
   import axios from '@/../node_modules/axios';
-
   import helper from '@/custom/assets/js/helper';
   import constants from '@/custom/assets/js/constants';
 
 
   export default {
     components: {
-      LineChart,
-      BaseTable,
-      DualRingLoader
+      FancyChart,
+      BaseTable
     },
     data() {
       return {
@@ -120,27 +98,16 @@
         statsLoading: true,
         statsError: false,
         ordersError: false,
-        updateTs: null,
-        live: false,
-        bigLineChart: 
-        {
-          allData: [
-            [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
-            [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120],
-            [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130]
-          ],
-          activeIndex: 0,
-          chartData: {
-                datasets: [{
-                  data: []
-                }],
-                labels: []
-          },
-          extraOptions: chartConfigs.purpleChartOptions,
-          gradientColors: config.colors.primaryGradient,
-          gradientStops: [1, 0.4, 0],
-          categories: []
-        }        
+        chart: {
+          updateTs: null,
+          live: false,
+          data: {
+            datasets: [{
+              data: []
+            }],
+            labels: []
+          }        
+        }
       }
     },
     computed: {
@@ -161,10 +128,6 @@
           newTable.push(newRow)
         })
         return newTable
-      },
-
-      isChartError() {
-        return !this.bigLineChart.chartData.datasets[0].data.length && this.statsError
       }
     },
     methods: {
@@ -313,14 +276,14 @@
           }
 
           this.statsData = statsTableData
-          this.bigLineChart.chartData = chartData;
-          this.live = true
-          this.updateTs = Date.now()
+          this.chart.data = chartData;
+          this.chart.live = true
+          this.chart.updateTs = Date.now()
         })
         .catch(error => {
           console.log(error);
           this.statsError = true;
-          this.live = false
+          this.chart.live = false
         })
         .finally(() => {
           this.statsLoading = false          
