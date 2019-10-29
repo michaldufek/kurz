@@ -20,8 +20,8 @@
 <style lang="scss">
 </style>
 <script>
-import TopNavbar from "@/layout/dashboard/TopNavbar.vue";
-import ContentFooter from "@/layout/dashboard/ContentFooter.vue";
+import TopNavbar from "@/custom/layout/application/TopNavbar.vue"
+import ContentFooter from "@/custom/layout/application/ContentFooter.vue";
 import DashboardContent from "@/layout/dashboard/Content.vue";
 import MobileMenu from "@/layout/dashboard/MobileMenu";
 

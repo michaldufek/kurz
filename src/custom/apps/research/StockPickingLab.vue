@@ -3,16 +3,16 @@
      <div>      
       <div style="margin-left: 40px;">
        
-        <base-dropdown v-if="showCurrency" style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
-          <ul>
+        <base-dropdown v-if="showCurrency" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
+          <ul style="list-style-type: none;">
             <li v-for="currency in getCurrencies">
               <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
             </li>
           </ul>
         </base-dropdown>
   
-        <base-dropdown v-if="showExchange" style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
-          <ul>
+        <base-dropdown v-if="showExchange" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
+          <ul style="list-style-type: none;">
             <li v-for="exchange in getExchanges">
               <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
             </li>
@@ -23,8 +23,8 @@
   
         <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
   
-        <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
-          <ul>
+        <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
+          <ul style="list-style-type: none;">
             <li v-for="riskProfile in getRiskProfiles">
               <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
               <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
@@ -32,8 +32,8 @@
           </ul>
         </base-dropdown>
   
-        <base-dropdown v-if="showSector" style="float: left; width: 15%" title-classes="btn btn-secondary" :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : selectedSector">
-          <ul>
+        <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : selectedSector">
+          <ul style="list-style-type: none;">
             <li v-for="sector in getSectors">
               <a class="dropdown-item" @click="selectSector(sector)" href="#">{{sector}}</a>
             </li>
@@ -43,8 +43,8 @@
     </div> 
 
     <div style="float: left;margin-top: 100px;">
-      <ul>
-        <li v-for="stockData in filteredStocksData" style="list-style-type: none;">
+      <ul style="list-style-type: none;">
+        <li v-for="stockData in filteredStocksData">
           <stock-card :title="stockData.title"
                       :stats="stockData.statsData"
                       :errored="stockData.errored"

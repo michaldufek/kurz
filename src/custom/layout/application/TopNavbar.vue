@@ -45,7 +45,7 @@
                    :show-close="true">
               <input slot="header" v-model="searchQuery" type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
             </modal>
-            <base-dropdown tag="li"
+            <base-dropdown tag="li" menu-classes="dropdown-black"
                            :menu-on-right="!$rtl.isRTL"
                            title-tag="a" class="nav-item">
               <a slot="title" href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true">
@@ -71,11 +71,10 @@
                 <a href="#" class="nav-item dropdown-item">Another one</a>
               </li>
             </base-dropdown>
-            <base-dropdown tag="li"
+            <base-dropdown tag="li" menu-classes="dropdown-black"
                            :menu-on-right="!$rtl.isRTL"
                            title-tag="a"
-                           class="nav-item"
-                           menu-classes="dropdown-navbar">
+                           class="nav-item">
               <a slot="title" href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true">
                 <div class="photo">
                   <img src="img/default-avatar.png">
