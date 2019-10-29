@@ -24,6 +24,7 @@
 <script>
   import PortfolioCard from "@/custom/components/Cards/PortfolioCard.vue";
   import axios from '@/../node_modules/axios';
+  import constants from '@/custom/assets/js/constants';
 
   var samplePortfolioNames = ["S1 with very very long title", "S2 with very very long title", "S3 with very very long title", "S4 with very very long title"];
 
@@ -67,15 +68,15 @@
         });
       },
       initDesignedPortfolioData() {
-        this.initPortfolioData("https://app1.objectively.info/api/mfreport2", this.designedPortfolioData);
+        this.initPortfolioData(constants.apiUrls[0] + 2, this.designedPortfolioData);
         // this.designedPortfolioData.enableStore = true;
       },
       initLivePortfolioData() {
-        this.initPortfolioData("https://app1.objectively.info/api/uvxyreport2", this.livePortfolioData);     
+        this.initPortfolioData(constants.apiUrls[1] + 2, this.livePortfolioData);     
         this.livePortfolioData.strategies.enableLive = false;
       },
       initOptimalPortfolioData(){
-        // this.initPortfolioData("https://app1.objectively.info/api/mfreport2", this.optimalPortfolioData);
+        // this.initPortfolioData(constants.apiUrls[0] + 2, this.optimalPortfolioData);
         // this.optimalPortfolioData.strategies.enableLive = false;
         // this.optimalPortfolioData.strategies.enableStore = false;
       },

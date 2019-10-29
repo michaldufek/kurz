@@ -79,9 +79,12 @@
           }, constants.dataReloadInterval );
         });
       },
-      initStrategies() {        
-        this.loadStrategy("MF Report", "https://app1.objectively.info/api/mfreport2");
-        this.loadStrategy("UVXY Report", "https://app1.objectively.info/api/uvxyreport2");
+      initStrategies() { 
+        for (var reportName in contants.apiUrls) {
+          if (contants.apiUrls.hasOwnProperty(reportName)) {
+            this.loadStrategy(reportName, contants.apiUrls[reportName] + 2);
+          }
+        }
       }
     },
     mounted() {

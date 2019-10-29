@@ -136,6 +136,13 @@
       }
     }
   },  
+  "notifications": {
+    "connectionLost": "SYSTEM FAILURE - Connection lost ",
+    "open": "Open",
+    "win": "Win",
+    "lose": "Lose",
+    "breakEven": "Break even"
+  },
   "userMenu": {
     "profile": "Profile",
     "settings": "Settings",

@@ -136,6 +136,13 @@
       }
     }
   },  
+  "notifications": {
+    "connectionLost": "SYSTÉMOVÉ SELHÁNÍ - Ztraceno spojení ",
+    "open": "Otevřeno",
+    "win": "Výhra",
+    "lose": "Ztráta",
+    "breakEven": "Bez ztráty"
+  },
   "userMenu": {
     "profile": "Profil",
     "settings": "Nastavení",

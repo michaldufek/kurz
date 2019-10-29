@@ -1,5 +1,12 @@
 <template>
   <div>
+    <audio id="open" src="media/open.mp3" preload="auto"></audio>
+    <audio id="win" src="media/win.mp3" preload="auto"></audio>
+    <audio id="lose" src="media/lose.mp3" preload="auto"></audio>
+    <audio id="breakEven" src="media/breakEven.mp3" preload="auto"></audio>
+    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
+    <audio id="jumpOnAsset" src="media/jumpOnAsset.mp3" preload="auto"></audio>
+    <audio id="jumpOnSP500" src="media/jumpOnSP500.mp3" preload="auto"></audio>
 
     <div class="row">
       <div class="col-12">
@@ -107,6 +114,12 @@
             }],
             labels: []
           }        
+        },
+        heardOrders: {
+          open: [],
+          win: [],
+          lose: [],
+          breakEven: []
         }
       }
     },
@@ -153,14 +166,35 @@
         }, constants.soundSignalInterval );
       },
 
+      notify(audioEl, type, msg) {
+        document.getElementById(audioEl).play();
+
+        this.$notify({
+          type: type, 
+          message: msg
+        })
+      },
+
       checkOrdersStatusChange() {
-                  // seen_orders = []
-          // listOfOders = [{fills: }, 
-          // {stopLosses: }, 
-          // profitTarget: }]
-          // if orderId not in seen_orders and orderStatus == "filled"
-          // zahraj sound1.avi
-          // seen_orders.append(orderId)
+        axios
+        .get(constants.apiUrls["MF Report"])
+        .then(response => {
+          response.data.openTrades.forEach(openTrade => {
+            if (!(openTrade.order.orderId in heardOrders.open) && openTrade.orderStatus === "Submitted") {
+              this.notify('open', 'info', this.$t('notifications.open'))
+              this.heardOrders.open.push(openTrade.order.orderId)
+            } else if (!(openTrade.order.orderId in heardOrders.win) && openTrade.orderStatus === "Filled") {
+              this.notify('win', 'success', this.$t('notifications.win'))
+              this.heardOrders.win.push(openTrade.order.orderId)
+            } else if (!(openTrade.order.orderId in heardOrders.lose) && openTrade.orderStatus === "Cancelled") {
+              this.notify('lose', 'warning', this.$t('notifications.lose'))
+              this.heardOrders.lose.push(openTrade.order.orderId)
+            } else if (!(openTrade.order.orderId in heardOrders.breakEven) && openTrade.orderStatus === "Inactive") {
+              this.notify('breakEven', 'info', this.$t('notifications.breakEven'))
+              this.heardOrders.breakEven.push(openTrade.order.orderId)
+            }
+          })
+        })
       },
 
       loadTradesOrdersTablesData() {
@@ -168,7 +202,7 @@
         // to-do: get right sources
 
         axios
-        .get("https://app1.objectively.info/api/mfreport")
+        .get(constants.apiUrls["MF Report"])
         .then(response => {
           let tradesTableData = [];
           let ordersTableData = [];
@@ -202,7 +236,9 @@
         })
         .catch(error => {
           console.log(error);
+
           this.ordersError = true;
+          this.notify('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(Dashboard orders)')
         })
         .finally(() => {
           this.ordersLoading = false
@@ -213,7 +249,7 @@
         this.statsLoading = true
 
         axios
-        .get("https://app1.objectively.info/api/mfreport2")
+        .get(constants.apiUrls["MF Report"] + 2)
         .then(response => {
           let tableData = [];
           let statsTableData = []
@@ -282,8 +318,10 @@
         })
         .catch(error => {
           console.log(error);
-          this.statsError = true;
+
+          this.statsError = true
           this.chart.live = false
+          this.notify('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(Dashboard chart)')
         })
         .finally(() => {
           this.statsLoading = false          
