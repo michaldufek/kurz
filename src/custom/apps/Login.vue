@@ -1,7 +1,6 @@
 <template>
   <div class="row">
-    <!-- :show.sync="modals.loginModalShow" -->
-    <SlideYUpTransition :duration="animationDuration">
+    <SlideYUpTransition>
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"

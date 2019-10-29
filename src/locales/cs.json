@@ -34,7 +34,7 @@
     "remember": "Zapamatovat",
     "lookingTo": "Chcete si",
     "createAccount": "vytvořit konto ?",
-    "register": "Registrovat",
+    "register": "Registrovat se",
     "registrationSent": "Zkontrolujte email pro verifikaci registrace.",
     "alreadyAccount": "Již máte konto?",
     "registerSuccess": "Ověření registrace proběhlo úspěšně.",
@@ -149,6 +149,7 @@
     "settingsCleared": "Všechna nastavení smazána úspěšně."
   },
   "userMenu": {
+    "title": "Uživatelské akce",
     "profile": "Profil",
     "settings": "Nastavení",
     "logout": "Odhlásit"

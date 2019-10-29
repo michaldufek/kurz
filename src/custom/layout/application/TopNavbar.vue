@@ -82,18 +82,18 @@
                 </div>
                 <b class="caret d-none d-lg-block d-xl-block"></b>
                 <p class="d-lg-none">
-                  User actions
+                  {{$t('userMenu.title')}}
                 </p>
               </a>
               <li class="nav-link">
-                <a href="/profile" class="nav-item dropdown-item">{{$t('userMenu.profile')}}</a>
+                <router-link to="/profile" class="nav-item dropdown-item">{{$t('userMenu.profile')}}</router-link>
               </li>
               <li class="nav-link">
-                <a href="/settings" class="nav-item dropdown-item">{{$t('userMenu.settings')}}</a>
+                <router-link to="/settings" class="nav-item dropdown-item">{{$t('userMenu.settings')}}</router-link>
               </li>
               <div class="dropdown-divider"></div>
               <li class="nav-link">
-                <a href="/logout" class="nav-item dropdown-item">{{$t('userMenu.logout')}}</a>
+                <router-link to="/logout" class="nav-item dropdown-item">{{$t('userMenu.logout')}}</router-link>
               </li>
             </base-dropdown>
           </ul>

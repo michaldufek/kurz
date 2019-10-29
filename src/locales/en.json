@@ -149,6 +149,7 @@
     "settingsCleared": "All settings cleared successfully."
   },
   "userMenu": {
+    "title": "User actions",
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Log Out"
