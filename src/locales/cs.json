@@ -18,12 +18,16 @@
     "language": "Jazyk",
     "clearAll": "Smazat všechna nastavení"
   },
+  "landing": {
+    "home": "Domů",
+    "about": "O Aplikaci"
+  },
   "login": {
     "signIn": "Přihlásit se",
     "with": "pomocí",
     "signInCredentials": "Nebo přímo",
     "userName": "Uživatelské jméno",
-    "email": "Email",
+    "email": "joe@example.com",
     "password": "Heslo",
     "passwordAgain": "Heslo znovu",
     "resetPass": "Resetovat Heslo",
@@ -141,7 +145,8 @@
     "open": "Otevřeno",
     "win": "Výhra",
     "lose": "Ztráta",
-    "breakEven": "Bez ztráty"
+    "breakEven": "Bez ztráty",
+    "settingsCleared": "Všechna nastavení smazána úspěšně."
   },
   "userMenu": {
     "profile": "Profil",

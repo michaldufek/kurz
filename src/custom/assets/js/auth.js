@@ -107,7 +107,6 @@ export default {
       }
 
       let csrfToken = Cookies.get(cokieName)        
-      console.log('Setting axios header \'X-CSRFToken\': ' + csrfToken)
       axios.defaults.headers.common = {
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRFToken': csrfToken

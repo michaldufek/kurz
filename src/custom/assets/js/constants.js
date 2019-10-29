@@ -9,7 +9,7 @@ export default {
     shakeInterval: 500, // half minute
 
     // time of effect of login forms showing
-    modalShowInterval: 230,
+    cardlShowInterval: 230,
 
     apiUrls: {
         "MF Report": "https://app1.objectively.info/api/mfreport",

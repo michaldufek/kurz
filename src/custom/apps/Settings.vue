@@ -94,6 +94,8 @@
         let token = localStorage.token
         localStorage.clear()
         localStorage.setItem('token', token)
+
+        this.$notify({type: 'success', message: this.$t('notifications.settingsCleared')})        
         this.init()
       }
     },

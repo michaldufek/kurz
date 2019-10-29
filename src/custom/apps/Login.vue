@@ -1,17 +1,14 @@
 <template>
   <div class="row">
     <!-- :show.sync="modals.loginModalShow" -->
-    <modal :show="modals.loginModalShow.value"
-           :showClose="false"    
-           body-classes="p-0"
-           modal-classes="modal-sm"
-           :centered="false"
-           class="animated"          
-           :class="{ shake: isShaking }">
+    <SlideYUpTransition :duration="animationDuration">
         <card type="secondary"
                 header-classes="bg-white pb-5"
-                body-classes="px-lg-5 py-lg-5"
-                class="border-0 mb-0">
+                body-classes="p-0 px-lg-5 py-lg-5"
+                class="modal-sm animated"
+                :class="{ shake: isShaking }"
+                style="margin: auto"
+                v-if="cards.showLogin.value">
             <template>
                 <div class="text-muted text-center mb-3">
                     {{$t('login.signIn') + " " + $t('login.with')}}
@@ -61,7 +58,7 @@
                         <!-- to-do: red color not working -->
                         <base-button v-if="error" type="link" @click="resetPass">{{$t('login.resetPass')}}</base-button>
                     </div>
-                    <base-checkbox>
+                    <base-checkbox v-model="remember">
                         {{$t('login.remember')}}
                     </base-checkbox>
                     <div class="text-center">
@@ -71,20 +68,14 @@
                 </form>
             </template>
         </card>
-    </modal>
 
-    <modal :show="modals.registerModalShow.value"
-           :showClose="false"    
-           body-classes="p-0"
-           modal-classes="modal-sm"
-           :centered="false"
-           class="animated"
-           :class="{ shake: isShaking }"
-           :onClose="logIn">
         <card type="secondary"
                 header-classes="bg-white pb-5"
-                body-classes="px-lg-5 py-lg-5"
-                class="border-0 mb-0">
+                body-classes="p-0 px-lg-5 py-lg-5"
+                class="modal-sm animated"
+                :class="{ shake: isShaking }"
+                style="margin: auto"
+                v-if="cards.showRegister.value">
             <template>
                 <div class="text-center text-muted mb-4">
                     {{$t('login.register') + " " + $t('login.with')}}
@@ -126,20 +117,14 @@
                 </form>
             </template>
         </card>
-    </modal>
 
-    <modal :show="modals.resetPassModalShow.value"
-           :showClose="false"    
-           body-classes="p-0"
-           modal-classes="modal-sm"
-           :centered="false"
-           class="animated"
-           :class="{ shake: isShaking }"
-           :onClose="logIn">
         <card type="secondary"
                 header-classes="bg-white pb-5"
-                body-classes="px-lg-5 py-lg-5"
-                class="border-0 mb-0">
+                body-classes="p-0 px-lg-5 py-lg-5"
+                class="modal-sm animated"
+                :class="{ shake: isShaking }"
+                style="margin: auto"
+                v-if="cards.showResetPass.value">
             <template>
                 <div class="text-center text-muted mb-4">
                     {{$t('login.resetPass') + " " + $t('login.with')}}
@@ -170,20 +155,14 @@
                 </form>
             </template>
         </card>
-    </modal>
 
-    <modal :show="modals.verifyRegisterModalShow.value"
-           :showClose="false"    
-           body-classes="p-0"
-           modal-classes="modal-sm"
-           :centered="false"
-           class="animated"
-           :class="{ shake: isShaking }"
-           :onClose="logIn">
         <card type="secondary"
                 header-classes="bg-white pb-5"
-                body-classes="px-lg-5 py-lg-5"
-                class="border-0 mb-0">
+                body-classes="p-0 px-lg-5 py-lg-5"
+                class="modal-sm animated"
+                :class="{ shake: isShaking }"
+                style="margin: auto"
+                v-if="cards.showVerifyRegister.value">
             <template>
                 <form role="form">                    
                     <div class="text-center">
@@ -194,38 +173,46 @@
                 </form>
             </template>
         </card>
-    </modal>
+    </SlideYUpTransition>
   </div>
 </template>
 <script>
-import { Modal } from '@/components';
+import { SlideYUpTransition } from "vue2-transitions";
 import auth from '@/custom/assets/js/auth'
 import '../assets/css/shake.css'
 import constants from '@/custom/assets/js/constants'
 
 export default {
     components: {
-      Modal
+        SlideYUpTransition
     },
     data() {
       return {
-        modals: {
-            loginModalShow: { value: false },
-            registerModalShow: { value: false },
-            resetPassModalShow: { value: false },
-            verifyRegisterModalShow: { value: false }
+        cards: {
+            showLogin: { value: false },
+            showRegister: { value: false },
+            showResetPass: { value: false },
+            showVerifyRegister: { value: false }
         },
         userName: '',
-        email: 'joe@example.com',
+        email: '',
         pass: '',
         pass1: '',
         pass2: '',
+        remember: true,
         error: false,
         message: '',
         isShaking: false
       };
     },
     methods: {
+        init() {
+            if (!('remember' in localStorage)) {
+                localStorage.setItem('remember', true)
+            } 
+            this.remember = JSON.parse(localStorage.remember)
+        },
+
         logIn () {
             auth.login(this.userName, this.email, this.pass, (loggedIn, err) => {
                 if (!loggedIn) {                    
@@ -273,13 +260,13 @@ export default {
             this.pass = ''
         },
         openLoginModal(){
-            this.openModal(this.modals.loginModalShow)
+            this.openModal(this.cards.showLogin)
         },
         openResetPassModal(){
-            this.openModal(this.modals.resetPassModalShow)
+            this.openModal(this.cards.showResetPass)
         },
         openRegisterModal(){
-            this.openModal(this.modals.registerModalShow)
+            this.openModal(this.cards.showRegister)
         },
         openVerifyRegisterModal(success){
             let msg = ''
@@ -293,29 +280,31 @@ export default {
                 msg = this.$i18n.t('login.registerFail')
             }
             
-            this.openModal(this.modals.verifyRegisterModalShow, msg, err)
+            this.openModal(this.cards.showVerifyRegister, msg, err)
         },
         openResetPassModal(){
-            this.openModal(this.modals.resetPassModalShow)
+            this.openModal(this.cards.showResetPass)
         },
-        openModal(modal, msg, err){
-            for (var otherModal in this.modals) {
-                if (this.modals.hasOwnProperty(otherModal)) {           
-                    this.modals[otherModal].value = false
+        openModal(card, msg, err){
+            for (var otherCard in this.cards) {
+                if (this.cards.hasOwnProperty(otherCard)) {           
+                    this.cards[otherCard].value = false
                 }
             }
 
             this.error = err ? err : false
             this.message = msg
+            this.email = ''
             this.pass1 = ''
             this.pass2 = ''
 
             setTimeout(() => {
-                modal.value = true  
-            }, constants.modalShowInterval );
+                card.value = true  
+            }, constants.loginShowInterval );
         }
     },
     mounted() {
+        this.init()
         auth.init()
 
         if ("key" in this.$route.params) {
@@ -327,6 +316,11 @@ export default {
         } else {
             auth.logout()
             this.openLoginModal();
+        }
+    },
+    watch: {
+        remember(val) {
+            localStorage.setItem('remember', val)
         }
     }
 }

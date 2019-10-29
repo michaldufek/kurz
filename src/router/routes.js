@@ -1,15 +1,13 @@
 // LayoutViews
-import DashboardLayout from "@/custom/layout/DashboardLayout.vue";
-import ResearchLayout from "@/custom/layout/ResearchLayout.vue";
-import SettingsLayout from "@/custom/layout/SettingsLayout.vue";
+import LandingLayout from "@/custom/layout/landing/LandingLayout.vue";
+import DashboardLayout from "@/custom/layout/application/DashboardLayout.vue";
+import ResearchLayout from "@/custom/layout/application/ResearchLayout.vue";
+import SettingsLayout from "@/custom/layout/application/SettingsLayout.vue";
 
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 const About = () => import(/* webpackChunkName: "about" */"@/custom/apps/About.vue");
-const Contact = () => import(/* webpackChunkName: "contact" */"@/custom/apps/Contact.vue");
 const Login = () => import(/* webpackChunkName: "login" */"@/custom/apps/Login.vue");
-const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
-const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
 
 // SubViews
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/apps/dashboard/Dashboard.vue");
@@ -19,6 +17,8 @@ const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@
 // const PatternLab = () => import(/* webpackChunkName: "patternLab" */"@/custom/apps/research/PatternLab.vue");
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
+const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
+const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
 
 import auth from '@/custom/assets/js/auth'
 
@@ -26,7 +26,7 @@ import auth from '@/custom/assets/js/auth'
 function requireAuth (to, from, next) {
   if (!auth.loggedIn()) {
     next({
-      path: '/login',
+      path: '/landing',
       query: { redirect: to.fullPath }
     })
   } else {
@@ -36,15 +36,35 @@ function requireAuth (to, from, next) {
 
 const routes = [
   // landing pages
-  { 
-    path: '/about', 
-    name: 'about',
-    component: About 
-  },
-  { 
-    path: '/contact', 
-    name: 'contact',
-    component: Contact 
+  {
+    path: "/landing",
+    component: LandingLayout,
+    redirect: "/login",
+    children: [
+      {
+        path: "/login",
+        component: Login
+      },
+      { 
+        path: '/about', 
+        name: 'about',
+        component: About 
+      },
+      { 
+        path: '/logout',
+        name: "logout",
+        component: Login
+      },
+      // password reset & registration verification pages
+      {
+        path: "/fe/verify-register/:key",
+        component: Login
+      },
+      {
+        path: "/fe/verify-reset/:uid/:token",
+        component: Login
+      }      
+    ]
   },
   // logged in pages
   {
@@ -116,25 +136,7 @@ const routes = [
       }      
     ],
     beforeEnter: requireAuth
-  },
-  // login & registration pages
-  {
-    path: "/login",
-    component: Login
-  },
-  { 
-    path: '/logout',
-    component: Login
-  },
-  // password reset & registration verification pages
-  {
-    path: "/fe/verify-register/:key",
-    component: Login
-  },
-  {
-    path: "/fe/verify-reset/:uid/:token",
-    component: Login
-  },
+  },    
   // all other pages
   { path: "*", component: NotFound },
 ];
