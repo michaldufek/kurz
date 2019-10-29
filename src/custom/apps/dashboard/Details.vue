@@ -80,9 +80,9 @@
         });
       },
       initStrategies() { 
-        for (var reportName in contants.apiUrls) {
-          if (contants.apiUrls.hasOwnProperty(reportName)) {
-            this.loadStrategy(reportName, contants.apiUrls[reportName] + 2);
+        for (var reportName in constants.apiUrls) {
+          if (constants.apiUrls.hasOwnProperty(reportName)) {
+            this.loadStrategy(reportName, constants.apiUrls[reportName] + 2);
           }
         }
       }
