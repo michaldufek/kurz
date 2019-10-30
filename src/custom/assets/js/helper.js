@@ -5,7 +5,7 @@ export default {
     formatDate(dt) {
         // returns RRRR-M-D format
         let newDt = new Date(dt)
-        return newDt.getFullYear() + "-" + newDt.getMonth() + "-" + newDt.getDay()
+        return newDt.getFullYear() + "-" + Number(newDt.getMonth() + 1) + "-" + newDt.getDate()
     },
 
     formatDateTime(dt) {
