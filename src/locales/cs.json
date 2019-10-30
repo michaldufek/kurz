@@ -1,0 +1,189 @@
+{
+  "siteTitle": "Financial Research Software",
+  "loading": "Načítání",
+  "errorPrefix": "Omlouváme se, nejsme schopní získat data k", 
+  "errorSuffix": "Zkusíme to později...",
+  "chartUpdatedPrefix": "Aktualizováno o",
+  "chartNeverUpdated": "Ještě neaktualizováno",
+  "ytd": "YTD",
+  "cagr": "CAGR",
+  "sharpeRatio": "Sharpe Ratio",
+  "maxDD": "Max DrawDown",
+  "equityOuts": "Vlastní Kap.",
+  "stdDev": "Std. Dev.",
+  "recoveryDDtime": "Recovery DD Time",  
+  "settings": {
+    "darkMode": "Temný režim",
+    "general": "Obecní",
+    "language": "Jazyk",
+    "clearAll": "Smazat všechna nastavení"
+  },
+  "landing": {
+    "home": "Domů",
+    "about": "O Aplikaci"
+  },
+  "login": {
+    "signIn": "Přihlásit se",
+    "with": "pomocí",
+    "signInCredentials": "Nebo přímo",
+    "userName": "Uživatelské jméno",
+    "email": "joe@example.com",
+    "password": "Heslo",
+    "passwordAgain": "Heslo znovu",
+    "resetPass": "Resetovat Heslo",
+    "remember": "Zapamatovat",
+    "lookingTo": "Chcete si",
+    "createAccount": "vytvořit konto ?",
+    "register": "Registrovat se",
+    "registrationSent": "Zkontrolujte email pro verifikaci registrace.",
+    "alreadyAccount": "Již máte konto?",
+    "registerSuccess": "Ověření registrace proběhlo úspěšně.",
+    "registerFail": "Ověření registrace zlyhalo.",
+    "login": "Přihlašte se."
+  },
+  "dashboard": { 
+    "title": "Dashboard",
+    "chart": "Graf složené equity",
+    "performanceStatistics": "Výkon - statistiky",
+    "dashboard": {      
+      "lastTradesTable": {
+        "title": "Poslední obchody",
+        "columns": [
+          "Datum a Čas",
+          "Typ Obchodu",
+          "Výsledek (%)",
+          "Výsledek (USD)"
+        ]
+      },
+      "pendingOrdersTable": {
+        "title": "Čekající pokyny",
+        "columns": [
+          "Datum",
+          "Typ Obchodu",
+          "Cíl (USD)",
+          "Stop Loss (USD)"
+        ]
+      },
+      "performanceStatisticsTable": {
+        "columns": [
+          " ",
+          "3 Měsíce",
+          "12 Měsíců",
+          "Od Vstupu"
+        ],
+        "lines": [
+          "YTD",
+          "CAGR",
+          "Sharpe Ratio",
+          "Max DrawDown",
+          "Vlastní Kapitál"
+        ]
+      }
+    }
+  },
+  "research": { 
+    "title": "Výzkum",
+    "portfolioManager": {
+      "designedPortfolio": "Navržené Portfolio",
+      "livePortfolio": "Živé Portfolio",
+      "optimalPortfolio": "Optimální Portfolio",
+      "live": "živé",
+      "store": "uložit",
+      "statsTable": {
+        "columns": [
+          "Výkon - statistiky",
+          "Risk - statistiky"
+        ],
+        "rows": {
+          "cagr": "CAGR",
+          "sr": "SR",
+          "equityOuts": "Vlastní Kap.",
+          "maxDD": "MaxDD",
+          "beta": "Beta",
+          "alfa": "Alfa"
+        }
+      }
+    },
+    "wareHouse": {
+      "premiumStrategies": "Prémiové Strategie",
+      "myStrategies": "Moje Strategie",
+      "select": "vybrat",
+      "remove": "odstranit"
+    },
+    "stockPickingLab": {
+      "metrics": "StockPicking Lab Metriky",
+      "filters": {
+        "currency": "Měna",
+        "exchange": "Burza",
+        "index": "Index",
+        "dividend": "Dividenda",
+        "riskProfile": "Risk profil",
+        "sector": "Sektor",
+        "metricsSettings": "Nastavení Metrik",
+        "currencies": [
+          "USD",
+          "EUR"
+        ],        
+        "exchanges": [
+          "NYQ",
+          "NMS",
+          "ASE"
+        ],
+        "riskProfiles": [
+          "Dynamické",
+          "Optimální"
+        ],
+        "sectors": [],
+        "stock": "Akce",
+        "chart": "Graf akce",
+        "all": "All"
+      }
+    }
+  },  
+  "terms": {
+    "perfStats": {
+      "ytd": "Výnos k dnešnímu dni. Uvádí, o kolik procent vzrostl nebo poklesl náš majetek ode dne spuštění strategie.",
+      "maxDD": "Maximální pokles. Uvádí maximální pokles vůči historicky nejvyššímu stavu majetku.",
+      "max drawdown": "Maximální pokles. Uvádí maximální pokles vůči historicky nejvyššímu stavu majetku.",
+      "sharpe": "Poměr zisku vůči risku. Uvádí poměr YTD/směrodatná odchylka jednotlivých výnosů. Čím vyšší hodnota, tím lépe, tedy dosahujeme více jednotek zisku na jednotku risku.",
+      "sharpe ratio": "Poměr zisku vůči risku. Uvádí poměr YTD/směrodatná odchylka jednotlivých výnosů. Čím vyšší hodnota, tím lépe, tedy dosahujeme více jednotek zisku na jednotku risku.",
+      "cagr": "Přepočtený roční výnos. Vyjadřuje v exponentu inverzní hodnotu počtu obchodních dní po které strategie běží/ Počet obchodních dní v jednom roce.",
+      "nrOfTrades": "Počet provedených obchodů, které algoritmus od spuštění provedl."
+    },
+    "symbols": {
+      "mgc": "Symbol pro zlato/ E-micro futures na derivátové burze NYMEX.",
+      "qm": "Symbol pro ropu/ E-mini futures na derivátové burze NYMEX."
+    },
+    "tradeType": {
+      "buy": "Na uvedené ceně budeme realizovat nákup.",
+      "sell": "Na uvedené ceně budeme realizovat prodej.",
+      "sld": "Na uvedené ceně došlo k prodeji.",
+      "bot": "Na uvedené ceně došlo k nákupu."
+    }
+  },
+  "notifications": {
+    "connectionLost": "SYSTÉMOVÉ SELHÁNÍ - Ztraceno spojení ",
+    "open": "Otevřeno",
+    "win": "Výhra",
+    "lose": "Ztráta",
+    "breakEven": "Bez ztráty",
+    "settingsCleared": "Všechna nastavení smazána úspěšně."
+  },
+  "userMenu": {
+    "title": "Uživatelské akce",
+    "profile": "Profil",
+    "settings": "Nastavení",
+    "logout": "Odhlásit"
+  },
+  "sidebar": {
+    "shortTitle": "FRS",
+    "details": "Detaily",    
+    "portfolioManager": "Portfolio Manažer",
+    "stockPickingLab": "StockPicking Lab",
+    "patternLab": "Pattern Lab",
+    "relativeValuesLab": "RelativeValues Lab",
+    "wareHouse": "Sklad Strategií",
+    "notifications": "Notifikace",
+    "userProfile": "Profil"
+  }
+}
