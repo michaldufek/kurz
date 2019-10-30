@@ -140,6 +140,27 @@
       }
     }
   },  
+  "terms": {
+    "perfStats": {
+      "ytd": "Výnos k dnešnímu dni. Uvádí, o kolik procent vzrostl nebo poklesl náš majetek ode dne spuštění strategie.",
+      "maxDD": "Maximální pokles. Uvádí maximální pokles vůči historicky nejvyššímu stavu majetku.",
+      "max drawdown": "Maximální pokles. Uvádí maximální pokles vůči historicky nejvyššímu stavu majetku.",
+      "sharpe": "Poměr zisku vůči risku. Uvádí poměr YTD/směrodatná odchylka jednotlivých výnosů. Čím vyšší hodnota, tím lépe, tedy dosahujeme více jednotek zisku na jednotku risku.",
+      "sharpe ratio": "Poměr zisku vůči risku. Uvádí poměr YTD/směrodatná odchylka jednotlivých výnosů. Čím vyšší hodnota, tím lépe, tedy dosahujeme více jednotek zisku na jednotku risku.",
+      "cagr": "Přepočtený roční výnos. Vyjadřuje v exponentu inverzní hodnotu počtu obchodních dní po které strategie běží/ Počet obchodních dní v jednom roce.",
+      "nrOfTrades": "Počet provedených obchodů, které algoritmus od spuštění provedl."
+    },
+    "symbols": {
+      "mgc": "Symbol pro zlato/ E-micro futures na derivátové burze NYMEX.",
+      "qm": "Symbol pro ropu/ E-mini futures na derivátové burze NYMEX."
+    },
+    "tradeType": {
+      "buy": "Na uvedené ceně budeme realizovat nákup.",
+      "sell": "Na uvedené ceně budeme realizovat prodej.",
+      "sld": "Na uvedené ceně došlo k prodeji.",
+      "bot": "Na uvedené ceně došlo k nákupu."
+    }
+  },
   "notifications": {
     "connectionLost": "SYSTÉMOVÉ SELHÁNÍ - Ztraceno spojení ",
     "open": "Otevřeno",

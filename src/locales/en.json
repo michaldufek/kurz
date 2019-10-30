@@ -140,6 +140,27 @@
       }
     }
   },  
+  "terms": {
+    "perfStats": {
+      "ytd": "Yield to date. It shows how many percent our assets have increased or decreased since the launch of the strategy.",
+      "maxDD": "Maximum drop. It states the maximum decrease in relation to the historically highest state of assets.",
+      "max drawdown": "Maximum drop. It states the maximum decrease in relation to the historically highest state of assets.",
+      "sharpe": "Profit to risk ratio. It shows the ratio YTD / standard deviation of individual returns. The higher the value, the better, therefore, we achieve more profit units per unit of risk.",
+      "sharpe ratio": "Profit to risk ratio. It shows the ratio YTD / standard deviation of individual returns. The higher the value, the better, therefore, we achieve more profit units per unit of risk.",
+      "cagr": "Recalculated annual yield. It expresses the inverse value of the number of trading days during which the strategy runs / Number of trading days in one year.",
+      "nrOfTrades": "The number of trades executed by the algorithm since execution."
+    },
+    "symbols": {
+      "mgc": "Symbol for gold / E-micro futures on the NYMEX derivative exchange.",
+      "qm": "Symbol for oil / E-mini futures on NYMEX derivative exchange."
+    },
+    "tradeTypes": {
+      "buy": "At this price we will make a purchase.",
+      "sell": "At this price we will make a sale.",
+      "sld": "The price it was sold of.",
+      "bot": "The price it was purchased for."
+    }
+  },
   "notifications": {
     "connectionLost": "SYSTEM FAILURE - Connection lost ",
     "open": "Open",

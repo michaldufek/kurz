@@ -37,12 +37,12 @@
             <div v-if="loading" style="text-align: center;">{{$t('loading') + " " + $t('dashboard.performanceStatistics').toLowerCase() + "..."}}</div>
             <div v-else>
                 <div style="width:50%; float: left;">
-                  <p>{{$t('ytd')}}: {{statsData.ytd | roundToFixed}}</p>
-                  <p>{{$t('cagr')}}: {{statsData.cagr | roundToFixed}}</p>
-                  <p>{{$t('sharpeRatio')}}: {{statsData.sr | roundToFixed}}</p>
+                  <p :title="$t('terms.perfStats.ytd')">{{$t('ytd')}}: {{statsData.ytd | roundToFixed}}</p>
+                  <p :title="$t('terms.perfStats.cagr')">{{$t('cagr')}}: {{statsData.cagr | roundToFixed}}</p>
+                  <p :title="$t('terms.perfStats.sharpe')">{{$t('sharpeRatio')}}: {{statsData.sr | roundToFixed}}</p>
                 </div>
                 <div style="width:50%; float: right;">
-                  <p>{{$t('maxDD')}}: {{statsData.maxdd | roundToFixed}}</p>
+                  <p :title="$t('terms.perfStats.maxDD')">{{$t('maxDD')}}: {{statsData.maxdd | roundToFixed}}</p>
                   <p>{{$t('equityOuts')}}: {{statsData.equityOuts | roundToFixed}}</p>
                 </div>
             </div>

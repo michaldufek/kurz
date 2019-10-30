@@ -19,6 +19,7 @@
       </div>
     </div>
   
+
      <div class="row">      
       <div class="col-lg-4 col-md-12">
         <card class="card">
@@ -31,6 +32,7 @@
               <div v-if="ordersLoading">{{$t('loading') + " " + $t('dashboard.dashboard.lastTradesTable.title').toLowerCase() + "..."}}</div>
               <div v-else>
                 <base-table :data="tradesData"
+                            :titles="$t('terms.tradeTypes')"
                             :columns="$t('dashboard.dashboard.lastTradesTable.columns')"
                             thead-classes="text-primary">
                 </base-table>
@@ -39,7 +41,8 @@
           </div>
         </card>
       </div>
-     <div class="col-lg-4 col-md-12">  
+
+      <div class="col-lg-4 col-md-12">  
         <card class="card">
           <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.pendingOrdersTable.title')}}</h4>
           <div>
@@ -50,6 +53,7 @@
               <div v-if="ordersLoading">{{$t('loading') + " " + $t('dashboard.dashboard.pendingOrdersTable.title').toLowerCase() + "..."}}</div>
               <div v-else>
                 <base-table :data="ordersData"
+                            :titles="$t('terms.tradeTypes')"
                             :columns="$t('dashboard.dashboard.pendingOrdersTable.columns')"
                             thead-classes="text-primary">
                 </base-table>
@@ -58,6 +62,7 @@
           </div>
         </card>
       </div>
+
       <div class="col-lg-4 col-md-12">
         <card class="card">
           <h4 slot="header" class="card-title">{{$t('dashboard.performanceStatistics')}}</h4>
@@ -70,8 +75,10 @@
               <div v-if="statsLoading">{{$t('loading') + " " + $t('dashboard.performanceStatistics').toLowerCase() + "..."}}</div>
               <div v-else>
                 <base-table :data="roundStatsData"
+                            :titles="$t('terms.perfStats')"
                             :columns="$t('dashboard.dashboard.performanceStatisticsTable.columns')"
                             thead-classes="text-primary">
+                            <!--  -->
                 </base-table>
               </div>
             </section>

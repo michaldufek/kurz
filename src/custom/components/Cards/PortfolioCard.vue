@@ -19,6 +19,7 @@
           <base-table :data="statsData"
                       :columns="$t('research.portfolioManager.statsTable.columns')"
                       thead-classes="text-primary">
+                      <!-- to-do: add titles (refactoring needed) -->
           </base-table>
         </card>
       </div>
@@ -61,7 +62,8 @@ export default {
   },
   data() {
     return {
-      statsData: [{
+      statsData: [
+        {
           "performance statistics": this.$t("research.portfolioManager.statsTable.rows.cagr") + ": " + this.stats.cagr,
           "Risk statistics": this.$t("research.portfolioManager.statsTable.rows.beta") + ": " + this.stats.beta
         },

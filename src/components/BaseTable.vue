@@ -11,7 +11,8 @@
     <tr v-for="(item, index) in data" :key="index">
       <slot :row="item">
         <td v-for="(column, index) in columns"
-            :key="index"
+            :key="index" 
+            :title="valueTitle(item, column)"
             v-if="hasValue(item, column)">
           {{itemValue(item, column)}}
         </td>
@@ -33,6 +34,11 @@
         type: Array,
         default: () => [],
         description: "Table data"
+      },
+      titles: {
+        type: Object,
+        default: () => {},
+        description: "Table data values descriptions"
       },
       type: {
         type: String, // striped | hover
@@ -61,6 +67,14 @@
       },
       itemValue(item, column) {
         return item[column.toLowerCase()];
+      },
+      valueTitle(item, column) {
+        let value = this.itemValue(item, column)
+
+        if (!value || !this.titles) {
+          return null
+        }
+        return this.titles[value.toLowerCase()];
       }
     }
   };

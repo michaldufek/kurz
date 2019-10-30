@@ -11,13 +11,13 @@
             <div v-else>
                 <h4 class="card-title">{{title}}</h4>
                 <div style="width:50%; float: left;">
-                  <p>{{$t('cagr')}}: {{stats.cagr | roundToFixed}}</p>
+                  <p :title="$t('terms.perfStats.cagr')">{{$t('cagr')}}: {{stats.cagr | roundToFixed}}</p>
                   <p>{{$t('stdDev')}}: {{stats.stdDev | roundToFixed}}</p>
                 </div>
                 <div style="width:50%; float: right;">
-                  <p>{{$t('sharpeRatio')}}: {{stats.sharpeRatio | roundToFixed}}</p>                  
+                  <p :title="$t('terms.perfStats.sharpe')">{{$t('sharpeRatio')}}: {{stats.sharpeRatio | roundToFixed}}</p>                  
                   <p>{{$t('recoveryDDtime')}}: {{stats.recoveryDDtime | roundToFixed}}</p>
-                  <p>{{$t('maxDD')}}: {{stats.maxDD | roundToFixed}}</p>
+                  <p :title="$t('terms.perfStats.maxDD')">{{$t('maxDD')}}: {{stats.maxDD | roundToFixed}}</p>
                 </div>
             </div>
           </section>
