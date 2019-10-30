@@ -205,14 +205,14 @@ export default {
           }        
 
           this.error = false
-          this.live = this.live && !response.data.WARNING
-          this.updateTs = Math.max(response.data.report_timestamp, this.updateTs)
+          this.live = this.live || !response.data.WARNING
+          // this.updateTs = Math.max(response.data.report_timestamp, this.updateTs)
         })
         .catch(error => {
           console.log(error);
 
-          this.error = this.error && true
-          this.live = false
+          this.error = this.error && true // ??
+          // this.live = false
           this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' chart)')
         })
         .finally(() => {

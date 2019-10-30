@@ -3,6 +3,7 @@
     <!-- <card class="card"> to-do: must be in one card --> 
       <div class="col-lg-8 col-md-12">
         <fancy-chart :title="title"
+                     :showTitle="true"
                      :apiUrls="apiUrls">
         </fancy-chart>
       </div>
