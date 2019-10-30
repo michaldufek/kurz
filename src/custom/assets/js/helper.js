@@ -1,17 +1,21 @@
 import i18n from "@/i18n"
 
 export default { 
+    pad(nr) {
+        return String(nr).length < 2 ? "0" + nr : nr
+    },
+
     // date-time types formatting
     formatDate(dt) {
-        // returns RRRR-M-D format
+        // returns RRRR-MM-DD format
         let newDt = new Date(dt)
-        return newDt.getFullYear() + "-" + Number(newDt.getMonth() + 1) + "-" + newDt.getDate()
+        return newDt.getFullYear() + "-" + this.pad(Number(newDt.getMonth() + 1)) + "-" + this.pad(newDt.getDate())
     },
 
     formatDateTime(dt) {
-        // returns RRRR-M-D H:M:S formatted date from string of type YYYY-MM-DDTHH:MM:SS
+        // returns RRRR-MM-DD HH:MM:SS formatted date from string of type YYYY-MM-DDTHH:MM:SS
         let newDt = new Date(dt)
-        return this.formatDate(newDt) + " " + newDt.getHours() + ":" + newDt.getMinutes() + ":" + newDt.getSeconds()
+        return this.formatDate(newDt) + " " + this.pad(newDt.getHours()) + ":" + this.pad(newDt.getMinutes()) + ":" + this.pad(newDt.getSeconds())
     },
 
     formatDateOnly(date) {

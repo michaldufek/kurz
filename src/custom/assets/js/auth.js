@@ -103,7 +103,6 @@ export default {
         var cokieName = 'csrftoken'
       } else {
         cokieName = '_xsrf'
-        console.log('In Dev Mode')
       }
 
       let csrfToken = Cookies.get(cokieName)        

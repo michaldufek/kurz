@@ -1,13 +1,12 @@
 <template>
   <div>
-    <ul>
-      <li v-for="strategyData in strategiesData" style="list-style-type: none;">
+    <ul style="list-style-type: none;">
+      <li v-for="strategyData in strategiesData">
         <strategy-card :title="strategyData.title"
-                       :chartData="strategyData.chartData"
+                       :apiUrls="strategyData.apiUrl"
                        :statsData="strategyData.statsData"
-                       :live="strategyData.live"
                        :loading="strategyData.loading"
-                       :updateTs="strategyData.updateTs">
+                       :error="strategyData.error">
         </strategy-card>
       </li>
     </ul>
@@ -29,10 +28,11 @@
       };
     },
     methods: {
-      loadStrategy(title, apiUrl, strategyNr, chartTimer) {
+      loadStrategy(title, apiUrl, strategyNr) {
         let reportData = {
           title: title,
-          loading: true
+          loading: true,
+          apiUrl: [apiUrl]
         }
         if (strategyNr === undefined) {          
           // push it so it appears in data (ie. in child component) and save its number to update it after loaded
@@ -42,12 +42,6 @@
         axios
         .get(apiUrl)
         .then(response => {
-          reportData.chartData = {
-            datasets: [{
-              data: response.data.equity
-            }],
-            labels: helper.formatDateTimes(response.data.time)
-          }
           reportData.statsData = {
             ytd: response.data.ytd,
             cagr: response.data.cagr,
@@ -58,32 +52,26 @@
         })
         .catch(error => {
           console.log(error);
-          reportData.live = false;
-
-          // if error reload this strategy data after shorter timeout
-          setTimeout(() => { 
-            this.loadStrategy(title, apiUrl, strategyNr)
-          }, constants.dataReloadInterval / 2 );
+          reportData.error = true
         })
         .finally(() => {
           reportData.loading = false;
-          reportData.live = true;
-          reportData.updateTs = Date.now()
           
           // data loaded OK so update child component
           this.strategiesData[strategyNr] = reportData;
 
-          // reload this strategy data after timeout
-          setTimeout(() => { 
-            this.loadStrategy(title, apiUrl, strategyNr)
-          }, constants.dataReloadInterval );
+          return strategyNr
         });
       },
+      
       initStrategies() { 
-        for (var reportName in constants.apiUrls) {
-          if (constants.apiUrls.hasOwnProperty(reportName)) {
-            this.loadStrategy(reportName, constants.apiUrls[reportName] + 2);
-          }
+        for (const [key, value] of Object.entries(constants.apiUrls)) {
+          let strategyNr = this.loadStrategy(key, value + 2);
+
+          // reload this strategy data in intervals
+          setInterval(() => { 
+            this.loadStrategy(key, value + 2);
+          }, constants.dataReloadInterval );
         }
       }
     },
