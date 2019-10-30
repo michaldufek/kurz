@@ -320,8 +320,8 @@
 
           this.statsData = statsTableData
           this.chart.data = chartData;
-          this.chart.live = true
-          this.chart.updateTs = Date.now()
+          this.chart.live = !response.data.WARNING
+          this.chart.updateTs = response.data.report_timestamp          
         })
         .catch(error => {
           console.log(error);

@@ -80,7 +80,7 @@ export default {
       description: "Whether we have connection to data source"
     },
     updateTs: {
-      type: Number,
+      type: String,
       default: null,
       description: "TimeStamp of last update"
     }
