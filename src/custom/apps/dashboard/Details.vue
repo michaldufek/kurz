@@ -1,13 +1,12 @@
 <template>
   <div>
-    <ul>
-      <li v-for="strategyData in strategiesData" style="list-style-type: none;">
+    <ul style="list-style-type: none;">
+      <li v-for="strategyData in strategiesData">
         <strategy-card :title="strategyData.title"
-                       :chartData="strategyData.chartData"
+                       :apiUrls="strategyData.apiUrl"
                        :statsData="strategyData.statsData"
-                       :live="strategyData.live"
                        :loading="strategyData.loading"
-                       :updateTs="strategyData.updateTs">
+                       :error="strategyData.error">
         </strategy-card>
       </li>
     </ul>
@@ -23,70 +22,76 @@
     components: {
       StrategyCard
     },
+
     data() {
       return {
-        strategiesData: []
+        strategiesData: [],
+        runningStrategies: []
       };
     },
+
     methods: {
-      loadStrategy(title, apiUrl, strategyNr, chartTimer) {
-        let reportData = {
-          title: title,
-          loading: true
-        }
-        if (strategyNr === undefined) {          
-          // push it so it appears in data (ie. in child component) and save its number to update it after loaded
-          strategyNr = this.strategiesData.push(reportData) - 1;
-        }
-
-        axios
-        .get(apiUrl)
-        .then(response => {
-          reportData.chartData = {
-            datasets: [{
-              data: response.data.equity
-            }],
-            labels: helper.formatDateTimes(response.data.time)
+      loadStrategy(title, apiUrl, strategyNr) {
+        return new Promise((resolve, reject) => {
+          let reportData = {
+            title: title,
+            loading: true,
+            apiUrl: [apiUrl]
           }
-          reportData.statsData = {
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            sr: response.data.sharpe,
-            maxdd: response.data.maxdd,
-            equityOuts: -33.821
+          if (strategyNr === undefined) {          
+            // push it so it appears in data (ie. in child component) and save its number to update it after loaded
+            strategyNr = this.strategiesData.push(reportData) - 1;
           }
-        })
-        .catch(error => {
-          console.log(error);
-          reportData.live = false;
 
-          // if error reload this strategy data after shorter timeout
-          setTimeout(() => { 
-            this.loadStrategy(title, apiUrl, strategyNr)
-          }, constants.dataReloadInterval / 2 );
-        })
-        .finally(() => {
-          reportData.loading = false;
-          reportData.live = true;
-          reportData.updateTs = Date.now()
-          
-          // data loaded OK so update child component
-          this.strategiesData[strategyNr] = reportData;
+          axios
+          .get(apiUrl)
+          .then(response => {
+            reportData.statsData = {
+              ytd: response.data.ytd,
+              cagr: response.data.cagr,
+              sr: response.data.sharpe,
+              maxdd: response.data.maxdd,
+              equityOuts: -33.821
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            reportData.error = true
 
-          // reload this strategy data after timeout
-          setTimeout(() => { 
-            this.loadStrategy(title, apiUrl, strategyNr)
-          }, constants.dataReloadInterval );
-        });
+            // reject()
+          })
+          .finally(() => {
+            reportData.loading = false;            
+            // data loaded OK so update child component
+            this.strategiesData[strategyNr] = reportData;
+
+            resolve(strategyNr)
+          });
+        })
       },
+      
       initStrategies() { 
-        for (var reportName in constants.apiUrls) {
-          if (constants.apiUrls.hasOwnProperty(reportName)) {
-            this.loadStrategy(reportName, constants.apiUrls[reportName] + 2);
+        for (const [key, value] of Object.entries(constants.apiUrls)) {
+          if (!(key in this.runningStrategies)) {
+            this.loadStrategy(key, value + 2)
+            .then(strategyNr => {
+              this.runningStrategies.push(key)
+              // reload this strategy data in intervals
+              setInterval(() => { 
+                this.loadStrategy(key, value + 2, strategyNr);
+              }, constants.dataReloadInterval );
+            })
+            // .catch(() => {
+            //   // or try to init strategies again after timeout
+            //   setTimeout(() => { 
+            //     this.initStrategies();
+            //   }, constants.dataReloadInterval / 2 );
+            // })
           }
         }
       }
     },
+
     mounted() {
       this.initStrategies();
     }
