@@ -15,4 +15,5 @@ export default {
         "MF Report": "https://app1.objectively.info/api/mfreport",
         "UVXY Report": "https://app1.objectively.info/api/uvxyreport"
     }
+    // also: https://frs.analyticalplatform.com/api/xreport/old/mfreport
 }

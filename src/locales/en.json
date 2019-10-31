@@ -43,7 +43,7 @@
   },
   "dashboard": { 
     "title": "Dashboard",
-    "chart": "Chart of composite equity",
+    "chart": "chart of composite equity",
     "performanceStatistics": "Performance statistics",
     "dashboard": {      
       "lastTradesTable": {

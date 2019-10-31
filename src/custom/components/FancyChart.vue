@@ -6,12 +6,12 @@
       <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updateTs | chartUpdateTsText}}</h5>
     </div>
     <br/>
-    <div class="chart-area" style="height: 400px">
+    <div class="chart-area" style="height: 425px">
       <section v-if="isError" style="text-align: center">
-        <p >{{$t('errorPrefix') + " " + $t('dashboard.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
+        <p>{{$t('errorPrefix') + " " + fullTitle + ". " + $t('errorSuffix')}}</p>
       </section>
       <section v-else>
-        <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px;position: absolute;top: 40%;left: 45%;" />
+        <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
         <line-chart ref="bigChart"
                     chart-id="big-line-chart"
                     :chart-data="chartData"
@@ -55,10 +55,15 @@ export default {
     LineChart,
     DualRingLoader
   },
+
   props: {
     title: {
       type: String,
       description: "Chart title"
+    },
+    fullTitle: {
+      type: String,
+      description: "Longer chart title"
     },
     showTitle: {
       type: Boolean,
@@ -73,6 +78,7 @@ export default {
       description: "URLs to API data sources"
     }
   },
+
   data() {
     return {
       updateTs: null,
@@ -86,7 +92,7 @@ export default {
             [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130]
           ],
           activeIndex: 0,
-          extraOptions: chartConfigs.purpleChartOptions,
+          extraOptions: this.title.includes("UVXY") ? chartConfigs.purpleChartOptionsUVXY : chartConfigs.purpleChartOptions,
           gradientColors: config.colors.primaryGradient,
           gradientStops: [1, 0.4, 0],
           categories: []
@@ -100,17 +106,19 @@ export default {
       }
     }
   },
+
   computed: {
     isError() {
       return !this.chartData.datasets[0].data.length && this.error
     }
   },
+
   methods: {
-    initTablesData() {
-      this.loadTablesData();
+    initData() {
+      this.loadData();
         
       setInterval(() => { 
-        this.loadTablesData();
+        this.loadData();
       }, constants.dataReloadInterval );
     },
 
@@ -139,7 +147,7 @@ export default {
       return val
     },
 
-    loadTablesData() {
+    loadData() {
       this.chartData = {
         datasets: [{
           ...defaultDatasets,
@@ -206,7 +214,7 @@ export default {
   },
 
   mounted() {
-    this.initTablesData();
+    this.initData();
   }
 };
 </script>

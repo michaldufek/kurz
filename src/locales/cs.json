@@ -43,7 +43,7 @@
   },
   "dashboard": { 
     "title": "Dashboard",
-    "chart": "Graf složené equity",
+    "chart": "graf složené equity",
     "performanceStatistics": "Výkon - statistiky",
     "dashboard": {      
       "lastTradesTable": {
