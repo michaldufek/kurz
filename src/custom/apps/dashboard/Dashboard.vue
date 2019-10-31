@@ -3,18 +3,14 @@
     <audio id="open" src="media/open.mp3" preload="auto"></audio>
     <audio id="win" src="media/win.mp3" preload="auto"></audio>
     <audio id="lose" src="media/lose.mp3" preload="auto"></audio>
-    <audio id="breakEven" src="media/breakEven.mp3" preload="auto"></audio>
-    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
+    <audio id="breakEven" src="media/breakEven.mp3" preload="auto"></audio>    
     <audio id="jumpOnAsset" src="media/jumpOnAsset.mp3" preload="auto"></audio>
     <audio id="jumpOnSP500" src="media/jumpOnSP500.mp3" preload="auto"></audio>
 
     <div class="row">
       <div class="col-12">
-        <fancy-chart :chartData="chart.data"
-                     :updateTs="chart.updateTs"
-                     :live="chart.live"
-                     :loading="statsLoading"
-                     :error="statsError">
+        <fancy-chart title="Dashboard"
+                     :apiUrls="chartApiUrls">
         </fancy-chart>
       </div>
     </div>
@@ -92,7 +88,6 @@
 <script>
   import { BaseTable } from "@/components";
   import FancyChart from '@/custom/components/FancyChart';
-  import config from '@/config';
   import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';
   import constants from '@/custom/assets/js/constants';
@@ -112,16 +107,6 @@
         statsLoading: true,
         statsError: false,
         ordersError: false,
-        chart: {
-          updateTs: null,
-          live: false,
-          data: {
-            datasets: [{
-              data: []
-            }],
-            labels: []
-          }        
-        },
         heardOrders: {
           open: [],
           win: [],
@@ -148,8 +133,18 @@
           newTable.push(newRow)
         })
         return newTable
+      },
+
+      chartApiUrls() {
+        // get just urls from apiUrls dictionary
+        let urls = []
+        for (const [key, value] of Object.entries(constants.apiUrls)) {
+          urls.push(value + 2)
+        }
+        return urls
       }
     },
+
     methods: {
       initTradesOrdersTablesData() {        
         this.loadTradesOrdersTablesData();
@@ -159,11 +154,11 @@
         }, constants.dataReloadInterval );
       },
 
-      initStatsTablesData() {
-        this.loadStatsTablesData();
+      initStatsTableData() {
+        this.loadStatsTableData();
         
         setInterval(() => { 
-          this.loadStatsTablesData();
+          this.loadStatsTableData();
         }, constants.dataReloadInterval );
       },
 
@@ -252,7 +247,7 @@
         });
       },
 
-      loadStatsTablesData() {
+      loadStatsTableData() {
         this.statsLoading = true
 
         axios
@@ -297,47 +292,23 @@
             jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[3].toLowerCase()] = tableData[2][line.toLowerCase()];
 
             statsTableData.push(jsonObj);
-          });
-
-          let chartData = {
-            datasets: [{
-              fill: true,
-              borderColor: config.colors.primary,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              pointBackgroundColor: config.colors.primary,
-              pointBorderColor: 'rgba(255,255,255,0)',
-              pointHoverBackgroundColor: config.colors.primary,
-              pointBorderWidth: 20,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 15,
-              pointRadius: 4,
-              data: response.data.equity
-            }],
-            labels: helper.formatDateTimes(response.data.time)
-          }
+          });          
 
           this.statsData = statsTableData
-          this.chart.data = chartData;
-          this.chart.live = !response.data.WARNING
-          this.chart.updateTs = response.data.report_timestamp          
         })
         .catch(error => {
           console.log(error);
-
           this.statsError = true
-          this.chart.live = false
-          this.notify('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(Dashboard chart)')
         })
         .finally(() => {
           this.statsLoading = false          
         });
       }
     },    
+    
     mounted() {
       this.initTradesOrdersTablesData();
-      this.initStatsTablesData();
+      this.initStatsTableData();
       this.initSoundSignals();
     }
   };
