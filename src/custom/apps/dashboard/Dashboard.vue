@@ -9,7 +9,8 @@
 
     <div class="row">
       <div class="col-12">
-        <fancy-chart :apiUrls="chartApiUrls">
+        <fancy-chart title="Dashboard"
+                     :apiUrls="chartApiUrls">
         </fancy-chart>
       </div>
     </div>
@@ -143,6 +144,7 @@
         return urls
       }
     },
+
     methods: {
       initTradesOrdersTablesData() {        
         this.loadTradesOrdersTablesData();
@@ -303,6 +305,7 @@
         });
       }
     },    
+    
     mounted() {
       this.initTradesOrdersTablesData();
       this.initStatsTableData();

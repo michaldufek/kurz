@@ -22,59 +22,76 @@
     components: {
       StrategyCard
     },
+
     data() {
       return {
-        strategiesData: []
+        strategiesData: [],
+        runningStrategies: []
       };
     },
+
     methods: {
       loadStrategy(title, apiUrl, strategyNr) {
-        let reportData = {
-          title: title,
-          loading: true,
-          apiUrl: [apiUrl]
-        }
-        if (strategyNr === undefined) {          
-          // push it so it appears in data (ie. in child component) and save its number to update it after loaded
-          strategyNr = this.strategiesData.push(reportData) - 1;
-        }
-
-        axios
-        .get(apiUrl)
-        .then(response => {
-          reportData.statsData = {
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            sr: response.data.sharpe,
-            maxdd: response.data.maxdd,
-            equityOuts: -33.821
+        return new Promise((resolve, reject) => {
+          let reportData = {
+            title: title,
+            loading: true,
+            apiUrl: [apiUrl]
           }
-        })
-        .catch(error => {
-          console.log(error);
-          reportData.error = true
-        })
-        .finally(() => {
-          reportData.loading = false;
-          
-          // data loaded OK so update child component
-          this.strategiesData[strategyNr] = reportData;
+          if (strategyNr === undefined) {          
+            // push it so it appears in data (ie. in child component) and save its number to update it after loaded
+            strategyNr = this.strategiesData.push(reportData) - 1;
+          }
 
-          return strategyNr
-        });
+          axios
+          .get(apiUrl)
+          .then(response => {
+            reportData.statsData = {
+              ytd: response.data.ytd,
+              cagr: response.data.cagr,
+              sr: response.data.sharpe,
+              maxdd: response.data.maxdd,
+              equityOuts: -33.821
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            reportData.error = true
+
+            // reject()
+          })
+          .finally(() => {
+            reportData.loading = false;            
+            // data loaded OK so update child component
+            this.strategiesData[strategyNr] = reportData;
+
+            resolve(strategyNr)
+          });
+        })
       },
       
       initStrategies() { 
         for (const [key, value] of Object.entries(constants.apiUrls)) {
-          let strategyNr = this.loadStrategy(key, value + 2);
-
-          // reload this strategy data in intervals
-          setInterval(() => { 
-            this.loadStrategy(key, value + 2);
-          }, constants.dataReloadInterval );
+          if (!(key in this.runningStrategies)) {
+            this.loadStrategy(key, value + 2)
+            .then(strategyNr => {
+              this.runningStrategies.push(key)
+              // reload this strategy data in intervals
+              setInterval(() => { 
+                this.loadStrategy(key, value + 2, strategyNr);
+              }, constants.dataReloadInterval );
+            })
+            // .catch(() => {
+            //   // or try to init strategies again after timeout
+            //   setTimeout(() => { 
+            //     this.initStrategies();
+            //   }, constants.dataReloadInterval / 2 );
+            // })
+          }
         }
       }
     },
+
     mounted() {
       this.initStrategies();
     }

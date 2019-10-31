@@ -33,6 +33,21 @@ import config from '@/config';
 import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
 
+const defaultDatasets = {
+  fill: true,
+  borderColor: config.colors.primary,
+  borderWidth: 2,
+  borderDash: [],
+  borderDashOffset: 0.0,
+  pointBackgroundColor: config.colors.primary,
+  pointBorderColor: 'rgba(255,255,255,0)',
+  pointHoverBackgroundColor: config.colors.primary,
+  pointBorderWidth: 20,
+  pointHoverRadius: 4,
+  pointHoverBorderWidth: 15,
+  pointRadius: 4
+}
+
 
 export default {
   name: "fancy-chart",
@@ -78,22 +93,11 @@ export default {
       },
       chartData: {
         datasets: [{
-          fill: true,
-          borderColor: config.colors.primary,
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: config.colors.primary,
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: config.colors.primary,
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
+          ...defaultDatasets,
           data: []
         }],
-        labels: []
-      }        
+        labels: []      
+      }
     }
   },
   computed: {
@@ -110,21 +114,35 @@ export default {
       }, constants.dataReloadInterval );
     },
 
+    nearestValue(label, labels, data) {
+      // finds label's value or nearest left neighbour
+      let val = 0
+      let i = 0
+
+      labels.forEach(oldLabel => {
+        if (label === oldLabel) {
+          // label is from this array
+          val = data[i]
+        } else if (label > oldLabel) {
+          // we are in another array so get last known value
+          if (i === labels.length - 1) {
+            // at the end of array
+            val = data[i]
+          } else if (label < labels[i+1]) {            
+            val = data[i]
+          }
+        }
+        // otherwise iterate further
+        i++
+      })
+
+      return val
+    },
+
     loadTablesData() {
       this.chartData = {
         datasets: [{
-          fill: true,
-          borderColor: config.colors.primary,
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: config.colors.primary,
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: config.colors.primary,
-          pointBorderWidth: 20,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 4,
+          ...defaultDatasets,
           data: []
         }],
         labels: []
@@ -141,45 +159,8 @@ export default {
           let allData = []
           // aggregate values for all dates
           allLabels.forEach(label => {
-            let aggValue = 0
-            let i = 0
-            this.chartData.labels.forEach(oldLabel => {
-              if (label === oldLabel) {
-                // label is from this array
-                aggValue = this.chartData.datasets[0].data[i]
-              } else if (label > oldLabel) {
-                // we are in another array so get last known value
-                if (i === this.chartData.labels.length - 1) {
-                  // at the end of array
-                  aggValue = this.chartData.datasets[0].data[i]
-                } else if (label < this.chartData.labels[i+1]) {
-                  aggValue = this.chartData.datasets[0].data[i]
-                }
-              }
-              // otherwise iterate further
-              i++
-            })
-
-            // and same for other array but with value aggregation
-            i = 0
-            helper.formatDateTimes(response.data.time).forEach(oldLabel => {
-              if (label === oldLabel) {
-                // label is from this array
-                aggValue += response.data.equity[i]
-              } else if (label > oldLabel) {
-                // we are in another array so get last known value
-                if (i === helper.formatDateTimes(response.data.time).length - 1) {
-                  // at the end of array
-                  aggValue += response.data.equity[i]
-                } else if (label < helper.formatDateTimes(response.data.time)[i+1]) {
-                  if (i !== 0) {
-                    aggValue += response.data.equity[i-1]
-                  }
-                }
-              }
-              // otherwise iterate further
-              i++
-            })
+            let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[0].data)
+                            + this.nearestValue(label, helper.formatDateTimes(response.data.time), response.data.equity)
 
             // add to final data array
             allData.push(aggValue)
@@ -187,18 +168,7 @@ export default {
 
           this.chartData = {
             datasets: [{
-              fill: true,
-              borderColor: config.colors.primary,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              pointBackgroundColor: config.colors.primary,
-              pointBorderColor: 'rgba(255,255,255,0)',
-              pointHoverBackgroundColor: config.colors.primary,
-              pointBorderWidth: 20,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 15,
-              pointRadius: 4,
+              ...defaultDatasets,
               data: allData
             }],
             labels: allLabels
@@ -206,13 +176,17 @@ export default {
 
           this.error = false
           this.live = this.live || !response.data.WARNING
-          // this.updateTs = Math.max(response.data.report_timestamp, this.updateTs)
+
+          if (!this.updateTs) {
+            this.updateTs = response.data.report_timestamp
+          }
+          this.updateTs = [this.updateTs, response.data.report_timestamp].sort()[1] // get last report TimeStamp
         })
         .catch(error => {
           console.log(error);
 
-          this.error = this.error && true // ??
-          // this.live = false
+          this.error = this.error && true // to-do: test it works OK
+          // this.live = false            // to-do: ------ || ------
           this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' chart)')
         })
         .finally(() => {
