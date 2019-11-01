@@ -4,7 +4,7 @@
     <audio id="win" src="media/win.mp3" preload="auto"></audio>
     <audio id="lose" src="media/lose.mp3" preload="auto"></audio>
     <audio id="breakEven" src="media/breakEven.mp3" preload="auto"></audio>    
-    <audio id="jumpOnAsset" src="media/jumpOnAsset.mp3" preload="auto"></audio>
+    <!-- <audio id="jumpOnAsset" src="media/jumpOnAsset.mp3" preload="auto"></audio> -->
     <audio id="jumpOnSP500" src="media/jumpOnSP500.mp3" preload="auto"></audio>
 
     <div class="row">
@@ -147,7 +147,7 @@
 
       checkOrdersStatusChange() {
         axios
-        .get(constants.apiUrls["MF Report"])
+        .get(constants.reportUrls["MF Report"])
         .then(response => {
           response.data.openTrades.forEach(openTrade => {
             if (!(openTrade.order.orderId in heardOrders.open) && openTrade.orderStatus === "Submitted") {
@@ -171,7 +171,7 @@
         this.statsLoading = true
 
         axios
-        .get(constants.apiUrls["MF Report"] + 2)
+        .get(constants.reportUrls["MF Report"] + 2)
         .then(response => {
           let tableData = [];
           let statsTableData = []

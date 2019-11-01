@@ -130,55 +130,7 @@ export default {
           console.log(error);
 
           this.error = this.error && true // to-do: test it works OK
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' chart)')
-        })
-        .finally(() => {
-          this.loading = false
-        });
-      })
-    },
-
-    loadData() {
-      this.apiUrls.forEach(apiUrl => {
-        this.loading = true
-
-        axios
-        .get(apiUrl)
-        .then(response => {
-          // add new dates and sort it
-          let allLabels = this.chartData.labels.concat(helper.formatDateTimes(response.data.time)).sort()
-          let allData = []
-          // aggregate values for all dates
-          allLabels.forEach(label => {
-            let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[0].data)
-                            + this.nearestValue(label, helper.formatDateTimes(response.data.time), response.data.equity)
-
-            // add to final data array
-            allData.push(aggValue)
-          })
-
-          this.chartData = {
-            datasets: [{
-              ...defaultDatasets,
-              data: allData
-            }],
-            labels: allLabels
-          }        
-
-          this.error = false
-          this.live = this.live || !response.data.WARNING
-
-          if (!this.updateTs) {
-            this.updateTs = response.data.report_timestamp
-          }
-          this.updateTs = [this.updateTs, response.data.report_timestamp].sort()[1] // get last report TimeStamp
-        })
-        .catch(error => {
-          console.log(error);
-
-          this.error = this.error && true // to-do: test it works OK
-          // this.live = false            // to-do: ------ || ------
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' chart)')
+          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' table)')
         })
         .finally(() => {
           this.loading = false

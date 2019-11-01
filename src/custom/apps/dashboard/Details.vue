@@ -71,7 +71,7 @@
       },
       
       initStrategies() { 
-        for (const [key, value] of Object.entries(constants.apiUrls)) {
+        for (const [key, value] of Object.entries(constants.reportUrls)) {
           if (!(key in this.runningStrategies)) {
             this.loadStrategy(key, value + 2)
             .then(strategyNr => {
