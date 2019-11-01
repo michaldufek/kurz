@@ -5,8 +5,8 @@ import Cookies from 'js-cookie'
 
 const urlBase = "https://frs.analyticalplatform.com/rest-auth/"
 
-const loginRoutine = (userName, email, pass) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'login/', data: { "username": userName, "email": email, "password": pass }, method: 'POST' })
+const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
+  axios({url: urlBase + 'login/', data: { "email": email, "password": pass }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('token', token) // store the token in localstorage
@@ -66,8 +66,8 @@ const resetPassRoutine = email => new Promise ((resolve, reject) => {
   })
 });
 
-const registerRoutine = (userName, email, pass1, pass2) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'registration/', data: { "username": userName, "email": email, "password1": pass1, "password2": pass2 }, method: 'POST' })
+const registerRoutine = (email, pass1, pass2) => new Promise ((resolve, reject) => {
+  axios({url: urlBase + 'registration/', data: { "email": email, "password1": pass1, "password2": pass2 }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -112,7 +112,7 @@ export default {
       };
     },
   
-    login (userName, email, pass, cb) {
+    login (email, pass, cb) {
       cb = arguments[arguments.length - 1]
       if (localStorage.token) {
         if (cb) cb(true)
@@ -132,7 +132,7 @@ export default {
           }
         })
       } else {
-        loginRoutine(userName, email, pass)
+        loginRoutine(email, pass)
         .then(() => {
           if (cb) cb(true)
           this.onChange(true)
@@ -230,9 +230,9 @@ export default {
       })
     },
 
-    register (userName, email, pass1, pass2, cb) {
+    register (email, pass1, pass2, cb) {
       cb = arguments[arguments.length - 1]
-      registerRoutine(userName, email, pass1, pass2)
+      registerRoutine(email, pass1, pass2)
       .then(res => {
         if (cb) cb(true, i18n.t('login.registrationSent'))
         this.onChange(true)
@@ -259,12 +259,6 @@ export default {
     parseError(err, verbose=true) {
       let msg = ''
 
-      if ("username" in err.response.data) {
-        if (verbose) {
-          msg += i18n.t('login.userName') + ': ' 
-        }
-        msg += err.response.data.username[0] + '\n'
-      }
       if ("email" in err.response.data) {
         if (verbose) {
           msg += i18n.t('login.email') + ': ' 

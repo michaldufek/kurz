@@ -33,14 +33,7 @@
                 <form role="form">
                     <base-input alternative
                                 class="mb-3"
-                                :placeholder="$t('login.userName')"
-                                addon-left-icon="ni ni-email-83"
-                                v-model="userName"
-                                @keyup.enter="logIn">
-                    </base-input>
-                    <base-input alternative
-                                class="mb-3"
-                                :placeholder="$t('login.email')"
+                                :placeholder="$t('login.emailExample')"
                                 addon-left-icon="ni ni-email-83"
                                 v-model="email"
                                 @keyup.enter="logIn">
@@ -82,14 +75,7 @@
                 <form role="form">
                     <base-input alternative
                                 class="mb-3"
-                                :placeholder="$t('login.userName')"
-                                addon-left-icon="ni ni-email-83"
-                                v-model="userName"
-                                @keyup.enter="register">
-                    </base-input>
-                    <base-input alternative
-                                class="mb-3"
-                                :placeholder="$t('login.email')"
+                                :placeholder="$t('login.emailExample')"
                                 addon-left-icon="ni ni-email-83"
                                 v-model="email"
                                 @keyup.enter="register">
@@ -193,7 +179,6 @@ export default {
             showResetPass: { value: false },
             showVerifyRegister: { value: false }
         },
-        userName: '',
         email: '',
         pass: '',
         pass1: '',
@@ -213,7 +198,7 @@ export default {
         },
 
         logIn () {
-            auth.login(this.userName, this.email, this.pass, (loggedIn, err) => {
+            auth.login(this.email, this.pass, (loggedIn, err) => {
                 if (!loggedIn) {                    
                     this.shakeModal()
                     this.message = err
@@ -243,7 +228,7 @@ export default {
             })
         },
         register () {
-            auth.register(this.userName, this.email, this.pass1, this.pass2, (registered, msg) => {
+            auth.register(this.email, this.pass1, this.pass2, (registered, msg) => {
                 if (!registered) {
                     this.shakeModal()
                     this.error = true
