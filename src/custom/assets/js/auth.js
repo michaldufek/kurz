@@ -2,11 +2,11 @@
 import axios from '@/../node_modules/axios';
 import i18n from "@/i18n"
 import Cookies from 'js-cookie'
+import constants from '@/custom/assets/js/constants';
 
-const urlBase = "https://frs.analyticalplatform.com/rest-auth/"
 
-const loginRoutine = (userName, email, pass) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'login/', data: { "username": userName, "email": email, "password": pass }, method: 'POST' })
+const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
+  axios({url: constants.authUrl + '/login/', data: { "email": email, "password": pass }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('token', token) // store the token in localstorage
@@ -19,7 +19,7 @@ const loginRoutine = (userName, email, pass) => new Promise ((resolve, reject) =
 });
 
 const loginFacebookRoutine = (token, code) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'facebook/', data: { "access_token": token, "code": code }, method: 'POST' })
+  axios({url: constants.authUrl + '/facebook/', data: { "access_token": token, "code": code }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('token', token) // store the token in localstorage
@@ -32,7 +32,7 @@ const loginFacebookRoutine = (token, code) => new Promise ((resolve, reject) => 
 });
 
 const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'twitter/', data: { "access_token": token, "token_secret": secret }, method: 'POST' })
+  axios({url: constants.authUrl + '/twitter/', data: { "access_token": token, "token_secret": secret }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('token', token) // store the token in localstorage
@@ -47,7 +47,7 @@ const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) =>
 const logoutRoutine = () => new Promise ((resolve, reject) => {
   localStorage.removeItem('token')
 
-  axios({url: urlBase + 'logout/', method: 'POST' })
+  axios({url: constants.authUrl + '/logout/', method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -57,7 +57,7 @@ const logoutRoutine = () => new Promise ((resolve, reject) => {
 });
 
 const resetPassRoutine = email => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'password/reset/', data: { "email": email }, method: 'POST' })
+  axios({url: constants.authUrl + '/password/reset/', data: { "email": email }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -66,8 +66,8 @@ const resetPassRoutine = email => new Promise ((resolve, reject) => {
   })
 });
 
-const registerRoutine = (userName, email, pass1, pass2) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'registration/', data: { "username": userName, "email": email, "password1": pass1, "password2": pass2 }, method: 'POST' })
+const registerRoutine = (email, pass1, pass2) => new Promise ((resolve, reject) => {
+  axios({url: constants.authUrl + '/registration/', data: { "email": email, "password1": pass1, "password2": pass2 }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -77,7 +77,7 @@ const registerRoutine = (userName, email, pass1, pass2) => new Promise ((resolve
 });
 
 const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'registration/verify-email/', data: { "key": key }, method: 'POST' })
+  axios({url: constants.authUrl + '/registration/verify-email/', data: { "key": key }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -87,7 +87,7 @@ const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
 });
 
 const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, reject) => {
-  axios({url: urlBase + 'password/reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
+  axios({url: constants.authUrl + '/password/reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -112,7 +112,7 @@ export default {
       };
     },
   
-    login (userName, email, pass, cb) {
+    login (email, pass, cb) {
       cb = arguments[arguments.length - 1]
       if (localStorage.token) {
         if (cb) cb(true)
@@ -132,7 +132,7 @@ export default {
           }
         })
       } else {
-        loginRoutine(userName, email, pass)
+        loginRoutine(email, pass)
         .then(() => {
           if (cb) cb(true)
           this.onChange(true)
@@ -230,9 +230,9 @@ export default {
       })
     },
 
-    register (userName, email, pass1, pass2, cb) {
+    register (email, pass1, pass2, cb) {
       cb = arguments[arguments.length - 1]
-      registerRoutine(userName, email, pass1, pass2)
+      registerRoutine(email, pass1, pass2)
       .then(res => {
         if (cb) cb(true, i18n.t('login.registrationSent'))
         this.onChange(true)
@@ -259,12 +259,6 @@ export default {
     parseError(err, verbose=true) {
       let msg = ''
 
-      if ("username" in err.response.data) {
-        if (verbose) {
-          msg += i18n.t('login.userName') + ': ' 
-        }
-        msg += err.response.data.username[0] + '\n'
-      }
       if ("email" in err.response.data) {
         if (verbose) {
           msg += i18n.t('login.email') + ': ' 

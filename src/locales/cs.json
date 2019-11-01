@@ -26,8 +26,8 @@
     "signIn": "Přihlásit se",
     "with": "pomocí",
     "signInCredentials": "Nebo přímo",
-    "userName": "Uživatelské jméno",
-    "email": "joe@example.com",
+    "email": "Email",
+    "emailExample": "joe@example.com",
     "password": "Heslo",
     "passwordAgain": "Heslo znovu",
     "resetPass": "Resetovat Heslo",
@@ -43,7 +43,7 @@
   },
   "dashboard": { 
     "title": "Dashboard",
-    "chart": "Graf složené equity",
+    "chart": "graf složené equity",
     "performanceStatistics": "Výkon - statistiky",
     "dashboard": {      
       "lastTradesTable": {

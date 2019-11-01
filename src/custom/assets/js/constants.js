@@ -1,3 +1,5 @@
+const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com"
+
 export default { 
     // interval for realoading charts and tables data from sources
     dataReloadInterval: 1000 * 60 * 10, // 10 minutes 
@@ -11,8 +13,12 @@ export default {
     // time of effect of login forms showing
     cardlShowInterval: 230,
 
-    apiUrls: {
-        "MF Report": "https://app1.objectively.info/api/mfreport",
-        "UVXY Report": "https://app1.objectively.info/api/uvxyreport"
+    tickerUrl: baseUrl + "/sp/Ticker",
+
+    authUrl: baseUrl + "/rest-auth",
+
+    reportUrls: {
+        "MF Report": baseUrl + "/api/xreport/old/mfreport",
+        "UVXY Report": baseUrl + "/api/xreport/old/uvxyreport"
     }
 }

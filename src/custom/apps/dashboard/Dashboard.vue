@@ -4,59 +4,35 @@
     <audio id="win" src="media/win.mp3" preload="auto"></audio>
     <audio id="lose" src="media/lose.mp3" preload="auto"></audio>
     <audio id="breakEven" src="media/breakEven.mp3" preload="auto"></audio>    
-    <audio id="jumpOnAsset" src="media/jumpOnAsset.mp3" preload="auto"></audio>
+    <!-- <audio id="jumpOnAsset" src="media/jumpOnAsset.mp3" preload="auto"></audio> -->
     <audio id="jumpOnSP500" src="media/jumpOnSP500.mp3" preload="auto"></audio>
 
     <div class="row">
       <div class="col-12">
         <fancy-chart title="Dashboard"
-                     :apiUrls="chartApiUrls">
+                     :fullTitle="$t('dashboard.chart')"
+                     :apiUrls="apiUrls">
         </fancy-chart>
       </div>
-    </div>
-  
+    </div>  
 
      <div class="row">      
       <div class="col-lg-4 col-md-12">
-        <card class="card">
-          <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.lastTradesTable.title')}}</h4>
-          <div>
-            <section v-if="ordersError">
-              <p>{{$t('errorPrefix') + " " + $t('dashboard.dashboard.lastTradesTable.title').toLowerCase() + ". " + $t('errorSuffix')}}</p>
-            </section>
-            <section v-else>
-              <div v-if="ordersLoading">{{$t('loading') + " " + $t('dashboard.dashboard.lastTradesTable.title').toLowerCase() + "..."}}</div>
-              <div v-else>
-                <base-table :data="tradesData"
-                            :titles="$t('terms.tradeTypes')"
-                            :columns="$t('dashboard.dashboard.lastTradesTable.columns')"
-                            thead-classes="text-primary">
-                </base-table>
-              </div>
-            </section>
-          </div>
-        </card>
+        <fancy-table :title="$t('dashboard.dashboard.lastTradesTable.title')"
+                     :apiUrls="apiUrls"
+                     :titles="$t('terms.tradeTypes')"
+                     :columns="$t('dashboard.dashboard.lastTradesTable.columns')">
+        </fancy-table>        
+        <!-- :data="tradesData" -->
       </div>
 
       <div class="col-lg-4 col-md-12">  
-        <card class="card">
-          <h4 slot="header" class="card-title">{{$t('dashboard.dashboard.pendingOrdersTable.title')}}</h4>
-          <div>
-            <section v-if="ordersError">
-              <p>{{$t('errorPrefix') + " " + $t('dashboard.dashboard.pendingOrdersTable.title').toLowerCase() + ". " + $t('errorSuffix')}}</p>
-            </section>
-            <section v-else>
-              <div v-if="ordersLoading">{{$t('loading') + " " + $t('dashboard.dashboard.pendingOrdersTable.title').toLowerCase() + "..."}}</div>
-              <div v-else>
-                <base-table :data="ordersData"
-                            :titles="$t('terms.tradeTypes')"
-                            :columns="$t('dashboard.dashboard.pendingOrdersTable.columns')"
-                            thead-classes="text-primary">
-                </base-table>
-              </div>
-            </section>
-          </div>
-        </card>
+        <base-table :title="$t('dashboard.dashboard.pendingOrdersTable.title')"
+                    :apiUrls="apiUrls"
+                    :titles="$t('terms.tradeTypes')"
+                    :columns="$t('dashboard.dashboard.pendingOrdersTable.columns')">
+        </base-table>
+        <!-- :data="ordersData" -->
       </div>
 
       <div class="col-lg-4 col-md-12">
@@ -68,15 +44,12 @@
               <p>{{$t('errorPrefix') + " " + $t('dashboard.performanceStatistics').toLowerCase() + ". " + $t('errorSuffix')}}</p>
             </section>
             <section v-else>
-              <div v-if="statsLoading">{{$t('loading') + " " + $t('dashboard.performanceStatistics').toLowerCase() + "..."}}</div>
-              <div v-else>
-                <base-table :data="roundStatsData"
-                            :titles="$t('terms.perfStats')"
-                            :columns="$t('dashboard.dashboard.performanceStatisticsTable.columns')"
-                            thead-classes="text-primary">
-                            <!--  -->
-                </base-table>
-              </div>
+              <DualRingLoader v-if="statsLoading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
+              <base-table :data="roundStatsData"
+                          :titles="$t('terms.perfStats')"
+                          :columns="$t('dashboard.dashboard.performanceStatisticsTable.columns')"
+                          thead-classes="text-primary">
+              </base-table>
             </section>
           </div>
         </card>
@@ -86,8 +59,10 @@
   </div>
 </template>
 <script>
-  import { BaseTable } from "@/components";
   import FancyChart from '@/custom/components/FancyChart';
+  import FancyTable from '@/custom/components/FancyTable';
+  import { BaseTable } from "@/components";
+
   import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';
   import constants from '@/custom/assets/js/constants';
@@ -96,6 +71,7 @@
   export default {
     components: {
       FancyChart,
+      FancyTable,
       BaseTable
     },
     data() {
@@ -135,7 +111,7 @@
         return newTable
       },
 
-      chartApiUrls() {
+      apiUrls() {
         // get just urls from apiUrls dictionary
         let urls = []
         for (const [key, value] of Object.entries(constants.apiUrls)) {
@@ -146,14 +122,6 @@
     },
 
     methods: {
-      initTradesOrdersTablesData() {        
-        this.loadTradesOrdersTablesData();
-
-        setInterval(() => { 
-          this.loadTradesOrdersTablesData();
-        }, constants.dataReloadInterval );
-      },
-
       initStatsTableData() {
         this.loadStatsTableData();
         
@@ -179,7 +147,7 @@
 
       checkOrdersStatusChange() {
         axios
-        .get(constants.apiUrls["MF Report"])
+        .get(constants.reportUrls["MF Report"])
         .then(response => {
           response.data.openTrades.forEach(openTrade => {
             if (!(openTrade.order.orderId in heardOrders.open) && openTrade.orderStatus === "Submitted") {
@@ -197,61 +165,13 @@
             }
           })
         })
-      },
-
-      loadTradesOrdersTablesData() {
-        this.ordersLoading = true
-        // to-do: get right sources
-
-        axios
-        .get(constants.apiUrls["MF Report"])
-        .then(response => {
-          let tradesTableData = [];
-          let ordersTableData = [];
-
-          response.data.openTrades.forEach(openTrade => {
-            let row = {}
-
-            // symbol: openTrade.contract.symbol,
-            row[this.$t('dashboard.dashboard.lastTradesTable.columns')[0].toLowerCase()] = helper.formatDateOnly(openTrade.contract.lastTradeDateOrContractMonth) // date time
-            row[this.$t('dashboard.dashboard.lastTradesTable.columns')[1].toLowerCase()] = openTrade.order.action // trade type
-            row[this.$t('dashboard.dashboard.lastTradesTable.columns')[2].toLowerCase()] = openTrade.order.auxPrice // result (usd)
-            row[this.$t('dashboard.dashboard.lastTradesTable.columns')[3].toLowerCase()] = null // result(%)
-
-            tradesTableData.push(row);
-          });
-
-          response.data.fills.forEach(fill => {
-            let row = {}
-            row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[0].toLowerCase()] = helper.formatDate(fill.time) // date
-            row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[1].toLowerCase()] = fill.execution.side // trade type
-            row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[2].toLowerCase()] = null // target (usd)
-            row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[3].toLowerCase()] = null // stop loss (usd)
-            // result: fill.execution.price,
-            // PnL: fill.commissionReport.realizedNL
-
-            ordersTableData.push(row);        
-
-            this.tradesData = tradesTableData
-            this.ordersData = ordersTableData
-          });     
-        })
-        .catch(error => {
-          console.log(error);
-
-          this.ordersError = true;
-          this.notify('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(Dashboard orders)')
-        })
-        .finally(() => {
-          this.ordersLoading = false
-        });
-      },
+      },      
 
       loadStatsTableData() {
         this.statsLoading = true
 
         axios
-        .get(constants.apiUrls["MF Report"] + 2)
+        .get(constants.reportUrls["MF Report"] + 2)
         .then(response => {
           let tableData = [];
           let statsTableData = []
@@ -305,9 +225,8 @@
         });
       }
     },    
-    
+
     mounted() {
-      this.initTradesOrdersTablesData();
       this.initStatsTableData();
       this.initSoundSignals();
     }

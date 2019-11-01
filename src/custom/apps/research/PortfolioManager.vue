@@ -68,15 +68,15 @@
         });
       },
       initDesignedPortfolioData() {
-        this.initPortfolioData(constants.apiUrls[0] + 2, this.designedPortfolioData);
+        this.initPortfolioData(constants.reportUrls[0] + 2, this.designedPortfolioData);
         // this.designedPortfolioData.enableStore = true;
       },
       initLivePortfolioData() {
-        this.initPortfolioData(constants.apiUrls[1] + 2, this.livePortfolioData);     
+        this.initPortfolioData(constants.reportUrls[1] + 2, this.livePortfolioData);     
         this.livePortfolioData.strategies.enableLive = false;
       },
       initOptimalPortfolioData(){
-        // this.initPortfolioData(constants.apiUrls[0] + 2, this.optimalPortfolioData);
+        // this.initPortfolioData(constants.reportUrls[0] + 2, this.optimalPortfolioData);
         // this.optimalPortfolioData.strategies.enableLive = false;
         // this.optimalPortfolioData.strategies.enableStore = false;
       },

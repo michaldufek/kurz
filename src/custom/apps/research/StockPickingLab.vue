@@ -62,6 +62,7 @@
   import { BaseRadio } from "@/components";
   import StockCard from '@/custom/components/Cards/StockCard.vue';
   import axios from '@/../node_modules/axios';
+  import constants from '@/custom/assets/js/constants';
 
   export default {
     name: "filters",
@@ -122,7 +123,7 @@
 
       initStocksData() {
         axios
-        .get("https://app1.objectively.info/sp/Ticker")
+        .get(constants.tickerUrl)
         .then(response => {
           response.data.results.forEach(result => {
             this.stocksData.push({

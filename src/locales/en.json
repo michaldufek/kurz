@@ -26,8 +26,8 @@
     "signIn": "Sign in",
     "with": "with",
     "signInCredentials": "Or sign in with credentials",
-    "userName": "User name",
-    "email": "joe@example.com",
+    "email": "Email",
+    "emailExample": "joe@example.com",
     "password": "Password",
     "passwordAgain": "Password again",
     "resetPass": "Reset Password",
@@ -43,7 +43,7 @@
   },
   "dashboard": { 
     "title": "Dashboard",
-    "chart": "Chart of composite equity",
+    "chart": "chart of composite equity",
     "performanceStatistics": "Performance statistics",
     "dashboard": {      
       "lastTradesTable": {
