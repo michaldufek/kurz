@@ -71,7 +71,7 @@
       valueTitle(item, column) {
         let value = this.itemValue(item, column)
 
-        if (!value || !this.titles) {
+        if (!value || !(value instanceof String) || !this.titles) {
           return null
         }
         return this.titles[value.toLowerCase()];

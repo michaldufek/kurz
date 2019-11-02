@@ -11,48 +11,40 @@
       <div class="col-12">
         <fancy-chart title="Dashboard"
                      :fullTitle="$t('dashboard.chart')"
-                     :apiUrls="apiUrls">
+                     :apiUrls="apiUrls(forChart=true)">
         </fancy-chart>
       </div>
     </div>  
 
      <div class="row">      
       <div class="col-lg-4 col-md-12">
-        <fancy-table :title="$t('dashboard.dashboard.lastTradesTable.title')"
-                     :apiUrls="apiUrls"
+        <fancy-table :title="$t('dashboard.lastTradesTable.title')"
+                     :apiUrls="apiUrls()"
+                     :rowsCreator="tradesRowsCreator"
+                     :aggregator="tradesAggregator"
                      :titles="$t('terms.tradeTypes')"
-                     :columns="$t('dashboard.dashboard.lastTradesTable.columns')">
-        </fancy-table>        
-        <!-- :data="tradesData" -->
+                     :columns="$t('dashboard.lastTradesTable.columns')">
+        </fancy-table>
       </div>
 
       <div class="col-lg-4 col-md-12">  
-        <base-table :title="$t('dashboard.dashboard.pendingOrdersTable.title')"
-                    :apiUrls="apiUrls"
-                    :titles="$t('terms.tradeTypes')"
-                    :columns="$t('dashboard.dashboard.pendingOrdersTable.columns')">
-        </base-table>
-        <!-- :data="ordersData" -->
+        <fancy-table :title="$t('dashboard.pendingOrdersTable.title')"
+                     :apiUrls="apiUrls()"
+                     :rowsCreator="ordersRowsCreator"
+                     :aggregator="ordersAggregator"
+                     :titles="$t('terms.tradeTypes')"
+                     :columns="$t('dashboard.pendingOrdersTable.columns')">
+        </fancy-table>
       </div>
 
       <div class="col-lg-4 col-md-12">
-        <card class="card">
-          <h4 slot="header" class="card-title">{{$t('dashboard.performanceStatistics')}}</h4>
-          <div>
-             <!-- with scrollers: class="table-responsive" -->
-            <section v-if="statsError">
-              <p>{{$t('errorPrefix') + " " + $t('dashboard.performanceStatistics').toLowerCase() + ". " + $t('errorSuffix')}}</p>
-            </section>
-            <section v-else>
-              <DualRingLoader v-if="statsLoading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
-              <base-table :data="roundStatsData"
-                          :titles="$t('terms.perfStats')"
-                          :columns="$t('dashboard.dashboard.performanceStatisticsTable.columns')"
-                          thead-classes="text-primary">
-              </base-table>
-            </section>
-          </div>
-        </card>
+        <fancy-table :title="$t('dashboard.performanceStatistics')"
+                     :apiUrls="apiUrls(forChart=true)"
+                     :rowsCreator="statsRowsCreator"
+                     :aggregator="statsAggregator"
+                     :titles="$t('terms.perfStats')"
+                     :columns="$t('dashboard.performanceStatisticsTable.columns')">
+        </fancy-table>
       </div>
     </div> 
     
@@ -61,7 +53,6 @@
 <script>
   import FancyChart from '@/custom/components/FancyChart';
   import FancyTable from '@/custom/components/FancyTable';
-  import { BaseTable } from "@/components";
 
   import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';
@@ -71,18 +62,10 @@
   export default {
     components: {
       FancyChart,
-      FancyTable,
-      BaseTable
+      FancyTable
     },
     data() {
       return {
-        tradesData: null,
-        ordersData: null,
-        statsData: [],
-        ordersLoading: true,
-        statsLoading: true,
-        statsError: false,
-        ordersError: false,
         heardOrders: {
           open: [],
           win: [],
@@ -91,45 +74,8 @@
         }
       }
     },
-    computed: {
-      roundStatsData() {
-        // rounds performace statistics data table to 2 mantissa places
-        let newTable = []
-        this.statsData.forEach(row => {
-          let newRow = []
-          let firstColumn = true
-          this.$t("dashboard.dashboard.performanceStatisticsTable.columns").forEach(column => {
-            if (firstColumn) {
-              newRow[column.toLowerCase()] = row[column.toLowerCase()]
-              firstColumn = false
-              return
-            }
-            newRow[column.toLowerCase()] = row[column.toLowerCase()].toFixed(2)
-          })
-          newTable.push(newRow)
-        })
-        return newTable
-      },
-
-      apiUrls() {
-        // get just urls from apiUrls dictionary
-        let urls = []
-        for (const [key, value] of Object.entries(constants.apiUrls)) {
-          urls.push(value + 2)
-        }
-        return urls
-      }
-    },
 
     methods: {
-      initStatsTableData() {
-        this.loadStatsTableData();
-        
-        setInterval(() => { 
-          this.loadStatsTableData();
-        }, constants.dataReloadInterval );
-      },
-
       initSoundSignals() {
         setInterval(() => { 
           // this.checkOrdersStatusChange();
@@ -146,6 +92,7 @@
       },
 
       checkOrdersStatusChange() {
+        // to-do: right definitions when to notify (blocker: BE)
         axios
         .get(constants.reportUrls["MF Report"])
         .then(response => {
@@ -167,67 +114,167 @@
         })
       },      
 
-      loadStatsTableData() {
-        this.statsLoading = true
+      // fancy-tables props functions
+      tradesRowsCreator(responseData) {
+        let rows = []
 
-        axios
-        .get(constants.reportUrls["MF Report"] + 2)
-        .then(response => {
-          let tableData = [];
-          let statsTableData = []
+        responseData.openTrades.forEach(openTrade => {
+            let row = []
 
-          // 3 Months
-          tableData.push({            
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            "sharpe ratio": response.data.sharpe,
-            "max drawdown": response.data.maxdd,
-            "equity outstanding": -33.821
-          });     
-          // 12 Months
-          tableData.push({
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            "sharpe ratio": response.data.sharpe,
-            "max drawdown": response.data.maxdd,
-            "equity outstanding": -33.821
-          });     
-          // Since Inception
-          tableData.push({
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            "sharpe ratio": response.data.sharpe,
-            "max drawdown": response.data.maxdd,
-            "equity outstanding": -33.821
-          });     
+            // symbol: openTrade.contract.symbol,
+            row.push(helper.formatDateOnly(openTrade.contract.lastTradeDateOrContractMonth)) // date time
+            row.push(openTrade.order.action) // trade type
+            row.push(openTrade.order.auxPrice) // result (usd)
+            // result(%)
 
-          // transposing tableData
-          var idCounter = 1;
-          this.$t('dashboard.dashboard.performanceStatisticsTable.lines').forEach(line => {
-            var jsonObj = {};
-            jsonObj.id = idCounter++;
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[0].toLowerCase()] = line;
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[1].toLowerCase()] = tableData[0][line.toLowerCase()];
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[2].toLowerCase()] = tableData[1][line.toLowerCase()];
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[3].toLowerCase()] = tableData[2][line.toLowerCase()];
+            rows.push(row);
+          });
 
-            statsTableData.push(jsonObj);
-          });          
+        return rows
+      },
 
-          this.statsData = statsTableData
+      ordersRowsCreator(responseData) {
+        let rows = []
+
+        responseData.fills.forEach(fill => {
+            let row = []
+
+            row.push(helper.formatDate(fill.time)) // date
+            row.push(fill.execution.side) // trade type
+            // target (usd)
+            // stop loss (usd)
+            // result: fill.execution.price,
+            // PnL: fill.commissionReport.realizedNL
+
+            rows.push(row);
         })
-        .catch(error => {
-          console.log(error);
-          this.statsError = true
+
+        return rows
+      },
+
+      statsRowsCreator(responseData) {
+        let rows = [];
+        let rowsT = []
+
+        // 3 Months
+        rows.push({            
+          ytd: responseData.ytd,
+          cagr: responseData.cagr,
+          "sharpe ratio": responseData.sharpe,
+          "max drawdown": responseData.maxdd,
+          "equity outstanding": -33.821
+        });     
+        // 12 Months
+        rows.push({
+          ytd: responseData.ytd,
+          cagr: responseData.cagr,
+          "sharpe ratio": responseData.sharpe,
+          "max drawdown": responseData.maxdd,
+          "equity outstanding": -33.821
+        });     
+        // Since Inception
+        rows.push({
+          ytd: responseData.ytd,
+          cagr: responseData.cagr,
+          "sharpe ratio": responseData.sharpe,
+          "max drawdown": responseData.maxdd,
+          "equity outstanding": -33.821
+        });     
+
+        // transposing rows
+        this.$t('dashboard.performanceStatisticsTable.lines').forEach(line => {
+          var row = []
+
+          row.push(line)
+          rows.forEach(origRow => row.push(origRow[line.toLowerCase()]))
+
+          rowsT.push(row);
+        });          
+
+        return rowsT
+      },
+
+      tradesAggregator(oldRows, newRows) {
+        return oldRows.concat(newRows).sort((row1, row2) => {
+          // sort in descending order by dateTime
+          let sortCl = this.$t('dashboard.lastTradesTable.columns')[0].toLowerCase()
+          if (row1[sortCl] > row2[sortCl]) return -1;
+          if (row1[sortCl] < row2[sortCl]) return 1;
+          /* else */ return 0;
         })
-        .finally(() => {
-          this.statsLoading = false          
-        });
+      },
+
+      ordersAggregator(oldRows, newRows) {
+        return oldRows.concat(newRows).sort((row1, row2) => {
+          // sort in descending order by dateTime
+          let sortCl = this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase()
+          if (row1[sortCl] > row2[sortCl]) return -1;
+          if (row1[sortCl] < row2[sortCl]) return 1;
+          /* else */ return 0;
+        })
+      },
+
+      statsAggregator(oldRows, newRows) {
+        const roundStatsData = (statsData) => {
+          // rounds performace statistics data table to 2 mantissa places
+          let newTable = []
+
+          statsData.forEach(row => {
+            let newRow = []
+            let firstColumn = true
+
+            this.$t("dashboard.performanceStatisticsTable.columns").forEach(column => {
+              if (firstColumn) {
+                newRow[column.toLowerCase()] = row[column.toLowerCase()]
+                firstColumn = false
+                return
+              }
+              newRow[column.toLowerCase()] = row[column.toLowerCase()].toFixed(2)
+            })
+            
+            newTable.push(newRow)
+          })
+
+          return newTable
+        }
+
+        // average values at same place (to-do: except eq.outs. - only sum these)
+        let rows = []
+        if (!oldRows.length || !newRows.length) {
+          rows = oldRows.concat(newRows)
+        } else {
+          let rowNr = 0
+
+          oldRows.forEach(oldRow => {
+            let aggRow = []
+            let valNr = 0
+
+            oldRow.forEach(oldVal => { 
+              if (valNr) {
+                aggRow.push((oldVal + newRows[rowNr][valNr]) / 2)
+              }
+              valNr++
+            })
+
+            rows.push(aggRow)
+            rowNr++
+          })
+        }
+
+        return roundStatsData(rows)
+      },
+
+      apiUrls(forChart=false) {
+        // get just urls from reportUrls dictionary
+        let urls = []
+        for (const [key, value] of Object.entries(constants.reportUrls)) {
+          urls.push(value + (forChart ? 2 : ""))
+        }
+        return urls
       }
-    },    
+    },
 
     mounted() {
-      this.initStatsTableData();
       this.initSoundSignals();
     }
   };

@@ -45,40 +45,38 @@
     "title": "Dashboard",
     "chart": "graf složené equity",
     "performanceStatistics": "Výkon - statistiky",
-    "dashboard": {      
-      "lastTradesTable": {
-        "title": "Poslední obchody",
-        "columns": [
-          "Datum a Čas",
-          "Typ Obchodu",
-          "Výsledek (%)",
-          "Výsledek (USD)"
-        ]
-      },
-      "pendingOrdersTable": {
-        "title": "Čekající pokyny",
-        "columns": [
-          "Datum",
-          "Typ Obchodu",
-          "Cíl (USD)",
-          "Stop Loss (USD)"
-        ]
-      },
-      "performanceStatisticsTable": {
-        "columns": [
-          " ",
-          "3 Měsíce",
-          "12 Měsíců",
-          "Od Vstupu"
-        ],
-        "lines": [
-          "YTD",
-          "CAGR",
-          "Sharpe Ratio",
-          "Max DrawDown",
-          "Vlastní Kapitál"
-        ]
-      }
+    "lastTradesTable": {
+      "title": "Poslední obchody",
+      "columns": [
+        "Datum a Čas",
+        "Typ Obchodu",
+        "Výsledek (%)",
+        "Výsledek (USD)"
+      ]
+    },
+    "pendingOrdersTable": {
+      "title": "Čekající pokyny",
+      "columns": [
+        "Datum",
+        "Typ Obchodu",
+        "Cíl (USD)",
+        "Stop Loss (USD)"
+      ]
+    },
+    "performanceStatisticsTable": {
+      "columns": [
+        " ",
+        "3 Měsíce",
+        "12 Měsíců",
+        "Od Vstupu"
+      ],
+      "lines": [
+        "YTD",
+        "CAGR",
+        "Sharpe Ratio",
+        "Max DrawDown",
+        "Vlastní Kapitál"
+      ]
     }
   },
   "research": { 

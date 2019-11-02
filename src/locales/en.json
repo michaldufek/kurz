@@ -45,40 +45,38 @@
     "title": "Dashboard",
     "chart": "chart of composite equity",
     "performanceStatistics": "Performance statistics",
-    "dashboard": {      
-      "lastTradesTable": {
-        "title": "Last trades",
-        "columns": [
-          "Date and Time",
-          "Trade Type",
-          "Result (%)",
-          "Result (USD)"
-        ]
-      },
-      "pendingOrdersTable": {
-        "title": "Pending orders",
-        "columns": [
-          "Date",
-          "Trade Type",
-          "Target (USD)",
-          "Stop Loss (USD)"
-        ]
-      },
-      "performanceStatisticsTable": {
-        "columns": [
-          " ",
-          "3 Months",
-          "12 Months",
-          "Since Inception"
-        ],
-        "lines": [
-          "YTD",
-          "CAGR",
-          "Sharpe Ratio",
-          "Max DrawDown",
-          "Equity Outstanding"
-        ]
-      }
+    "lastTradesTable": {
+      "title": "Last trades",
+      "columns": [
+        "Date and Time",
+        "Trade Type",
+        "Result (%)",
+        "Result (USD)"
+      ]
+    },
+    "pendingOrdersTable": {
+      "title": "Pending orders",
+      "columns": [
+        "Date",
+        "Trade Type",
+        "Target (USD)",
+        "Stop Loss (USD)"
+      ]
+    },
+    "performanceStatisticsTable": {
+      "columns": [
+        " ",
+        "3 Months",
+        "12 Months",
+        "Since Inception"
+      ],
+      "lines": [
+        "YTD",
+        "CAGR",
+        "Sharpe Ratio",
+        "Max DrawDown",
+        "Equity Outstanding"
+      ]
     }
   },
   "research": { 

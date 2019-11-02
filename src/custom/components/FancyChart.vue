@@ -147,21 +147,26 @@ export default {
       return val
     },
 
-    loadData() {
-      this.chartData = {
-        datasets: [{
-          ...defaultDatasets,
-          data: []
-        }],
-        labels: []
-      } 
+    loadData() {            
+      let finishedLoadings = 0
+      let errorLoadings = 0
+      this.loading = true
+      this.error = false
 
       this.apiUrls.forEach(apiUrl => {
-        this.loading = true
-
         axios
         .get(apiUrl)
         .then(response => {
+          if (!finishedLoadings) {
+            this.chartData = {
+              datasets: [{
+                ...defaultDatasets,
+                data: []
+              }],
+              labels: []
+            } 
+          }
+
           // add new dates and sort it
           let allLabels = this.chartData.labels.concat(helper.formatDateTimes(response.data.time)).sort()
           let allData = []
@@ -182,23 +187,27 @@ export default {
             labels: allLabels
           }        
 
-          this.error = false
+          // if at least one source is live we are live
           this.live = this.live || !response.data.WARNING
 
           if (!this.updateTs) {
             this.updateTs = response.data.report_timestamp
           }
-          this.updateTs = [this.updateTs, response.data.report_timestamp].sort()[1] // get last report TimeStamp
+          // get last report's TimeStamp
+          this.updateTs = [this.updateTs, response.data.report_timestamp].sort()[1] 
         })
         .catch(error => {
           console.log(error);
 
-          this.error = this.error && true // to-do: test it works OK
-          // this.live = false            // to-do: ------ || ------
+          if (++errorLoadings === this.apiUrls.length) {
+            this.error = true
+          }
           this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' chart)')
         })
         .finally(() => {
-          this.loading = false
+          if (++finishedLoadings === this.apiUrls.length) {
+            this.loading = false
+          }
         });
       })
     },
