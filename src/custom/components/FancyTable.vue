@@ -6,7 +6,7 @@
         <p>{{$t('errorPrefix') + " " + title.toLowerCase() + ". " + $t('errorSuffix')}}</p>
       </section>
       <section v-else>
-        <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
+        <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[finishedLoadings ? dataClass : noDataClass, loaderClass]"/>
         <base-table :data="tableData"
                     :titles="titles"
                     :columns="columns"
@@ -17,7 +17,7 @@
   </card>
 </template>
 <script>
-import { BaseTable } from "@/components";
+import BaseTable from './BaseTable.vue';
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
 import axios from '@/../node_modules/axios';
@@ -27,19 +27,17 @@ import constants from '@/custom/assets/js/constants';
 export default {
   name: 'fancy-table',
   components: {
-    DualRingLoader,
-    BaseTable
+    BaseTable,
+    DualRingLoader    
   },
   props: {
     title: {
       type: String,
-      description: "Chart title"
+      description: "Table title"
     },
     apiUrls: {
       type: Array,
-      default: () => {
-        return []
-      },
+      default: () => [],
       description: "URLs to API data sources"
     },
     rowsCreator: {
@@ -72,7 +70,12 @@ export default {
     return {
       error: false,
       loading: false,
-      tableData: []
+      tableData: [],
+      finishedLoadings: 0,
+      // css classes
+      dataClass: 'data',      
+      noDataClass: 'noData',
+      loaderClass: 'loader'
     }
   },
 
@@ -92,7 +95,7 @@ export default {
     },
 
     loadData() {
-      let finishedLoadings = 0
+      this.finishedLoadings = 0
       let errorLoadings = 0
       this.loading = true
       this.error = false      
@@ -101,7 +104,7 @@ export default {
         axios
         .get(apiUrl)
         .then(response => {
-          if (!finishedLoadings) {
+          if (!this.finishedLoadings) {
             this.tableData = []
           }
 
@@ -133,7 +136,7 @@ export default {
           this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' table)')
         })
         .finally(() => {
-          if (++finishedLoadings === this.apiUrls.length) {
+          if (++this.finishedLoadings === this.apiUrls.length) {
             this.loading = false
           }
         });
@@ -156,4 +159,19 @@ export default {
 };
 </script>
 <style>
+.loader {
+  width: 80px; 
+  height: 80px;  
+  position: absolute; 
+}
+
+.loader.noData {
+  top: 20%; 
+  left: 40%;    
+}
+
+.loader.data {
+  top: 40%; 
+  left: 42.5%;
+}
 </style>

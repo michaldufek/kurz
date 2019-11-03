@@ -1,4 +1,8 @@
-const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com"
+const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com/api/xreport/"
+const statsPartUrl = "last_report/"
+const chartPartUrl = "compute/"
+const mfPartUrl = "mf"
+const uvxyPartUrl = "uvxy"
 
 export default { 
     // interval for realoading charts and tables data from sources
@@ -11,14 +15,21 @@ export default {
     shakeInterval: 500, // half minute
 
     // time of effect of login forms showing
-    cardlShowInterval: 230,
+    cardlShowInterval: 230,    
 
-    tickerUrl: baseUrl + "/sp/Ticker",
+    urls: {
+        ticker: baseUrl + "/sp/Ticker",
 
-    authUrl: baseUrl + "/rest-auth",
+        auth: baseUrl + "/rest-auth",
 
-    reportUrls: {
-        "MF Report": baseUrl + "/api/xreport/old/mfreport",
-        "UVXY Report": baseUrl + "/api/xreport/old/uvxyreport"
+        stats: {
+            "MF Report": baseUrl + statsPartUrl + mfPartUrl, //"/api/xreport/old/mfreport",
+            "UVXY Report": baseUrl + statsPartUrl + uvxyPartUrl //"/api/xreport/old/uvxyreport"
+        },
+
+        chart: {
+            "MF Report": baseUrl + chartPartUrl + mfPartUrl, 
+            "UVXY Report": baseUrl + chartPartUrl + uvxyPartUrl
+        }
     }
 }

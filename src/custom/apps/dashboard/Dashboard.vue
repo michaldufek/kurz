@@ -64,6 +64,7 @@
       FancyChart,
       FancyTable
     },
+
     data() {
       return {
         heardOrders: {
@@ -71,7 +72,7 @@
           win: [],
           lose: [],
           breakEven: []
-        }
+        }        
       }
     },
 
@@ -94,7 +95,7 @@
       checkOrdersStatusChange() {
         // to-do: right definitions when to notify (blocker: BE)
         axios
-        .get(constants.reportUrls["MF Report"])
+        .get(constants.urls.stats["MF Report"])
         .then(response => {
           response.data.openTrades.forEach(openTrade => {
             if (!(openTrade.order.orderId in heardOrders.open) && openTrade.orderStatus === "Submitted") {
@@ -121,11 +122,10 @@
         responseData.openTrades.forEach(openTrade => {
             let row = []
 
-            // symbol: openTrade.contract.symbol,
-            row.push(helper.formatDateOnly(openTrade.contract.lastTradeDateOrContractMonth)) // date time
+            row.push(helper.formatDateOnly(openTrade.contract.lastTradeDateOrContractMonth)) // date and time
             row.push(openTrade.order.action) // trade type
-            row.push(openTrade.order.auxPrice) // result (usd)
-            // result(%)
+            row.push(openTrade.order.auxPrice) // result (%)
+            // result (usd)
 
             rows.push(row);
           });
@@ -143,8 +143,6 @@
             row.push(fill.execution.side) // trade type
             // target (usd)
             // stop loss (usd)
-            // result: fill.execution.price,
-            // PnL: fill.commissionReport.realizedNL
 
             rows.push(row);
         })
@@ -195,49 +193,14 @@
       },
 
       tradesAggregator(oldRows, newRows) {
-        return oldRows.concat(newRows).sort((row1, row2) => {
-          // sort in descending order by dateTime
-          let sortCl = this.$t('dashboard.lastTradesTable.columns')[0].toLowerCase()
-          if (row1[sortCl] > row2[sortCl]) return -1;
-          if (row1[sortCl] < row2[sortCl]) return 1;
-          /* else */ return 0;
-        })
+        return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.lastTradesTable.columns')[0].toLowerCase())
       },
 
       ordersAggregator(oldRows, newRows) {
-        return oldRows.concat(newRows).sort((row1, row2) => {
-          // sort in descending order by dateTime
-          let sortCl = this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase()
-          if (row1[sortCl] > row2[sortCl]) return -1;
-          if (row1[sortCl] < row2[sortCl]) return 1;
-          /* else */ return 0;
-        })
+        return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase())
       },
 
       statsAggregator(oldRows, newRows) {
-        const roundStatsData = (statsData) => {
-          // rounds performace statistics data table to 2 mantissa places
-          let newTable = []
-
-          statsData.forEach(row => {
-            let newRow = []
-            let firstColumn = true
-
-            this.$t("dashboard.performanceStatisticsTable.columns").forEach(column => {
-              if (firstColumn) {
-                newRow[column.toLowerCase()] = row[column.toLowerCase()]
-                firstColumn = false
-                return
-              }
-              newRow[column.toLowerCase()] = row[column.toLowerCase()].toFixed(2)
-            })
-            
-            newTable.push(newRow)
-          })
-
-          return newTable
-        }
-
         // average values at same place (to-do: except eq.outs. - only sum these)
         let rows = []
         if (!oldRows.length || !newRows.length) {
@@ -246,30 +209,37 @@
           let rowNr = 0
 
           oldRows.forEach(oldRow => {
-            let aggRow = []
-            let valNr = 0
+            let aggRow = {}
 
-            oldRow.forEach(oldVal => { 
-              if (valNr) {
-                aggRow.push((oldVal + newRows[rowNr][valNr]) / 2)
+            for (const [key, oldVal] of Object.entries(oldRow)) {
+              let newVal = oldVal
+              if (!isNaN(Number(newVal))) {
+                newVal = (Number(newVal) + newRows[rowNr][key]) / 2
               }
-              valNr++
-            })
+              aggRow[key] = newVal
+            }
 
             rows.push(aggRow)
             rowNr++
           })
         }
 
-        return roundStatsData(rows)
+        return rows // roundStatsData(rows)
       },
 
       apiUrls(forChart=false) {
-        // get just urls from reportUrls dictionary
+        // get just urls from named urls dictionary
         let urls = []
-        for (const [key, value] of Object.entries(constants.reportUrls)) {
-          urls.push(value + (forChart ? 2 : ""))
+
+        if (forChart) {
+          var type = 'chart'
+        } else {
+          type = 'stats'          
         }
+        for (const [key, value] of Object.entries(constants.urls[type])) {
+          urls.push(value)
+        }
+
         return urls
       }
     },

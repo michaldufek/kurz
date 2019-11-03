@@ -186,7 +186,7 @@ export default {
         error: false,
         message: '',
         isShaking: false,
-        // css style classes
+        // css classes
         msgClass: 'message',
         noErrorClass: 'noError',
         errorClass: 'error'

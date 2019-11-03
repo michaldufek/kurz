@@ -1,6 +1,15 @@
 import i18n from "@/i18n"
 
 export default { 
+    sortAggregator(oldRows, newRows, sortCl) {
+        return oldRows.concat(newRows).sort((row1, row2) => {
+          // sort in descending order by dateTime
+          if (row1[sortCl] > row2[sortCl]) return -1;
+          if (row1[sortCl] < row2[sortCl]) return 1;
+          /* else */ return 0;
+        })
+    },
+
     pad(nr) {
         return String(nr).length < 2 ? "0" + nr : nr
     },
@@ -36,7 +45,7 @@ export default {
     // global filters
     roundToFixed(value) {
         // rounds to 2 mantissa places
-        return value.toFixed(2)
+        return value ? value.toFixed(2) : value
     },
     
     chartUpdateTsText(ts) {

@@ -72,9 +72,7 @@ export default {
     },
     apiUrls: {
       type: Array,
-      default: () => {
-        return []
-      },
+      default: () => [],
       description: "URLs to API data sources"
     }
   },
