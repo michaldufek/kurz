@@ -46,8 +46,7 @@
                                 @keyup.enter="logIn">
                     </base-input>
                     <div class="text-center">
-                        <p style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</p>                    
-                        <!-- to-do: red color not working -->
+                        <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>                    
                         <base-button v-if="error" type="link" @click="resetPass">{{$t('login.resetPass')}}</base-button>
                     </div>
                     <base-checkbox v-model="remember">
@@ -95,7 +94,7 @@
                                 @keyup.enter="register">
                     </base-input>
                     <div class="text-center">
-                        <p style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</p>                    
+                        <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>                    
                         <base-button type="primary" class="my-4" @click="register">{{$t('login.register')}}</base-button>
                         <small><p style="color: gray;">{{$t('login.alreadyAccount')}} <a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p></small>
                     </div>
@@ -130,7 +129,7 @@
                                 @keyup.enter="resetPassComplete">
                     </base-input>
                     <div class="text-center">
-                        <p style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</p>                    
+                        <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>                    
                         <base-button type="primary" class="my-4" @click="resetPassComplete">{{$t('login.resetPass')}}</base-button>
                         <div class="text-center">
                             <p v-if="error" style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p>
@@ -151,7 +150,7 @@
             <template>
                 <form role="form">                    
                     <div class="text-center">
-                        <h4 style="color: red; white-space: pre-line;" :class="{ error: error }">{{message}}</h4>   
+                        <h4 :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</h4>   
                         <p v-if="error" style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p>           
                         <p style="color: gray;"><a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
                     </div>
@@ -186,7 +185,11 @@ export default {
         remember: true,
         error: false,
         message: '',
-        isShaking: false
+        isShaking: false,
+        // css style classes
+        msgClass: 'message',
+        noErrorClass: 'noError',
+        errorClass: 'error'
       };
     },
     methods: {
@@ -195,14 +198,16 @@ export default {
                 localStorage.setItem('remember', true)
             } 
             this.remember = JSON.parse(localStorage.remember)
+
+            auth.init()
         },
 
         logIn () {
             auth.login(this.email, this.pass, (loggedIn, err) => {
+                this.error = !loggedIn
                 if (!loggedIn) {                    
                     this.shakeModal()
                     this.message = err
-                    this.error = true
                 } else {
                     this.$router.replace(this.$route.query.redirect || '/')
                 }
@@ -210,28 +215,27 @@ export default {
         },
         resetPass () {
             auth.resetPass(this.email, (resetted, msg) => {
+                this.error = !resetted
                 if (!resetted) {
                     this.shakeModal()
-                    this.error = true
                 }
                 this.message = msg
             })
         },
         resetPassComplete() {
             auth.verifyReset(this.$route.params.uid, this.$route.params.token, this.pass1, this.pass2, (success, msg) => {
-                this.error = false
+                this.error = !success
                 if (!success) {
                     this.shakeModal()
-                    this.error = true
                 }
                 this.message = msg
             })
         },
         register () {
             auth.register(this.email, this.pass1, this.pass2, (registered, msg) => {
+                this.error = !registered
                 if (!registered) {
-                    this.shakeModal()
-                    this.error = true
+                    this.shakeModal()                    
                 }
                 this.message = msg
             })
@@ -254,17 +258,15 @@ export default {
         },
         openVerifyRegisterModal(success){
             let msg = ''
-            let err = false
 
             if (success) {
                 msg = this.$i18n.t('login.registerSuccess')
             } else {
                 this.shakeModal()
-                err = true
                 msg = this.$i18n.t('login.registerFail')
             }
             
-            this.openModal(this.cards.showVerifyRegister, msg, err)
+            this.openModal(this.cards.showVerifyRegister, msg, !success)
         },
         openResetPassModal(){
             this.openModal(this.cards.showResetPass)
@@ -289,7 +291,6 @@ export default {
     },
     mounted() {
         this.init()
-        auth.init()
 
         if ("key" in this.$route.params) {
             auth.verifyRegister(this.$route.params.key, (success) => {  
@@ -310,7 +311,15 @@ export default {
 }
 </script>
 <style>
+.message {
+    white-space: pre-line;
+}
+
+.noError {
+    color: gray;    
+}
+
 .error {
-  color: red;
+  color: red !important;
 }
 </style>
