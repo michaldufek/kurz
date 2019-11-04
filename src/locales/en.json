@@ -8,6 +8,7 @@
   "ytd": "YTD",
   "cagr": "CAGR",
   "sharpeRatio": "Sharpe Ratio",
+  "sr": "SR",
   "maxDD": "Max DrawDown",
   "equityOuts": "Equity Outs.",
   "stdDev": "Std. Dev.",
@@ -95,9 +96,8 @@
         ],
         "rows": {
           "beta": "Beta",
-          "sr": "SR",
           "alfa": "Alfa",
-          "__miss.proposal": "__miss.proposal"
+          "__miss_proposal": "__miss.proposal"
         }
       }
     },

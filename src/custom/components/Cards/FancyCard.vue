@@ -1,15 +1,18 @@
 <template>
   <card :class="[ { noDataClass : !statsData.length }, fancyCardClass ]">
+    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <section v-if="isError">
       <p>{{$t('errorPrefix') + " " + title.toLowerCase() + ". " + $t('errorSuffix')}}</p>
     </section>
     <section v-else>
       <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ statsData.length ? dataClass : noDataClass, loaderClass ]"/>
       <div>
-        <div v-for="stat in Object.entries(statsData).slice(0, Math.ceil(statsData.length / 2))" style="width:50%; float: left;">
+        <div v-for="stat in Object.entries(statsData).slice(0, Math.ceil(Object.keys(statsData).length / 2))" 
+             style="width:50%; float: left;">
           <p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}
         </div>
-        <div v-for="stat in Object.entries(statsData).slice(Math.ceil(statsData.length / 2), statsData.length)" style="width:50%; float: right;">
+        <div v-for="stat in Object.entries(statsData).slice(Math.ceil(Object.keys(statsData).length / 2), Object.keys(statsData).length)" 
+             style="width:50%; float: right;">
           <p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}
         </div>
       </div>

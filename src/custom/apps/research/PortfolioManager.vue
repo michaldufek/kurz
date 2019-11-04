@@ -1,14 +1,14 @@
 <template>
   <div>
     <portfolio-card :title="$t('research.portfolioManager.designedPortfolio')"
-                    :strategies="[Object.entries(constants.urls.stats)[0]]">
+                    :strategies="designedStrategies">
     </portfolio-card>
     <portfolio-card :title="$t('research.portfolioManager.livePortfolio')"
-                    :strategies="[Object.entries(constants.urls.stats)[1]]"
+                    :strategies="liveStrategies"
                     :enableLive="false">
     </portfolio-card>
     <portfolio-card :title="$t('research.portfolioManager.optimalPortfolio')"
-                    :strategies="[ Object.entries(constants.urls.stats)[0], Object.entries(constants.urls.stats)[1] ]"
+                    :strategies="optimalStrategies"
                     :enableLive="false"
                     :enableStore="false">
     </portfolio-card>
@@ -22,6 +22,18 @@
   export default {
     components: {
       PortfolioCard
+    },
+
+    computed: {
+      designedStrategies() {
+        return [Object.entries(constants.urls.chart)[0]]
+      },
+      liveStrategies() {
+        return [Object.entries(constants.urls.chart)[1]]
+      },
+      optimalStrategies() {
+        return Object.entries(constants.urls.chart)
+      }
     }
   };
 </script>

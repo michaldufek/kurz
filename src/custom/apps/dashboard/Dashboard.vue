@@ -41,7 +41,7 @@
         <fancy-table :title="$t('dashboard.performanceStatistics')"
                      :apiUrls="apiUrls(forChart=true)"
                      :rowsCreator="statsRowsCreator"
-                     :aggregator="statsAggregator"
+                     :aggregator="averageAggregator"
                      :titles="$t('terms.perfStats')"
                      :columns="$t('dashboard.performanceStatisticsTable.columns')">
         </fancy-table>
@@ -200,32 +200,9 @@
         return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase())
       },
 
-      statsAggregator(oldRows, newRows) {
-        // average values at same place (to-do: except eq.outs. - only sum these)
-        let rows = []
-        if (!oldRows.length || !newRows.length) {
-          rows = oldRows.concat(newRows)
-        } else {
-          let rowNr = 0
-
-          oldRows.forEach(oldRow => {
-            let aggRow = {}
-
-            for (const [key, oldVal] of Object.entries(oldRow)) {
-              let newVal = oldVal
-              if (!isNaN(Number(newVal))) {
-                newVal = (Number(newVal) + newRows[rowNr][key]) / 2
-              }
-              aggRow[key] = newVal
-            }
-
-            rows.push(aggRow)
-            rowNr++
-          })
-        }
-
-        return rows // roundStatsData(rows)
-      },
+      averageAggregator(oldRows, newRows) {
+        return helper.averageAggregator(oldRows, newRows)
+      },     
 
       apiUrls(forChart=false) {
         // get just urls from named urls dictionary

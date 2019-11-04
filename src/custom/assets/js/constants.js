@@ -1,6 +1,6 @@
-const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com/api/xreport/"
-const statsPartUrl = "last_report/"
-const chartPartUrl = "compute/"
+const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com/"
+const statsPartUrl = "api/xreport/last_report/"
+const chartPartUrl = "api/xreport/compute/"
 const mfPartUrl = "mf"
 const uvxyPartUrl = "uvxy"
 
@@ -18,9 +18,9 @@ export default {
     cardlShowInterval: 230,    
 
     urls: {
-        ticker: baseUrl + "/sp/Ticker",
+        ticker: baseUrl + "api/sp/Ticker",
 
-        auth: baseUrl + "/rest-auth",
+        auth: baseUrl + "rest-auth",
 
         stats: {
             "MF Report": baseUrl + statsPartUrl + mfPartUrl, //"/api/xreport/old/mfreport",

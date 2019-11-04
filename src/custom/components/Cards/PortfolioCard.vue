@@ -17,15 +17,14 @@
       </div>
 
       <div class="col-lg-4 col-md-12">
-        <card class="card">
-          <fancy-table :title="title + ' ' + $t('research.portfolioManager.statsTable.title').toLowerCase()"
-                       :apiUrls="strategiesUrls"
-                       :rowsCreator="rowsCreator"
-                       :aggregator="aggregator"
-                       :titles="$t('terms.perfStats')"
-                       :columns="$t('research.portfolioManager.statsTable.columns')">
-          </fancy-table>
-        </card>
+        <fancy-table :title="title + ' ' + $t('research.portfolioManager.statsTable.title').toLowerCase()"
+                      :showTitle="false"
+                      :apiUrls="strategiesUrls"
+                      :rowsCreator="rowsCreator"
+                      :aggregator="averageAggregator"
+                      :titles="$t('terms.perfStats')"
+                      :columns="$t('research.portfolioManager.statsTable.columns')">
+        </fancy-table>
       </div>
     <!-- </card> -->
   </div>
@@ -33,6 +32,7 @@
 <script>
 import { BaseButton } from "@/components";
 import FancyTable from '@/custom/components/FancyTable';
+import helper from '@/custom/assets/js/helper';
 
 export default {
   name: "portfolio-card",
@@ -67,7 +67,7 @@ export default {
     strategiesUrls() {
       // get all strategies urls only
       let urls = []
-      this.strategies.forEach(strat => urls.push(strat[1] + 2))
+      this.strategies.forEach(strat => urls.push(strat[1]))
       return urls
     }
   },
@@ -76,71 +76,27 @@ export default {
     rowsCreator(responseData) {
       return [
         [ 
-          this.$t('cagr') + ": " + response.data.cagr, 
+          this.$t('cagr') + ": " + responseData.cagr, 
           this.$t('research.portfolioManager.statsTable.rows.beta') + ": " + 43 
         ],
         [ 
-          this.$t('research.portfolioManager.statsTable.rows.sr') + ": " + response.data.sharpe, 
+          this.$t('sr') + ": " + responseData.sharpe, 
           this.$t('research.portfolioManager.statsTable.rows.alfa') + ": " + 43 
         ],
         [
           this.$t('equityOuts') + ": " + 5345,
-          this.$t('research.portfolioManager.statsTable.rows.__miss.proposal')
+          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')
         ],
         [
-          this.$t('maxDD') + ": " + response.data.maxdd,
-          this.$t('research.portfolioManager.statsTable.rows.__miss.proposal')      
+          this.$t('maxDD') + ": " + responseData.maxdd,
+          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')      
         ]
       ]
     },
 
-    aggregator(oldRows, newRows) {
-      // to-do: get rid of this copy-paste from Dashboard
-      const roundStatsData = (statsData) => {
-        // rounds performace statistics data table to 2 mantissa places
-        let newTable = []
-
-        statsData.forEach(row => {
-          let newRow = []
-
-          this.$t('research.portfolioManager.statsTable.columns').forEach(column => {
-            newRow[column.toLowerCase()] = row[column.toLowerCase()].toFixed(2)
-          })
-          
-          newTable.push(newRow)
-        })
-
-        return newTable
-      }
-
-      // average values at same place (to-do: except eq.outs. - only sum these)
-      let rows = []
-      if (!oldRows.length || !newRows.length) {
-        rows = oldRows.concat(newRows)
-      } else {
-        let rowNr = 0
-
-        oldRows.forEach(oldRow => {
-          let aggRow = []
-          let valNr = 0
-
-          oldRow.forEach(oldVal => { 
-            let newVal = oldVal + newRows[rowNr][valNr]
-            if (newVal instanceof Number) {
-              newVal /= 2
-            }
-
-            aggRow.push(newVal)
-            valNr++
-          })
-
-          rows.push(aggRow)
-          rowNr++
-        })
-      }
-
-      return roundStatsData(rows)
-    }
+    averageAggregator(oldRows, newRows) {
+      return helper.averageAggregator(oldRows, newRows)
+    }    
   }
 }
 </script>

@@ -1,6 +1,7 @@
 <template>
   <card class="card">
-    <h4 slot="header" class="card-title">{{title}}</h4>
+    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
+    <h4 v-if="showTitle" slot="header" class="card-title">{{title}}</h4>
     <div>
       <section v-if="isError">
         <p>{{$t('errorPrefix') + " " + title.toLowerCase() + ". " + $t('errorSuffix')}}</p>
@@ -34,6 +35,11 @@ export default {
     title: {
       type: String,
       description: "Table title"
+    },
+    showTitle: {
+      type: Boolean,
+      default: true,
+      description: "Whether to show table title"
     },
     apiUrls: {
       type: Array,
@@ -109,9 +115,8 @@ export default {
           }
 
           let newTableData = [];
-          let rowsValues = this.rowsCreator(response.data)
 
-          rowsValues.forEach(rowValues => {
+          this.rowsCreator(response.data).forEach(rowValues => {
             let row = {}
             let clNr = 0
 

@@ -11,7 +11,7 @@
       <div class="col-lg-4 col-md-12">
         <fancy-card :title="$t('dashboard.performanceStatistics')"
                     :apiUrl="apiUrl" 
-                    :items="[$t('ytd'), $t('cagr'), $t('sharpeRatio'), $t('maxDD'), $t('equityOuts')]"
+                    :items="[$t('ytd'), $t('cagr'), $t('sr'), $t('maxDD'), $t('equityOuts')]"
                     :valuesCreator="statsCreator"                    
                     :titles="$t('terms.perfStats')">
         </fancy-card>

@@ -10,6 +10,34 @@ export default {
         })
     },
 
+    averageAggregator(oldRows, newRows) {
+        // average values at same place (to-do: except eq.outs. - only sum these)
+        let rows = []
+
+        if (!oldRows.length || !newRows.length) {
+            rows = oldRows.concat(newRows)
+        } else {
+            let rowNr = 0
+
+            oldRows.forEach(oldRow => {
+                let aggRow = {}
+
+                for (const [key, oldVal] of Object.entries(oldRow)) {
+                    let newVal = oldVal
+                    if (!isNaN(Number(newVal))) {
+                        newVal = (Number(newVal) + newRows[rowNr][key]) / 2
+                    }
+                    aggRow[key] = newVal
+                }
+
+                rows.push(aggRow)
+                rowNr++
+            })
+        }
+
+        return rows
+    },
+
     pad(nr) {
         return String(nr).length < 2 ? "0" + nr : nr
     },

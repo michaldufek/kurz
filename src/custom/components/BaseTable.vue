@@ -66,7 +66,24 @@
 
     filters: {
       toFixed2(nr) {
-        return (!nr || isNaN(Number(nr))) ? nr : Number(nr).toFixed(2)
+        if (!nr) {
+          return nr
+        }
+
+        let sep = ': '
+        if (!(nr instanceof Number || typeof nr === 'number')) {
+          var nrSplitted = nr.split(sep)
+        }
+
+        if (nr instanceof Number || typeof nr === 'number' || nrSplitted.length < 2) {
+          if (!(nr instanceof Number || typeof nr === 'number')) {
+            nr = nrSplitted[0]
+          }
+          return isNaN(Number(nr)) ? nr : Number(nr).toFixed(2)
+        } else {          
+          nrSplitted[1] = (!nrSplitted[1] || isNaN(Number(nrSplitted[1]))) ? nrSplitted[1] : Number(nrSplitted[1]).toFixed(2) 
+          return nrSplitted.join(sep)
+        }
       }
     },
 
@@ -78,9 +95,17 @@
         return item[column.toLowerCase()];
       },
       valueTitle(item, column) {
+        let sep = ': '
         let value = this.itemValue(item, column)
 
-        if (!value || !(typeof value === 'string' || value instanceof String) || !this.titles) {
+        if (!value) {
+          return null
+        }
+        if (String(value).includes(sep)) {
+          value = value.split(sep)[0]
+        }
+
+        if (!(typeof value === 'string' || value instanceof String) || !this.titles) {
           return null
         }
         return this.titles[value.toLowerCase()];
