@@ -8,6 +8,7 @@
   "ytd": "YTD",
   "cagr": "CAGR",
   "sharpeRatio": "Sharpe Ratio",
+  "sr": "SR",
   "maxDD": "Max DrawDown",
   "equityOuts": "Equity Outs.",
   "stdDev": "Std. Dev.",
@@ -45,40 +46,38 @@
     "title": "Dashboard",
     "chart": "chart of composite equity",
     "performanceStatistics": "Performance statistics",
-    "dashboard": {      
-      "lastTradesTable": {
-        "title": "Last trades",
-        "columns": [
-          "Date and Time",
-          "Trade Type",
-          "Result (%)",
-          "Result (USD)"
-        ]
-      },
-      "pendingOrdersTable": {
-        "title": "Pending orders",
-        "columns": [
-          "Date",
-          "Trade Type",
-          "Target (USD)",
-          "Stop Loss (USD)"
-        ]
-      },
-      "performanceStatisticsTable": {
-        "columns": [
-          " ",
-          "3 Months",
-          "12 Months",
-          "Since Inception"
-        ],
-        "lines": [
-          "YTD",
-          "CAGR",
-          "Sharpe Ratio",
-          "Max DrawDown",
-          "Equity Outstanding"
-        ]
-      }
+    "lastTradesTable": {
+      "title": "Last trades",
+      "columns": [
+        "Date and Time",
+        "Trade Type",
+        "Result (%)",
+        "Result (USD)"
+      ]
+    },
+    "pendingOrdersTable": {
+      "title": "Pending orders",
+      "columns": [
+        "Date",
+        "Trade Type",
+        "Target (USD)",
+        "Stop Loss (USD)"
+      ]
+    },
+    "performanceStatisticsTable": {
+      "columns": [
+        " ",
+        "3 Months",
+        "12 Months",
+        "Since Inception"
+      ],
+      "lines": [
+        "YTD",
+        "CAGR",
+        "Sharpe Ratio",
+        "Max DrawDown",
+        "Equity Outstanding"
+      ]
     }
   },
   "research": { 
@@ -90,17 +89,15 @@
       "live": "live",
       "store": "store",
       "statsTable": {
+        "title": "Statistics",
         "columns": [
           "Performance statistics",
           "Risk statistics"
         ],
         "rows": {
-          "cagr": "CAGR",
-          "sr": "SR",
-          "equityOuts": "Equity outs.",
-          "maxDD": "MaxDD",
           "beta": "Beta",
-          "alfa": "Alfa"
+          "alfa": "Alfa",
+          "__miss_proposal": "__miss.proposal"
         }
       }
     },
@@ -147,6 +144,7 @@
       "max drawdown": "Maximum drop. It states the maximum decrease in relation to the historically highest state of assets.",
       "sharpe": "Profit to risk ratio. It shows the ratio YTD / standard deviation of individual returns. The higher the value, the better, therefore, we achieve more profit units per unit of risk.",
       "sharpe ratio": "Profit to risk ratio. It shows the ratio YTD / standard deviation of individual returns. The higher the value, the better, therefore, we achieve more profit units per unit of risk.",
+      "sr": "Profit to risk ratio. It shows the ratio YTD / standard deviation of individual returns. The higher the value, the better, therefore, we achieve more profit units per unit of risk.",
       "cagr": "Recalculated annual yield. It expresses the inverse value of the number of trading days during which the strategy runs / Number of trading days in one year.",
       "nrOfTrades": "The number of trades executed by the algorithm since execution."
     },

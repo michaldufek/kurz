@@ -1,86 +1,102 @@
 <template>
   <div class="row">
-    <!-- <card class="card"> to-do: must be in one card -->
+    <!-- <card class="card">  -->
+      <!-- to-do: must be in one card -->
       <div class="col-lg-8 col-md-12">
         <card class="card">
           <h4 class="card-title">{{title}}</h4>
-          <li v-for="strategyName in strategies.names" style="list-style-type: none;">
-            {{strategyName}}
-            <base-button  type="secondary" size="1" fill>{{$t('research.portfolioManager.live')}}</base-button>
-            <!-- v-if="strategies.enableLive" -->
-            <base-button type="secondary" fill>{{$t('research.portfolioManager.store')}}</base-button>        
-            <!-- v-if="strategies.enableStore" -->
-            <br/>
-          </li>
+          <ul style="list-style-type: none;">
+            <li v-for="strategy in strategies">
+              {{strategy[0]}}
+              <base-button v-if="enableLive" type="secondary" size="1" fill>{{$t('research.portfolioManager.live')}}</base-button>
+              <base-button v-if="enableStore" type="secondary" fill>{{$t('research.portfolioManager.store')}}</base-button>        
+              <br/>
+            </li>
+          </ul>
         </card>
       </div>
+
       <div class="col-lg-4 col-md-12">
-        <card class="card">
-          <base-table :data="statsData"
-                      :columns="$t('research.portfolioManager.statsTable.columns')"
-                      thead-classes="text-primary">
-                      <!-- to-do: add titles (refactoring needed) -->
-          </base-table>
-        </card>
+        <fancy-table :title="title + ' ' + $t('research.portfolioManager.statsTable.title').toLowerCase()"
+                      :showTitle="false"
+                      :apiUrls="strategiesUrls"
+                      :rowsCreator="rowsCreator"
+                      :aggregator="averageAggregator"
+                      :titles="$t('terms.perfStats')"
+                      :columns="$t('research.portfolioManager.statsTable.columns')">
+        </fancy-table>
       </div>
     <!-- </card> -->
   </div>
 </template>
 <script>
-import Card from "@/components/Cards/Card.vue";
-import { BaseTable, BaseButton } from "@/components";
+import { BaseButton } from "@/components";
+import FancyTable from '@/custom/components/FancyTable';
+import helper from '@/custom/assets/js/helper';
 
 export default {
   name: "portfolio-card",
   components: {
-    Card,
     BaseButton,
-    BaseTable
+    FancyTable
   },
+
   props: {
     title: {
       type: String,
       description: "Portfolio title"
     },
-    stats: {
-      type: Object,
-      default: () => {},
-      description: "Statistics data"
-    },
     strategies: {
-      type: Object,
+      type: Array,
       default: () => {
-        return {
-          enableLive: true,
-          enableStore: true
-        };
+        return [ [null, null] ]
       },
-      description: "Strategies data"
+      description: "Array of strategies names with their API urls"
     },
-    errored: false,
-    loading: true            
+    enableLive: {
+      type: Boolean,
+      default: true
+    },
+    enableStore: {
+      type: Boolean,
+      default: true
+    }
   },
-  data() {
-    return {
-      statsData: [
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.cagr") + ": " + this.stats.cagr,
-          "Risk statistics": this.$t("research.portfolioManager.statsTable.rows.beta") + ": " + this.stats.beta
-        },
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.sr") + ": " + this.stats.sr,
-          "Risk statistics": this.$t("research.portfolioManager.statsTable.rows.alfa") + ": " + this.stats.alfa
-        },
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.equityOuts") + ": " + this.stats.equityOuts,
-          "Risk statistics": this.stats.missProposal
-        },
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.maxDD") + ": " + this.stats.maxDD,
-          "Risk statistics": this.stats.missProposal
-        }
+
+  computed: {
+    strategiesUrls() {
+      // get all strategies urls only
+      let urls = []
+      this.strategies.forEach(strat => urls.push(strat[1]))
+      return urls
+    }
+  },
+
+  methods: {
+    rowsCreator(responseData) {
+      return [
+        [ 
+          this.$t('cagr') + ": " + responseData.cagr, 
+          this.$t('research.portfolioManager.statsTable.rows.beta') + ": " + 43 
+        ],
+        [ 
+          this.$t('sr') + ": " + responseData.sharpe, 
+          this.$t('research.portfolioManager.statsTable.rows.alfa') + ": " + 43 
+        ],
+        [
+          this.$t('equityOuts') + ": " + 5345,
+          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')
+        ],
+        [
+          this.$t('maxDD') + ": " + responseData.maxdd,
+          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')      
+        ]
       ]
-    };
+    },
+
+    averageAggregator(oldRows, newRows) {
+      return helper.averageAggregator(oldRows, newRows)
+    }    
   }
 }
 </script>

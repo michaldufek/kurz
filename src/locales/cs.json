@@ -8,6 +8,7 @@
   "ytd": "YTD",
   "cagr": "CAGR",
   "sharpeRatio": "Sharpe Ratio",
+  "sr": "SR",
   "maxDD": "Max DrawDown",
   "equityOuts": "Vlastní Kap.",
   "stdDev": "Std. Dev.",
@@ -45,40 +46,38 @@
     "title": "Dashboard",
     "chart": "graf složené equity",
     "performanceStatistics": "Výkon - statistiky",
-    "dashboard": {      
-      "lastTradesTable": {
-        "title": "Poslední obchody",
-        "columns": [
-          "Datum a Čas",
-          "Typ Obchodu",
-          "Výsledek (%)",
-          "Výsledek (USD)"
-        ]
-      },
-      "pendingOrdersTable": {
-        "title": "Čekající pokyny",
-        "columns": [
-          "Datum",
-          "Typ Obchodu",
-          "Cíl (USD)",
-          "Stop Loss (USD)"
-        ]
-      },
-      "performanceStatisticsTable": {
-        "columns": [
-          " ",
-          "3 Měsíce",
-          "12 Měsíců",
-          "Od Vstupu"
-        ],
-        "lines": [
-          "YTD",
-          "CAGR",
-          "Sharpe Ratio",
-          "Max DrawDown",
-          "Vlastní Kapitál"
-        ]
-      }
+    "lastTradesTable": {
+      "title": "Poslední obchody",
+      "columns": [
+        "Datum a Čas",
+        "Typ Obchodu",
+        "Výsledek (%)",
+        "Výsledek (USD)"
+      ]
+    },
+    "pendingOrdersTable": {
+      "title": "Čekající pokyny",
+      "columns": [
+        "Datum",
+        "Typ Obchodu",
+        "Cíl (USD)",
+        "Stop Loss (USD)"
+      ]
+    },
+    "performanceStatisticsTable": {
+      "columns": [
+        " ",
+        "3 Měsíce",
+        "12 Měsíců",
+        "Od Vstupu"
+      ],
+      "lines": [
+        "YTD",
+        "CAGR",
+        "Sharpe Ratio",
+        "Max DrawDown",
+        "Vlastní Kapitál"
+      ]
     }
   },
   "research": { 
@@ -90,17 +89,15 @@
       "live": "živé",
       "store": "uložit",
       "statsTable": {
+        "title": "Statistiky",
         "columns": [
           "Výkon - statistiky",
           "Risk - statistiky"
         ],
         "rows": {
-          "cagr": "CAGR",
-          "sr": "SR",
-          "equityOuts": "Vlastní Kap.",
-          "maxDD": "MaxDD",
           "beta": "Beta",
-          "alfa": "Alfa"
+          "alfa": "Alfa",
+          "__miss_proposal": "__miss.proposal"
         }
       }
     },
@@ -147,6 +144,7 @@
       "max drawdown": "Maximální pokles. Uvádí maximální pokles vůči historicky nejvyššímu stavu majetku.",
       "sharpe": "Poměr zisku vůči risku. Uvádí poměr YTD/směrodatná odchylka jednotlivých výnosů. Čím vyšší hodnota, tím lépe, tedy dosahujeme více jednotek zisku na jednotku risku.",
       "sharpe ratio": "Poměr zisku vůči risku. Uvádí poměr YTD/směrodatná odchylka jednotlivých výnosů. Čím vyšší hodnota, tím lépe, tedy dosahujeme více jednotek zisku na jednotku risku.",
+      "sr": "Poměr zisku vůči risku. Uvádí poměr YTD/směrodatná odchylka jednotlivých výnosů. Čím vyšší hodnota, tím lépe, tedy dosahujeme více jednotek zisku na jednotku risku.",
       "cagr": "Přepočtený roční výnos. Vyjadřuje v exponentu inverzní hodnotu počtu obchodních dní po které strategie běží/ Počet obchodních dní v jednom roce.",
       "nrOfTrades": "Počet provedených obchodů, které algoritmus od spuštění provedl."
     },
