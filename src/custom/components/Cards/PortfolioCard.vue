@@ -82,14 +82,14 @@ export default {
         [ 
           this.$t('sr') + ": " + responseData.sharpe, 
           this.$t('research.portfolioManager.statsTable.rows.alfa') + ": " + 43 
-        ],
-        [
-          this.$t('equityOuts') + ": " + 5345,
-          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')
-        ],
+        ],        
         [
           this.$t('maxDD') + ": " + responseData.maxdd,
           this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')      
+        ],
+        [
+          this.$t('equityOuts') + ": " + responseData.equity[responseData.equity.length - 1],
+          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')
         ]
       ]
     },

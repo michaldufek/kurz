@@ -15,7 +15,10 @@ export default {
     shakeInterval: 500, // half minute
 
     // time of effect of login forms showing
-    cardlShowInterval: 230,    
+    loginShowInterval: 230,   
+    
+    // maximum number of rows shown in fancy tables
+    maxRows: 20, // to-do: use some pagination or More... button for all rows
 
     urls: {
         ticker: baseUrl + "api/sp/Ticker",

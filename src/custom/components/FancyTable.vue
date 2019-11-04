@@ -130,7 +130,7 @@ export default {
           });
 
           // aggregation
-          this.tableData = this.aggregator(this.tableData, newTableData)
+          this.tableData = this.aggregator(this.tableData, newTableData).slice(0, constants.maxRows)
         })
         .catch(error => {
           console.log(error);
