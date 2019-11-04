@@ -123,7 +123,7 @@
 
       initStocksData() {
         axios
-        .get(constants.tickerUrl)
+        .get(constants.urls.ticker)
         .then(response => {
           response.data.results.forEach(result => {
             this.stocksData.push({

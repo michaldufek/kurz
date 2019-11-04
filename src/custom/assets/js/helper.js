@@ -1,6 +1,63 @@
 import i18n from "@/i18n"
 
 export default { 
+    sortAggregator(oldRows, newRows, sortCl) {
+        return oldRows.concat(newRows).sort((row1, row2) => {
+          // sort in descending order by dateTime
+          if (row1[sortCl] > row2[sortCl]) return -1;
+          if (row1[sortCl] < row2[sortCl]) return 1;
+          /* else */ return 0;
+        })
+    },
+
+    averageAggregator(oldRows, newRows, lastRowNoAverage=true) {
+        // average values at same place (to-do: except eq.outs. - only sum these)
+        let rows = []
+
+        if (!oldRows.length || !newRows.length) {
+            rows = oldRows.concat(newRows)
+        } else {
+            let rowNr = 0
+
+            oldRows.forEach(oldRow => {
+                let aggRow = {}
+
+                for (const [key, oldVal] of Object.entries(oldRow)) {
+                    debugger
+                    if (oldVal instanceof Number || typeof oldVal === 'number') {
+                        var newVal = oldVal
+                    } else {
+                        // split because in portfolio card it is in '<statisticName>: <number>' format
+                        var sep = ': '
+                        var oldValSplitted = oldVal.split(sep)
+
+                        newVal = oldValSplitted[oldValSplitted.length - 1]
+                    }
+
+                    if (!isNaN(Number(newVal))) {
+                        // final average of old and new value
+                        newVal = Number(newVal) 
+                                 + ((oldValSplitted && oldValSplitted.length > 1) ? Number(newRows[rowNr][key].split(sep)[1]) : newRows[rowNr][key])
+                        if (!(lastRowNoAverage && rowNr === oldRows.length - 1)) {
+                            // it's probably Equity outstanding statistic
+                            newVal /= 2
+                        }
+                    }
+                    
+                    if (oldValSplitted && oldValSplitted.length > 1) {
+                        newVal = [ oldValSplitted[0], newVal ].join(sep)
+                    } 
+                    aggRow[key] = newVal
+                }
+
+                rows.push(aggRow)
+                rowNr++
+            })
+        }
+
+        return rows
+    },
+
     pad(nr) {
         return String(nr).length < 2 ? "0" + nr : nr
     },
@@ -36,7 +93,7 @@ export default {
     // global filters
     roundToFixed(value) {
         // rounds to 2 mantissa places
-        return value.toFixed(2)
+        return value ? value.toFixed(2) : value
     },
     
     chartUpdateTsText(ts) {

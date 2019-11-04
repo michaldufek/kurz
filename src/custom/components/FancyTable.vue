@@ -1,12 +1,13 @@
 <template>
   <card class="card">
+    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <h4 v-if="showTitle" slot="header" class="card-title">{{title}}</h4>
     <div>
       <section v-if="isError">
         <p>{{$t('errorPrefix') + " " + title.toLowerCase() + ". " + $t('errorSuffix')}}</p>
       </section>
       <section v-else>
-        <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
+        <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[finishedLoadings ? dataClass : noDataClass, loaderClass]"/>
         <base-table :data="tableData"
                     :titles="titles"
                     :columns="columns"
@@ -17,36 +18,47 @@
   </card>
 </template>
 <script>
-import { BaseTable } from "@/components";
+import BaseTable from './BaseTable.vue';
+import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
+
 import axios from '@/../node_modules/axios';
+import constants from '@/custom/assets/js/constants';
+
 
 export default {
   name: 'fancy-table',
+  components: {
+    BaseTable,
+    DualRingLoader    
+  },
   props: {
     title: {
       type: String,
-      description: "Chart title"
+      description: "Table title"
     },
     showTitle: {
       type: Boolean,
-      default: false,
-      description: "Whether to show chart title"
+      default: true,
+      description: "Whether to show table title"
     },
-    dataDefinitions: {
-      type: Object,
-      default: () => {
-        return [{
-          apiUrl: null,
-          responseField: null,
-          getters: [
-            { 
-              tranformFunc: () => {},
-              subFields: [null, null]
-            }
-          ]
-        }]
-      },
+    apiUrls: {
+      type: Array,
+      default: () => [],
       description: "URLs to API data sources"
+    },
+    rowsCreator: {
+      type: Function,
+      default: (responseData) => {
+        return [new Array(this.columns.length)]
+      },
+      description: "How to create rows values (of shape [#rows, #columns]) from response.data"
+    },
+    aggregator: {
+      type: Function,
+      default: (oldRows, newRows) => {
+        return [new Array(this.columns.length)]
+      },
+      description: "How to aggregate created rows from all sources (result of shape [#oldRows + #newRows, #columns])"
     },    
     titles: {
       type: Object,
@@ -64,7 +76,12 @@ export default {
     return {
       error: false,
       loading: false,
-      tableData: null
+      tableData: [],
+      finishedLoadings: 0,
+      // css classes
+      dataClass: 'data',      
+      noDataClass: 'noData',
+      loaderClass: 'loader'
     }
   },
 
@@ -84,59 +101,52 @@ export default {
     },
 
     loadData() {
-      this.tableData = []
+      this.finishedLoadings = 0
+      let errorLoadings = 0
+      this.loading = true
+      this.error = false      
 
-      this.dataDefinitions.forEach(dataDef => {
-        this.loading = true
-
+      this.apiUrls.forEach(apiUrl => {
         axios
-        .get(dataDef.apiUrl)
+        .get(apiUrl)
         .then(response => {
+          if (!this.finishedLoadings) {
+            this.tableData = []
+          }
+
           let newTableData = [];
 
-          response.data[dataDef.responseField].forEach(item => {
+          this.rowsCreator(response.data).forEach(rowValues => {
             let row = {}
+            let clNr = 0
 
-            let i = 0
-            for (var column in columns) {
-              row[column.toLowerCase()] = dataDef.getters[i].transformFunc(item[dataDef.getters[i].subFields[0]][dataDef.getters[i].subFields[1]])
-              // row[columns[0].toLowerCase()] = helper.formatDateOnly(openTrade.contract.lastTradeDateOrContractMonth) // date time
-              // row[columns[1].toLowerCase()] = openTrade.order.action // trade type
-              // row[columns[2].toLowerCase()] = openTrade.order.auxPrice // result (usd)
-              // row[columns[3].toLowerCase()] = null // result(%)
-              i++
-            }
+            // add keys to values (ie.column names)
+            this.columns.forEach(column => {
+              row[column.toLowerCase()] = clNr > rowValues.length - 1 ? null : rowValues[clNr]
+              clNr++
+            })
 
             newTableData.push(row);
           });
 
-          // response.data.fills.forEach(fill => {
-          //   let row = {}
-          //   row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[0].toLowerCase()] = helper.formatDate(fill.time) // date
-          //   row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[1].toLowerCase()] = fill.execution.side // trade type
-          //   row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[2].toLowerCase()] = null // target (usd)
-          //   row[this.$t('dashboard.dashboard.pendingOrdersTable.columns')[3].toLowerCase()] = null // stop loss (usd)
-          //   // result: fill.execution.price,
-          //   // PnL: fill.commissionReport.realizedNL
-
-          //   ordersTableData.push(row);        
-
-          // });    
-
-          this.tableData = newTableData
-          this.error = false
+          // aggregation
+          this.tableData = this.aggregator(this.tableData, newTableData)
         })
         .catch(error => {
           console.log(error);
 
-          this.error = this.error && true // to-do: test it works OK
+          if (++errorLoadings === this.apiUrls.length) {
+            this.error = true
+          }
           this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' table)')
         })
         .finally(() => {
-          this.loading = false
+          if (++this.finishedLoadings === this.apiUrls.length) {
+            this.loading = false
+          }
         });
       })
-    },
+    },   
 
     notifyAudio(audioEl, type, msg) {
       document.getElementById(audioEl).play();
@@ -154,4 +164,19 @@ export default {
 };
 </script>
 <style>
+.loader {
+  width: 80px; 
+  height: 80px;  
+  position: absolute; 
+}
+
+.loader.noData {
+  top: 20%; 
+  left: 40%;    
+}
+
+.loader.data {
+  top: 40%; 
+  left: 42.5%;
+}
 </style>
