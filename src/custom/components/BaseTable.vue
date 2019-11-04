@@ -70,20 +70,17 @@
           return nr
         }
 
-        let sep = ': '
-        if (!(nr instanceof Number || typeof nr === 'number')) {
-          var nrSplitted = nr.split(sep)
+        if (nr instanceof Number || typeof nr === 'number') {
+          return nr.toFixed(2)
         }
 
-        if (nr instanceof Number || typeof nr === 'number' || nrSplitted.length < 2) {
-          if (!(nr instanceof Number || typeof nr === 'number')) {
-            nr = nrSplitted[0]
-          }
-          return isNaN(Number(nr)) ? nr : Number(nr).toFixed(2)
-        } else {          
-          nrSplitted[1] = (!nrSplitted[1] || isNaN(Number(nrSplitted[1]))) ? nrSplitted[1] : Number(nrSplitted[1]).toFixed(2) 
-          return nrSplitted.join(sep)
-        }
+        // split because in portfolio card it is in '<statisticName>: <number>' format
+        let sep = ': '  // to-do: get rid of copy-pasting this        
+        let nrSplitted = nr.split(sep)
+        let nrIndex = nrSplitted.length - 1
+        
+        nrSplitted[nrIndex] = isNaN(Number(nrSplitted[nrIndex])) ? nrSplitted[nrIndex] : Number(nrSplitted[nrIndex]).toFixed(2) 
+        return nrSplitted.join(sep)
       }
     },
 
@@ -91,27 +88,23 @@
       hasValue(item, column) {
         return item[column.toLowerCase()] !== "undefined";
       },
+
       itemValue(item, column) {
         return item[column.toLowerCase()];
       },
+      
       valueTitle(item, column) {
-        let sep = ': '
         let value = this.itemValue(item, column)
 
-        if (!value) {
+        if (!value || !(typeof value === 'string' || value instanceof String) || !this.titles) {
           return null
-        }
-        if (String(value).includes(sep)) {
-          value = value.split(sep)[0]
         }
 
-        if (!(typeof value === 'string' || value instanceof String) || !this.titles) {
-          return null
-        }
-        return this.titles[value.toLowerCase()];
+        // split because in portfolio card it is in '<statisticName>: <number>' format
+        return this.titles[value.split(': ')[0].toLowerCase()];
       }
     }
-  };
+  }
 </script>
 <style>
 </style>

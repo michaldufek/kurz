@@ -120,7 +120,7 @@ export default {
         return
       }
       
-      if (pass === 'frspass') { // to-do: temporary, delete in production !!!
+      if (process.env.NODE_ENV !== 'production' && pass === 'frspass') {
         pretendRequest(email, pass, (res) => {
           if (res.authenticated) {
             localStorage.token = res.token
@@ -307,13 +307,9 @@ export default {
   
   function pretendRequest (email, pass, cb) {
     setTimeout(() => {
-      // if (email === 'joe@example.com' && pass === 'frspass') {
         cb({
           authenticated: true,
           token: Math.random().toString(36).substring(7)
         })
-      // } else {
-      //   cb({ authenticated: false })
-      // }
     }, 0)
   }

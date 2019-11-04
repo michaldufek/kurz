@@ -10,7 +10,7 @@ export default {
         })
     },
 
-    averageAggregator(oldRows, newRows) {
+    averageAggregator(oldRows, newRows, lastRowNoAverage=true) {
         // average values at same place (to-do: except eq.outs. - only sum these)
         let rows = []
 
@@ -23,10 +23,30 @@ export default {
                 let aggRow = {}
 
                 for (const [key, oldVal] of Object.entries(oldRow)) {
-                    let newVal = oldVal
-                    if (!isNaN(Number(newVal))) {
-                        newVal = (Number(newVal) + newRows[rowNr][key]) / 2
+                    debugger
+                    if (oldVal instanceof Number || typeof oldVal === 'number') {
+                        var newVal = oldVal
+                    } else {
+                        // split because in portfolio card it is in '<statisticName>: <number>' format
+                        var sep = ': '
+                        var oldValSplitted = oldVal.split(sep)
+
+                        newVal = oldValSplitted[oldValSplitted.length - 1]
                     }
+
+                    if (!isNaN(Number(newVal))) {
+                        // final average of old and new value
+                        newVal = Number(newVal) 
+                                 + ((oldValSplitted && oldValSplitted.length > 1) ? Number(newRows[rowNr][key].split(sep)[1]) : newRows[rowNr][key])
+                        if (!(lastRowNoAverage && rowNr === oldRows.length - 1)) {
+                            // it's probably Equity outstanding statistic
+                            newVal /= 2
+                        }
+                    }
+                    
+                    if (oldValSplitted && oldValSplitted.length > 1) {
+                        newVal = [ oldValSplitted[0], newVal ].join(sep)
+                    } 
                     aggRow[key] = newVal
                 }
 
