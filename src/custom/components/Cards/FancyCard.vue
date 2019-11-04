@@ -6,11 +6,11 @@
     <section v-else>
       <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ statsData.length ? dataClass : noDataClass, loaderClass ]"/>
       <div>
-        <div v-for="(item, value) in statsData.slice(0, Math.ceil(statsData.length / 2))" style="width:50%; float: left;">
-          <p :title="titles[item]">{{item}}: </p><p>{{value | roundToFixed}}</p>
+        <div v-for="stat in Object.entries(statsData).slice(0, Math.ceil(statsData.length / 2))" style="width:50%; float: left;">
+          <p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}
         </div>
-        <div v-for="(item, value) in statsData.slice(Math.ceil(statsData.length / 2), statsData.length)" style="width:50%; float: right;">
-          <p :title="titles[item]">{{item}}: </p><p>{{value | roundToFixed}}</p>
+        <div v-for="stat in Object.entries(statsData).slice(Math.ceil(statsData.length / 2), statsData.length)" style="width:50%; float: right;">
+          <p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}
         </div>
       </div>
     </section>
@@ -60,7 +60,7 @@ export default {
     return {
       error: false,
       loading: false,
-      statsData: [],
+      statsData: {},
       // css classes
       dataClass: 'data',      
       noDataClass: 'noData',
@@ -71,7 +71,7 @@ export default {
 
   computed: {
     isError() {
-      return !this.statsData.length && this.error
+      return !Object.keys(this.statsData).length && this.error
     }
   },
 
@@ -85,7 +85,7 @@ export default {
     },
 
     loadData() {
-      this.statsData = []
+      this.statsData = {}
       this.loading = true
       this.error = false      
 
@@ -93,14 +93,10 @@ export default {
       .get(this.apiUrl)
       .then(response => {
         let itemNr = 0
-        
+
         this.valuesCreator(response.data).forEach(value => {
-          let pair = {}         
-
           // index value by statistic name
-          pair[this.items[itemNr]] = value
-
-          this.statsData.push(pair)
+          this.statsData[this.items[itemNr]] = value
           itemNr++
         });
       })
