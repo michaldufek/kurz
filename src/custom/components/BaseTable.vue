@@ -75,7 +75,7 @@
         }
 
         // split because in portfolio card it is in '<statisticName>: <number>' format
-        let sep = ': '  // to-do: get rid of copy-pasting this        
+        let sep = ': '
         let nrSplitted = nr.split(sep)
         let nrIndex = nrSplitted.length - 1
         

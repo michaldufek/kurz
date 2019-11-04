@@ -21,7 +21,7 @@
                       :showTitle="false"
                       :apiUrls="strategiesUrls"
                       :rowsCreator="rowsCreator"
-                      :aggregator="averageAggregator"
+                      :aggregator="aggregator"
                       :titles="$t('terms.perfStats')"
                       :columns="$t('research.portfolioManager.statsTable.columns')">
         </fancy-table>
@@ -82,20 +82,20 @@ export default {
         [ 
           this.$t('sr') + ": " + responseData.sharpe, 
           this.$t('research.portfolioManager.statsTable.rows.alfa') + ": " + 43 
-        ],
-        [
-          this.$t('equityOuts') + ": " + 5345,
-          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')
-        ],
+        ],        
         [
           this.$t('maxDD') + ": " + responseData.maxdd,
           this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')      
+        ],
+        [
+          this.$t('equityOuts') + ": " + responseData.equity[responseData.equity.length - 1],
+          this.$t('research.portfolioManager.statsTable.rows.__miss_proposal')
         ]
       ]
     },
 
-    averageAggregator(oldRows, newRows) {
-      return helper.averageAggregator(oldRows, newRows)
+    aggregator(oldRows, newRows, weight) {
+      return helper.weightedAverageAggregator(oldRows, newRows, weight)
     }    
   }
 }
