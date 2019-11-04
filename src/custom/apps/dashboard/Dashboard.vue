@@ -41,7 +41,7 @@
         <fancy-table :title="$t('dashboard.performanceStatistics')"
                      :apiUrls="apiUrls(forChart=true)"
                      :rowsCreator="statsRowsCreator"
-                     :aggregator="averageAggregator"
+                     :aggregator="statsAggregator"
                      :titles="$t('terms.perfStats')"
                      :columns="$t('dashboard.performanceStatisticsTable.columns')">
         </fancy-table>
@@ -203,8 +203,8 @@
         return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase())
       },
 
-      averageAggregator(oldRows, newRows) {
-        return helper.averageAggregator(oldRows, newRows)
+      statsAggregator(oldRows, newRows, weight) {
+        return helper.weightedAverageAggregator(oldRows, newRows, weight)
       },     
 
       apiUrls(forChart=false) {

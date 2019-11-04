@@ -104,16 +104,45 @@ export default {
       this.finishedLoadings = 0
       let errorLoadings = 0
       this.loading = true
-      this.error = false      
+      this.error = false
 
-      this.apiUrls.forEach(apiUrl => {
-        axios
-        .get(apiUrl)
-        .then(response => {
-          if (!this.finishedLoadings) {
-            this.tableData = []
-          }
+      const loadRoutine = () => new Promise ((resolve, reject) => {           
+        let responses = []
 
+        this.apiUrls.forEach(apiUrl => {
+          axios
+          .get(apiUrl)
+          .then(response => {
+            if (!this.finishedLoadings) {
+              this.tableData = []
+            }
+
+            responses.push(response)          
+          })
+          .catch(error => {
+            console.log(error);
+
+            if (++errorLoadings === this.apiUrls.length) {
+              this.error = true
+              reject()
+            }
+            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' table)')
+          })
+          .finally(() => {
+            if (++this.finishedLoadings === this.apiUrls.length) {
+              this.loading = false
+              resolve(responses)
+            }
+          });
+        })
+      })
+
+      loadRoutine()
+      .then((responses) => {
+        let eqOutsSum = 0
+        responses.forEach(response => eqOutsSum += (response.data.equity ? response.data.equity[response.data.equity.length - 1] : 0))
+
+        responses.forEach(response => {
           let newTableData = [];
 
           this.rowsCreator(response.data).forEach(rowValues => {
@@ -130,21 +159,9 @@ export default {
           });
 
           // aggregation
-          this.tableData = this.aggregator(this.tableData, newTableData).slice(0, constants.maxRows)
+          let weight = response.data.equity ? response.data.equity[response.data.equity.length - 1] / eqOutsSum : 1
+          this.tableData = this.aggregator(this.tableData, newTableData, weight).slice(0, constants.maxRows)
         })
-        .catch(error => {
-          console.log(error);
-
-          if (++errorLoadings === this.apiUrls.length) {
-            this.error = true
-          }
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' table)')
-        })
-        .finally(() => {
-          if (++this.finishedLoadings === this.apiUrls.length) {
-            this.loading = false
-          }
-        });
       })
     },   
 

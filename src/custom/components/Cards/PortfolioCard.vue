@@ -21,7 +21,7 @@
                       :showTitle="false"
                       :apiUrls="strategiesUrls"
                       :rowsCreator="rowsCreator"
-                      :aggregator="averageAggregator"
+                      :aggregator="aggregator"
                       :titles="$t('terms.perfStats')"
                       :columns="$t('research.portfolioManager.statsTable.columns')">
         </fancy-table>
@@ -94,8 +94,8 @@ export default {
       ]
     },
 
-    averageAggregator(oldRows, newRows) {
-      return helper.averageAggregator(oldRows, newRows)
+    aggregator(oldRows, newRows, weight) {
+      return helper.weightedAverageAggregator(oldRows, newRows, weight)
     }    
   }
 }

@@ -16,7 +16,6 @@ export default {
     maxDD(data, nrOfQuarters) {
         // maxdd = ((df['equity'] - df['equity'].cummax()) / df['equity']).min() * 100
         let last_equity = this.last_quarters_equity(data, nrOfQuarters)
-        debugger
         return Math.min(...last_equity.map((val,ind) => (val - Math.max(...last_equity.slice(0, ind + 1))) / val)) * 100
     },
 
@@ -36,7 +35,7 @@ export default {
         })
     },
 
-    averageAggregator(oldRows, newRows, lastRowNoAverage=true) {
+    weightedAverageAggregator(oldRows, newRows, weight, lastRowNoAverage=true) {
         // average values at same place (to-do: except eq.outs. - only sum these)
         let rows = []
 
@@ -49,7 +48,6 @@ export default {
                 let aggRow = {}
 
                 for (const [key, oldVal] of Object.entries(oldRow)) {
-                    debugger
                     if (oldVal instanceof Number || typeof oldVal === 'number') {
                         var newVal = oldVal
                     } else {
@@ -61,11 +59,14 @@ export default {
                     }
 
                     if (!isNaN(Number(newVal))) {
-                        // final average of old and new value
+                        // final weighted average of old and new value
+                        var newWeight = (!(lastRowNoAverage && rowNr === oldRows.length - 1)) ? weight : 1
                         newVal = Number(newVal) 
-                                 + ((oldValSplitted && oldValSplitted.length > 1) ? Number(newRows[rowNr][key].split(sep)[1]) : newRows[rowNr][key])
-                        if (!(lastRowNoAverage && rowNr === oldRows.length - 1)) {
-                            // it's probably Equity outstanding statistic
+                                 + (newWeight * ((oldValSplitted && oldValSplitted.length > 1) 
+                                                 ? Number(newRows[rowNr][key].split(sep)[1]) 
+                                                 : newRows[rowNr][key]))
+                        if (!(lastRowNoAverage && rowNr === oldRows.length - 1)) {  
+                            // it's probably Equity outstanding statistic                          
                             newVal /= 2
                         }
                     }
