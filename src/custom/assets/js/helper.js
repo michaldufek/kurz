@@ -1,6 +1,32 @@
 import i18n from "@/i18n"
 
 export default { 
+    // statistics
+    cagr(equity, nrOfQuarters) {
+        // cagr = (df['equity'].iloc[-1] / df['equity'].iloc[0]) ** (1 / (time_span.days/365)) - 1
+        return Math.pow(equity[equity.length - 1] / equity[0], 1 / (nrOfQuarters / 4)) - 1
+    },
+
+    ytd(data, nrOfQuarters) {
+        // ytd = (this_year['equity'].iloc[-1] / this_year['equity'].iloc[0]) * 100 - 100
+        let last_equity = this.last_quarters_equity(data, nrOfQuarters)
+        return (last_equity[last_equity.length - 1] / last_equity[0]) * 100 - 100
+    },
+
+    maxDD(data, nrOfQuarters) {
+        // maxdd = ((df['equity'] - df['equity'].cummax()) / df['equity']).min() * 100
+        let last_equity = this.last_quarters_equity(data, nrOfQuarters)
+        debugger
+        return Math.min(...last_equity.map((val,ind) => (val - Math.max(...last_equity.slice(0, ind + 1))) / val)) * 100
+    },
+
+    last_quarters_equity(data, nr) {
+        // this_year = df[df['time'] > dt.datetime(now.year, 1, 1)]
+        let timeFiltered = data.time.filter(dt => new Date(dt) >= new Date(new Date(Date.now()).getFullYear(), 12 - (nr * 3) - 1, 1))
+        return data.equity.slice(data.equity.length - timeFiltered.length, data.equity.length)
+    },
+
+    // agregators
     sortAggregator(oldRows, newRows, sortCl) {
         return oldRows.concat(newRows).sort((row1, row2) => {
           // sort in descending order by dateTime
@@ -58,11 +84,11 @@ export default {
         return rows
     },
 
+    // date-time types formatting    
     pad(nr) {
         return String(nr).length < 2 ? "0" + nr : nr
     },
 
-    // date-time types formatting
     formatDate(dt) {
         // returns RRRR-MM-DD format
         let newDt = new Date(dt)

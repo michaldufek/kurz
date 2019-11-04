@@ -151,33 +151,36 @@
       },
 
       statsRowsCreator(responseData) {
+        let row = {}
         let rows = [];
         let rowsT = []
-
+        let eqOut = responseData.equity[responseData.equity.length - 1]
+        
         // 3 Months
-        rows.push({            
-          ytd: responseData.ytd,
-          cagr: responseData.cagr,
-          "sharpe ratio": responseData.sharpe,
-          "max drawdown": responseData.maxdd,
-          "equity outstanding": -33.821
-        });     
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[0].toLowerCase()] = helper.ytd(responseData, 1) // YTD
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[1].toLowerCase()] = helper.cagr(responseData.equity, 1) // CAGR
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[2].toLowerCase()] = responseData.sharpe // Sharpe Ratio // to-so: BE - sharpe for 3m and 12m bases
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[3].toLowerCase()] = helper.maxDD(responseData, 1) // Max DrawDown
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[4].toLowerCase()] = eqOut // Equity Outstanding
+        rows.push(row) 
+
         // 12 Months
-        rows.push({
-          ytd: responseData.ytd,
-          cagr: responseData.cagr,
-          "sharpe ratio": responseData.sharpe,
-          "max drawdown": responseData.maxdd,
-          "equity outstanding": -33.821
-        });     
+        row = {}
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[0].toLowerCase()] = helper.ytd(responseData, 4)
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[1].toLowerCase()] = helper.cagr(responseData.equity, 4)
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[2].toLowerCase()] = responseData.sharpe
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[3].toLowerCase()] = helper.maxDD(responseData, 4)
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[4].toLowerCase()] = eqOut
+        rows.push(row)  
+
         // Since Inception
-        rows.push({
-          ytd: responseData.ytd,
-          cagr: responseData.cagr,
-          "sharpe ratio": responseData.sharpe,
-          "max drawdown": responseData.maxdd,
-          "equity outstanding": -33.821
-        });     
+        row = {}
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[0].toLowerCase()] = responseData.ytd
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[1].toLowerCase()] = responseData.cagr
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[2].toLowerCase()] = responseData.sharpe
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[3].toLowerCase()] = responseData.maxdd
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[4].toLowerCase()] = eqOut
+        rows.push(row)     
 
         // transposing rows
         this.$t('dashboard.performanceStatisticsTable.lines').forEach(line => {
