@@ -1,8 +1,8 @@
-const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com/"
-const statsPartUrl = "api/xreport/last_report/"
-const chartPartUrl = "api/xreport/compute/"
-const mfPartUrl = "mf"
-const uvxyPartUrl = "uvxy"
+const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com"
+const statsPartUrl = "/api/xreport/last_report"
+const chartPartUrl = "/api/xreport/compute"
+const mfPartUrl = "/mf"
+const uvxyPartUrl = "/uvxy"
 
 export default { 
     // interval for realoading charts and tables data from sources
@@ -21,9 +21,9 @@ export default {
     maxRows: 20, // to-do: use some pagination or More... button for all rows
 
     urls: {
-        ticker: baseUrl + "api/sp/Ticker",
+        ticker: baseUrl + "/api/sp/Ticker",
 
-        auth: baseUrl + "rest-auth",
+        auth: baseUrl + "/rest-auth",
 
         stats: {
             "MF Report": baseUrl + statsPartUrl + mfPartUrl, //"/api/xreport/old/mfreport",
