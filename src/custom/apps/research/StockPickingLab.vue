@@ -23,28 +23,31 @@
 
       <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
 
-      <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
+      <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
+                     :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : $t('research.stockPickingLab.filters.riskProfiles.' + selectedRiskProfile)">
         <ul style="list-style-type: none;">
           <li v-for="riskProfile in getRiskProfiles">
             <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
-            <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
+            <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{$t('research.stockPickingLab.filters.' + (riskProfile === 'all' ? riskProfile : 'riskProfiles.' + riskProfile))}}</a>
           </li>
         </ul>
       </base-dropdown>
 
-      <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : selectedSector">
+      <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
+                     :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : $t('research.stockPickingLab.filters.sectors.' + selectedSector)">
         <ul style="list-style-type: none;">
           <li v-for="sector in getSectors">
-            <a class="dropdown-item" @click="selectSector(sector)" href="#">{{sector}}</a>
+            <a class="dropdown-item" @click="selectSector(sector)" href="#">{{$t('research.stockPickingLab.filters.' + (sector === 'all' ? sector : 'sectors.' + sector))}}</a>
           </li>
         </ul>
       </base-dropdown>
     </div>
 
     <div style="float: left;margin-top: 100px;">
+    <div style="float: left;margin-top: 20px;">
       <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
       <ul style="list-style-type: none;">
-        <li v-for="stockData in filteredStocksData">
+        <li v-for="stockData in stocksData">
           <stock-card :symbol="stockData.symbol"
                       :name="stockData.name"
                       :stats="stockData.statsData">
@@ -150,9 +153,6 @@
             this.stocksData.push({
               symbol: result.symbol,
               name: result.info ? result.info.shortName : null,
-              filterData: {
-                hasDividend: result.info ? result.info.dividendDate !== null : false
-              },              
               statsData: [
                 result.compute ? result.compute.cagr : null,
                 result.compute ? result.compute.sharpe_ratio : null,
@@ -181,7 +181,7 @@
         // data['riskProfile'] = this.selectedRiskProfile
         data['sector__name'] = this.selectedSector
         // data['index'] = this.index
-        // data['info__currency'] = dividend
+        data['info__dividendDate__is_null'] = !this.dividend
 
         return data
       },
@@ -229,7 +229,7 @@
         this.initData()
       },
       selectRiskProfile(riskProfile) {
-        if (riskProfile === this.$t('research.stockPickingLab.filters.all')) {
+        if (riskProfile === 'all') {
           this.selectedRiskProfile = null
           localStorage.removeItem('riskProfile')
         } else {
@@ -240,7 +240,7 @@
         // this.initData()
       },
       selectSector(sector) {
-        if (sector === this.$t('research.stockPickingLab.filters.all')) {
+        if (sector === 'all') {
           this.selectedSector = null
           localStorage.removeItem('sector')
         } else {
@@ -253,16 +253,6 @@
     }, 
 
     computed: {
-      filteredStocksData() {
-        return this.stocksData.filter(stockData => {
-          if (this.isDividend && !stockData.filterData.hasDividend) {
-            return false
-          }
-
-          return true
-        })
-      },
-
       showCurrency() {
         if (!('currencyEnabled' in localStorage)) {
           localStorage.setItem('currencyEnabled', true)
@@ -317,16 +307,16 @@
       getRiskProfiles() {
         let riskProfiles = []
         if (this.selectedRiskProfile) {
-          riskProfiles = [this.$t('research.stockPickingLab.filters.all')]
+          riskProfiles = ['all']
         }
-        return riskProfiles.concat(this.$t('research.stockPickingLab.filters.riskProfiles'))
+        return riskProfiles.concat(Object.keys(this.$t('research.stockPickingLab.filters.riskProfiles')))
       },
       getSectors() {
         let sectors = []
         if (this.selectedSector) {
-          sectors = [this.$t('research.stockPickingLab.filters.all')]
+          sectors = ['all']
         }
-        return sectors.concat(this.$t('research.stockPickingLab.filters.sectors'))
+        return sectors.concat(Object.keys(this.$t('research.stockPickingLab.filters.sectors')))
       }
     },
 
@@ -341,6 +331,7 @@
       },
       dividend(val) {
         localStorage.dividend = val
+        this.initData()
       }
     }
   };

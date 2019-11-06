@@ -124,30 +124,31 @@
         "metricsSettings": "Nastavení Metrik",
         "currencies": [
           "USD",
-          "EUR"
+          "EUR",
+          "CZK"
         ],        
         "exchanges": [
           "NYQ",
           "NMS",
           "ASE"
         ],
-        "riskProfiles": [
-          "Dynamický",
-          "Optimální"
-        ],
-        "sectors": [
-          "Consumer Cyclical",
-          "Průmysl",
-          "Základní materiály",
-          "Zdravotní péče",
-          "Consumer Defensive",
-          "Finanční služby",
-          "Technologie",
-          "Energie",
-          "Nemovitosti",
-          "Utilities"
-        ],
-        "all": "All"
+        "riskProfiles": {
+          "Dynamic": "Dynamický",
+          "Optimal": "Optimální"
+        },
+        "sectors": {
+          "Consumer Cyclical": "Consumer Cyclical",
+          "Industrials": "Průmysl",
+          "Basic Materials": "Základní materiály",
+          "Healthcare": "Zdravotní péče",
+          "Consumer Defensive": "Consumer Defensive",
+          "Financial Services": "Finanční služby",
+          "Technology": "Technologie",
+          "Energy": "Energie",
+          "Real Estate": "Nemovitosti",
+          "Utilities": "Utilities"
+        },
+        "all": "Všechno"
       }
     }
   },  
