@@ -1,8 +1,9 @@
 <template>
   <card :class="[ { noDataClass : !statsData.length }, fancyCardClass ]">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
+    <h4 v-if="showTitle" slot="header" class="card-title">{{fullTitle}}</h4>
     <section v-if="isError">
-      <p>{{$t('errorPrefix') + " " + title.toLowerCase() + ". " + $t('errorSuffix')}}</p>
+      <p>{{$t('errorPrefix') + " " + title + ". " + $t('errorSuffix')}}</p>
     </section>
     <section v-else>
       <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ statsData.length ? dataClass : noDataClass, loaderClass ]"/>
@@ -32,9 +33,17 @@ export default {
     DualRingLoader
   },
   props: {
+    fullTitle: {
+      type: String,
+      description: "Card full title"
+    },
     title: {
       type: String,
-      description: "Card title"
+      description: "Card title used mainly for errors"
+    },
+    showTitle: {
+      type: Boolean,
+      description: "Whether to show card title"
     },
     apiUrl: {
       type: String,
@@ -45,12 +54,17 @@ export default {
       default: () => [],
       description: "Performance statistics names"
     },  
+    values: {
+      type: Array,
+      default: () => [],
+      description: "Items values (of shape [#items])"
+    },
     valuesCreator: {
       type: Function,
       default: (responseData) => {
         return new Array(this.items.length)
       },
-      description: "How to create items values (of shape [#items]) from response.data"
+      description: "How to create items values (of shape [#items]) from response data if no values"
     },
     titles: {
       type: Object,
@@ -89,30 +103,39 @@ export default {
 
     loadData() {
       this.statsData = {}
-      this.loading = true
-      this.error = false      
 
-      axios
-      .get(this.apiUrl)
-      .then(response => {
-        let itemNr = 0
+      if (this.values.length) {
+        this.indexValues(this.values)
+      } else {
+        this.loading = true
+        this.error = false      
 
-        this.valuesCreator(response.data).forEach(value => {
-          // index value by statistic name
-          this.statsData[this.items[itemNr]] = value
-          itemNr++
+        axios
+        .get(this.apiUrl)
+        .then(response => {
+          this.indexValues(this.valuesCreator(response.data))
+        })
+        .catch(error => {
+          console.log(error);
+
+          this.error = true
+          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' ' + this.$t('card') + ')')
+        })
+        .finally(() => {
+          this.loading = false
         });
-      })
-      .catch(error => {
-        console.log(error);
-
-        this.error = true
-        this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' card)')
-      })
-      .finally(() => {
-        this.loading = false
-      });
+      }
     },   
+
+    indexValues(values) {
+      let itemNr = 0
+
+      values.forEach(value => {
+        // index value by statistic name
+        this.statsData[this.items[itemNr]] = value
+        itemNr++
+      });
+    },
 
     notifyAudio(audioEl, type, msg) {
       document.getElementById(audioEl).play();

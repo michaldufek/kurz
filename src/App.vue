@@ -18,7 +18,6 @@
         root.classList.toggle('nav-open');
       },
       leaving() {
-        // to-do: profile/settings is also reloading hence logouting
         if (!('remember' in localStorage) || !JSON.parse(localStorage.remember)) {
           this.$router.push('logout')
         }

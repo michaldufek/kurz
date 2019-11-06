@@ -1,6 +1,8 @@
 const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com"
-const statsPartUrl = "/api/xreport/last_report"
-const chartPartUrl = "/api/xreport/compute"
+const tickerPartUrl = "/api/sp/Ticker"
+const reportPartUrl = "/api/xreport"
+const statsPartUrl = reportPartUrl + "/last_report"
+const chartPartUrl = reportPartUrl + "/compute"
 const mfPartUrl = "/mf"
 const uvxyPartUrl = "/uvxy"
 
@@ -21,13 +23,16 @@ export default {
     maxRows: 20, // to-do: use some pagination or More... button for all rows
 
     urls: {
-        ticker: baseUrl + "/api/sp/Ticker",
+        ticker: {
+             base : baseUrl + tickerPartUrl,
+             stock: baseUrl + tickerPartUrl + "OHLC?ticker="
+        },
 
         auth: baseUrl + "/rest-auth",
 
         stats: {
-            "MF Report": baseUrl + statsPartUrl + mfPartUrl, //"/api/xreport/old/mfreport",
-            "UVXY Report": baseUrl + statsPartUrl + uvxyPartUrl //"/api/xreport/old/uvxyreport"
+            "MF Report": baseUrl + statsPartUrl + mfPartUrl,
+            "UVXY Report": baseUrl + statsPartUrl + uvxyPartUrl
         },
 
         chart: {

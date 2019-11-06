@@ -9,7 +9,7 @@
       </div>
 
       <div class="col-lg-4 col-md-12">
-        <fancy-card :title="$t('dashboard.performanceStatistics')"
+        <fancy-card :title="$t('dashboard.performanceStatistics').toLowerCase()"
                     :apiUrl="apiUrl" 
                     :items="[$t('ytd'), $t('cagr'), $t('sr'), $t('maxDD'), $t('equityOuts')]"
                     :valuesCreator="statsCreator"                    
@@ -48,7 +48,7 @@ export default {
         responseData.cagr,
         responseData.sharpe,
         responseData.maxdd,
-        -33.821
+        responseData.equity[responseData.equity.length - 1]
       ]
     }
   }

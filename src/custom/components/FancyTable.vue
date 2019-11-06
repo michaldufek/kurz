@@ -4,7 +4,7 @@
     <h4 v-if="showTitle" slot="header" class="card-title">{{title}}</h4>
     <div>
       <section v-if="isError">
-        <p>{{$t('errorPrefix') + " " + title.toLowerCase() + ". " + $t('errorSuffix')}}</p>
+        <p>{{$t('errorPrefix') + " " + title + ". " + $t('errorSuffix')}}</p>
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[finishedLoadings ? dataClass : noDataClass, loaderClass]"/>
@@ -51,7 +51,7 @@ export default {
       default: (responseData) => {
         return [new Array(this.columns.length)]
       },
-      description: "How to create rows values (of shape [#rows, #columns]) from response.data"
+      description: "How to create rows values (of shape [#rows, #columns]) from response data"
     },
     aggregator: {
       type: Function,
@@ -126,7 +126,7 @@ export default {
               this.error = true
               reject()
             }
-            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' table)')
+            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
           })
           .finally(() => {
             if (++this.finishedLoadings === this.apiUrls.length) {

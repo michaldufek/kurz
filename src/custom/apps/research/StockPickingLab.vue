@@ -1,57 +1,52 @@
 <template>
   <div class="wrapper">
-     <div>      
-      <div style="margin-left: 40px;">
-       
-        <base-dropdown v-if="showCurrency" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
-          <ul style="list-style-type: none;">
-            <li v-for="currency in getCurrencies">
-              <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
-            </li>
-          </ul>
-        </base-dropdown>
-  
-        <base-dropdown v-if="showExchange" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
-          <ul style="list-style-type: none;">
-            <li v-for="exchange in getExchanges">
-              <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
-            </li>
-          </ul>
-        </base-dropdown>
-  
-        <base-checkbox v-if="showIndex" style="float: left; width: 10%" v-model="index">{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
-  
-        <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
-  
-        <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
-          <ul style="list-style-type: none;">
-            <li v-for="riskProfile in getRiskProfiles">
-              <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
-              <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
-            </li>
-          </ul>
-        </base-dropdown>
-  
-        <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : selectedSector">
-          <ul style="list-style-type: none;">
-            <li v-for="sector in getSectors">
-              <a class="dropdown-item" @click="selectSector(sector)" href="#">{{sector}}</a>
-            </li>
-          </ul>
-        </base-dropdown>
-      </div>
-    </div> 
+    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
+    <div style="margin-left: 40px;">
+      
+      <base-dropdown v-if="showCurrency" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
+        <ul style="list-style-type: none;">
+          <li v-for="currency in getCurrencies">
+            <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
+          </li>
+        </ul>
+      </base-dropdown>
+
+      <base-dropdown v-if="showExchange" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
+        <ul style="list-style-type: none;">
+          <li v-for="exchange in getExchanges">
+            <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
+          </li>
+        </ul>
+      </base-dropdown>
+
+      <base-checkbox v-if="showIndex" style="float: left; width: 10%" v-model="index">{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
+
+      <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
+
+      <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : selectedRiskProfile">
+        <ul style="list-style-type: none;">
+          <li v-for="riskProfile in getRiskProfiles">
+            <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
+            <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{riskProfile}}</a>
+          </li>
+        </ul>
+      </base-dropdown>
+
+      <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : selectedSector">
+        <ul style="list-style-type: none;">
+          <li v-for="sector in getSectors">
+            <a class="dropdown-item" @click="selectSector(sector)" href="#">{{sector}}</a>
+          </li>
+        </ul>
+      </base-dropdown>
+    </div>
 
     <div style="float: left;margin-top: 100px;">
       <ul style="list-style-type: none;">
         <li v-for="stockData in filteredStocksData">
-          <stock-card :title="stockData.title"
-                      :stats="stockData.statsData"
-                      :errored="stockData.errored"
-                      :loading="stockData.loading"
-                      :live="stockData.live"
-                      :updateTs="stockData.updateTs">
-                      <!-- to-do: :chartData="stockData.chartData"                     -->
+          <stock-card :symbol="stockData.symbol"
+                      :name="stockData.name"
+                      :stats="stockData.statsData">
           </stock-card>
         </li>
       </ul>
@@ -70,6 +65,7 @@
       BaseRadio,
       StockCard
     },
+
     data() {
       return { 
         selectedCurrency: null,
@@ -79,9 +75,12 @@
         index: false,
         dividend: false,
 
-        stocksData: []
+        stocksData: [],
+        loading: false,
+        error: false
       }
     },
+
     methods: {
       initSelectors() {
         if (this.selectedCurrency && !('currency' in localStorage)) {
@@ -121,45 +120,60 @@
         }        
       },
 
-      initStocksData() {
+      initData() {
+        this.loadStocksData();
+          
+        setInterval(() => { 
+          this.loadStocksData();
+        }, constants.dataReloadInterval );
+      },
+
+      loadStocksData() {
+        this.stocksData = []
+        this.loading = true
+        this.error = false
+
         axios
-        .get(constants.urls.ticker)
+        .get(constants.urls.ticker.base)
         .then(response => {
           response.data.results.forEach(result => {
             this.stocksData.push({
-              title: result.symbol + " (" + result.info.shortName + ")",
+              symbol: result.symbol,
+              name: result.info ? result.info.shortName : null,
               filterData: {
-                currency: result.info.currency,
-                exchange: result.info.exchange,
-                hasDividend: result.info.dividendDate !== null
+                exchange: result.info ? result.info.exchange : null,
+                hasDividend: result.info ? result.info.dividendDate !== null : false
               },              
-              statsData: {
-                cagr: result.compute.cagr,
-                stdDev: result.compute.stddev,
-                sharpeRatio: result.compute.sharpe_ratio,
-                recoveryDDtime: result.compute.recovery_dd_time,
-                maxDD: result.compute.max_dd
-              },
-              chartData: {
-                datasets: [{
-                  data: [] //response.data.equity
-                }],
-                labels: [] //response.data.time
-              },
-              loading: false,
-              live: true,
-              updateTs: Date.now()
+              statsData: [
+                result.compute ? result.compute.cagr : null,
+                result.compute ? result.compute.sharpe_ratio : null,
+                result.compute ? result.compute.stddev : null,                
+                result.compute ? result.compute.recovery_dd_time : null,
+                result.compute ? result.compute.max_dd : null
+              ]
             });
           });          
         })
         .catch(error => {
           console.log(error);
+          this.error = true
+          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
         })
         .finally(() => {
-          // this.stocksData = data;
+          this.loading = false
         });
-      }, // to-do: add comments
+      },
 
+      notifyAudio(audioEl, type, msg) {
+        document.getElementById(audioEl).play();
+
+        this.$notify({
+          type: type, 
+          message: msg
+        })
+      },
+
+      // methods for dropdowns selection
       selectCurrency(currency) {
         if (currency === this.$t('research.stockPickingLab.filters.all')) {
           this.selectedCurrency = null
@@ -196,22 +210,17 @@
           localStorage.setItem('sector', sector)
         }
       }
-    },    
+    }, 
+
     computed: {
       filteredStocksData() {
         return this.stocksData.filter(stockData => {
-          if (this.selectedCurrency && stockData.filterData.currency !== this.selectedCurrency) {
-            return false
-          }
           if (this.selectedExchange && stockData.filterData.exchange !== this.selectedExchange) {
             return false
           }
           if (this.isDividend && !stockData.filterData.hasDividend) {
             return false
           }
-          // if (this.selectedSector && stockData.filterData.sector !== this.selectedSector) {
-          //   return false
-          // }
 
           return true
         })
@@ -283,10 +292,12 @@
         return sectors.concat(this.$t('research.stockPickingLab.filters.sectors'))
       }
     },
+
     mounted() {
       this.initSelectors()
-      this.initStocksData();
+      this.initData();
     },
+
     watch: {
       index(val) {
         localStorage.index = val
