@@ -42,6 +42,7 @@
     </div>
 
     <div style="float: left;margin-top: 100px;">
+      <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
       <ul style="list-style-type: none;">
         <li v-for="stockData in filteredStocksData">
           <stock-card :symbol="stockData.symbol"
@@ -55,14 +56,18 @@
 </template>
 <script>
   import { BaseRadio } from "@/components";
+  import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
   import StockCard from '@/custom/components/Cards/StockCard.vue';
+  
   import axios from '@/../node_modules/axios';
   import constants from '@/custom/assets/js/constants';
+  
 
   export default {
     name: "filters",
     components: {
       BaseRadio,
+      DualRingLoader,
       StockCard
     },
 
