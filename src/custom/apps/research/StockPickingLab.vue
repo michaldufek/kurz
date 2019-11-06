@@ -82,7 +82,8 @@
 
         stocksData: [],
         loading: false,
-        error: false
+        error: false,
+        loadStocksDataTimer: null
       }
     },
 
@@ -127,8 +128,12 @@
 
       initData() {
         this.loadStocksData();
-          
-        setInterval(() => { 
+        
+        if (this.loadStocksDataTimer) {
+          clearInterval(this.loadStocksDataTimer);
+        }
+        
+        this.loadStocksDataTimer = setInterval(() => { 
           this.loadStocksData();
         }, constants.dataReloadInterval );
       },
@@ -139,14 +144,13 @@
         this.error = false
 
         axios
-        .get(constants.urls.ticker.base)
+        .get(constants.urls.ticker.base + "?" + this.encodeQueryData(this.getQueryData()))
         .then(response => {
           response.data.results.forEach(result => {
             this.stocksData.push({
               symbol: result.symbol,
               name: result.info ? result.info.shortName : null,
               filterData: {
-                exchange: result.info ? result.info.exchange : null,
                 hasDividend: result.info ? result.info.dividendDate !== null : false
               },              
               statsData: [
@@ -169,6 +173,29 @@
         });
       },
 
+      getQueryData() {
+        let data = {}
+
+        data['info__currency'] = this.selectedCurrency
+        data['info__exchange'] = this.selectedExchange
+        // data['riskProfile'] = this.selectedRiskProfile
+        data['sector__name'] = this.selectedSector
+        // data['index'] = this.index
+        // data['info__currency'] = dividend
+
+        return data
+      },
+
+      encodeQueryData(data) {
+        const ret = [];
+        for (let d in data) {
+          if (data[d]) {
+            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+          }
+        }
+        return ret.join('&');
+      },
+
       notifyAudio(audioEl, type, msg) {
         document.getElementById(audioEl).play();
 
@@ -187,6 +214,8 @@
           this.selectedCurrency = currency
           localStorage.setItem('currency', currency)
         }
+
+        this.initData()
       },
       selectExchange(exchange) {
         if (exchange === this.$t('research.stockPickingLab.filters.all')) {
@@ -196,6 +225,8 @@
           this.selectedExchange = exchange
           localStorage.setItem('exchange', exchange)
         }
+
+        this.initData()
       },
       selectRiskProfile(riskProfile) {
         if (riskProfile === this.$t('research.stockPickingLab.filters.all')) {
@@ -205,6 +236,8 @@
           this.selectedRiskProfile = riskProfile
           localStorage.setItem('riskProfile', riskProfile)
         }
+
+        // this.initData()
       },
       selectSector(sector) {
         if (sector === this.$t('research.stockPickingLab.filters.all')) {
@@ -214,15 +247,14 @@
           this.selectedSector = sector
           localStorage.setItem('sector', sector)
         }
+
+        this.initData()
       }
     }, 
 
     computed: {
       filteredStocksData() {
         return this.stocksData.filter(stockData => {
-          if (this.selectedExchange && stockData.filterData.exchange !== this.selectedExchange) {
-            return false
-          }
           if (this.isDividend && !stockData.filterData.hasDividend) {
             return false
           }
