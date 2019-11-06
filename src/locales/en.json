@@ -16,6 +16,10 @@
   "card": "card",
   "chart": "chart",
   "table": "table",
+  "paging": {
+    "previous": "Previous",
+    "next": "Next"
+  },
   "settings": {
     "metrics": "StockPicking Lab Metrics",
     "general": "General",

@@ -16,6 +16,10 @@
   "card": "karta",
   "chart": "graf",
   "table": "tabulka",
+  "paging": {
+    "previous": "Předchozí",
+    "next": "Další"
+  },
   "settings": {
     "metrics": "StockPicking Lab Metriky",
     "general": "Obecní",

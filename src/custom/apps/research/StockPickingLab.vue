@@ -5,7 +5,7 @@
       
       <base-dropdown v-if="showCurrency" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
         <ul style="list-style-type: none;">
-          <li v-for="currency in getCurrencies">
+          <li v-for="currency in currencies">
             <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
           </li>
         </ul>
@@ -13,7 +13,7 @@
 
       <base-dropdown v-if="showExchange" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
         <ul style="list-style-type: none;">
-          <li v-for="exchange in getExchanges">
+          <li v-for="exchange in exchanges">
             <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
           </li>
         </ul>
@@ -26,7 +26,7 @@
       <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
                      :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : $t('research.stockPickingLab.filters.riskProfiles.' + selectedRiskProfile)">
         <ul style="list-style-type: none;">
-          <li v-for="riskProfile in getRiskProfiles">
+          <li v-for="riskProfile in riskProfiles">
             <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
             <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{$t('research.stockPickingLab.filters.' + (riskProfile === 'all' ? riskProfile : 'riskProfiles.' + riskProfile))}}</a>
           </li>
@@ -36,15 +36,23 @@
       <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
                      :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : $t('research.stockPickingLab.filters.sectors.' + selectedSector)">
         <ul style="list-style-type: none;">
-          <li v-for="sector in getSectors">
+          <li v-for="sector in sectors">
             <a class="dropdown-item" @click="selectSector(sector)" href="#">{{$t('research.stockPickingLab.filters.' + (sector === 'all' ? sector : 'sectors.' + sector))}}</a>
           </li>
         </ul>
       </base-dropdown>
     </div>
 
-    <div style="float: left;margin-top: 100px;">
+    <div style="clear:both;"></div>
     <div style="float: left;margin-top: 20px;">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li v-for="page in pages" 
+              :class="[ { 'active': (!isNaN(Number(page)) && Number(page) === activePage), 'disabled': (page === '...') }, 'page-item' ]">
+            <a class="page-link" @click="selectPage(page)" href="#">{{ page }}</a>
+          </li>
+        </ul>
+      </nav>
       <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
       <ul style="list-style-type: none;">
         <li v-for="stockData in stocksData">
@@ -75,18 +83,21 @@
     },
 
     data() {
-      return { 
+      return {
+        stocksData: [],
+        loading: false,
+        error: false,
+        loadStocksDataTimer: null,
+        activePage: 1,
+        nrOfPages: 1,
+
+        // filters
         selectedCurrency: null,
         selectedExchange: null,
         selectedRiskProfile: null,  
         selectedSector: null,      
         index: false,
         dividend: false,
-
-        stocksData: [],
-        loading: false,
-        error: false,
-        loadStocksDataTimer: null
       }
     },
 
@@ -149,6 +160,8 @@
         axios
         .get(constants.urls.ticker.base + "?" + this.encodeQueryData(this.getQueryData()))
         .then(response => {
+          this.nrOfPages = Math.ceil(response.data.count / constants.maxRows)
+
           response.data.results.forEach(result => {
             this.stocksData.push({
               symbol: result.symbol,
@@ -176,6 +189,7 @@
       getQueryData() {
         let data = {}
 
+        data['page'] = this.activePage
         data['info__currency'] = this.selectedCurrency
         data['info__exchange'] = this.selectedExchange
         // data['riskProfile'] = this.selectedRiskProfile
@@ -249,6 +263,16 @@
         }
 
         this.initData()
+      },
+
+      selectPage(page) {
+        if (page === this.$t('paging.previous')) {
+          this.activePage--
+        } else if (page === this.$t('paging.next')) {
+          this.activePage++
+        } else {
+          this.activePage = page
+        }
       }
     }, 
 
@@ -290,33 +314,57 @@
         return JSON.parse(localStorage.sectorEnabled)
       },
 
-      getExchanges() {
+      exchanges() {
         let exchanges = []
         if (this.selectedExchange) {
           exchanges = [this.$t('research.stockPickingLab.filters.all')]
         }
         return exchanges.concat(this.$t('research.stockPickingLab.filters.exchanges'))
       },
-      getCurrencies() {
+      currencies() {
         let currencies = []
         if (this.selectedCurrency) {
           currencies = [this.$t('research.stockPickingLab.filters.all')]
         }
         return currencies.concat(this.$t('research.stockPickingLab.filters.currencies'))
       },
-      getRiskProfiles() {
+      riskProfiles() {
         let riskProfiles = []
         if (this.selectedRiskProfile) {
           riskProfiles = ['all']
         }
         return riskProfiles.concat(Object.keys(this.$t('research.stockPickingLab.filters.riskProfiles')))
       },
-      getSectors() {
+      sectors() {
         let sectors = []
         if (this.selectedSector) {
           sectors = ['all']
         }
         return sectors.concat(Object.keys(this.$t('research.stockPickingLab.filters.sectors')))
+      },
+
+      pages() {
+        let pages = []
+
+        if (this.activePage !== 1) {
+          pages = pages.concat([ this.$t('paging.previous') ])
+        }
+        pages = pages.concat([ 1 ])
+        if (this.activePage > 2) {
+          pages = pages.concat([ '...' ])
+        }
+        if (this.activePage !== 1 && this.activePage !== this.nrOfPages) {
+          pages = pages.concat([ this.activePage ])
+        }
+        if (this.activePage < this.nrOfPages - 1) {
+          pages = pages.concat([ '...' ])
+        }      
+        pages = pages.concat([ this.nrOfPages ])  
+        if (this.activePage !== this.nrOfPages) {
+          pages = pages.concat([ this.$t('paging.next') ])
+        }
+
+        return pages
       }
     },
 
@@ -331,6 +379,9 @@
       },
       dividend(val) {
         localStorage.dividend = val
+        this.initData()
+      },
+      activePage(val) {
         this.initData()
       }
     }
