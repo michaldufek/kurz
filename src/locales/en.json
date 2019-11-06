@@ -16,6 +16,10 @@
   "card": "card",
   "chart": "chart",
   "table": "table",
+  "paging": {
+    "previous": "Previous",
+    "next": "Next"
+  },
   "settings": {
     "metrics": "StockPicking Lab Metrics",
     "general": "General",
@@ -124,29 +128,30 @@
         "metricsSettings": "Metrics Settings",
         "currencies": [
           "USD",
-          "EUR"
+          "EUR",
+          "CZK"
         ],        
         "exchanges": [
           "NYQ",
           "NMS",
           "ASE"
         ],
-        "riskProfiles": [
-          "Dynamic",
-          "Optimal"
-        ],
-        "sectors": [
-          "Consumer Cyclical",
-          "Industrials",
-          "Basic Materials",
-          "Healthcare",
-          "Consumer Defensive",
-          "Financial Services",
-          "Technology",
-          "Energy",
-          "Real Estate",
-          "Utilities"
-        ],
+        "riskProfiles": {
+          "Dynamic": "Dynamic",
+          "Optimal": "Optimal"
+        },
+        "sectors": {
+          "Consumer Cyclical": "Consumer Cyclical",
+          "Industrials": "Industrials",
+          "Basic Materials": "Basic Materials",
+          "Healthcare": "Healthcare",
+          "Consumer Defensive": "Consumer Defensive",
+          "Financial Services": "Financial Services",
+          "Technology": "Technology",
+          "Energy": "Energy",
+          "Real Estate": "Real Estate",
+          "Utilities": "Utilities"
+        },
         "all": "All"
       }
     }

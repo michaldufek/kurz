@@ -84,16 +84,9 @@ export default {
       error: false,
       loading: false,
       bigLineChart: {
-          allData: [
-            [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
-            [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120],
-            [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130]
-          ],
-          activeIndex: 0,
-          extraOptions: this.title.includes("UVXY") ? chartConfigs.purpleChartOptionsUVXY : chartConfigs.purpleChartOptions,
+          extraOptions: this.title.includes("UVXY") ? chartConfigs.purpleChartOptionsUVXY : (this.title.includes(this.$t('sidebar.stockPickingLab')) ? chartConfigs.purpleChartOptionsStock : chartConfigs.purpleChartOptions),
           gradientColors: config.colors.primaryGradient,
           gradientStops: [1, 0.4, 0],
-          categories: []
       },
       chartData: {
         datasets: [{
@@ -145,7 +138,7 @@ export default {
       return val
     },
 
-    loadData() {            
+    loadData() {
       let finishedLoadings = 0
       let errorLoadings = 0
       this.loading = true
@@ -165,34 +158,36 @@ export default {
             } 
           }
 
-          // add new dates and sort it
-          let allLabels = this.chartData.labels.concat(helper.formatDateTimes(response.data.time)).sort()
-          let allData = []
-          // aggregate values for all dates
-          allLabels.forEach(label => {
-            let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[0].data)
-                            + this.nearestValue(label, helper.formatDateTimes(response.data.time), response.data.equity)
+          if (!response.data.time) {
+            // data in ticker symbol format
+            let times = []
+            let equities = []
 
-            // add to final data array
-            allData.push(aggValue)
-          })
+            for (const [key, value] of Object.entries(response.data.Close)) { // to-do: use (only) Close ?
+              times.push(Number(key))
+              equities.push(value)
+            }
 
-          this.chartData = {
-            datasets: [{
-              ...defaultDatasets,
-              data: allData
-            }],
-            labels: allLabels
-          }        
+            var data = {
+              time: times,
+              equity: equities,
+              WARNING: null,
+              report_timestamp: helper.formatDateTime(times[times.length - 1])
+            }
+          } else {
+            data = response.data            
+          }
+
+          this.createChartData(data)
 
           // if at least one source is live we are live
-          this.live = this.live || !response.data.WARNING
+          this.live = this.live || !data.WARNING
 
           if (!this.updateTs) {
-            this.updateTs = response.data.report_timestamp
+            this.updateTs = data.report_timestamp
           }
           // get last report's TimeStamp
-          this.updateTs = [this.updateTs, response.data.report_timestamp].sort()[1] 
+          this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
         })
         .catch(error => {
           console.log(error);
@@ -208,6 +203,28 @@ export default {
           }
         });
       })
+    },
+
+    createChartData(data) {
+      // add new dates and sort it
+      let allLabels = this.chartData.labels.concat(helper.formatDateTimes(data.time)).sort()
+      let allData = []
+      // aggregate values for all dates
+      allLabels.forEach(label => {
+        let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[0].data)
+                        + this.nearestValue(label, helper.formatDateTimes(data.time), data.equity)
+
+        // add to final data array
+        allData.push(aggValue)
+      })
+
+      this.chartData = {
+        datasets: [{
+          ...defaultDatasets,
+          data: allData
+        }],
+        labels: allLabels
+      }       
     },
 
     notifyAudio(audioEl, type, msg) {

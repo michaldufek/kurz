@@ -18,12 +18,12 @@
 
       <div class="col-lg-4 col-md-12">
         <fancy-table :title="title + ' ' + $t('research.portfolioManager.statsTable.title').toLowerCase()"
-                      :showTitle="false"
-                      :apiUrls="strategiesUrls"
-                      :rowsCreator="rowsCreator"
-                      :aggregator="aggregator"
-                      :titles="$t('terms.perfStats')"
-                      :columns="$t('research.portfolioManager.statsTable.columns')">
+                     :showTitle="false"
+                     :apiUrls="strategiesUrls"
+                     :rowsCreator="rowsCreator"
+                     :aggregator="aggregator"
+                     :titles="$t('terms.perfStats')"
+                     :columns="$t('research.portfolioManager.statsTable.columns')">
         </fancy-table>
       </div>
     <!-- </card> -->
