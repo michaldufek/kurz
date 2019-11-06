@@ -179,7 +179,8 @@
     }
   },
   "notifications": {
-    "connectionLost": "SYSTÉMOVÉ SELHÁNÍ - Ztraceno spojení ",
+    "beConnectionLost": "SYSTÉMOVÉ SELHÁNÍ - Ztraceno spojení s BackEnd-em ",
+    "brokerConnectionLost": "SYSTÉMOVÉ SELHÁNÍ - Ztraceno spojení s brokerem ",
     "open": "Otevřeno",
     "win": "Výhra",
     "lose": "Ztráta",

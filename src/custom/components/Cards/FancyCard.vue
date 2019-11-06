@@ -117,9 +117,11 @@ export default {
         })
         .catch(error => {
           console.log(error);
-
           this.error = true
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' ' + this.$t('card') + ')')
+
+          if (error.message === constants.strings.networkError) {
+            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('card') + ')')
+          }
         })
         .finally(() => {
           this.loading = false

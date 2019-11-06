@@ -39,5 +39,11 @@ export default {
             "MF Report": baseUrl + chartPartUrl + mfPartUrl, 
             "UVXY Report": baseUrl + chartPartUrl + uvxyPartUrl
         }
+    },
+
+    strings: {
+        networkError: "Network Error",
+        etc: "...",
+        all: "all"
     }
 }

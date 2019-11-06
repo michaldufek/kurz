@@ -191,15 +191,21 @@ export default {
         })
         .catch(error => {
           console.log(error);
-
           if (++errorLoadings === this.apiUrls.length) {
             this.error = true
           }
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+
+          if (error.message === constants.strings.networkError) {
+            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+          }
         })
         .finally(() => {
           if (++finishedLoadings === this.apiUrls.length) {
             this.loading = false
+
+            if (!this.live && !this.error) {
+              this.notifyAudio('connectionLost', 'danger', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+            }
           }
         });
       })

@@ -121,12 +121,14 @@ export default {
           })
           .catch(error => {
             console.log(error);
-
             if (++errorLoadings === this.apiUrls.length) {
               this.error = true
               reject()
             }
-            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
+
+            if (error.message === constants.strings.networkError) {
+              this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
+            }
           })
           .finally(() => {
             if (++this.finishedLoadings === this.apiUrls.length) {
