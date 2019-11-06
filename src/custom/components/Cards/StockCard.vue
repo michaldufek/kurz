@@ -14,7 +14,7 @@
       <div class="col-lg-8 col-md-12">
         <fancy-chart :title="$t('sidebar.stockPickingLab') + ' - ' + symbol"
                      :fullTitle="$t('research.stockPickingLab.chart').toLowerCase()"
-                     :apiUrls="[chartApiUrl]">
+                     :apiUrls="chartApiUrl">
         </fancy-chart>
       </div>      
      <!-- </card> -->
@@ -50,7 +50,7 @@ export default {
 
   computed: {
     chartApiUrl() {
-      return constants.urls.ticker.stock + this.symbol
+      return [ constants.urls.ticker.stock + this.symbol ]
     }
   }
 };
