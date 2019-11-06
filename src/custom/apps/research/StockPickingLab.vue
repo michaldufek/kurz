@@ -140,7 +140,11 @@
         }        
       },
 
-      initData() {
+      initData(resetPage=true) {
+        if (resetPage) {
+          this.activePage = 1
+        }
+
         this.loadStocksData();
         
         if (this.loadStocksDataTimer) {
@@ -190,6 +194,7 @@
         let data = {}
 
         data['page'] = this.activePage
+        data['ordering'] = 'score_pcento'
         data['info__currency'] = this.selectedCurrency
         data['info__exchange'] = this.selectedExchange
         // data['riskProfile'] = this.selectedRiskProfile
@@ -382,7 +387,7 @@
         this.initData()
       },
       activePage(val) {
-        this.initData()
+        this.initData(false)
       }
     }
   };
