@@ -200,7 +200,7 @@ export default {
           if (++errorLoadings === this.apiUrls.length) {
             this.error = true
           }
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' chart)')
+          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
         })
         .finally(() => {
           if (++finishedLoadings === this.apiUrls.length) {

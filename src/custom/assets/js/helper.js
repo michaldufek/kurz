@@ -36,10 +36,11 @@ export default {
     },
 
     weightedAverageAggregator(oldRows, newRows, weight, lastRowNoAverage=true) {
-        // average values at same place (to-do: except eq.outs. - only sum these)
+        // average values at same place
         let rows = []
 
         if (!oldRows.length || !newRows.length) {
+            // to-do: should also use weight
             rows = oldRows.concat(newRows)
         } else {
             let rowNr = 0
@@ -126,7 +127,7 @@ export default {
     chartUpdateTsText(ts) {
         // returns RRRR-M-D H:M:S like formatted text for chart
         if (ts) {
-            let newDt = new Date(ts + "Z")
+            let newDt = new Date(ts)
             return i18n.t('chartUpdatedPrefix') + ' ' + newDt.getFullYear() + "-" + Number(newDt.getMonth() + 1) + "-" + newDt.getDate() + " " + newDt.getHours() + ":" + newDt.getMinutes() + ":" + newDt.getSeconds()
         }
         return i18n.t('chartNeverUpdated')

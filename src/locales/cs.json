@@ -13,10 +13,14 @@
   "equityOuts": "Vlastní Kap.",
   "stdDev": "Std. Dev.",
   "recoveryDDtime": "Recovery DD Time",  
+  "card": "karta",
+  "chart": "graf",
+  "table": "tabulka",
   "settings": {
-    "darkMode": "Temný režim",
+    "metrics": "StockPicking Lab Metriky",
     "general": "Obecní",
     "language": "Jazyk",
+    "darkMode": "Temný režim",
     "clearAll": "Smazat všechna nastavení"
   },
   "landing": {
@@ -108,7 +112,8 @@
       "remove": "odstranit"
     },
     "stockPickingLab": {
-      "metrics": "StockPicking Lab Metriky",
+      "stock": "Data akce",
+      "chart": "Graf akce",
       "filters": {
         "currency": "Měna",
         "exchange": "Burza",
@@ -127,12 +132,21 @@
           "ASE"
         ],
         "riskProfiles": [
-          "Dynamické",
+          "Dynamický",
           "Optimální"
         ],
-        "sectors": [],
-        "stock": "Akce",
-        "chart": "Graf akce",
+        "sectors": [
+          "Consumer Cyclical",
+          "Průmysl",
+          "Základní materiály",
+          "Zdravotní péče",
+          "Consumer Defensive",
+          "Finanční služby",
+          "Technologie",
+          "Energie",
+          "Nemovitosti",
+          "Utilities"
+        ],
         "all": "All"
       }
     }

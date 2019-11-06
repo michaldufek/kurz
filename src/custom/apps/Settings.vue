@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-4">
         <card>
-          <h5 class="title">{{$t('research.stockPickingLab.metrics')}}</h5>
+          <h5 class="title">{{$t('settings.metrics')}}</h5>
           <ul style="list-style-type: none; padding-left: 0px;">
             <li >
               <base-checkbox v-model="currency">{{$t('research.stockPickingLab.filters.currency')}}</base-checkbox>
@@ -31,7 +31,6 @@
         <card>
           <h5 class="title">{{$t('settings.general')}}</h5>
           <div class="locale-changer">
-            <!-- to-do: working globally except landing pages -->
             <p style="float: left; margin-right: 10px;">{{$t('settings.language')}}:</p>
             <select v-model="$root.$i18n.locale">
               <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
