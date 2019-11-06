@@ -179,7 +179,8 @@
     }
   },
   "notifications": {
-    "connectionLost": "SYSTEM FAILURE - Connection lost ",
+    "beConnectionLost": "SYSTEM FAILURE - BackEnd connection lost ",
+    "brokerConnectionLost": "SYSTEM FAILURE - Broker connection lost ",
     "open": "Open",
     "win": "Win",
     "lose": "Lose",

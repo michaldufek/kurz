@@ -183,7 +183,10 @@
         .catch(error => {
           console.log(error);
           this.error = true
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.connectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
+
+          if (error.message === constants.strings.networkError) {
+            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
+          }
         })
         .finally(() => {
           this.loading = false
@@ -248,7 +251,7 @@
         this.initData()
       },
       selectRiskProfile(riskProfile) {
-        if (riskProfile === 'all') {
+        if (riskProfile === constants.strings.all) {
           this.selectedRiskProfile = null
           localStorage.removeItem('riskProfile')
         } else {
@@ -259,7 +262,7 @@
         // this.initData()
       },
       selectSector(sector) {
-        if (sector === 'all') {
+        if (sector === constants.strings.all) {
           this.selectedSector = null
           localStorage.removeItem('sector')
         } else {
@@ -336,14 +339,14 @@
       riskProfiles() {
         let riskProfiles = []
         if (this.selectedRiskProfile) {
-          riskProfiles = ['all']
+          riskProfiles = [constants.strings.all]
         }
         return riskProfiles.concat(Object.keys(this.$t('research.stockPickingLab.filters.riskProfiles')))
       },
       sectors() {
         let sectors = []
         if (this.selectedSector) {
-          sectors = ['all']
+          sectors = [constants.strings.all]
         }
         return sectors.concat(Object.keys(this.$t('research.stockPickingLab.filters.sectors')))
       },
@@ -356,13 +359,13 @@
         }
         pages = pages.concat([ 1 ])
         if (this.activePage > 2) {
-          pages = pages.concat([ '...' ])
+          pages = pages.concat([ constants.strings.etc ])
         }
         if (this.activePage !== 1 && this.activePage !== this.nrOfPages) {
           pages = pages.concat([ this.activePage ])
         }
         if (this.activePage < this.nrOfPages - 1) {
-          pages = pages.concat([ '...' ])
+          pages = pages.concat([ constants.strings.etc ])
         }      
         pages = pages.concat([ this.nrOfPages ])  
         if (this.activePage !== this.nrOfPages) {
