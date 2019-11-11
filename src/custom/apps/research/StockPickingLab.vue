@@ -3,18 +3,42 @@
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div style="margin-left: 40px;">
       
-      <base-dropdown v-if="showCurrency" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedCurrency) ? $t('research.stockPickingLab.filters.currency') : selectedCurrency">
+      <base-dropdown v-if="showCurrency" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="currencyTitle">
         <ul style="list-style-type: none;">
-          <li v-for="currency in currencies">
-            <a class="dropdown-item" @click="selectCurrency(currency)" href="#">{{currency}}</a>
+          <li v-for="currency in currencies">            
+            <a class="dropdown-item" 
+               @click="selectCurrency(currency)" 
+               href="#" 
+               :title="currency === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.currency') + ' ' + $t('research.stockPickingLab.filters.equal')">
+              <img v-if="currency !== $t('research.stockPickingLab.filters.all')" 
+                   src="../../assets/img/not-equal.svg" 
+                   @click="selectCurrencyNot(currency)" 
+                   :title="$t('research.stockPickingLab.filters.currency') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+                   onMouseOver="this.style.backgroundColor = '#e14eca'"
+                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
+                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
+              {{currency}}
+            </a>
           </li>
         </ul>
-      </base-dropdown>
+      </base-dropdown>      
 
-      <base-dropdown v-if="showExchange" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="(!selectedExchange) ? $t('research.stockPickingLab.filters.exchange') : selectedExchange">
+      <base-dropdown v-if="showExchange" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="exchangeTitle">
         <ul style="list-style-type: none;">
           <li v-for="exchange in exchanges">
-            <a class="dropdown-item" @click="selectExchange(exchange)" href="#">{{exchange}}</a>
+            <a class="dropdown-item" 
+               @click="selectExchange(exchange)" 
+               href="#"
+               :title="exchange === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.exchange') + ' ' + $t('research.stockPickingLab.filters.equal')">
+              <img v-if="exchange !== $t('research.stockPickingLab.filters.all')" 
+                   src="../../assets/img/not-equal.svg" 
+                   @click="selectExchangeNot(exchange)" 
+                   :title="$t('research.stockPickingLab.filters.exchange') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+                   onMouseOver="this.style.backgroundColor = '#e14eca'"
+                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
+                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
+               {{exchange}}
+            </a>
           </li>
         </ul>
       </base-dropdown>
@@ -24,20 +48,44 @@
       <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
 
       <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
-                     :title="(!selectedRiskProfile) ? $t('research.stockPickingLab.filters.riskProfile') : $t('research.stockPickingLab.filters.riskProfiles.' + selectedRiskProfile)">
+                     :title="riskProfileTitle">
         <ul style="list-style-type: none;">
           <li v-for="riskProfile in riskProfiles">
             <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
-            <a class="dropdown-item" @click="selectRiskProfile(riskProfile)" href="#">{{$t('research.stockPickingLab.filters.' + (riskProfile === 'all' ? riskProfile : 'riskProfiles.' + riskProfile))}}</a>
+            <a class="dropdown-item" 
+               @click="selectRiskProfile(riskProfile)" 
+               href="#"
+               :title="riskProfile === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.riskProfile') + ' ' + $t('research.stockPickingLab.filters.equal')">
+              <img v-if="showRiskProfileIcon(riskProfile)" 
+                   src="../../assets/img/not-equal.svg" 
+                   @click="selectRiskProfileNot(riskProfile)" 
+                   :title="$t('research.stockPickingLab.filters.riskProfile') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+                   onMouseOver="this.style.backgroundColor = '#e14eca'"
+                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
+                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
+               {{$t('research.stockPickingLab.filters.' + (riskProfile === 'all' ? riskProfile : 'riskProfiles.' + riskProfile))}}
+            </a>
           </li>
         </ul>
       </base-dropdown>
 
       <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
-                     :title="(!selectedSector) ? $t('research.stockPickingLab.filters.sector') : $t('research.stockPickingLab.filters.sectors.' + selectedSector)">
+                     :title="sectorTitle">
         <ul style="list-style-type: none;">
           <li v-for="sector in sectors">
-            <a class="dropdown-item" @click="selectSector(sector)" href="#">{{$t('research.stockPickingLab.filters.' + (sector === 'all' ? sector : 'sectors.' + sector))}}</a>
+            <a class="dropdown-item" 
+               @click="selectSector(sector)" 
+               href="#"
+               :title="sector === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.sector') + ' ' + $t('research.stockPickingLab.filters.equal')">
+              <img v-if="showSectorIcon(sector)" 
+                   src="../../assets/img/not-equal.svg" 
+                   @click="selectSectorNot(sector)" 
+                   :title="$t('research.stockPickingLab.filters.sector') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+                   onMouseOver="this.style.backgroundColor = '#e14eca'"
+                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
+                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
+               {{$t('research.stockPickingLab.filters.' + (sector === 'all' ? sector : 'sectors.' + sector))}}
+            </a>
           </li>
         </ul>
       </base-dropdown>
@@ -45,7 +93,7 @@
 
     <div style="clear:both;"></div>
     <div style="float: left;margin-top: 20px;">
-      <nav aria-label="Page navigation">
+      <nav v-if="nrOfPages > 1" aria-label="Page navigation">
         <ul class="pagination justify-content-center">
           <li v-for="page in pages" 
               :class="[ { 'active': (!isNaN(Number(page)) && Number(page) === activePage), 'disabled': (page === '...') }, 'page-item' ]">
@@ -62,6 +110,14 @@
           </stock-card>
         </li>
       </ul>
+      <nav v-if="nrOfPages > 1" aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li v-for="page in pages" 
+              :class="[ { 'active': (!isNaN(Number(page)) && Number(page) === activePage), 'disabled': (page === '...') }, 'page-item' ]">
+            <a class="page-link" @click="selectPage(page)" href="#">{{ page }}</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </template>
@@ -93,9 +149,13 @@
 
         // filters
         selectedCurrency: null,
+        selectedCurrencyNot: null,
         selectedExchange: null,
+        selectedExchangeNot: null,
         selectedRiskProfile: null,  
+        selectedRiskProfileNot: null,  
         selectedSector: null,      
+        selectedSectorNot: null,      
         index: false,
         dividend: false,
       }
@@ -236,9 +296,16 @@
           this.selectedCurrency = currency
           localStorage.setItem('currency', currency)
         }
+        if (this.selectedCurrencyNot !== currency) {
+          this.selectedCurrencyNot = null
+        }
 
         this.initData()
       },
+      selectCurrencyNot(currency) {
+        this.selectedCurrencyNot = currency
+      },
+
       selectExchange(exchange) {
         if (exchange === this.$t('research.stockPickingLab.filters.all')) {
           this.selectedExchange = null
@@ -247,9 +314,16 @@
           this.selectedExchange = exchange
           localStorage.setItem('exchange', exchange)
         }
+        if (this.selectedExchangeNot !== exchange) {
+          this.selectedExchangeNot = null
+        }
 
         this.initData()
       },
+      selectExchangeNot(exchange) {
+        this.selectedExchangeNot = exchange
+      },
+
       selectRiskProfile(riskProfile) {
         if (riskProfile === constants.strings.all) {
           this.selectedRiskProfile = null
@@ -258,9 +332,19 @@
           this.selectedRiskProfile = riskProfile
           localStorage.setItem('riskProfile', riskProfile)
         }
+        if (this.selectedRiskProfileNot !== riskProfile) {
+          this.selectedRiskProfileNot = null
+        }
 
         // this.initData()
       },
+      selectRiskProfileNot(riskProfile) {
+        this.selectedRiskProfileNot = riskProfile
+      },
+      showRiskProfileIcon(riskProfile) {
+        return riskProfile !== constants.strings.all
+      },
+
       selectSector(sector) {
         if (sector === constants.strings.all) {
           this.selectedSector = null
@@ -269,8 +353,17 @@
           this.selectedSector = sector
           localStorage.setItem('sector', sector)
         }
+        if (this.selectedSectorNot !== sector) {
+          this.selectedSectorNot = null
+        }
 
         this.initData()
+      },
+      selectSectorNot(sector) {
+        this.selectedSectorNot = sector
+      },
+      showSectorIcon(sector) {
+        return sector !== constants.strings.all
       },
 
       selectPage(page) {
@@ -329,12 +422,24 @@
         }
         return exchanges.concat(this.$t('research.stockPickingLab.filters.exchanges'))
       },
+      exchangeTitle() {
+        return this.selectedExchange 
+                ? (this.selectedExchangeNot ? '!= ' : '') + this.selectedExchange
+                : this.$t('research.stockPickingLab.filters.exchange') 
+               
+      },
       currencies() {
         let currencies = []
         if (this.selectedCurrency) {
           currencies = [this.$t('research.stockPickingLab.filters.all')]
         }
         return currencies.concat(this.$t('research.stockPickingLab.filters.currencies'))
+      },
+      currencyTitle() {
+        return this.selectedCurrency 
+                ? (this.selectedCurrencyNot ? '!= ' : '') + this.selectedCurrency
+                : this.$t('research.stockPickingLab.filters.currency') 
+               
       },
       riskProfiles() {
         let riskProfiles = []
@@ -343,12 +448,24 @@
         }
         return riskProfiles.concat(Object.keys(this.$t('research.stockPickingLab.filters.riskProfiles')))
       },
+      riskProfileTitle() {
+        return this.selectedRiskProfile 
+                ? (this.selectedRiskProfileNot ? '!= ' : '') + this.selectedRiskProfile
+                : this.$t('research.stockPickingLab.filters.riskProfile') 
+               
+      },
       sectors() {
         let sectors = []
         if (this.selectedSector) {
           sectors = [constants.strings.all]
         }
         return sectors.concat(Object.keys(this.$t('research.stockPickingLab.filters.sectors')))
+      },
+      sectorTitle() {
+        return this.selectedSector 
+                ? (this.selectedSectorNot ? '!= ' : '') + this.selectedSector
+                : this.$t('research.stockPickingLab.filters.sector') 
+               
       },
 
       pages() {

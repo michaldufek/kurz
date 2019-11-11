@@ -17,7 +17,7 @@
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
-                    :extra-options="bigLineChart.extraOptions">
+                    :extra-options="extraOptions">
         </line-chart>
       </section>
     </div>
@@ -83,8 +83,9 @@ export default {
       live: false,
       error: false,
       loading: false,
+
+      // chart
       bigLineChart: {
-          extraOptions: this.title.includes("UVXY") ? chartConfigs.purpleChartOptionsUVXY : (this.title.includes(this.$t('sidebar.stockPickingLab')) ? chartConfigs.purpleChartOptionsStock : chartConfigs.purpleChartOptions),
           gradientColors: config.colors.primaryGradient,
           gradientStops: [1, 0.4, 0],
       },
@@ -94,13 +95,22 @@ export default {
           data: []
         }],
         labels: []      
-      }
+      },
+      chartMin: Number.MAX_VALUE,
+      chartMax: 0
     }
   },
 
   computed: {
     isError() {
       return !this.chartData.datasets[0].data.length && this.error
+    },
+    extraOptions() {
+      let eOp = chartConfigs.purpleChartOptions
+      eOp.scales.yAxes[0].ticks.suggestedMin = this.chartMin
+      eOp.scales.yAxes[0].ticks.suggestedMax = this.chartMax
+
+      return eOp
     }
   },
 
@@ -223,6 +233,13 @@ export default {
         // add to final data array
         allData.push(aggValue)
       })
+
+      if (Math.min(allData) < this.chartMin) {
+        this.chartMin = Math.min(allData)
+      }
+      if (Math.max(allData) > this.chartMax) {
+        this.chartMax = Math.max(allData)
+      }
 
       this.chartData = {
         datasets: [{
