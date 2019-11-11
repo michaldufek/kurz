@@ -119,6 +119,9 @@
       "stock": "Stock data",
       "chart": "Stock chart",
       "filters": {
+        "equal": "EQUAL to",
+        "not": "NOT",
+        "clearSelection": "Clear selection",
         "currency": "Currency",
         "exchange": "Exchange",
         "index": "Index",
