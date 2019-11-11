@@ -119,6 +119,9 @@
       "stock": "Data akce",
       "chart": "Graf akce",
       "filters": {
+        "equal": "ROVNÁ se",
+        "not": "NE",
+        "clearSelection": "Zrušit výběr",
         "currency": "Měna",
         "exchange": "Burza",
         "index": "Index",
