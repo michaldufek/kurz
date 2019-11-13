@@ -18,9 +18,6 @@
               <base-checkbox v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
             </li>
             <li >
-              <base-checkbox v-model="riskProfile">{{$t('research.stockPickingLab.filters.riskProfile')}}</base-checkbox>
-            </li>
-            <li >
               <base-checkbox v-model="sector">{{$t('research.stockPickingLab.filters.sector')}}</base-checkbox>
             </li>
           </ul>
@@ -69,11 +66,6 @@
         }
         this.dividend = JSON.parse(localStorage.dividendEnabled)
 
-        if (!('riskProfileEnabled' in localStorage)) {
-          localStorage.setItem('riskProfileEnabled', true)
-        }
-        this.riskProfile = JSON.parse(localStorage.riskProfileEnabled)
-        
         if (!('sectorEnabled' in localStorage)) {
           localStorage.setItem('sectorEnabled', true)
         }
@@ -104,7 +96,6 @@
         exchange: true,
         index: true,
         dividend: true,
-        riskProfile: true,
         sector: true,
 
         langs: [ 'en', 'cs' ],
@@ -127,9 +118,6 @@
       },
       dividend(val) {
         localStorage.dividendEnabled = val
-      },
-      riskProfile(val) {
-        localStorage.riskProfileEnabled = val
       },
       sector(val) {
         localStorage.sectorEnabled = val

@@ -126,7 +126,6 @@
         "exchange": "Exchange",
         "index": "Index",
         "dividend": "Dividend",
-        "riskProfile": "Risk profile",
         "sector": "Sector",
         "metricsSettings": "Metrics Settings",
         "currencies": [
@@ -139,10 +138,6 @@
           "NMS",
           "ASE"
         ],
-        "riskProfiles": {
-          "Dynamic": "Dynamic",
-          "Optimal": "Optimal"
-        },
         "sectors": {
           "Consumer Cyclical": "Consumer Cyclical",
           "Industrials": "Industrials",

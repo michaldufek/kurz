@@ -126,7 +126,6 @@
         "exchange": "Burza",
         "index": "Index",
         "dividend": "Dividenda",
-        "riskProfile": "Risk profil",
         "sector": "Sektor",
         "metricsSettings": "Nastavení Metrik",
         "currencies": [
@@ -139,10 +138,6 @@
           "NMS",
           "ASE"
         ],
-        "riskProfiles": {
-          "Dynamic": "Dynamický",
-          "Optimal": "Optimální"
-        },
         "sectors": {
           "Consumer Cyclical": "Consumer Cyclical",
           "Industrials": "Průmysl",
