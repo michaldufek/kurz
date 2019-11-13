@@ -10,10 +10,10 @@
            onMouseOver="this.classList.add('notEqualOver')"
            onMouseOut="this.classList.remove('notEqualOver')">
       <base-dropdown v-if="showCurrency" 
-                     style="float: left; width: 15%" 
-                    menu-classes="dropdown-black" 
-                    title-classes="btn btn-secondary" 
-                    :title="currenciesTitle">
+                     class="dd" 
+                     menu-classes="dropdown-black" 
+                     title-classes="btn btn-secondary" 
+                     :title="currenciesTitle">
         <ul style="list-style-type: none;">
           <li v-for="currency in currencies">            
             <a class="dropdown-item" 
@@ -33,7 +33,7 @@
            onMouseOver="this.classList.add('notEqualOver')"
            onMouseOut="this.classList.remove('notEqualOver')">
       <base-dropdown v-if="showExchange" 
-                     style="float: left; width: 15%" 
+                     class="dd" 
                      menu-classes="dropdown-black" 
                      title-classes="btn btn-secondary" 
                      :title="exchangesTitle">
@@ -59,7 +59,10 @@
            :class="[ { 'notEqualSelected': selectedSectorNot }, 'notEqual' ]"
            onMouseOver="this.classList.add('notEqualOver')"
            onMouseOut="this.classList.remove('notEqualOver')">
-      <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
+      <base-dropdown v-if="showSector" 
+                     class="dd" 
+                     menu-classes="dropdown-black" 
+                     title-classes="btn btn-secondary" 
                      :title="sectorsTitle">
         <ul style="list-style-type: none;">
           <li v-for="sector in sectors">
@@ -72,6 +75,23 @@
           </li>
         </ul>
       </base-dropdown>
+      
+      <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.marketPrice')}}</p>
+      <base-input alternative
+                  type="text"
+                  style="float: left; width: 6%; margin-right: 10px"
+                  v-model="marketPriceGte"
+                  :placeholder="$t('research.stockPickingLab.filters.number')"
+                  @keyup.enter="marketPriceGteEnter">
+      </base-input>
+      <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.and')}}</p>
+      <base-input alternative
+                  type="text"
+                  style="float: left; width: 6%"
+                  v-model="marketPriceLte"
+                  :placeholder="$t('research.stockPickingLab.filters.number')"
+                  @keyup.enter="marketPriceLteEnter">
+      </base-input>
     </div>
 
     <div style="clear:both;"></div>
@@ -139,6 +159,8 @@
         selectedSectorNot: false,      
         index: false,
         dividend: false,
+        marketPriceGte: null,
+        marketPriceLte: null
       }
     },
 
@@ -249,6 +271,8 @@
         data['ordering'] = 'score_pcento'
         // data['index'] = this.index
         data['info__dividendDate__is_null'] = !this.dividend
+        data['info__regularMarketPrice__gte'] = this.marketPriceGte
+        data['info__regularMarketPrice__lte'] = this.marketPriceLte
 
         if (this.selectedCurrencyNot) {
           data['info__currency__exclude'] = this.selectedCurrency
@@ -310,7 +334,9 @@
         this.selectedCurrencyNot = !this.selectedCurrencyNot
         localStorage.setItem('currencyNot', this.selectedCurrencyNot)
 
-        this.initData()
+        if (this.selectedCurrency) {
+          this.initData()
+        }
       },
       currencyTitle(currency) {
         return currency === this.$t('research.stockPickingLab.filters.all') 
@@ -341,7 +367,9 @@
         this.selectedExchangeNot = !this.selectedExchangeNot
         localStorage.setItem('exchangeNot', this.selectedExchangeNot)
 
-        this.initData()
+        if (this.selectedExchange) {
+          this.initData()
+        }
       },
       exchangeTitle(exchange) {
         return exchange === this.$t('research.stockPickingLab.filters.all') 
@@ -372,7 +400,9 @@
         this.selectedSectorNot = !this.selectedSectorNot
         localStorage.setItem('sectorNot', this.selectedSectorNot)
 
-        this.initData()
+        if (this.selectedSector) {
+          this.initData()
+        }
       },
       sectorTitle(sector) {
         return sector === constants.strings.all
@@ -380,7 +410,22 @@
                : this.$t('research.stockPickingLab.filters.sector') 
                   + (this.selectedSectorNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
                   + ' ' + this.$t('research.stockPickingLab.filters.equal')
-      },      
+      },    
+      
+      marketPriceGteEnter() {
+        if (this.marketPriceLte && this.marketPriceGte > this.marketPriceLte) {
+          this.marketPriceGte = this.marketPriceLte
+        }
+
+        this.initData()
+      },
+      marketPriceLteEnter() {
+        if (this.marketPriceGte && this.marketPriceLte < this.marketPriceGte) {
+          this.marketPriceLte = this.marketPriceGte
+        }   
+        
+        this.initData()
+      },
 
       selectPage(page) {
         if (page === this.$t('paging.previous')) {
@@ -522,5 +567,10 @@ img.notEqualSelected {
 
 img.notEqualOver {
   background: red;
+}
+
+.dd {
+  float: left;
+  width: 12%
 }
 </style>
