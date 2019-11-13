@@ -45,29 +45,7 @@
 
       <base-checkbox v-if="showIndex" style="float: left; width: 10%" v-model="index">{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
 
-      <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>
-
-      <base-dropdown v-if="showRiskProfile" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
-                     :title="riskProfileTitle">
-        <ul style="list-style-type: none;">
-          <li v-for="riskProfile in riskProfiles">
-            <!-- <div class="dropdown-divider"></div> / to-do: use this for dividing All option -->
-            <a class="dropdown-item" 
-               @click="selectRiskProfile(riskProfile)" 
-               href="#"
-               :title="riskProfile === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.riskProfile') + ' ' + $t('research.stockPickingLab.filters.equal')">
-              <img v-if="showRiskProfileIcon(riskProfile)" 
-                   src="../../assets/img/not-equal.svg" 
-                   @click="selectRiskProfileNot(riskProfile)" 
-                   :title="$t('research.stockPickingLab.filters.riskProfile') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
-                   onMouseOver="this.style.backgroundColor = '#e14eca'"
-                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
-                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
-               {{$t('research.stockPickingLab.filters.' + (riskProfile === 'all' ? riskProfile : 'riskProfiles.' + riskProfile))}}
-            </a>
-          </li>
-        </ul>
-      </base-dropdown>
+      <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>      
 
       <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
                      :title="sectorTitle">
@@ -152,8 +130,6 @@
         selectedCurrencyNot: null,
         selectedExchange: null,
         selectedExchangeNot: null,
-        selectedRiskProfile: null,  
-        selectedRiskProfileNot: null,  
         selectedSector: null,      
         selectedSectorNot: null,      
         index: false,
@@ -173,12 +149,6 @@
           localStorage.setItem('exchange', this.selectedExchange)
         } else {
           this.selectedExchange = localStorage.exchange
-        }
-
-        if (this.selectedRiskProfile && !('riskProfile' in localStorage)) {
-          localStorage.setItem('riskProfile', this.selectedRiskProfile)
-        } else {
-          this.selectedRiskProfile = localStorage.riskProfile
         }
 
         if (this.selectedSector && !('sector' in localStorage)) {
@@ -260,7 +230,6 @@
         data['ordering'] = 'score_pcento'
         data['info__currency'] = this.selectedCurrency
         data['info__exchange'] = this.selectedExchange
-        // data['riskProfile'] = this.selectedRiskProfile
         data['sector__name'] = this.selectedSector
         // data['index'] = this.index
         data['info__dividendDate__is_null'] = !this.dividend
@@ -324,27 +293,6 @@
         this.selectedExchangeNot = exchange
       },
 
-      selectRiskProfile(riskProfile) {
-        if (riskProfile === constants.strings.all) {
-          this.selectedRiskProfile = null
-          localStorage.removeItem('riskProfile')
-        } else {
-          this.selectedRiskProfile = riskProfile
-          localStorage.setItem('riskProfile', riskProfile)
-        }
-        if (this.selectedRiskProfileNot !== riskProfile) {
-          this.selectedRiskProfileNot = null
-        }
-
-        // this.initData()
-      },
-      selectRiskProfileNot(riskProfile) {
-        this.selectedRiskProfileNot = riskProfile
-      },
-      showRiskProfileIcon(riskProfile) {
-        return riskProfile !== constants.strings.all
-      },
-
       selectSector(sector) {
         if (sector === constants.strings.all) {
           this.selectedSector = null
@@ -402,12 +350,6 @@
         } 
         return JSON.parse(localStorage.dividendEnabled)
       },
-      showRiskProfile() {
-        if (!('riskProfileEnabled' in localStorage)) {
-          localStorage.setItem('riskProfileEnabled', true)
-        } 
-        return JSON.parse(localStorage.riskProfileEnabled)
-      },
       showSector() {
         if (!('sectorEnabled' in localStorage)) {
           localStorage.setItem('sectorEnabled', true)
@@ -425,8 +367,7 @@
       exchangeTitle() {
         return this.selectedExchange 
                 ? (this.selectedExchangeNot ? '!= ' : '') + this.selectedExchange
-                : this.$t('research.stockPickingLab.filters.exchange') 
-               
+                : this.$t('research.stockPickingLab.filters.exchange')                
       },
       currencies() {
         let currencies = []
@@ -438,21 +379,7 @@
       currencyTitle() {
         return this.selectedCurrency 
                 ? (this.selectedCurrencyNot ? '!= ' : '') + this.selectedCurrency
-                : this.$t('research.stockPickingLab.filters.currency') 
-               
-      },
-      riskProfiles() {
-        let riskProfiles = []
-        if (this.selectedRiskProfile) {
-          riskProfiles = [constants.strings.all]
-        }
-        return riskProfiles.concat(Object.keys(this.$t('research.stockPickingLab.filters.riskProfiles')))
-      },
-      riskProfileTitle() {
-        return this.selectedRiskProfile 
-                ? (this.selectedRiskProfileNot ? '!= ' : '') + this.selectedRiskProfile
-                : this.$t('research.stockPickingLab.filters.riskProfile') 
-               
+                : this.$t('research.stockPickingLab.filters.currency')                
       },
       sectors() {
         let sectors = []
@@ -464,8 +391,7 @@
       sectorTitle() {
         return this.selectedSector 
                 ? (this.selectedSectorNot ? '!= ' : '') + this.selectedSector
-                : this.$t('research.stockPickingLab.filters.sector') 
-               
+                : this.$t('research.stockPickingLab.filters.sector')                
       },
 
       pages() {
