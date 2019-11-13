@@ -127,7 +127,9 @@
         "index": "Index",
         "dividend": "Dividend",
         "sector": "Sector",
-        "metricsSettings": "Metrics Settings",
+        "marketPrice": "Market price between",
+        "and": "and",
+        "number": "Number",
         "currencies": [
           "USD",
           "EUR",
