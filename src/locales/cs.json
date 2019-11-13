@@ -127,7 +127,9 @@
         "index": "Index",
         "dividend": "Dividenda",
         "sector": "Sektor",
-        "metricsSettings": "Nastavení Metrik",
+        "marketPrice": "Trhová cena mezi",
+        "and": "a",
+        "number": "Číslo",
         "currencies": [
           "USD",
           "EUR",
