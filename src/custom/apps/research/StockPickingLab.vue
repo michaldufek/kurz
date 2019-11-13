@@ -3,40 +3,46 @@
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div style="margin-left: 40px;">
       
-      <base-dropdown v-if="showCurrency" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="currencyTitle">
+      <img src="../../assets/img/not-equal.svg" 
+           @click="selectCurrencyNot" 
+           :title="$t('research.stockPickingLab.filters.currency') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+           :class="[ { 'notEqualSelected': selectedCurrencyNot }, 'notEqual' ]"
+           onMouseOver="this.classList.add('notEqualOver')"
+           onMouseOut="this.classList.remove('notEqualOver')">
+      <base-dropdown v-if="showCurrency" 
+                     style="float: left; width: 15%" 
+                    menu-classes="dropdown-black" 
+                    title-classes="btn btn-secondary" 
+                    :title="currenciesTitle">
         <ul style="list-style-type: none;">
           <li v-for="currency in currencies">            
             <a class="dropdown-item" 
                @click="selectCurrency(currency)" 
                href="#" 
-               :title="currency === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.currency') + ' ' + $t('research.stockPickingLab.filters.equal')">
-              <img v-if="currency !== $t('research.stockPickingLab.filters.all')" 
-                   src="../../assets/img/not-equal.svg" 
-                   @click="selectCurrencyNot(currency)" 
-                   :title="$t('research.stockPickingLab.filters.currency') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
-                   onMouseOver="this.style.backgroundColor = '#e14eca'"
-                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
-                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
+               :title="currencyTitle(currency)">
               {{currency}}
             </a>
           </li>
         </ul>
       </base-dropdown>      
 
-      <base-dropdown v-if="showExchange" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" :title="exchangeTitle">
+      <img src="../../assets/img/not-equal.svg" 
+           @click="selectExchangeNot" 
+           :title="$t('research.stockPickingLab.filters.exchange') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+           :class="[ { 'notEqualSelected': selectedExchangeNot }, 'notEqual' ]"
+           onMouseOver="this.classList.add('notEqualOver')"
+           onMouseOut="this.classList.remove('notEqualOver')">
+      <base-dropdown v-if="showExchange" 
+                     style="float: left; width: 15%" 
+                     menu-classes="dropdown-black" 
+                     title-classes="btn btn-secondary" 
+                     :title="exchangesTitle">
         <ul style="list-style-type: none;">
           <li v-for="exchange in exchanges">
             <a class="dropdown-item" 
                @click="selectExchange(exchange)" 
                href="#"
-               :title="exchange === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.exchange') + ' ' + $t('research.stockPickingLab.filters.equal')">
-              <img v-if="exchange !== $t('research.stockPickingLab.filters.all')" 
-                   src="../../assets/img/not-equal.svg" 
-                   @click="selectExchangeNot(exchange)" 
-                   :title="$t('research.stockPickingLab.filters.exchange') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
-                   onMouseOver="this.style.backgroundColor = '#e14eca'"
-                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
-                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
+               :title="exchangeTitle(exchange)">
                {{exchange}}
             </a>
           </li>
@@ -47,21 +53,20 @@
 
       <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>      
 
+      <img src="../../assets/img/not-equal.svg" 
+           @click="selectSectorNot" 
+           :title="$t('research.stockPickingLab.filters.sector') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+           :class="[ { 'notEqualSelected': selectedSectorNot }, 'notEqual' ]"
+           onMouseOver="this.classList.add('notEqualOver')"
+           onMouseOut="this.classList.remove('notEqualOver')">
       <base-dropdown v-if="showSector" style="float: left; width: 15%" menu-classes="dropdown-black" title-classes="btn btn-secondary" 
-                     :title="sectorTitle">
+                     :title="sectorsTitle">
         <ul style="list-style-type: none;">
           <li v-for="sector in sectors">
             <a class="dropdown-item" 
                @click="selectSector(sector)" 
                href="#"
-               :title="sector === $t('research.stockPickingLab.filters.all') ? $t('research.stockPickingLab.filters.clearSelection') : $t('research.stockPickingLab.filters.sector') + ' ' + $t('research.stockPickingLab.filters.equal')">
-              <img v-if="showSectorIcon(sector)" 
-                   src="../../assets/img/not-equal.svg" 
-                   @click="selectSectorNot(sector)" 
-                   :title="$t('research.stockPickingLab.filters.sector') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
-                   onMouseOver="this.style.backgroundColor = '#e14eca'"
-                   onMouseOut="this.style.backgroundColor = 'transparent'"                   
-                   style="width: 20px; margin-left: -10px;margin-right: 10px;">
+               :title="sectorTitle(sector)">
                {{$t('research.stockPickingLab.filters.' + (sector === 'all' ? sector : 'sectors.' + sector))}}
             </a>
           </li>
@@ -127,35 +132,48 @@
 
         // filters
         selectedCurrency: null,
-        selectedCurrencyNot: null,
+        selectedCurrencyNot: false,
         selectedExchange: null,
-        selectedExchangeNot: null,
+        selectedExchangeNot: false,
         selectedSector: null,      
-        selectedSectorNot: null,      
+        selectedSectorNot: false,      
         index: false,
         dividend: false,
       }
     },
 
     methods: {
+      // initializing
       initSelectors() {
         if (this.selectedCurrency && !('currency' in localStorage)) {
           localStorage.setItem('currency', this.selectedCurrency)
         } else {
           this.selectedCurrency = localStorage.currency
         }
+        if (!('currencyNot' in localStorage)) {
+          localStorage.setItem('currencyNot', this.selectedCurrencyNot)
+        }
+        this.selectedCurrencyNot = JSON.parse(localStorage.currencyNot)
 
         if (this.selectedExchange && !('exchange' in localStorage)) {
           localStorage.setItem('exchange', this.selectedExchange)
         } else {
           this.selectedExchange = localStorage.exchange
         }
+        if (!('exchangeNot' in localStorage)) {
+          localStorage.setItem('exchangeNot', this.selectedExchangeNot)
+        }
+        this.selectedExchangeNot = JSON.parse(localStorage.exchangeNot)
 
         if (this.selectedSector && !('sector' in localStorage)) {
           localStorage.setItem('sector', this.selectedSector)
         } else {
           this.selectedSector = localStorage.sector
         }
+        if (!('sectorNot' in localStorage)) {
+          localStorage.setItem('sectorNot', this.selectedSectorNot)
+        }
+        this.selectedSectorNot = JSON.parse(localStorage.sectorNot)
 
         if (!('index' in localStorage)) {
           localStorage.setItem('index', this.index)
@@ -186,6 +204,7 @@
         }, constants.dataReloadInterval );
       },
 
+      // data loading
       loadStocksData() {
         this.stocksData = []
         this.loading = true
@@ -228,12 +247,25 @@
 
         data['page'] = this.activePage
         data['ordering'] = 'score_pcento'
-        data['info__currency'] = this.selectedCurrency
-        data['info__exchange'] = this.selectedExchange
-        data['sector__name'] = this.selectedSector
         // data['index'] = this.index
         data['info__dividendDate__is_null'] = !this.dividend
 
+        if (this.selectedCurrencyNot) {
+          data['info__currency__exclude'] = this.selectedCurrency
+        } else {
+          data['info__currency'] = this.selectedCurrency
+        }
+        if (this.selectedExchangeNot) {
+          data['info__exchange__exclude'] = this.selectedExchange
+        } else {
+          data['info__exchange'] = this.selectedExchange
+        }
+        if (this.selectedSectorNot) {
+          data['sector__name__exclude'] = this.selectedSector
+        } else {
+          data['sector__name'] = this.selectedSector
+        }
+        
         return data
       },
 
@@ -256,63 +288,90 @@
         })
       },
 
-      // methods for dropdowns selection
+      // dropdowns selections
       selectCurrency(currency) {
         if (currency === this.$t('research.stockPickingLab.filters.all')) {
           this.selectedCurrency = null
           localStorage.removeItem('currency')
+
+          this.selectedCurrencyNot = false
+          localStorage.setItem('currencyNot', this.selectedCurrencyNot)
         } else {
           this.selectedCurrency = currency
           localStorage.setItem('currency', currency)
         }
-        if (this.selectedCurrencyNot !== currency) {
-          this.selectedCurrencyNot = null
-        }
 
         this.initData()
       },
-      selectCurrencyNot(currency) {
-        this.selectedCurrencyNot = currency
+      selectCurrencyNot() {
+        this.selectedCurrencyNot = !this.selectedCurrencyNot
+        localStorage.setItem('currencyNot', this.selectedCurrencyNot)
+
+        this.initData()
       },
+      currencyTitle(currency) {
+        return currency === this.$t('research.stockPickingLab.filters.all') 
+               ? this.$t('research.stockPickingLab.filters.clearSelection') 
+               : this.$t('research.stockPickingLab.filters.currency') 
+                  + (this.selectedCurrencyNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
+                  + ' ' + this.$t('research.stockPickingLab.filters.equal')
+      },      
 
       selectExchange(exchange) {
         if (exchange === this.$t('research.stockPickingLab.filters.all')) {
           this.selectedExchange = null
           localStorage.removeItem('exchange')
+
+          this.selectedExchangeNot = false          
+          localStorage.setItem('exchangeNot', this.selectedExchangeNot)
         } else {
           this.selectedExchange = exchange
           localStorage.setItem('exchange', exchange)
         }
-        if (this.selectedExchangeNot !== exchange) {
-          this.selectedExchangeNot = null
-        }
 
         this.initData()
       },
-      selectExchangeNot(exchange) {
-        this.selectedExchangeNot = exchange
+      selectExchangeNot() {
+        this.selectedExchangeNot = !this.selectedExchangeNot
+        localStorage.setItem('exchangeNot', this.selectedExchangeNot)
+
+        this.initData()
       },
+      exchangeTitle(exchange) {
+        return exchange === this.$t('research.stockPickingLab.filters.all') 
+               ? this.$t('research.stockPickingLab.filters.clearSelection') 
+               : this.$t('research.stockPickingLab.filters.exchange') 
+                  + (this.selectedExchangeNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
+                  + ' ' + this.$t('research.stockPickingLab.filters.equal')
+      },      
 
       selectSector(sector) {
         if (sector === constants.strings.all) {
           this.selectedSector = null
           localStorage.removeItem('sector')
+
+          this.selectedSectorNot = false
+          localStorage.setItem('sectorNot', this.selectedSectorNot)          
         } else {
           this.selectedSector = sector
           localStorage.setItem('sector', sector)
         }
-        if (this.selectedSectorNot !== sector) {
-          this.selectedSectorNot = null
-        }
 
         this.initData()
       },
-      selectSectorNot(sector) {
-        this.selectedSectorNot = sector
+      selectSectorNot() {
+        this.selectedSectorNot = !this.selectedSectorNot
+        localStorage.setItem('sectorNot', this.selectedSectorNot)
+
+        this.initData()
       },
-      showSectorIcon(sector) {
-        return sector !== constants.strings.all
-      },
+      sectorTitle(sector) {
+        return sector === constants.strings.all
+               ? this.$t('research.stockPickingLab.filters.clearSelection') 
+               : this.$t('research.stockPickingLab.filters.sector') 
+                  + (this.selectedSectorNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
+                  + ' ' + this.$t('research.stockPickingLab.filters.equal')
+      },      
 
       selectPage(page) {
         if (page === this.$t('paging.previous')) {
@@ -357,18 +416,6 @@
         return JSON.parse(localStorage.sectorEnabled)
       },
 
-      exchanges() {
-        let exchanges = []
-        if (this.selectedExchange) {
-          exchanges = [this.$t('research.stockPickingLab.filters.all')]
-        }
-        return exchanges.concat(this.$t('research.stockPickingLab.filters.exchanges'))
-      },
-      exchangeTitle() {
-        return this.selectedExchange 
-                ? (this.selectedExchangeNot ? '!= ' : '') + this.selectedExchange
-                : this.$t('research.stockPickingLab.filters.exchange')                
-      },
       currencies() {
         let currencies = []
         if (this.selectedCurrency) {
@@ -376,10 +423,18 @@
         }
         return currencies.concat(this.$t('research.stockPickingLab.filters.currencies'))
       },
-      currencyTitle() {
-        return this.selectedCurrency 
-                ? (this.selectedCurrencyNot ? '!= ' : '') + this.selectedCurrency
-                : this.$t('research.stockPickingLab.filters.currency')                
+      currenciesTitle() {
+        return this.selectedCurrency ? this.selectedCurrency : this.$t('research.stockPickingLab.filters.currency')                
+      },
+      exchanges() {
+        let exchanges = []
+        if (this.selectedExchange) {
+          exchanges = [this.$t('research.stockPickingLab.filters.all')]
+        }
+        return exchanges.concat(this.$t('research.stockPickingLab.filters.exchanges'))
+      },
+      exchangesTitle() {
+        return this.selectedExchange ? this.selectedExchange : this.$t('research.stockPickingLab.filters.exchange')                
       },
       sectors() {
         let sectors = []
@@ -388,10 +443,8 @@
         }
         return sectors.concat(Object.keys(this.$t('research.stockPickingLab.filters.sectors')))
       },
-      sectorTitle() {
-        return this.selectedSector 
-                ? (this.selectedSectorNot ? '!= ' : '') + this.selectedSector
-                : this.$t('research.stockPickingLab.filters.sector')                
+      sectorsTitle() {
+        return this.selectedSector ? this.selectedSector : this.$t('research.stockPickingLab.filters.sector')                
       },
 
       pages() {
@@ -439,4 +492,20 @@
   };
 </script>
 <style>
+img.notEqual {
+  float: left;   
+  width: 20px; 
+  margin-right: 10px;
+  margin-top: 10px;
+  border-radius: 0.6rem;
+  background: #344675
+}
+
+img.notEqualSelected {
+  background: #e14eca;
+}
+
+img.notEqualOver {
+  background: red;
+}
 </style>
