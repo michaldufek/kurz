@@ -1,4 +1,4 @@
-const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://frs.analyticalplatform.com"
+const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
 const tickerPartUrl = "/api/sp/Ticker"
 const reportPartUrl = "/api/xreport"
 const statsPartUrl = reportPartUrl + "/last_report"
