@@ -14,16 +14,10 @@
                 </div>
                 <div class="btn-wrapper text-center">
                     <base-button type="secondary" style="width: 50%;">
-                        <img src="../assets/img/f_logo_RGB-Blue_58.png" style="width: 36px">
+                        <img src="../assets/img/google-logo.png" style="width: 36px">
                         <!-- slot="icon" -->
-                        Facebook
-                    </base-button>
-
-                    <base-button type="secondary">
-                        <img src="../assets/img/Twitter_Social_Icon_Circle_Color.svg" style="width: 36px">
-                        <!-- slot="icon" -->
-                        Twitter
-                    </base-button>                    
+                        &nbsp;&nbsp;&nbsp;&nbsp;Google
+                    </base-button>                
                 </div>
             </template>
             <template>
