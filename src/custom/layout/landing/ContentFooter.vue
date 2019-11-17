@@ -60,7 +60,7 @@
         </li>
       </ul>
       <div class="copyright">
-        © {{year}} made by
+        v{{version}} © {{year}} made by
         <a href="https://www.cyrrusadvisory.cz/" target="_blank" rel="noopener">Cyrrus Advisory</a>.
       </div>
     </div>
@@ -70,6 +70,7 @@
   export default {
     data() {
       return {
+        version: process.env.PACKAGE_VERSION,
         year: new Date().getFullYear()
       }
     }
