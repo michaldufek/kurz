@@ -38,50 +38,52 @@ export default {
     weightedAverageAggregator(oldRows, newRows, weight, lastRowNoAverage=true) {
         // average values at same place
         let rows = []
+        let firstTime = !oldRows.length || !newRows.length
 
-        if (!oldRows.length || !newRows.length) {
-            // to-do: should also use weight
-            rows = oldRows.concat(newRows)
-        } else {
-            let rowNr = 0
+        let allRows = firstTime ? oldRows.concat(newRows) : oldRows
+        let rowNr = 0
 
-            oldRows.forEach(oldRow => {
-                let aggRow = {}
+        allRows.forEach(oldRow => {
+            let aggRow = {}
+            
+            for (const [key, oldVal] of Object.entries(oldRow)) {
+                if (oldVal instanceof Number || typeof oldVal === 'number') {
+                    var newVal = oldVal
+                } else {
+                    // split because in portfolio card it is in '<statisticName>: <number>' format
+                    var sep = ': '
+                    var oldValSplitted = oldVal.split(sep)
 
-                for (const [key, oldVal] of Object.entries(oldRow)) {
-                    if (oldVal instanceof Number || typeof oldVal === 'number') {
-                        var newVal = oldVal
-                    } else {
-                        // split because in portfolio card it is in '<statisticName>: <number>' format
-                        var sep = ': '
-                        var oldValSplitted = oldVal.split(sep)
-
-                        newVal = oldValSplitted[oldValSplitted.length - 1]
-                    }
-
-                    if (!isNaN(Number(newVal))) {
-                        // final weighted average of old and new value
-                        var newWeight = (!(lastRowNoAverage && rowNr === oldRows.length - 1)) ? weight : 1
-                        newVal = Number(newVal) 
-                                 + (newWeight * ((oldValSplitted && oldValSplitted.length > 1) 
-                                                 ? Number(newRows[rowNr][key].split(sep)[1]) 
-                                                 : newRows[rowNr][key]))
-                        if (!(lastRowNoAverage && rowNr === oldRows.length - 1)) {  
-                            // it's probably Equity outstanding statistic                          
-                            newVal /= 2
-                        }
-                    }
-                    
-                    if (oldValSplitted && oldValSplitted.length > 1) {
-                        newVal = [ oldValSplitted[0], newVal ].join(sep)
-                    } 
-                    aggRow[key] = newVal
+                    newVal = oldValSplitted[oldValSplitted.length - 1]
                 }
 
-                rows.push(aggRow)
-                rowNr++
-            })
-        }
+                if (!isNaN(Number(newVal))) {
+                    // final weighted average of old and new value
+                    let noAverage = !(lastRowNoAverage && rowNr === allRows.length - 1)
+                    let newWeight = noAverage ? weight : 1
+
+                    newVal = ((firstTime ? newWeight : 1) * Number(newVal))
+                                + (firstTime
+                                    ? 0
+                                    : (newWeight * ((oldValSplitted && oldValSplitted.length > 1) 
+                                                    ? Number(newRows[rowNr][key].split(sep)[1]) 
+                                                    : newRows[rowNr][key]))
+                                    )
+                    if (noAverage && !firstTime) {  
+                        // it's probably Equity outstanding statistic                          
+                        newVal /= 2
+                    }
+                }
+                
+                if (oldValSplitted && oldValSplitted.length > 1) {
+                    newVal = [ oldValSplitted[0], newVal ].join(sep)
+                } 
+                aggRow[key] = newVal
+            }
+
+            rows.push(aggRow)
+            rowNr++
+        })
 
         return rows
     },
