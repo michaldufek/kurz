@@ -34,7 +34,10 @@ module.exports = {
     themeColor: '#344675',
     msTileColor: '#344675',
     appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: '#344675'
+    appleMobileWebAppStatusBarStyle: '#344675',
+    workboxOptions: {
+      skipWaiting: true
+    }
   },
   pluginOptions: {
     i18n: {
