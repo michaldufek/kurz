@@ -3,9 +3,9 @@
     <!-- <card class="card"> to-do: must be in one card --> 
       <div class="col-lg-4 col-md-12">
         <fancy-card :title="this.$t('research.stockPickingLab.stock').toLowerCase()"
-                    :fullTitle="symbol + ' (' + name + ')'"
+                    :fullTitle="rank + '. ' + symbol + ' (' + name + ')'"
                     :showTitle="true"
-                    :items="[$t('cagr'), $t('sharpeRatio'), $t('stdDev'), $t('recoveryDDtime'), $t('maxDD')]"
+                    :items="[$t('cagr'), $t('sharpeRatio'), $t('stdDev'), $t('recoveryDDtime'), $t('maxDD'), $t('score') ]"
                     :values="stats"                    
                     :titles="$t('terms.perfStats')">
         </fancy-card>
@@ -40,6 +40,10 @@ export default {
     name: {
       type: String,
       description: "Stock name"
+    },
+    rank: {
+      type: Number,
+      description: "Rank of the stock"
     },
     stats: {
       type: Array,

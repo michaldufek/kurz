@@ -22,6 +22,8 @@
   </table>
 </template>
 <script>
+  import helper from '@/custom/assets/js/helper';
+  
   export default {
     name: 'base-table',
 
@@ -70,7 +72,7 @@
           return nr
         }
 
-        if (nr instanceof Number || typeof nr === 'number') {
+        if (helper.isNumber(nr)) {
           return nr.toFixed(2)
         }
 

@@ -116,8 +116,9 @@
       <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
       <ul style="list-style-type: none;">
         <li v-for="stockData in stocksData">
-          <stock-card :symbol="stockData.symbol"
+          <stock-card :symbol="stockData.symbol"                      
                       :name="stockData.name"
+                      :rank="stockData.rank"
                       :stats="stockData.statsData">
           </stock-card>
         </li>
@@ -247,16 +248,19 @@
         .then(response => {
           this.nrOfPages = Math.ceil(response.data.count / constants.maxRows)
 
+          let i = ((this.activePage - 1) * constants.maxRows) + 1
           response.data.results.forEach(result => {
             this.stocksData.push({
-              symbol: result.symbol,
+              symbol: result.symbol,              
               name: result.info ? result.info.shortName : null,
+              rank: i++,
               statsData: [
-                result.compute ? result.compute.cagr : null,
-                result.compute ? result.compute.sharpe_ratio : null,
-                result.compute ? result.compute.stddev : null,                
-                result.compute ? result.compute.recovery_dd_time : null,
-                result.compute ? result.compute.max_dd : null
+                result.compute ? Number(result.compute.cagr) : null,
+                result.compute ? Number(result.compute.sharpe_ratio) : null,
+                result.compute ? Number(result.compute.stddev) : null,                
+                result.compute ? Number(result.compute.recovery_dd_time) : null,
+                result.compute ? Number(result.compute.max_dd) : null,
+                result.compute ? Number(result.compute.scorep) * 100 + ' %' : null
               ]
             });
           });          
