@@ -2,6 +2,15 @@
   <div class="wrapper">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div style="margin-left: 40px;">
+
+      <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.symbolName')}}</p>
+      <base-input alternative
+                  type="text"
+                  style="float: left; width: 6%; margin-right: 20px"
+                  v-model="symbolSearch"
+                  :placeholder="$t('research.stockPickingLab.filters.text')"
+                  @keyup.enter="symbolSearchEnter">
+      </base-input>
       
       <img src="../../assets/img/not-equal.svg" 
            @click="selectCurrencyNot" 
@@ -107,8 +116,9 @@
       <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
       <ul style="list-style-type: none;">
         <li v-for="stockData in stocksData">
-          <stock-card :symbol="stockData.symbol"
+          <stock-card :symbol="stockData.symbol"                      
                       :name="stockData.name"
+                      :rank="stockData.rank"
                       :stats="stockData.statsData">
           </stock-card>
         </li>
@@ -151,6 +161,7 @@
         nrOfPages: 1,
 
         // filters
+        symbolSearch: null,
         selectedCurrency: null,
         selectedCurrencyNot: false,
         selectedExchange: null,
@@ -237,16 +248,19 @@
         .then(response => {
           this.nrOfPages = Math.ceil(response.data.count / constants.maxRows)
 
+          let i = ((this.activePage - 1) * constants.maxRows) + 1
           response.data.results.forEach(result => {
             this.stocksData.push({
-              symbol: result.symbol,
+              symbol: result.symbol,              
               name: result.info ? result.info.shortName : null,
+              rank: i++,
               statsData: [
-                result.compute ? result.compute.cagr : null,
-                result.compute ? result.compute.sharpe_ratio : null,
-                result.compute ? result.compute.stddev : null,                
-                result.compute ? result.compute.recovery_dd_time : null,
-                result.compute ? result.compute.max_dd : null
+                result.compute ? Number(result.compute.cagr) : null,
+                result.compute ? Number(result.compute.sharpe_ratio) : null,
+                result.compute ? Number(result.compute.stddev) : null,                
+                result.compute ? Number(result.compute.recovery_dd_time) : null,
+                result.compute ? Number(result.compute.max_dd) : null,
+                result.compute ? Number(result.compute.scorep) * 100 + ' %' : null
               ]
             });
           });          
@@ -270,6 +284,7 @@
         data['page'] = this.activePage
         data['ordering'] = 'score_pcento'
         // data['index'] = this.index
+        data['search'] = this.symbolSearch
         data['info__dividendDate__is_null'] = !this.dividend
         data['info__regularMarketPrice__gte'] = this.marketPriceGte
         data['info__regularMarketPrice__lte'] = this.marketPriceLte
@@ -411,6 +426,10 @@
                   + (this.selectedSectorNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
                   + ' ' + this.$t('research.stockPickingLab.filters.equal')
       },    
+
+      symbolSearchEnter() {
+        this.initData()
+      },
       
       marketPriceGteEnter() {
         if (this.marketPriceLte && this.marketPriceGte > this.marketPriceLte) {
@@ -571,6 +590,6 @@ img.notEqualOver {
 
 .dd {
   float: left;
-  width: 12%
+  width: 10%
 }
 </style>

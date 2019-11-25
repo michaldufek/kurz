@@ -120,10 +120,17 @@ export default {
         return newDatetimes
     },
 
+    isNumber(val) {
+        return val instanceof Number || typeof val === 'number'
+    },
+
     // global filters
     roundToFixed(value) {
         // rounds to 2 mantissa places
-        return value ? value.toFixed(2) : value
+        return value ? ((value instanceof Number || typeof value === 'number')
+                        ? value.toFixed(2)
+                        : [ Number(value.split(' ')[0]).toFixed(2), value.split(' ')[1] ].join(' '))
+                    : value
     },
     
     chartUpdateTsText(ts) {
