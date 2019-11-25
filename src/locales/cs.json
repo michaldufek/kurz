@@ -122,6 +122,7 @@
         "equal": "ROVNÁ se",
         "not": "NE",
         "clearSelection": "Zrušit výběr",
+        "symbolName": "Symbol/Jméno:",
         "currency": "Měna",
         "exchange": "Burza",
         "index": "Index",
@@ -130,6 +131,7 @@
         "marketPrice": "Trhová cena mezi",
         "and": "a",
         "number": "Číslo",
+        "text": "Text",
         "currencies": [
           "USD",
           "EUR",

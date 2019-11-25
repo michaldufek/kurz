@@ -2,6 +2,15 @@
   <div class="wrapper">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div style="margin-left: 40px;">
+
+      <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.symbolName')}}</p>
+      <base-input alternative
+                  type="text"
+                  style="float: left; width: 6%; margin-right: 20px"
+                  v-model="symbolSearch"
+                  :placeholder="$t('research.stockPickingLab.filters.text')"
+                  @keyup.enter="symbolSearchEnter">
+      </base-input>
       
       <img src="../../assets/img/not-equal.svg" 
            @click="selectCurrencyNot" 
@@ -151,6 +160,7 @@
         nrOfPages: 1,
 
         // filters
+        symbolSearch: null,
         selectedCurrency: null,
         selectedCurrencyNot: false,
         selectedExchange: null,
@@ -270,6 +280,7 @@
         data['page'] = this.activePage
         data['ordering'] = 'score_pcento'
         // data['index'] = this.index
+        data['search'] = this.symbolSearch
         data['info__dividendDate__is_null'] = !this.dividend
         data['info__regularMarketPrice__gte'] = this.marketPriceGte
         data['info__regularMarketPrice__lte'] = this.marketPriceLte
@@ -402,6 +413,10 @@
                   + (this.selectedSectorNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
                   + ' ' + this.$t('research.stockPickingLab.filters.equal')
       },    
+
+      symbolSearchEnter() {
+        this.initData()
+      },
       
       marketPriceGteEnter() {
         if (this.marketPriceLte && this.marketPriceGte > this.marketPriceLte) {
@@ -556,6 +571,6 @@ img.notEqualOver {
 
 .dd {
   float: left;
-  width: 12%
+  width: 10%
 }
 </style>

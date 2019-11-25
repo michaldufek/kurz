@@ -122,6 +122,7 @@
         "equal": "EQUAL to",
         "not": "NOT",
         "clearSelection": "Clear selection",
+        "symbolName": "Symbol/Name:",
         "currency": "Currency",
         "exchange": "Exchange",
         "index": "Index",
@@ -130,6 +131,7 @@
         "marketPrice": "Market price between",
         "and": "and",
         "number": "Number",
+        "text": "Text",
         "currencies": [
           "USD",
           "EUR",
