@@ -3,8 +3,9 @@
     <!-- <card class="card"> to-do: must be in one card --> 
       <div class="col-lg-4 col-md-12">
         <fancy-card :title="this.$t('research.stockPickingLab.stock').toLowerCase()"
-                    :fullTitle="rank + '. ' + symbol + ' (' + name + ')'"
+                    :fullTitle="rank + '. ' + symbol + (name ? ' (' + name + ')' : '')"
                     :showTitle="true"
+                    :watchable="true"
                     :items="[$t('cagr'), $t('sharpeRatio'), $t('stdDev'), $t('recoveryDDtime'), $t('maxDD'), $t('score') ]"
                     :values="stats"                    
                     :titles="$t('terms.perfStats')">

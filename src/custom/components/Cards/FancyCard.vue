@@ -1,7 +1,17 @@
 <template>
   <card :class="[ { noDataClass : !statsData.length }, fancyCardClass ]">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
-    <h4 v-if="showTitle" slot="header" class="card-title">{{fullTitle}}</h4>
+    <h4 v-if="showTitle" slot="header" class="card-title" style="float: left">{{fullTitle}}</h4>
+    <i v-if="watchable" 
+       slot="header" 
+       class="tim-icons icon-shape-star"
+       style="float: right; border-radius: 1rem;"
+       @click="watchlistAddRemove" 
+       :title="isOnWatchlist ? $t('research.stockPickingLab.watchlistRemove') : $t('research.stockPickingLab.watchlistAdd')" 
+       :class="{ 'onWatchlist': isOnWatchlist }"
+       onMouseOver="this.classList.add('watchlistOver')"
+       onMouseOut="this.classList.remove('watchlistOver')">
+    </i>
     <section v-if="isError">
       <p>{{$t('errorPrefix') + " " + title + ". " + $t('errorSuffix')}}</p>
     </section>
@@ -45,6 +55,10 @@ export default {
       type: Boolean,
       description: "Whether to show card title"
     },
+    watchable: {
+      type: Boolean,
+      description: "Whether can be added to stocks watchlist"
+    },    
     apiUrl: {
       type: String,
       description: "URL to API data source"
@@ -78,6 +92,8 @@ export default {
       error: false,
       loading: false,
       statsData: {},
+      isOnWatchlist: false,
+
       // css classes
       dataClass: 'data',      
       noDataClass: 'noData',
@@ -93,6 +109,11 @@ export default {
   },
 
   methods: {
+    initWatchlist() {
+      if (this.onWatchlist()) {
+        this.isOnWatchlist = true
+      }
+    },
     initData() {
       this.loadData();
         
@@ -139,6 +160,36 @@ export default {
       });
     },
 
+    getSymbol() {
+      return this.fullTitle.split('. ')[1].split(' (')[0]
+    },
+
+    getWatchlist() {
+      // it can be changed from another StockCard so we always need to pick it up
+      return 'watchlist' in localStorage ? JSON.parse(localStorage.watchlist) : []
+    },
+    setWatchlist(val) {
+      localStorage.setItem('watchlist', JSON.stringify(val))
+    },
+    onWatchlist() {
+      return this.getWatchlist().indexOf(this.getSymbol()) >= 0
+    },
+    watchlistAddRemove() {
+      let watchlist = this.getWatchlist()
+
+      if (this.onWatchlist()) {        
+        watchlist.splice(watchlist.indexOf(this.getSymbol()), 1)
+        this.isOnWatchlist = false
+
+        this.setWatchlist(watchlist)
+      } else {
+        watchlist.push(this.getSymbol())
+        this.isOnWatchlist = true
+
+        this.setWatchlist(watchlist)
+      }
+    },
+
     notifyAudio(audioEl, type, msg) {
       document.getElementById(audioEl).play();
 
@@ -150,6 +201,7 @@ export default {
   },
 
   mounted() {
+    this.initWatchlist()
     this.initData();
   }
 };
@@ -173,5 +225,13 @@ export default {
 
 .fancyCard.noData {
   height: 100px;    
+}
+
+i.onWatchlist {
+  background: #e14eca;
+}
+
+i.watchlistOver {
+  background: red;
 }
 </style>
