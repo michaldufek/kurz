@@ -101,6 +101,15 @@
                   :placeholder="$t('research.stockPickingLab.filters.number')"
                   @keyup.enter="marketPriceLteEnter">
       </base-input>
+
+      <i class="tim-icons icon-shape-star"
+         style="float: right; margin-top: 10px; border-radius: 1rem;"
+         @click="watchlistDeActivate" 
+         :title="watchlistActive ? $t('research.stockPickingLab.filters.watchlistDeactivate') : $t('research.stockPickingLab.filters.watchlistActivate')" 
+         :class="{ 'watchlistActive': watchlistActive }"
+         onMouseOver="this.classList.add('watchlistOver')"
+         onMouseOut="this.classList.remove('watchlistOver')">
+      </i>
     </div>
 
     <div style="clear:both;"></div>
@@ -171,7 +180,8 @@
         index: false,
         dividend: false,
         marketPriceGte: null,
-        marketPriceLte: null
+        marketPriceLte: null,
+        watchlistActive: false
       }
     },
 
@@ -219,6 +229,10 @@
         } else {
           this.dividend = JSON.parse(localStorage.dividend)
         }        
+
+        if ('watchlistActive' in localStorage) {
+          this.watchlistActive = JSON.parse(localStorage.watchlistActive)
+        }        
       },
 
       initData(resetPage=true) {
@@ -252,7 +266,7 @@
           response.data.results.forEach(result => {
             this.stocksData.push({
               symbol: result.symbol,              
-              name: result.info ? result.info.shortName : null,
+              name: result.info && result.info.shortName ? result.info.shortName : null,
               rank: i++,
               statsData: [
                 result.compute ? Number(result.compute.cagr) : null,
@@ -263,7 +277,7 @@
                 result.compute ? Number(result.compute.scorep) * 100 + ' %' : null
               ]
             });
-          });          
+          }); 
         })
         .catch(error => {
           console.log(error);
@@ -280,6 +294,11 @@
 
       getQueryData() {
         let data = {}
+
+        if (this.watchlistActive && 'watchlist' in localStorage) {
+          let watchlist = JSON.parse(localStorage.watchlist)
+          data['symbol__in'] = watchlist.join(',')
+        }
 
         data['page'] = this.activePage
         data['ordering'] = 'score_pcento'
@@ -446,6 +465,11 @@
         this.initData()
       },
 
+      watchlistDeActivate() {
+        this.watchlistActive = !this.watchlistActive
+        this.initData()
+      },
+
       selectPage(page) {
         if (page === this.$t('paging.previous')) {
           this.activePage--
@@ -566,6 +590,9 @@
       },
       activePage(val) {
         this.initData(false)
+      },
+      watchlistActive(val) {
+        localStorage.watchlistActive = val        
       }
     }
   };
@@ -591,5 +618,13 @@ img.notEqualOver {
 .dd {
   float: left;
   width: 10%
+}
+
+i.watchlistActive {
+  background: #e14eca;
+}
+
+i.watchlistOver {
+  background: red;
 }
 </style>

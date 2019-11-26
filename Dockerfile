@@ -3,7 +3,8 @@ FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm config set '@bit:registry' https://node.bit.dev
-RUN npm install --production
+RUN npm install
+# not working in production: RUN npm install --production
 COPY . .
 RUN npm run build
 

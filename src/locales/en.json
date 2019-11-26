@@ -119,6 +119,8 @@
     "stockPickingLab": {
       "stock": "Stock data",
       "chart": "Stock chart",
+      "watchlistAdd": "Add to stocks watchlist",
+      "watchlistRemove": "Remove from stocks watchlist",
       "filters": {
         "equal": "EQUAL to",
         "not": "NOT",
@@ -133,6 +135,8 @@
         "and": "and",
         "number": "Number",
         "text": "Text",
+        "watchlistActivate": "Activate stocks watchlist",
+        "watchlistDeactivate": "Deactivate stocks watchlist",
         "currencies": [
           "USD",
           "EUR",
