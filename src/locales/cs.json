@@ -119,6 +119,8 @@
     "stockPickingLab": {
       "stock": "Data akce",
       "chart": "Graf akce",
+      "watchlistAdd": "Přidat na seznam sledovaných aktiv",
+      "watchlistRemove": "Odebrat ze seznamu sledovaných aktiv",
       "filters": {
         "equal": "ROVNÁ se",
         "not": "NE",
@@ -133,6 +135,8 @@
         "and": "a",
         "number": "Číslo",
         "text": "Text",
+        "watchlistActivate": "Aktivovat seznam sledovaných aktiv",
+        "watchlistDeactivate": "Deaktivovat seznam sledovaných aktiv",
         "currencies": [
           "USD",
           "EUR",
