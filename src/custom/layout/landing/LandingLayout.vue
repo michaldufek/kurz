@@ -3,7 +3,7 @@
     <div class="main-panel">
       <top-navbar></top-navbar>
 
-      <dashboard-content @click.native="toggleSidebar" style="padding-left: 30px; min-height: calc(100vh - 170px)">
+      <dashboard-content @click.native="toggleSidebar" style="padding-left: 30px; min-height: calc(100vh - 210px)">
 
       </dashboard-content>
 

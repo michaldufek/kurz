@@ -1,16 +1,17 @@
 <template>
-  <footer class="footer" style="padding-left: 0px; background-color: darkslategrey">
+  <footer class="footer" style="padding-left: 0px;">
+    <!-- class="main-footer" -->
     
-    <div class="row" style="padding-left: 25px;">
+    <div class="row" style="padding-left: 25px; border-top: 1px solid hsla(0,0%,100%,.1); padding-top: 10px">
         <div class="col-12 col-md-3 col-xl-2">
-            <a href="/" target="_self" title="Analytical Platform" class="footer-brand">
-                <img src="https://analyticalplatform.com/img/logotype-ca-gray.svg" class="img img-fluid footer-brand-logo" alt="CYRRUS ADVISORY, a.s.">
+            <a href="https://www.cyrrusadvisory.cz/" target="_self" title="Analytical Platform" class="footer-brand">
+                <img src="https://www.cyrrusadvisory.cz/wp-content/uploads/2019/01/footer-logo.png" class="img img-fluid footer-brand-logo" alt="CYRRUS ADVISORY, a.s.">
             </a>
         </div>
         <div class="col-12 col-md-9">
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                    <h5>Brno</h5>
+                    <h4 style="margin-bottom: .5rem;"><b>Brno</b></h4>
                     <p>
                         Veveří 111 (PLATINIUM)<br>
                         616 00 Brno
@@ -24,7 +25,7 @@
                     </p>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4">
-                    <h5>Praha</h5>
+                    <h4 style="margin-bottom: .5rem;"><b>Praha</b></h4>
                     <p>
                         Na Florenci 2116/15 (Florentinum recepce A)<br>
                         110 00 Praha 1
@@ -41,7 +42,7 @@
         </div>
     </div>
 
-    <div class="container-fluid" style="border-top: 1px solid hsla(0,0%,100%,.1); padding-top: 10px">
+    <div class="container-fluid" style="padding-top: 10px">
       <ul class="nav">
         <li class="nav-item">
           <a class="nav-link" href="https://www.cyrrusadvisory.cz/">
