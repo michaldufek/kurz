@@ -4,22 +4,22 @@
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
-                class="modal-sm animated"
+                class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
-                style="margin: auto"
                 v-if="cards.showLogin.value">
             <template>
                 <div class="text-muted text-center mb-3">
                     {{$t('login.signIn') + " " + $t('login.with')}}
                 </div>
                 <div class="btn-wrapper text-center">
-                    <base-button type="secondary" style="width: 50%;">
-                        <img src="../assets/img/google-logo.png" style="width: 36px">
+                    <base-button type="secondary" style="width: 40%;">
+                        <img src="../assets/img/google-logo-oldschool.png" style="width: 30px; margin-left: -10px">
                         <!-- slot="icon" -->
-                        &nbsp;&nbsp;&nbsp;&nbsp;Google
+                        &nbsp;&nbsp;Google
                     </base-button>                
                 </div>
             </template>
+            <br/>
             <template>
                 <div class="text-center text-muted mb-4">
                     <small>{{$t('login.signInCredentials')}}</small>
@@ -47,7 +47,7 @@
                         {{$t('login.remember')}}
                     </base-checkbox>
                     <div class="text-center">
-                        <base-button type="primary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
+                        <base-button type="secondary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
                         <small><p style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p></small>
                     </div>
                 </form>
@@ -57,9 +57,8 @@
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
-                class="modal-sm animated"
+                class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
-                style="margin: auto"
                 v-if="cards.showRegister.value">
             <template>
                 <div class="text-center text-muted mb-4">
@@ -89,7 +88,7 @@
                     </base-input>
                     <div class="text-center">
                         <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>                    
-                        <base-button type="primary" class="my-4" @click="register">{{$t('login.register')}}</base-button>
+                        <base-button type="secondary" class="my-4" @click="register">{{$t('login.register')}}</base-button>
                         <small><p style="color: gray;">{{$t('login.alreadyAccount')}} <a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p></small>
                     </div>
                 </form>
@@ -99,9 +98,8 @@
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
-                class="modal-sm animated"
+                class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
-                style="margin: auto"
                 v-if="cards.showResetPass.value">
             <template>
                 <div class="text-center text-muted mb-4">
@@ -124,7 +122,7 @@
                     </base-input>
                     <div class="text-center">
                         <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>                    
-                        <base-button type="primary" class="my-4" @click="resetPassComplete">{{$t('login.resetPass')}}</base-button>
+                        <base-button type="secondary" class="my-4" @click="resetPassComplete">{{$t('login.resetPass')}}</base-button>
                         <div class="text-center">
                             <p v-if="error" style="color: gray;">{{$t('login.lookingTo')}} <a href="#" @click="openRegisterModal">{{$t('login.createAccount')}}</a></p>
                             <p style="color: gray;"><a href="#" @click="openLoginModal">{{$t('login.login')}}</a></p>
@@ -137,9 +135,8 @@
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
-                class="modal-sm animated"
+                class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
-                style="margin: auto"
                 v-if="cards.showVerifyRegister.value">
             <template>
                 <form role="form">                    
@@ -309,6 +306,12 @@ export default {
 }
 </script>
 <style>
+.landingCard {
+    margin: auto;
+    border-radius: 1rem;
+    background: #2f3668;
+}
+
 .message {
     white-space: pre-line;
 }

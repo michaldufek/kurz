@@ -76,7 +76,7 @@
         </base-input>
       </div>
     </div>
-    <base-button slot="footer" type="primary" fill>Save</base-button>
+    <base-button slot="footer" type="secondary" fill>Save</base-button>
   </card>
 </template>
 <script>
