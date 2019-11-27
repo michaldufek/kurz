@@ -304,9 +304,12 @@
         data['ordering'] = 'score_pcento'
         // data['index'] = this.index
         data['search'] = this.symbolSearch
-        data['info__dividendDate__is_null'] = !this.dividend
         data['info__regularMarketPrice__gte'] = this.marketPriceGte
         data['info__regularMarketPrice__lte'] = this.marketPriceLte
+
+        if (this.dividend) {          
+          data['info__dividendDate__is_null'] = false
+        }
 
         if (this.selectedCurrencyNot) {
           data['info__currency__exclude'] = this.selectedCurrency
@@ -330,7 +333,7 @@
       encodeQueryData(data) {
         const ret = [];
         for (let d in data) {
-          if (data[d]) {
+          if (data[d] !== null && data[d] !== undefined) {
             ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
           }
         }
