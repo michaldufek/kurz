@@ -161,7 +161,7 @@ export default {
     },
 
     getSymbol() {
-      return this.fullTitle.split('. ')[1].split(' (')[0]
+      return this.fullTitle ? this.fullTitle.split('. ')[1].split(' (')[0] : null
     },
 
     getWatchlist() {
@@ -175,6 +175,10 @@ export default {
       return this.getWatchlist().indexOf(this.getSymbol()) >= 0
     },
     watchlistAddRemove() {
+      if (!this.watchable) {
+        return
+      }
+      
       let watchlist = this.getWatchlist()
 
       if (this.onWatchlist()) {        
