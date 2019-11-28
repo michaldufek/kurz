@@ -206,7 +206,7 @@ export default {
           }
 
           if (error.message === constants.strings.networkError) {
-            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+            this.notifyAudio('connectionLost', 'warning', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
           }
         })
         .finally(() => {
@@ -214,7 +214,7 @@ export default {
             this.loading = false
 
             if (!this.live && !this.error) {
-              this.notifyAudio('connectionLost', 'danger', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+              this.notifyAudio('connectionLost', 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
             }
           }
         });
