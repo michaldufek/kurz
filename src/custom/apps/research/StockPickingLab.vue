@@ -16,8 +16,8 @@
            @click="selectCurrencyNot" 
            :title="$t('research.stockPickingLab.filters.currency') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
            :class="[ { 'notEqualSelected': selectedCurrencyNot }, 'notEqual' ]"
-           onMouseOver="this.classList.add('notEqualOver')"
-           onMouseOut="this.classList.remove('notEqualOver')">
+           onMouseOver="this.classList.add('notEqualOver'); this.classList.add('mouseOver')"
+           onMouseOut="this.classList.remove('notEqualOver'); this.classList.remove('mouseOver')">
       <base-dropdown v-if="showCurrency" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -39,8 +39,8 @@
            @click="selectExchangeNot" 
            :title="$t('research.stockPickingLab.filters.exchange') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
            :class="[ { 'notEqualSelected': selectedExchangeNot }, 'notEqual' ]"
-           onMouseOver="this.classList.add('notEqualOver')"
-           onMouseOut="this.classList.remove('notEqualOver')">
+           onMouseOver="this.classList.add('notEqualOver'); this.classList.add('mouseOver')"
+           onMouseOut="this.classList.remove('notEqualOver'); this.classList.remove('mouseOver')">
       <base-dropdown v-if="showExchange" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -66,8 +66,8 @@
            @click="selectSectorNot" 
            :title="$t('research.stockPickingLab.filters.sector') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
            :class="[ { 'notEqualSelected': selectedSectorNot }, 'notEqual' ]"
-           onMouseOver="this.classList.add('notEqualOver')"
-           onMouseOut="this.classList.remove('notEqualOver')">
+           onMouseOver="this.classList.add('notEqualOver'); this.classList.add('mouseOver')"
+           onMouseOut="this.classList.remove('notEqualOver'); this.classList.remove('mouseOver')">
       <base-dropdown v-if="showSector" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -85,6 +85,7 @@
         </ul>
       </base-dropdown>
       
+      <!-- market price -->
       <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.marketPrice')}}</p>
       <base-input alternative
                   type="text"
@@ -102,16 +103,16 @@
                   @keyup.enter="marketPriceLteEnter">
       </base-input>
 
-      <i class="tim-icons icon-shape-star"
-         style="float: right; margin-top: 10px; border-radius: 1rem;"
-         @click="watchlistDeActivate" 
-         :title="watchlistActive ? $t('research.stockPickingLab.filters.watchlistDeactivate') : $t('research.stockPickingLab.filters.watchlistActivate')" 
-         :class="{ 'watchlistActive': watchlistActive }"
-         onMouseOver="this.classList.add('watchlistOver')"
-         onMouseOut="this.classList.remove('watchlistOver')">
-      </i>
+      <img :src="watchlistSrc" 
+           style="float: right; margin-top: 3px; width: 30px; border-radius: 1rem;"
+           @click="watchlistDeActivate" 
+           :title="watchlistActive ? $t('research.stockPickingLab.filters.watchlistDeactivate') : $t('research.stockPickingLab.filters.watchlistActivate')" 
+           :class="{ 'watchlistActive': watchlistActive }"
+           onMouseOver="this.classList.add('mouseOver')"
+           onMouseOut="this.classList.remove('mouseOver')">
     </div>
 
+    <!-- pagination -->
     <div style="clear:both;"></div>
     <div style="float: left;margin-top: 20px;">
       <nav v-if="nrOfPages > 1" aria-label="Page navigation">
@@ -284,7 +285,7 @@
           this.error = true
 
           if (error.message === constants.strings.networkError) {
-            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
+            this.notifyAudio('connectionLost', 'warning', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
           }
         })
         .finally(() => {
@@ -304,9 +305,12 @@
         data['ordering'] = 'score_pcento'
         // data['index'] = this.index
         data['search'] = this.symbolSearch
-        data['info__dividendDate__is_null'] = !this.dividend
         data['info__regularMarketPrice__gte'] = this.marketPriceGte
         data['info__regularMarketPrice__lte'] = this.marketPriceLte
+
+        if (this.dividend) {          
+          data['info__dividendDate__is_null'] = false
+        }
 
         if (this.selectedCurrencyNot) {
           data['info__currency__exclude'] = this.selectedCurrency
@@ -330,7 +334,7 @@
       encodeQueryData(data) {
         const ret = [];
         for (let d in data) {
-          if (data[d]) {
+          if (data[d] !== null && data[d] !== undefined) {
             ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
           }
         }
@@ -482,6 +486,10 @@
     }, 
 
     computed: {
+      watchlistSrc() {
+        return this.watchlistActive ? require('@/custom/assets/img/favorite-on.png') : require('@/custom/assets/img/favorite-off.png')
+      },
+
       showCurrency() {
         if (!('currencyEnabled' in localStorage)) {
           localStorage.setItem('currencyEnabled', true)
@@ -608,7 +616,8 @@ img.notEqual {
 }
 
 img.notEqualSelected {
-  background: #e14eca;
+  background: #1d8cf8;
+  box-shadow: 0px 0px 20px #1d8cf8;
 }
 
 img.notEqualOver {
@@ -620,11 +629,11 @@ img.notEqualOver {
   width: 10%
 }
 
-i.watchlistActive {
-  background: #e14eca;
+img.watchlistActive {
+  box-shadow: 0px 0px 20px #1d8cf8;
 }
 
-i.watchlistOver {
-  background: red;
+img.mouseOver {
+  box-shadow: 0px 0px 20px red;
 }
 </style>

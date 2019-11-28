@@ -127,7 +127,7 @@ export default {
             }
 
             if (error.message === constants.strings.networkError) {
-              this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
+              this.notifyAudio('connectionLost', 'warning', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
             }
           })
           .finally(() => {
