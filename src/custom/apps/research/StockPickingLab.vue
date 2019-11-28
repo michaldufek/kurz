@@ -85,6 +85,7 @@
         </ul>
       </base-dropdown>
       
+      <!-- market price -->
       <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.marketPrice')}}</p>
       <base-input alternative
                   type="text"
@@ -102,16 +103,16 @@
                   @keyup.enter="marketPriceLteEnter">
       </base-input>
 
-      <i class="tim-icons icon-shape-star"
-         style="float: right; margin-top: 10px; border-radius: 1rem;"
-         @click="watchlistDeActivate" 
-         :title="watchlistActive ? $t('research.stockPickingLab.filters.watchlistDeactivate') : $t('research.stockPickingLab.filters.watchlistActivate')" 
-         :class="{ 'watchlistActive': watchlistActive }"
-         onMouseOver="this.classList.add('watchlistOver')"
-         onMouseOut="this.classList.remove('watchlistOver')">
-      </i>
+      <img :src="watchlistSrc" 
+           style="float: right; margin-top: 3px; width: 30px; border-radius: 1rem;"
+           @click="watchlistDeActivate" 
+           :title="watchlistActive ? $t('research.stockPickingLab.filters.watchlistDeactivate') : $t('research.stockPickingLab.filters.watchlistActivate')" 
+           :class="{ 'watchlistActive': watchlistActive }"
+           onMouseOver="this.classList.add('watchlistOver')"
+           onMouseOut="this.classList.remove('watchlistOver')">
     </div>
 
+    <!-- pagination -->
     <div style="clear:both;"></div>
     <div style="float: left;margin-top: 20px;">
       <nav v-if="nrOfPages > 1" aria-label="Page navigation">
@@ -476,6 +477,10 @@
     }, 
 
     computed: {
+      watchlistSrc() {
+        return this.watchlistActive ? require('@/custom/assets/img/favorite-on.png') : require('@/custom/assets/img/favorite-off.png')
+      },
+
       showCurrency() {
         if (!('currencyEnabled' in localStorage)) {
           localStorage.setItem('currencyEnabled', true)
@@ -608,11 +613,11 @@ img.notEqualOver {
   width: 10%
 }
 
-i.watchlistActive {
-  background: #e14eca;
+img.watchlistActive {
+  box-shadow: 0px 0px 20px cyan;
 }
 
-i.watchlistOver {
-  background: red;
+img.watchlistOver {
+  box-shadow: 0px 0px 20px red;
 }
 </style>

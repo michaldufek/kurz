@@ -2,16 +2,15 @@
   <card :class="[ { noDataClass : !statsData.length }, fancyCardClass ]">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <h4 v-if="showTitle" slot="header" class="card-title" style="float: left">{{fullTitle}}</h4>
-    <i v-if="watchable" 
-       slot="header" 
-       class="tim-icons icon-shape-star"
-       style="float: right; border-radius: 1rem;"
-       @click="watchlistAddRemove" 
-       :title="isOnWatchlist ? $t('research.stockPickingLab.watchlistRemove') : $t('research.stockPickingLab.watchlistAdd')" 
-       :class="{ 'onWatchlist': isOnWatchlist }"
-       onMouseOver="this.classList.add('watchlistOver')"
-       onMouseOut="this.classList.remove('watchlistOver')">
-    </i>
+    <img v-if="watchable" 
+         :src="watchlistSrc" 
+         slot="header"          
+         style="float: right; width: 15px; border-radius: 1rem;"
+         @click="watchlistAddRemove" 
+         :title="isOnWatchlist ? $t('research.stockPickingLab.watchlistRemove') : $t('research.stockPickingLab.watchlistAdd')" 
+         :class="{ 'onWatchlist': isOnWatchlist }"
+         onMouseOver="this.classList.add('watchlistOver')"
+         onMouseOut="this.classList.remove('watchlistOver')">
     <section v-if="isError">
       <p>{{$t('errorPrefix') + " " + title + ". " + $t('errorSuffix')}}</p>
     </section>
@@ -105,7 +104,11 @@ export default {
   computed: {
     isError() {
       return !Object.keys(this.statsData).length && this.error
-    }
+    },
+
+    watchlistSrc() {
+      return this.isOnWatchlist ? require('../../assets/img/favorite-on.png') : require('../../assets/img/favorite-off.png')
+    },
   },
 
   methods: {
@@ -231,11 +234,11 @@ export default {
   height: 100px;    
 }
 
-i.onWatchlist {
-  background: #e14eca;
+img.onWatchlist {
+  box-shadow: 0px 0px 20px cyan;
 }
 
-i.watchlistOver {
-  background: red;
+img.watchlistOver {
+  box-shadow: 0px 0px 20px red;
 }
 </style>
