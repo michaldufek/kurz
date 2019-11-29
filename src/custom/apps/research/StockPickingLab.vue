@@ -285,7 +285,7 @@
           this.error = true
 
           if (error.message === constants.strings.networkError) {
-            this.notifyAudio('connectionLost', 'warning', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
+            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
           }
         })
         .finally(() => {

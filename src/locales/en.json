@@ -46,6 +46,7 @@
     "createAccount": "create an account ?",
     "register": "Register",
     "registrationSent": "Check your email for registration verification.",
+    "unknownError": "Unknown error.",
     "alreadyAccount": "Already have an account?",
     "registerSuccess": "Registration verification successful.",
     "registerFail": "Registration verification failed.",

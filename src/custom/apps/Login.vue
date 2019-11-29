@@ -41,7 +41,7 @@
                     </base-input>
                     <div class="text-center">
                         <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>                    
-                        <base-button v-if="error" type="link" @click="resetPass">{{$t('login.resetPass')}}</base-button>
+                        <base-button v-if="error" style="color: #00f2c3" type="link" @click="resetPass">{{$t('login.resetPass')}}</base-button>
                     </div>
                     <base-checkbox v-model="remember">
                         {{$t('login.remember')}}
