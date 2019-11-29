@@ -46,6 +46,7 @@
     "createAccount": "vytvořit konto ?",
     "register": "Registrovat se",
     "registrationSent": "Zkontrolujte email pro verifikaci registrace.",
+    "unknownError": "Neznámá chyba.",
     "alreadyAccount": "Již máte konto?",
     "registerSuccess": "Ověření registrace proběhlo úspěšně.",
     "registerFail": "Ověření registrace zlyhalo.",

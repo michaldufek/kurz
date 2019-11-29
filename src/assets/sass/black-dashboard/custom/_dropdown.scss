@@ -252,7 +252,7 @@
     &.bootstrap-datetimepicker-widget.bottom.open,
     .dropup.show:not(.bootstrap-select) &,
     .navbar .dropdown.show &{
-        @include opacity(1);
+        @include opacity(0.85);
         visibility: visible;
         @include transform-translate-y-dropdown(1px);
     }

@@ -16,11 +16,11 @@
                         Postupně budou předávány také crawlery pro stahování dat a učící se nástroje v oblasti zpracování přirozeného jazyka, jedná se o sekci Nástroje pro stahování dat a analýzu textu.
                     </p>
                     <p>
-                        Podrobnější informace o tvorbě jednotlivých aplikací a dalších připravovaných nástrojích získáte <a href="https://www.objectively.info/assets/blog/" class="aboutA" target="_blank" title="blog" rel="noopener"> v našem blogu.</a>
+                        Podrobnější informace o tvorbě jednotlivých aplikací a dalších připravovaných nástrojích získáte <a href="https://www.objectively.info/assets/blog/" target="_blank" title="blog" rel="noopener"> v našem blogu.</a>
                     </p>
                     <br/>
                     <p>
-                        <strong>CYRRUS ADVISORY, a.s.,</strong><br> T: +420 538 705 730,<br> @: <a href="mailto:dotazy@cyrrusadvisory.cz" class="aboutA" target="_self">dotazy@cyrrusadvisory.cz</a>
+                        <strong>CYRRUS ADVISORY, a.s.,</strong><br> T: +420 538 705 730,<br> @: <a href="mailto:dotazy@cyrrusadvisory.cz" target="_self">dotazy@cyrrusadvisory.cz</a>
                     </p>
                 </div>
             </div>
@@ -36,7 +36,4 @@
   }
 </script>
 <style>
-.aboutA {
-  color: #1d253b
-}
 </style>

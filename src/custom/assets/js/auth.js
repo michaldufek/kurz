@@ -298,6 +298,9 @@ export default {
       if ("non_field_errors" in err.response.data) {
         msg += err.response.data.non_field_errors[0] + '\n'
       }
+      if (!msg) {
+        msg += i18n.t('login.unknownError')
+      }
       
       return msg
     },
