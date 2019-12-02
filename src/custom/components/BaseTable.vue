@@ -81,7 +81,9 @@
         let nrSplitted = nr.split(sep)
         let nrIndex = nrSplitted.length - 1
         
-        nrSplitted[nrIndex] = isNaN(Number(nrSplitted[nrIndex])) ? nrSplitted[nrIndex] : Number(nrSplitted[nrIndex]).toFixed(2) 
+        nrSplitted[nrIndex] = nrSplitted[nrIndex].split(' ').length === 1 && isNaN(Number(nrSplitted[nrIndex]))
+                              ? nrSplitted[nrIndex] 
+                              : helper.roundToFixed(!isNaN(Number(nrSplitted[nrIndex])) ? Number(nrSplitted[nrIndex]) : nrSplitted[nrIndex])
         return nrSplitted.join(sep)
       }
     },

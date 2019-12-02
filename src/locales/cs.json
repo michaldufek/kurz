@@ -107,8 +107,7 @@
         ],
         "rows": {
           "beta": "Beta",
-          "alfa": "Alfa",
-          "__miss_proposal": "__miss.proposal"
+          "alfa": "Alfa"
         }
       }
     },

@@ -276,11 +276,11 @@
               name: result.info && result.info.shortName ? result.info.shortName : null,
               rank: i++,
               statsData: [
-                result.compute ? Number(result.compute.cagr) : null,
+                result.compute ? Number(result.compute.cagr) + ' %' : null,
                 result.compute ? Number(result.compute.sharpe_ratio) : null,
                 result.compute ? Number(result.compute.stddev) : null,                
                 result.compute ? Number(result.compute.recovery_dd_time) : null,
-                result.compute ? Number(result.compute.max_dd) : null,
+                result.compute ? Number(result.compute.max_dd) + ' %' : null,
                 result.compute ? Number(result.compute.scorep) * 100 + ' %' : null
               ]
             });
