@@ -1,5 +1,7 @@
 {
   "siteTitle": "Financial Research Software",
+  "companyTitle": "CYRRUS ADVISORY, a.s.",
+  "schoolTitle": "Mendelova univerzita v Brně",
   "loading": "Načítání",
   "errorPrefix": "Omlouváme se, nejsme schopní získat data k", 
   "errorSuffix": "Zkusíme to později...",
@@ -25,7 +27,6 @@
     "metrics": "StockPicking Lab Metriky",
     "general": "Obecní",
     "language": "Jazyk",
-    "darkMode": "Temný režim",
     "clearAll": "Smazat všechna nastavení"
   },
   "landing": {
@@ -53,7 +54,7 @@
     "login": "Přihlašte se."
   },
   "dashboard": { 
-    "title": "Dashboard",
+    "title": "Nástěnka",
     "chart": "graf složené equity",
     "performanceStatistics": "Výkon - statistiky",
     "lastTradesTable": {
@@ -106,8 +107,7 @@
         ],
         "rows": {
           "beta": "Beta",
-          "alfa": "Alfa",
-          "__miss_proposal": "__miss.proposal"
+          "alfa": "Alfa"
         }
       }
     },
@@ -123,6 +123,7 @@
       "watchlistAdd": "Přidat na seznam sledovaných aktiv",
       "watchlistRemove": "Odebrat ze seznamu sledovaných aktiv",
       "filters": {
+        "change": "Změnit na",
         "equal": "ROVNÁ se",
         "not": "NE",
         "clearSelection": "Zrušit výběr",

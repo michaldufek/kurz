@@ -4,11 +4,12 @@
     
     <div class="row" style="padding-left: 25px; border-top: 1px solid hsla(0,0%,100%,.1); padding-top: 10px">
         <div class="col-12 col-md-3 col-xl-2">
-            <a href="https://www.cyrrusadvisory.cz/" target="_self" title="Analytical Platform" class="footer-brand">
-                <img src="https://www.cyrrusadvisory.cz/wp-content/uploads/2019/01/footer-logo.png" class="img img-fluid footer-brand-logo" alt="CYRRUS ADVISORY, a.s.">
-            </a>
+          <a href="https://www.cyrrusadvisory.cz/" target="_self" :title="$t('companyTitle')" class="footer-brand">
+              <img src="https://www.cyrrusadvisory.cz/wp-content/uploads/2019/01/footer-logo.png" class="img img-fluid footer-brand-logo" :alt="$t('companyTitle')">
+          </a>
         </div>
-        <div class="col-12 col-md-9">
+
+        <div class="col-12 col-md-8">
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                     <h4 style="margin-bottom: .5rem;"><b>Brno</b></h4>
@@ -40,26 +41,15 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-12 col-md-3 col-xl-2">
+          <a href="http://mendelu.cz/" target="_self" :title="$t('schoolTitle')" class="footer-brand">
+            <img src="../../assets/img/Mendel_University_logo-ENG_white.png" class="img img-fluid footer-brand-logo" :alt="$t('schoolTitle')">
+          </a>
+        </div>
     </div>
 
     <div class="container-fluid" style="padding-top: 10px">
-      <ul class="nav">
-        <li class="nav-item">
-          <a class="nav-link" href="https://www.cyrrusadvisory.cz/">
-            Cyrrus Advisory
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://www.cyrrusadvisory.cz/category/novinky/">
-            Blog
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://www.analyticalplatform.com/">
-            Analytical Platform
-          </a>
-        </li>
-      </ul>
       <div class="copyright">
         v{{version}} © {{year}} made by
         <a href="https://www.cyrrusadvisory.cz/" target="_blank" rel="noopener">Cyrrus Advisory</a>.

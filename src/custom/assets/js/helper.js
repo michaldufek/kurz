@@ -47,6 +47,10 @@ export default {
             let aggRow = {}
             
             for (const [key, oldVal] of Object.entries(oldRow)) {
+                if (!oldVal) {
+                    continue
+                }
+
                 if (oldVal instanceof Number || typeof oldVal === 'number') {
                     var newVal = oldVal
                 } else {
@@ -129,7 +133,10 @@ export default {
         // rounds to 2 mantissa places
         return value ? ((value instanceof Number || typeof value === 'number')
                         ? value.toFixed(2)
-                        : [ Number(value.split(' ')[0]).toFixed(2), value.split(' ')[1] ].join(' '))
+                        : [
+                            isNaN(Number(value.split(' ')[0])) ? value.split(' ')[0] : Number(value.split(' ')[0]).toFixed(2),
+                            value.split(' ')[1] 
+                          ].join(' '))
                     : value
     },
     

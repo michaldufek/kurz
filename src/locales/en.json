@@ -1,5 +1,7 @@
 {
   "siteTitle": "Financial Research Software",
+  "companyTitle": "CYRRUS ADVISORY, a.s.",
+  "schoolTitle": "Mendel University in Brno",
   "loading": "Loading of",
   "errorPrefix": "We are sorry, at this moment we are unable to get", 
   "errorSuffix": "We'll try again later...",
@@ -25,7 +27,6 @@
     "metrics": "StockPicking Lab Metrics",
     "general": "General",
     "language": "Language",
-    "darkMode": "Dark Mode",    
     "clearAll": "Clear all settings"
   },
   "landing": {
@@ -106,8 +107,7 @@
         ],
         "rows": {
           "beta": "Beta",
-          "alfa": "Alfa",
-          "__miss_proposal": "__miss.proposal"
+          "alfa": "Alfa"
         }
       }
     },
@@ -123,6 +123,7 @@
       "watchlistAdd": "Add to stocks watchlist",
       "watchlistRemove": "Remove from stocks watchlist",
       "filters": {
+        "change": "Change to",
         "equal": "EQUAL to",
         "not": "NOT",
         "clearSelection": "Clear selection",

@@ -7,9 +7,6 @@
         -->
     <!-- -->
     <div class="sidebar-wrapper" id="style-3">
-      <div class="logo" style="text-align: center;">
-        <a href="https://www.cyrrusadvisory.cz"><img class="logo" alt="logo" style="max-width: 75%;" src="https://www.cyrrusadvisory.cz/wp-content/themes/cyrrusadvisory/img/logo.png"></a> 
-      </div>
       <slot>
 
       </slot>
