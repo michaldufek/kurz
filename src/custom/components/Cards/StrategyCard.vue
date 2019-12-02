@@ -44,11 +44,11 @@ export default {
   methods: {
     statsCreator(responseData) {
       return [
-        responseData.ytd,
-        responseData.cagr,
+        responseData.ytd + ' %',
+        responseData.cagr + ' %',
         responseData.sharpe,
-        responseData.maxdd,
-        responseData.equity[responseData.equity.length - 1]
+        responseData.maxdd + ' %',
+        responseData.equity[responseData.equity.length - 1] + ' $'
       ]
     }
   }

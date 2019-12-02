@@ -5,12 +5,12 @@
     <img v-if="watchable" 
          :src="watchlistSrc" 
          slot="header"          
-         style="float: right; width: 15px; border-radius: 1rem;"
+         style="float: right; border-radius: 10rem;"
          @click="watchlistAddRemove" 
          :title="isOnWatchlist ? $t('research.stockPickingLab.watchlistRemove') : $t('research.stockPickingLab.watchlistAdd')" 
-         :class="{ 'onWatchlist': isOnWatchlist }"
-         onMouseOver="this.classList.add('watchlistOver')"
-         onMouseOut="this.classList.remove('watchlistOver')">
+         class="watchlist"
+         onMouseOver="this.classList.add('mouseOver')"
+         onMouseOut="this.classList.remove('mouseOver')">
     <section v-if="isError">
       <p>{{$t('errorPrefix') + " " + title + ". " + $t('errorSuffix')}}</p>
     </section>
@@ -107,7 +107,7 @@ export default {
     },
 
     watchlistSrc() {
-      return this.isOnWatchlist ? require('../../assets/img/favorite-on.png') : require('../../assets/img/favorite-off.png')
+      return this.isOnWatchlist ? require('../../assets/img/favorite-on_small.png') : require('../../assets/img/favorite-off_small.png')
     },
   },
 
@@ -234,11 +234,11 @@ export default {
   height: 100px;    
 }
 
-img.onWatchlist {
+img.watchlist {
   box-shadow: 0px 0px 20px cyan;
 }
 
-img.watchlistOver {
+img.mouseOver {
   box-shadow: 0px 0px 20px red;
 }
 </style>

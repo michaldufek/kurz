@@ -13,7 +13,7 @@
                 </div>
                 <div class="btn-wrapper text-center">
                     <base-button type="secondary" style="width: 40%;">
-                        <img src="../assets/img/google-logo-oldschool.png" style="width: 30px; margin-left: -10px">
+                        <img src="../assets/img/google-logo-oldschool.png" style="margin-left: -10px">
                         <!-- slot="icon" -->
                         &nbsp;&nbsp;Google
                     </base-button>                
