@@ -1,5 +1,7 @@
 {
   "siteTitle": "Financial Research Software",
+  "companyTitle": "CYRRUS ADVISORY, a.s.",
+  "schoolTitle": "Mendel University in Brno",
   "loading": "Loading of",
   "errorPrefix": "We are sorry, at this moment we are unable to get", 
   "errorSuffix": "We'll try again later...",
@@ -122,6 +124,7 @@
       "watchlistAdd": "Add to stocks watchlist",
       "watchlistRemove": "Remove from stocks watchlist",
       "filters": {
+        "change": "Change to",
         "equal": "EQUAL to",
         "not": "NOT",
         "clearSelection": "Clear selection",

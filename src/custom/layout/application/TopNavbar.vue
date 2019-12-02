@@ -13,8 +13,13 @@
             <span class="navbar-toggler-bar bar3"></span>
           </button>
         </div>
-        <router-link class="navbar-brand" to="/dashboard">{{$t("dashboard.title")}}</router-link>
-        <router-link class="navbar-brand" to="/research" style="margin-left: 140px;">{{$t("research.title")}}</router-link>
+        <a href="/">
+          <img src="../../assets/img/logogf.png" class="logo" :alt="$t('siteTitle')" style="float: left"/>
+        </a>
+        <div style="float: right; margin-bottom: 30px;margin-left: 15px;">
+          <router-link class="navbar-brand" to="/dashboard">{{$t("dashboard.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research" style="margin-left: 140px;">{{$t("research.title")}}</router-link>
+        </div>
       </div>
       <button class="navbar-toggler" type="button"
               @click="toggleMenu"

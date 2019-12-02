@@ -1,5 +1,7 @@
 {
   "siteTitle": "Financial Research Software",
+  "companyTitle": "CYRRUS ADVISORY, a.s.",
+  "schoolTitle": "Mendelova univerzita v Brně",
   "loading": "Načítání",
   "errorPrefix": "Omlouváme se, nejsme schopní získat data k", 
   "errorSuffix": "Zkusíme to později...",
@@ -122,6 +124,7 @@
       "watchlistAdd": "Přidat na seznam sledovaných aktiv",
       "watchlistRemove": "Odebrat ze seznamu sledovaných aktiv",
       "filters": {
+        "change": "Změnit na",
         "equal": "ROVNÁ se",
         "not": "NE",
         "clearSelection": "Zrušit výběr",

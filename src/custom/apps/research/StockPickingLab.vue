@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
-    <div style="margin-left: 40px;">
+    <div>
 
       <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.symbolName')}}</p>
       <base-input alternative
@@ -12,12 +12,12 @@
                   @keyup.enter="symbolSearchEnter">
       </base-input>
       
-      <img src="../../assets/img/not-equal.svg" 
+      <img :src="notEqualSrc(selectedCurrencyNot)" 
            @click="selectCurrencyNot" 
-           :title="$t('research.stockPickingLab.filters.currency') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
-           :class="[ { 'notEqualSelected': selectedCurrencyNot }, 'notEqual' ]"
-           onMouseOver="this.classList.add('notEqualOver'); this.classList.add('mouseOver')"
-           onMouseOut="this.classList.remove('notEqualOver'); this.classList.remove('mouseOver')">
+           :title="$t('research.stockPickingLab.filters.change') + ' ' + $t('research.stockPickingLab.filters.currency').toLowerCase() + (!selectedCurrencyNot ? ' ' + $t('research.stockPickingLab.filters.not') : '') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+           class="notEqual"
+           onMouseOver="this.classList.add('mouseOver');"
+           onMouseOut="this.classList.remove('mouseOver')">
       <base-dropdown v-if="showCurrency" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -35,12 +35,12 @@
         </ul>
       </base-dropdown>      
 
-      <img src="../../assets/img/not-equal.svg" 
+      <img :src="notEqualSrc(selectedExchangeNot)"
            @click="selectExchangeNot" 
-           :title="$t('research.stockPickingLab.filters.exchange') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
-           :class="[ { 'notEqualSelected': selectedExchangeNot }, 'notEqual' ]"
-           onMouseOver="this.classList.add('notEqualOver'); this.classList.add('mouseOver')"
-           onMouseOut="this.classList.remove('notEqualOver'); this.classList.remove('mouseOver')">
+           :title="$t('research.stockPickingLab.filters.change') + ' ' + $t('research.stockPickingLab.filters.exchange').toLowerCase() + (!selectedExchangeNot ? ' ' + $t('research.stockPickingLab.filters.not') : '') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+           class="notEqual"
+           onMouseOver="this.classList.add('mouseOver')"
+           onMouseOut="this.classList.remove('mouseOver')">
       <base-dropdown v-if="showExchange" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -62,12 +62,12 @@
 
       <base-checkbox v-if="showDividend" class="chb" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>      
 
-      <img src="../../assets/img/not-equal.svg" 
+      <img :src="notEqualSrc(selectedSectorNot)"
            @click="selectSectorNot" 
-           :title="$t('research.stockPickingLab.filters.sector') + ' ' + $t('research.stockPickingLab.filters.not') + ' ' + $t('research.stockPickingLab.filters.equal')" 
-           :class="[ { 'notEqualSelected': selectedSectorNot }, 'notEqual' ]"
-           onMouseOver="this.classList.add('notEqualOver'); this.classList.add('mouseOver')"
-           onMouseOut="this.classList.remove('notEqualOver'); this.classList.remove('mouseOver')">
+           :title="$t('research.stockPickingLab.filters.change') + ' ' + $t('research.stockPickingLab.filters.sector').toLowerCase() + (!selectedSectorNot ? ' ' + $t('research.stockPickingLab.filters.not') : '') + ' ' + $t('research.stockPickingLab.filters.equal')" 
+           class="notEqual"
+           onMouseOver="this.classList.add('mouseOver')"
+           onMouseOut="this.classList.remove('mouseOver')">
       <base-dropdown v-if="showSector" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -106,10 +106,10 @@
       </div>
 
       <img :src="watchlistSrc" 
-           style="float: right; margin-top: 3px; width: 30px; border-radius: 1rem;"
+           style="float: right; border-radius: 10rem;"
            @click="watchlistDeActivate" 
            :title="watchlistActive ? $t('research.stockPickingLab.filters.watchlistDeactivate') : $t('research.stockPickingLab.filters.watchlistActivate')" 
-           :class="{ 'watchlistActive': watchlistActive }"
+           class="watchlist"
            onMouseOver="this.classList.add('mouseOver')"
            onMouseOut="this.classList.remove('mouseOver')">
     </div>
@@ -189,6 +189,10 @@
     },
 
     methods: {
+      notEqualSrc(notEqual) {
+        return notEqual ? require('@/custom/assets/img/not-equal.png') : require('@/custom/assets/img/equal.png')
+      },
+
       // initializing
       initSelectors() {
         if (this.selectedCurrency && !('currency' in localStorage)) {
@@ -603,20 +607,9 @@
 <style>
 img.notEqual {
   float: left;   
-  width: 20px; 
   margin-right: 10px;
   margin-top: 10px;
-  border-radius: 0.6rem;
-  background: #344675
-}
-
-img.notEqualSelected {
-  background: #1d8cf8;
-  box-shadow: 0px 0px 20px #1d8cf8;
-}
-
-img.notEqualOver {
-  background: red;
+  border-radius: 10rem;
 }
 
 .dd {
@@ -629,8 +622,8 @@ img.notEqualOver {
   width: 10%
 }
 
-img.watchlistActive {
-  box-shadow: 0px 0px 20px #1d8cf8;
+img.watchlist {
+  box-shadow: 0px 0px 10px #1d8cf8;
 }
 
 img.mouseOver {
