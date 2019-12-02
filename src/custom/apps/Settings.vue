@@ -33,7 +33,6 @@
               <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
             </select>
           </div>
-          <base-checkbox v-model="darkMode" style="margin-top: 20px;">{{$t('settings.darkMode')}}</base-checkbox>
         </card>
       </div>
     </div>
@@ -75,11 +74,6 @@
         //   localStorage.setItem('currentLang', 'en')
         // } 
         // this.currentLang = localStorage.currentLang
-
-        if (!('darkMode' in localStorage)) {
-          localStorage.setItem('darkMode', true)
-        } 
-        this.darkMode = JSON.parse(localStorage.darkMode)
       },
       clearSettings() {
         let token = localStorage.token
@@ -100,7 +94,6 @@
 
         langs: [ 'en', 'cs' ],
         // currentLang: 'en',
-        darkMode: true
       }
     },
     mounted() {
@@ -126,9 +119,6 @@
       // currentLang(val) {
       //   localStorage.currentLang = val
       // },
-      darkMode(val) {
-        localStorage.darkMode = val
-      }
     }
   }
 </script>

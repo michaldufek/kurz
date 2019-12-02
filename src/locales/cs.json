@@ -25,7 +25,6 @@
     "metrics": "StockPicking Lab Metriky",
     "general": "Obecní",
     "language": "Jazyk",
-    "darkMode": "Temný režim",
     "clearAll": "Smazat všechna nastavení"
   },
   "landing": {
@@ -53,7 +52,7 @@
     "login": "Přihlašte se."
   },
   "dashboard": { 
-    "title": "Dashboard",
+    "title": "Nástěnka",
     "chart": "graf složené equity",
     "performanceStatistics": "Výkon - statistiky",
     "lastTradesTable": {

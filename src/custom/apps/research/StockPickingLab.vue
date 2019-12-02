@@ -58,9 +58,9 @@
         </ul>
       </base-dropdown>
 
-      <base-checkbox v-if="showIndex" style="float: left; width: 10%" v-model="index">{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
+      <base-checkbox v-if="showIndex" class="chb" v-model="index">{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
 
-      <base-checkbox v-if="showDividend" style="float: left; width: 10%" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>      
+      <base-checkbox v-if="showDividend" class="chb" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>      
 
       <img src="../../assets/img/not-equal.svg" 
            @click="selectSectorNot" 
@@ -86,22 +86,24 @@
       </base-dropdown>
       
       <!-- market price -->
-      <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.marketPrice')}}</p>
-      <base-input alternative
-                  type="text"
-                  style="float: left; width: 6%; margin-right: 10px"
-                  v-model="marketPriceGte"
-                  :placeholder="$t('research.stockPickingLab.filters.number')"
-                  @keyup.enter="marketPriceGteEnter">
-      </base-input>
-      <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.and')}}</p>
-      <base-input alternative
-                  type="text"
-                  style="float: left; width: 6%"
-                  v-model="marketPriceLte"
-                  :placeholder="$t('research.stockPickingLab.filters.number')"
-                  @keyup.enter="marketPriceLteEnter">
-      </base-input>
+      <div style="page-break-inside:avoid !important;">
+        <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.marketPrice')}}</p>
+        <base-input alternative
+                    type="text"
+                    style="float: left; width: 6%; margin-right: 10px"
+                    v-model="marketPriceGte"
+                    :placeholder="$t('research.stockPickingLab.filters.number')"
+                    @keyup.enter="marketPriceGteEnter">
+        </base-input>
+        <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.and')}}</p>
+        <base-input alternative
+                    type="text"
+                    style="float: left; width: 6%"
+                    v-model="marketPriceLte"
+                    :placeholder="$t('research.stockPickingLab.filters.number')"
+                    @keyup.enter="marketPriceLteEnter">
+        </base-input>
+      </div>
 
       <img :src="watchlistSrc" 
            style="float: right; margin-top: 3px; width: 30px; border-radius: 1rem;"
@@ -549,16 +551,24 @@
         if (this.activePage !== 1) {
           pages = pages.concat([ this.$t('paging.previous') ])
         }
+
         pages = pages.concat([ 1 ])
-        if (this.activePage > 2) {
+        if (this.activePage > 3) {
           pages = pages.concat([ constants.strings.etc ])
         }
         if (this.activePage !== 1 && this.activePage !== this.nrOfPages) {
+          if (this.activePage !== 2) {
+            pages = pages.concat([ this.activePage - 1 ])
+          }
           pages = pages.concat([ this.activePage ])
+          if (this.activePage !== this.nrOfPages - 1) {
+            pages = pages.concat([ this.activePage + 1 ])
+          }
         }
-        if (this.activePage < this.nrOfPages - 1) {
+        if (this.activePage < this.nrOfPages - 2) {
           pages = pages.concat([ constants.strings.etc ])
-        }      
+        } 
+
         pages = pages.concat([ this.nrOfPages ])  
         if (this.activePage !== this.nrOfPages) {
           pages = pages.concat([ this.$t('paging.next') ])
@@ -610,6 +620,11 @@ img.notEqualOver {
 }
 
 .dd {
+  float: left;
+  width: 10%
+}
+
+.chb {
   float: left;
   width: 10%
 }
