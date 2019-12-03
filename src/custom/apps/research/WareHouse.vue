@@ -3,29 +3,75 @@
     <!-- <card class="card"> to-do: must be in one card -->
       <div class="col-lg-6 col-md-12">
         <card class="card">
-          <h4 class="card-title">{{$t('research.wareHouse.premiumStrategies')}}</h4>
-          <li v-for="strategyName in premiumStrategies" style="list-style-type: none;">
-            {{strategyName}}
-            <base-button  type="secondary" size="1" fill>{{$t('research.wareHouse.select')}}</base-button>
-            <!-- to-do: export to Portfolio manager/Designed portfolio -->
-            <!-- to-do: v-if="strategies.enableLive" -->
-            <base-button type="secondary" fill>{{$t('research.wareHouse.remove')}}</base-button>        
-            <!-- v-if="strategies.enableStore" -->
-            <br/>
-          </li>
+          <table class="table tablesorter" :class="tableClass">
+            <thead :class="theadClasses">
+            <tr>
+              <!-- <slot name="columns"> -->
+                <h4 class="card-title">{{$t('research.wareHouse.premiumStrategies')}}</h4>
+              <!-- </slot> -->
+            </tr>
+            </thead>
+            <tbody :class="tbodyClasses">
+            <tr v-for="strategyName in premiumStrategies">
+              <!-- <slot :row="item"> -->
+                <td style="border-top: 0px; margin-top: 10px;">
+                  {{strategyName}}
+                </td>
+                <td style="border-top: 0px;">
+                  <base-button type="secondary" fill style="float:right" class="btn"
+                               onMouseOver="this.classList.add('mouseOver');" onMouseOut="this.classList.remove('mouseOver')">
+                    {{$t('research.wareHouse.remove')}}
+                  </base-button>
+                  <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
+                  <base-button type="secondary" fill style="float:right;" class="btn"
+                               onMouseOver="this.classList.add('mouseOver');" onMouseOut="this.classList.remove('mouseOver')">
+                    {{$t('research.wareHouse.select')}}
+                  </base-button>
+                </td>
+                <!-- to-do: export to Portfolio manager/Designed portfolio -->
+                <!-- to-do: v-if="strategies.enableLive" -->                        
+                <!-- v-if="strategies.enableStore" -->
+              <!-- </slot> -->
+            </tr>
+            </tbody>
+          </table>
         </card>
       </div>
+
       <div class="col-lg-6 col-md-12">
         <card class="card">
-          <h4 class="card-title">{{$t('research.wareHouse.myStrategies')}}</h4>
-          <li v-for="strategyName in premiumStrategies" style="list-style-type: none;">
-            {{strategyName}}
-            <base-button  type="secondary" size="1" fill>{{$t('research.wareHouse.select')}}</base-button>
-            <!-- v-if="strategies.enableLive" -->
-            <base-button type="secondary" fill>{{$t('research.wareHouse.remove')}}</base-button>        
-            <!-- v-if="strategies.enableStore" -->
-            <br/>
-          </li>
+          <table class="table tablesorter" :class="tableClass">
+            <thead :class="theadClasses">
+            <tr>
+              <!-- <slot name="columns"> -->
+                <h4 class="card-title">{{$t('research.wareHouse.premiumStrategies')}}</h4>
+              <!-- </slot> -->
+            </tr>
+            </thead>
+            <tbody :class="tbodyClasses">
+            <tr v-for="strategyName in myStrategies">
+              <!-- <slot :row="item"> -->
+                <td style="border-top: 0px; margin-top: 10px;">
+                  {{strategyName}}
+                </td>
+                <td style="border-top: 0px;">
+                  <base-button type="secondary" fill style="float:right" class="btn"
+                               onMouseOver="this.classList.add('mouseOver');" onMouseOut="this.classList.remove('mouseOver')">
+                    {{$t('research.wareHouse.select')}}
+                  </base-button>
+                  <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
+                  <base-button type="secondary" fill style="float:right;" class="btn"
+                               onMouseOver="this.classList.add('mouseOver');" onMouseOut="this.classList.remove('mouseOver')">
+                    {{$t('research.wareHouse.remove')}}
+                  </base-button>
+                </td>
+                <!-- to-do: export to Portfolio manager/Designed portfolio -->
+                <!-- to-do: v-if="strategies.enableLive" -->                        
+                <!-- v-if="strategies.enableStore" -->
+              <!-- </slot> -->
+            </tr>
+            </tbody>
+          </table>
         </card>
       </div>
     <!-- </card> -->
@@ -49,4 +95,11 @@
   };
 </script>
 <style>
+.btn {
+  box-shadow: 0px 0px 10px black;
+}
+
+.mouseOver {
+  box-shadow: 0px 0px 10px white;
+}
 </style>
