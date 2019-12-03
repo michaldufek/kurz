@@ -120,6 +120,8 @@
     "stockPickingLab": {
       "stock": "Data akce",
       "chart": "Graf akce",
+      "xLabel": "Datum",
+      "yLabel": "Cena",
       "watchlistAdd": "Přidat na seznam sledovaných aktiv",
       "watchlistRemove": "Odebrat ze seznamu sledovaných aktiv",
       "filters": {

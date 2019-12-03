@@ -120,6 +120,8 @@
     "stockPickingLab": {
       "stock": "Stock data",
       "chart": "Stock chart",
+      "xLabel": "Date",
+      "yLabel": "Price",
       "watchlistAdd": "Add to stocks watchlist",
       "watchlistRemove": "Remove from stocks watchlist",
       "filters": {

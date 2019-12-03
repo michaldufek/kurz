@@ -6,7 +6,7 @@
                     :fullTitle="rank + '. ' + symbol + (name ? ' (' + name + ')' : '')"
                     :showTitle="true"
                     :watchable="true"
-                    :items="[$t('cagr'), $t('sharpeRatio'), $t('stdDev'), $t('recoveryDDtime'), $t('maxDD'), $t('score') ]"
+                    :items="[ $t('cagr'), $t('sharpeRatio'), $t('stdDev'), $t('recoveryDDtime'), $t('maxDD'), $t('score') ]"
                     :values="stats"                    
                     :titles="$t('terms.perfStats')">
         </fancy-card>
@@ -15,6 +15,7 @@
       <div class="col-lg-8 col-md-12">
         <fancy-chart :title="$t('sidebar.stockPickingLab') + ' - ' + symbol"
                      :fullTitle="$t('research.stockPickingLab.chart').toLowerCase()"
+                     :axesLabels="[ this.$t('research.stockPickingLab.xLabel'), this.$t('research.stockPickingLab.yLabel') ]"
                      :apiUrls="chartApiUrl">
         </fancy-chart>
       </div>      

@@ -1,5 +1,7 @@
 <template>
   <div class="row">
+    <img src="../assets/img/logogf.png" class="logo" :alt="$t('siteTitle')" style="height: 25%;width: 25%;margin-top: 80px;margin-right: -300px;margin-left: 150px;"/>
+
     <SlideYUpTransition>
         <card type="secondary"
                 header-classes="bg-white pb-5"
