@@ -70,6 +70,11 @@ export default {
       default: false,
       description: "Whether to show chart title"
     },
+    axesLabels: {
+      type: Array,
+      default: () => [],
+      description: "Labels of chart axes"
+    },
     apiUrls: {
       type: Array,
       default: () => [],
@@ -109,6 +114,15 @@ export default {
       let eOp = chartConfigs.purpleChartOptions
       eOp.scales.yAxes[0].ticks.suggestedMin = this.chartMin
       eOp.scales.yAxes[0].ticks.suggestedMax = this.chartMax
+
+      eOp.scales.xAxes[0].scaleLabel = {
+        display: this.axesLabels.length > 0,
+        labelString: this.axesLabels[0]
+      }
+      eOp.scales.yAxes[0].scaleLabel = {
+        display: this.axesLabels.length > 0,
+        labelString: this.axesLabels[1]
+      }
 
       return eOp
     }
