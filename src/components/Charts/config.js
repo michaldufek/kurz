@@ -74,6 +74,9 @@ export let purpleChartOptions = {
         suggestedMax: 12000,
         padding: 20,
         fontColor: "#9a9a9a"
+      },
+      scaleLabel: {
+        display: false
       }
     }],
 
@@ -86,7 +89,12 @@ export let purpleChartOptions = {
       },
       ticks: {
         padding: 20,
-        fontColor: "#9a9a9a"
+        fontColor: "#9a9a9a",
+        autoSkip: true,
+        maxTicksLimit: 20
+      },
+      scaleLabel: {
+        display: false
       }
     }]
   }
