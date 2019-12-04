@@ -33,4 +33,8 @@
   };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.active {
+  color: white
+}
+</style>

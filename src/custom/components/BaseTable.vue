@@ -13,9 +13,8 @@
         <td v-for="(column, index) in columns"
             :key="index" 
             :title="valueTitle(item, column)"
-            v-if="hasValue(item, column)">
-          {{ itemValue(item, column) | toFixed2 }}
-        </td>
+            v-if="hasValue(item, column)" 
+            style="text-align: right; white-space: pre-wrap;">{{ itemValue(item, column) | toFixed2 }}</td>
       </slot>
     </tr>
     </tbody>
@@ -82,7 +81,7 @@
         let nrIndex = nrSplitted.length - 1
         
         nrSplitted[nrIndex] = nrSplitted[nrIndex].split(' ').length === 1 && isNaN(Number(nrSplitted[nrIndex]))
-                              ? nrSplitted[nrIndex] 
+                              ? nrSplitted[nrIndex]
                               : helper.roundToFixed(!isNaN(Number(nrSplitted[nrIndex])) ? Number(nrSplitted[nrIndex]) : nrSplitted[nrIndex])
         return nrSplitted.join(sep)
       }

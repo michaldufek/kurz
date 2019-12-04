@@ -18,13 +18,9 @@
       <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ statsData.length ? dataClass : noDataClass, loaderClass ]"/>
       <div>
         <div v-for="stat in Object.entries(statsData).slice(0, Math.ceil(Object.keys(statsData).length / 2))" 
-             style="width:50%; float: left;">
-          <p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}
-        </div>
+        class="dataDiv"><p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}</div>
         <div v-for="stat in Object.entries(statsData).slice(Math.ceil(Object.keys(statsData).length / 2), Object.keys(statsData).length)" 
-             style="width:50%; float: right;">
-          <p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}
-        </div>
+             class="dataDiv"><p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}</div>
       </div>
     </section>
   </card>
@@ -240,5 +236,12 @@ img.watchlist {
 
 img.mouseOver {
   box-shadow: 0px 0px 20px red;
+}
+
+.dataDiv {
+  width: 50%;
+  float: left;
+  text-align: right;
+  white-space: pre-wrap;
 }
 </style>

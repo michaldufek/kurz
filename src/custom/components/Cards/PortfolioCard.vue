@@ -80,7 +80,7 @@ export default {
           this.$t('research.portfolioManager.statsTable.rows.beta') + ": " + 43 
         ],
         [ 
-          this.$t('sr') + ": " + responseData.sharpe, 
+          this.$t('sr') + ": " + responseData.sharpe + ' &nbsp;&nbsp;', 
           this.$t('research.portfolioManager.statsTable.rows.alfa') + ": " + 43 
         ],        
         [
