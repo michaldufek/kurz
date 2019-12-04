@@ -18,13 +18,11 @@
                   {{strategyName}}
                 </td>
                 <td style="border-top: 0px;">
-                  <base-button type="secondary" fill style="float:right" class="wh-btn"
-                               onMouseOver="this.classList.add('btnOver');" onMouseOut="this.classList.remove('btnOver')">
+                  <base-button type="secondary" fill style="float:right">
                     {{$t('research.wareHouse.remove')}}
                   </base-button>
                   <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
-                  <base-button type="secondary" fill style="float:right;" class="wh-btn"
-                               onMouseOver="this.classList.add('btnOver');" onMouseOut="this.classList.remove('btnOver')">
+                  <base-button type="secondary" fill style="float:right;">
                     {{$t('research.wareHouse.select')}}
                   </base-button>
                 </td>
@@ -44,7 +42,7 @@
             <thead :class="theadClasses">
             <tr>
               <!-- <slot name="columns"> -->
-                <h4 class="card-title">{{$t('research.wareHouse.premiumStrategies')}}</h4>
+                <h4 class="card-title">{{$t('research.wareHouse.myStrategies')}}</h4>
               <!-- </slot> -->
             </tr>
             </thead>
@@ -55,13 +53,11 @@
                   {{strategyName}}
                 </td>
                 <td style="border-top: 0px;">
-                  <base-button type="secondary" fill style="float:right" class="wh-btn"
-                               onMouseOver="this.classList.add('btnOver');" onMouseOut="this.classList.remove('btnOver')">
+                  <base-button type="secondary" fill style="float:right">
                     {{$t('research.wareHouse.remove')}}
                   </base-button>
                   <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
-                  <base-button type="secondary" fill style="float:right;" class="wh-btn"
-                               onMouseOver="this.classList.add('btnOver');" onMouseOut="this.classList.remove('btnOver')">
+                  <base-button type="secondary" fill style="float:right;">
                     {{$t('research.wareHouse.select')}}
                   </base-button>
                 </td>
