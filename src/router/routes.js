@@ -78,7 +78,7 @@ const routes = [
         component: Dashboard
       },
       {
-        path: "/details",
+        path: "/dashboard/details",
         name: "details",
         component: Details
       }
@@ -88,30 +88,30 @@ const routes = [
   {
     path: "/research",
     component: ResearchLayout,
-    redirect: "/portfolioManager",
+    redirect: "/research/portfolioManager",
     children: [   
       {
-        path: "/portfolioManager",
+        path: "/research/portfolioManager",
         name: "portfolioManager",
         component: PortfolioManager
       },   
       {
-        path: "/stockPickingLab",
+        path: "/research/stockPickingLab",
         name: "stockPickingLab",
         component: StockPickingLab
       },
       // {
-      //   path: "/patternLab",
+      //   path: "/research/patternLab",
       //   name: "patternLab",
       //   component: PatternLab
       // },
       // {
-      //   path: "/relativeValuesLab",
+      //   path: "/research/relativeValuesLab",
       //   name: "relativeValuesLab",
       //   component: RelativeValuesLab
       // },
       {
-        path: "/wareHouse",
+        path: "/research/wareHouse",
         name: "wareHouse",
         component: WareHouse
       }  
