@@ -46,7 +46,7 @@ export default {
       return [
         responseData.ytd + ' %',
         responseData.cagr + ' %',
-        responseData.sharpe,
+        responseData.sharpe + ' &nbsp;&nbsp;',
         responseData.maxdd + ' %',
         responseData.equity[responseData.equity.length - 1] + ' $'
       ]

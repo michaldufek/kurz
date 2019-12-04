@@ -135,7 +135,7 @@ export default {
                         ? value.toFixed(2)
                         : [
                             isNaN(Number(value.split(' ')[0])) ? value.split(' ')[0] : Number(value.split(' ')[0]).toFixed(2),
-                            value.split(' ')[1] 
+                            value.split(' ')[1].replace(new RegExp('&nbsp;', "g"), ' ')
                           ].join(' '))
                     : value
     },
