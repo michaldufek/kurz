@@ -1,4 +1,5 @@
 import Notifications from './Notifications.vue';
+import constants from '@/custom/assets/js/constants';
 
 const NotificationStore = {
   state: [], // here the notifications will be added
@@ -11,6 +12,7 @@ const NotificationStore = {
     closeOnClick: true,
     showClose: true
   },
+  notifications: [],
   setOptions(options) {
     this.settings = Object.assign(this.settings, options);
   },
@@ -29,7 +31,14 @@ const NotificationStore = {
       notification.timestamp.getMilliseconds() + this.state.length
     );
     notification = Object.assign({}, this.settings, notification);
+
+    notification.verticalAlign = 'bottom'
+    notification.horizontalAlign = 'right'
     this.state.push(notification);
+    if (this.notifications.length >= constants.maxRows / 2) {      
+      this.notifications.splice(0,1)
+    }
+    this.notifications.push(notification.message)
   },
   notify(notification) {
     if (Array.isArray(notification)) {

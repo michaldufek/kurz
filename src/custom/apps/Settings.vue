@@ -27,12 +27,21 @@
       <div class="col-md-4">
         <card>
           <h5 class="title">{{$t('settings.general')}}</h5>
-          <div class="locale-changer">
-            <p style="float: left; margin-right: 10px;">{{$t('settings.language')}}:</p>
-            <select v-model="$root.$i18n.locale">
-              <option v-for="(lang, i) in langs" :key="`Lang${i}`" :value="lang">{{ lang }}</option>
-            </select>
-          </div>
+          <p style="float: left; margin-right: 10px; margin-top: 8px;">{{$t('settings.language')}}:</p>
+          <base-dropdown style="float: left; margin-right: 10px"
+                        menu-classes="dropdown-black" 
+                        title-classes="btn btn-secondary" 
+                        :title="$root.$i18n.locale">
+            <ul style="list-style-type: none;">
+              <li v-for="lang in langs">            
+                <a class="dropdown-item" 
+                  @click="selectLocale(lang)" 
+                  href="#">
+                  {{ lang }}
+                </a>
+              </li>
+            </ul>
+          </base-dropdown>   
         </card>
       </div>
     </div>
@@ -69,12 +78,8 @@
           localStorage.setItem('sectorEnabled', true)
         }
         this.sector = JSON.parse(localStorage.sectorEnabled)
-        
-        // if (!('currentLang' in localStorage)) {
-        //   localStorage.setItem('currentLang', 'en')
-        // } 
-        // this.currentLang = localStorage.currentLang
       },
+
       clearSettings() {
         let token = localStorage.token
         localStorage.clear()
@@ -82,6 +87,11 @@
 
         this.$notify({type: 'success', message: this.$t('notifications.settingsCleared')})        
         this.init()
+      },
+
+      selectLocale(lang) {
+        this.$root.$i18n.locale = lang
+        localStorage.locale = lang
       }
     },
     data () {
@@ -92,8 +102,7 @@
         dividend: true,
         sector: true,
 
-        langs: [ 'en', 'cs' ],
-        // currentLang: 'en',
+        langs: [ 'en', 'cs' ]
       }
     },
     mounted() {
@@ -114,11 +123,7 @@
       },
       sector(val) {
         localStorage.sectorEnabled = val
-      },
-
-      // currentLang(val) {
-      //   localStorage.currentLang = val
-      // },
+      }
     }
   }
 </script>

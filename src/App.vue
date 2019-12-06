@@ -25,7 +25,12 @@
     },
     mounted() {
       this.$watch('$route', this.disableRTL, { immediate: true });
-      this.$watch('$sidebar.showSidebar', this.toggleNavOpen)
+      this.$watch('$sidebar.showSidebar', this.toggleNavOpen)      
+        
+      if (!('locale' in localStorage)) {
+        localStorage.setItem('locale', this.$root.$i18n.locale)
+      } 
+      this.$root.$i18n.locale = localStorage.locale
     },
     created() {
       window.addEventListener('beforeunload', this.leaving)
