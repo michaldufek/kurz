@@ -166,6 +166,14 @@
         "all": "Všechno"
       }
     }
+  },
+  "patternLab": { 
+    "chart": {
+      "title": "Graf"
+    },
+    "patternStatistics": {
+      "title": "Pattern statistiky"
+    }
   },  
   "terms": {
     "perfStats": {

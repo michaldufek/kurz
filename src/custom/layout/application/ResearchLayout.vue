@@ -4,8 +4,8 @@
       <template slot="links">
         <sidebar-link to="/research/portfolioManager" :name="$t('sidebar.portfolioManager')" icon="tim-icons icon-chart-pie-36"/>
         <sidebar-link to="/research/stockPickingLab" :name="$t('sidebar.stockPickingLab')" icon="tim-icons icon-tap-02"/>
-        <!-- <sidebar-link to="/research/patternLab" :name="$t('sidebar.patternLab')" icon="tim-icons icon-tap-02"/>
-        <sidebar-link to="/research/relativeValuesLab" :name="$t('sidebar.relativeValuesLab')" icon="tim-icons icon-tap-02"/> -->
+        <sidebar-link to="/research/patternLab" :name="$t('sidebar.patternLab')" icon="tim-icons icon-sound-wave"/>
+        <!-- <sidebar-link to="/research/relativeValuesLab" :name="$t('sidebar.relativeValuesLab')" icon="tim-icons icon-tap-02"/> -->
         <sidebar-link to="/research/wareHouse" :name="$t('sidebar.wareHouse')" icon="tim-icons icon-paper"/>
       </template>
     </side-bar>
