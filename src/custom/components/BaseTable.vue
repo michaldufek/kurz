@@ -3,7 +3,8 @@
     <thead :class="theadClasses">
     <tr>
       <slot name="columns">
-        <th v-for="column in columns" :key="column">{{column}}</th>
+        <th v-for="column in columns" :key="column" 
+            style="text-align: right;">{{column}}</th>
       </slot>
     </tr>
     </thead>

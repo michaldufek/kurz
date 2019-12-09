@@ -4,15 +4,29 @@
       <!-- to-do: must be in one card -->
       <div class="col-lg-8 col-md-12">
         <card class="card">
-          <h4 class="card-title">{{title}}</h4>
-          <ul style="list-style-type: none;">
-            <li v-for="strategy in strategies">
-              {{strategy[0]}}
-              <base-button v-if="enableLive" type="secondary" size="1" fill>{{$t('research.portfolioManager.live')}}</base-button>
-              <base-button v-if="enableStore" type="secondary" fill>{{$t('research.portfolioManager.store')}}</base-button>        
-              <br/>
-            </li>
-          </ul>
+          <table class="table tablesorter" :class="tableClass">
+            <thead :class="theadClasses">
+              <tr>
+                <!-- <slot name="columns"> -->
+                  <h4 class="card-title">{{title}}</h4>
+                <!-- </slot> -->
+              </tr>
+            </thead>
+            <tbody :class="tbodyClasses">
+              <tr v-for="strategy in strategies">
+                <!-- <slot :row="item"> -->
+                  <td style="border-top: 0px; margin-top: 10px;">
+                    {{strategy[0]}}
+                  </td>
+                  <td style="border-top: 0px;">
+                    <base-button v-if="enableLive" type="secondary" style="float:right" fill>{{$t('research.portfolioManager.live')}}</base-button>
+                    <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
+                    <base-button v-if="enableStore" type="secondary" style="float:right;" fill>{{$t('research.portfolioManager.store')}}</base-button>        
+                  </td>
+                <!-- </slot> -->
+              </tr>
+            </tbody>
+          </table>
         </card>
       </div>
 
