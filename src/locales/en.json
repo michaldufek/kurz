@@ -165,6 +165,11 @@
         "title": "Chart",
         "from": "Form",
         "to": "To",
+        "assets": "Assets",
+        "patterns": "Patterns",
+        "enterAsset": "Enter asset",
+        "enterPattern": "Enter pattern",
+        "addChart": "Add chart",
         "patternsHistory": {
           "title": "Patterns history",
           "columns": [

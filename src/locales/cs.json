@@ -165,6 +165,11 @@
         "title": "Graf",
         "from": "Od",
         "to": "Do",
+        "assets": "Aktiva",
+        "patterns": "Patterny",
+        "enterAsset": "Vložte aktivum",
+        "enterPattern": "Vložte pattern",
+        "addChart": "Přidat graf",
         "patternsHistory": {
           "title": "Historie patternů",
           "columns": [

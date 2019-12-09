@@ -2,7 +2,7 @@
 import LandingLayout from "@/custom/layout/landing/LandingLayout.vue";
 import DashboardLayout from "@/custom/layout/application/DashboardLayout.vue";
 import ResearchLayout from "@/custom/layout/application/ResearchLayout.vue";
-import PatternLabLayout from "@/custom/layout/application/PatternLabLayout.vue";
+import PatternLabLayout from "@/custom/layout/application/patternLab/Layout.vue";
 import SettingsLayout from "@/custom/layout/application/SettingsLayout.vue";
 
 // GeneralViews
