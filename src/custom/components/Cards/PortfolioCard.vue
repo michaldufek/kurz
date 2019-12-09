@@ -35,7 +35,6 @@
                      :showTitle="false"
                      :apiUrls="strategiesUrls"
                      :rowsCreator="rowsCreator"
-                     :aggregator="aggregator"
                      :titles="$t('terms.perfStats')"
                      :columns="$t('research.portfolioManager.statsTable.columns')">
         </fancy-table>
@@ -104,10 +103,6 @@ export default {
           this.$t('equityOuts') + ": " + responseData.equity[responseData.equity.length - 1] + ' $',
         ]
       ]
-    },
-
-    aggregator(oldRows, newRows, weight) {
-      return helper.weightedAverageAggregator(oldRows, newRows, weight)
     }    
   }
 }

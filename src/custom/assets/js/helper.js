@@ -111,7 +111,7 @@ export default {
 
     formatDateOnly(date) {
         // for RRRRMMDD formatted inputs
-        // retuns in RRRR-M-D format
+        // returns in RRRR-M-D format
         return date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8)
     },
 

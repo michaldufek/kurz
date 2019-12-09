@@ -169,7 +169,14 @@
   },
   "patternLab": { 
     "chart": {
-      "title": "Graf"
+      "title": "Graf",
+      "patternsHistory": {
+        "title": "Historie patternů",
+        "columns": [
+          "Datum",
+          "Pattern"
+        ]
+      }
     },
     "patternStatistics": {
       "title": "Pattern statistiky"
