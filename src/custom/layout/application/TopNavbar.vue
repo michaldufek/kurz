@@ -71,7 +71,7 @@
                            class="nav-item">
               <a slot="title" href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true">
                 <div class="photo">
-                  <img src="img/default-avatar.png">
+                  <img src="/img/default-avatar.png">
                 </div>
                 <b class="caret d-none d-lg-block d-xl-block"></b>
                 <p class="d-lg-none">

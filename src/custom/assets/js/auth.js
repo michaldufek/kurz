@@ -194,11 +194,13 @@ export default {
   
     logout (cb) {
       cb = arguments[arguments.length - 1]
-      logoutRoutine()
-      .then(() => {
-        if (cb) cb()
-        this.onChange(true)
-      })
+      if (this.loggedIn()) {
+        logoutRoutine()
+        .then(() => {
+          if (cb) cb()
+          this.onChange(true)
+        })
+      }
     },
   
     loggedIn () {

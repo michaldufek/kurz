@@ -23,6 +23,7 @@ import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
 import axios from '@/../node_modules/axios';
 import constants from '@/custom/assets/js/constants';
+import helper from '@/custom/assets/js/helper';
 
 
 export default {
@@ -49,14 +50,14 @@ export default {
     rowsCreator: {
       type: Function,
       default: (responseData) => {
-        return [new Array(this.columns.length)]
+        return responseData
       },
       description: "How to create rows values (of shape [#rows, #columns]) from response data"
     },
     aggregator: {
       type: Function,
-      default: (oldRows, newRows) => {
-        return [new Array(this.columns.length)]
+      default: (oldRows, newRows, weight) => {
+        return helper.weightedAverageAggregator(oldRows, newRows, weight)
       },
       description: "How to aggregate created rows from all sources (result of shape [#oldRows + #newRows, #columns])"
     },    

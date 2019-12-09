@@ -111,12 +111,6 @@
         }
       }
     },
-    "wareHouse": {
-      "premiumStrategies": "Prémiové Strategie",
-      "myStrategies": "Moje Strategie",
-      "select": "vybrat",
-      "remove": "odstranit"
-    },
     "stockPickingLab": {
       "stock": "Data akce",
       "chart": "Graf akce",
@@ -165,8 +159,36 @@
         },
         "all": "Všechno"
       }
+    },
+    "patternLab": { 
+      "chart": {
+        "title": "Graf",
+        "from": "Od",
+        "to": "Do",
+        "assets": "Aktiva",
+        "patterns": "Patterny",
+        "enterAsset": "Vložte aktivum",
+        "enterPattern": "Vložte pattern",
+        "addChart": "Přidat graf",
+        "patternsHistory": {
+          "title": "Historie patternů",
+          "columns": [
+            "Datum",
+            "Pattern"
+          ]
+        }
+      },
+      "patternStatistics": {
+        "title": "Pattern statistiky"
+      }
+    },  
+    "wareHouse": {
+      "premiumStrategies": "Prémiové Strategie",
+      "myStrategies": "Moje Strategie",
+      "select": "vybrat",
+      "remove": "odstranit"
     }
-  },  
+  },
   "terms": {
     "perfStats": {
       "ytd": "Výnos k dnešnímu dni. Uvádí, o kolik procent vzrostl nebo poklesl náš majetek ode dne spuštění strategie.",
