@@ -63,7 +63,7 @@ export default {
     },
     fullTitle: {
       type: String,
-      description: "Longer chart title"
+      description: "Longer chart title used for errors"
     },
     showTitle: {
       type: Boolean,

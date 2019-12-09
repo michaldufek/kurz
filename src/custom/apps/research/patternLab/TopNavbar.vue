@@ -3,8 +3,8 @@
     <div class="container-fluid">
       <div class="navbar-wrapper">
         <div style="margin-top: -10px;">
-          <router-link class="navbar-brand" to="/research/patternLab/chart">{{$t("patternLab.chart.title")}}</router-link>
-          <!-- <router-link class="navbar-brand" to="/research/patternLab/patternStatistics" style="margin-left: 250px;">{{$t("patternLab.patternStatistics.title")}}</router-link> -->
+          <router-link class="navbar-brand" to="/research/patternLab/chart">{{$t("research.patternLab.chart.title")}}</router-link>
+          <!-- <router-link class="navbar-brand" to="/research/patternLab/patternStatistics" style="margin-left: 250px;">{{$t("research.patternLab.patternStatistics.title")}}</router-link> -->
         </div>
       </div>
     </div>

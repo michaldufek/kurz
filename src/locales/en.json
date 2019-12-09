@@ -111,12 +111,6 @@
         }
       }
     },
-    "wareHouse": {
-      "premiumStrategies": "Premium Strategies",
-      "myStrategies": "My Strategies",
-      "select": "select",
-      "remove": "remove"
-    },
     "stockPickingLab": {
       "stock": "Stock data",
       "chart": "Stock chart",
@@ -165,22 +159,30 @@
         },
         "all": "All"
       }
-    }
-  },
-  "patternLab": { 
-    "chart": {
-      "title": "Chart",
-      "patternsHistory": {
-        "title": "Patterns history",
-        "columns": [
-          "Date",
-          "Pattern"
-        ]
-      }
     },
-    "patternStatistics": {
-      "title": "Pattern statistics"
-    }
+    "patternLab": { 
+      "chart": {
+        "title": "Chart",
+        "from": "Form",
+        "to": "To",
+        "patternsHistory": {
+          "title": "Patterns history",
+          "columns": [
+            "Date",
+            "Pattern"
+          ]
+        }
+      },
+      "patternStatistics": {
+        "title": "Pattern statistics"
+      }
+    },  
+    "wareHouse": {
+      "premiumStrategies": "Premium Strategies",
+      "myStrategies": "My Strategies",
+      "select": "select",
+      "remove": "remove"
+    }    
   },  
   "terms": {
     "perfStats": {

@@ -4,15 +4,15 @@
       <!-- to-do: must be in one card -->
       <div class="col-lg-8 col-md-12">
         <card class="card">
-          <table class="table tablesorter" :class="tableClass">
-            <thead :class="theadClasses">
+          <table class="table tablesorter">
+            <thead>
               <tr>
                 <!-- <slot name="columns"> -->
                   <h4 class="card-title">{{title}}</h4>
                 <!-- </slot> -->
               </tr>
             </thead>
-            <tbody :class="tbodyClasses">
+            <tbody>
               <tr v-for="strategy in strategies">
                 <!-- <slot :row="item"> -->
                   <td style="border-top: 0px; margin-top: 10px;">
