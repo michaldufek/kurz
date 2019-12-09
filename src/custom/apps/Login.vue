@@ -297,6 +297,7 @@ export default {
             this.openResetPassModal()
         } else {
             auth.logout()
+            this.$router.replace(this.$route.query.redirect || '/login')
             this.openLoginModal();
         }
     },

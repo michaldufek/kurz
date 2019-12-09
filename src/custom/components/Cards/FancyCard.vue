@@ -1,6 +1,6 @@
 <template>
   <card :class="[ { noDataClass : !statsData.length }, fancyCardClass ]">
-    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
+    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio> <!-- to-do: must be global ! -->    
     <h4 v-if="showTitle" slot="header" class="card-title" style="float: left">{{fullTitle}}</h4>
     <img v-if="watchable" 
          :src="watchlistSrc" 

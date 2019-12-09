@@ -3,15 +3,15 @@
     <!-- <card class="card"> to-do: must be in one card -->
       <div class="col-lg-6 col-md-12">
         <card class="card">
-          <table class="table tablesorter" :class="tableClass">
-            <thead :class="theadClasses">
+          <table class="table tablesorter">
+            <thead>
             <tr>
               <!-- <slot name="columns"> -->
                 <h4 class="card-title">{{$t('research.wareHouse.premiumStrategies')}}</h4>
               <!-- </slot> -->
             </tr>
             </thead>
-            <tbody :class="tbodyClasses">
+            <tbody>
             <tr v-for="strategyName in premiumStrategies">
               <!-- <slot :row="item"> -->
                 <td style="border-top: 0px; margin-top: 10px;">
@@ -38,15 +38,15 @@
 
       <div class="col-lg-6 col-md-12">
         <card class="card">
-          <table class="table tablesorter" :class="tableClass">
-            <thead :class="theadClasses">
+          <table class="table tablesorter">
+            <thead>
             <tr>
               <!-- <slot name="columns"> -->
                 <h4 class="card-title">{{$t('research.wareHouse.myStrategies')}}</h4>
               <!-- </slot> -->
             </tr>
             </thead>
-            <tbody :class="tbodyClasses">
+            <tbody>
             <tr v-for="strategyName in myStrategies">
               <!-- <slot :row="item"> -->
                 <td style="border-top: 0px; margin-top: 10px;">

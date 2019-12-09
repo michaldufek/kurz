@@ -2,6 +2,7 @@
 import LandingLayout from "@/custom/layout/landing/LandingLayout.vue";
 import DashboardLayout from "@/custom/layout/application/DashboardLayout.vue";
 import ResearchLayout from "@/custom/layout/application/ResearchLayout.vue";
+import PatternLabLayout from "@/custom/layout/application/patternLab/Layout.vue";
 import SettingsLayout from "@/custom/layout/application/SettingsLayout.vue";
 
 // GeneralViews
@@ -14,11 +15,14 @@ const Dashboard = () => import(/* webpackChunkName: "dashboard" */"@/custom/apps
 const Details = () => import(/* webpackChunkName: "details" */"@/custom/apps/dashboard/Details.vue");
 const PortfolioManager = () => import(/* webpackChunkName: "portfolioManager" */"@/custom/apps/research/PortfolioManager.vue");
 const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@/custom/apps/research/StockPickingLab.vue");
-// const PatternLab = () => import(/* webpackChunkName: "patternLab" */"@/custom/apps/research/PatternLab.vue");
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
 const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
+// PatternLab SubViews
+const Chart = () => import(/* webpackChunkName: "chart" */"@/custom/apps/research/patternLab/Chart.vue");
+// const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
+
 
 import auth from '@/custom/assets/js/auth'
 
@@ -100,11 +104,34 @@ const routes = [
         name: "stockPickingLab",
         component: StockPickingLab
       },
-      // {
-      //   path: "/research/patternLab",
-      //   name: "patternLab",
-      //   component: PatternLab
-      // },
+      {
+        path: "/research/patternLab",
+        name: "patternLab",
+        component: PatternLabLayout,
+        redirect: "/research/patternLab/chart",
+        children: [   
+          {
+            path: "/research/patternLab/chart",
+            name: "chart",
+            component: Chart
+          },   
+          // {
+          //   path: "/research/patternLab/patternStatistics",
+          //   name: "patternStatistics",
+          //   component: PatternStatistics
+          // },
+          // {
+          //   path: "/research/patternLab/backtests",
+          //   name: "backtests",
+          //   component: Backtests
+          // },
+          // {
+          //   path: "/research/patternLab/alerts",
+          //   name: "alerts",
+          //   component: Alerts
+          // }  
+        ],
+      },
       // {
       //   path: "/research/relativeValuesLab",
       //   name: "relativeValuesLab",
