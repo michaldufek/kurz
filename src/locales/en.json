@@ -163,12 +163,13 @@
     "patternLab": { 
       "chart": {
         "title": "Chart",
-        "from": "Form",
+        "from": "From",
         "to": "To",
         "assets": "Assets",
         "patterns": "Patterns",
-        "enterAsset": "Enter asset",
-        "enterPattern": "Enter pattern",
+        "searchAsset": "Search by asset",
+        "searchPattern": "Search by pattern",
+        "pickDate": "Pick a date",
         "addChart": "Add chart",
         "patternsHistory": {
           "title": "Patterns history",

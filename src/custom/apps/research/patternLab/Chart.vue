@@ -11,8 +11,9 @@
                   <td style="border-top: 0px; text-align: right">
                     {{ $t("research.patternLab.chart.from") }}: 
                   </td>
-                  <td style="border-top: 0px; width: 65%">
-                    <input class="datepicker form-control datepicker-input" type="text"/>
+                  <td style="border-top: 0px;">
+                    <datepicker v-model="from" :placeholder="$t('research.patternLab.chart.pickDate')"></datepicker>
+                    {{from}}
                   </td>
                   <!-- </slot> -->
                 </tr>
@@ -21,8 +22,9 @@
                   <td style="border-top: 0px; text-align: right">
                     {{ $t("research.patternLab.chart.to") }}: 
                   </td>
-                  <td style="border-top: 0px; width: 65%">
-                    <input class="datepicker form-control datepicker-input" type="text"/>
+                  <td style="border-top: 0px;">
+                    <datepicker v-model="to" :placeholder="$t('research.patternLab.chart.pickDate')"></datepicker>
+                    {{to}}
                   </td>
                   <!-- </slot> -->
                 </tr>
@@ -31,11 +33,11 @@
           </div>
         </div>
         <card style="text-align: center;">
-          <base-input :label="$t('research.patternLab.chart.assets')" type="search" :placeholder="$t('research.patternLab.chart.enterAsset')">
+          <base-input :label="$t('research.patternLab.chart.assets')" type="search" :placeholder="$t('research.patternLab.chart.searchAsset')">
           </base-input>
         </card>
         <card style="text-align: center;">
-          <base-input :label="$t('research.patternLab.chart.patterns')" type="search" :placeholder="$t('research.patternLab.chart.enterPattern')">
+          <base-input :label="$t('research.patternLab.chart.patterns')" type="search" :placeholder="$t('research.patternLab.chart.searchPattern')">
           </base-input>
         </card>
         <base-button native-type="submit" type="secondary" style="width: 100%">{{ $t('research.patternLab.chart.addChart') }}</base-button>
@@ -57,19 +59,24 @@
   </div>
 </template>
 <script>
-  import $ from 'jquery'
-
+  import Datepicker from 'vuejs-datepicker';
   import FancyChart from '@/custom/components/FancyChart';
   import FancyTable from '@/custom/components/FancyTable';  
   import constants from '@/custom/assets/js/constants';
 
-  import '@/custom/assets/js/bootstrap-datepicker.js';
-
 
   export default {
-    components: {      
+    components: {  
+      Datepicker,    
       FancyChart,
-      FancyTable
+      FancyTable      
+    },
+
+    data() {
+      return {
+        from: null,
+        to: null
+      }
     },
 
     computed: {
@@ -81,23 +88,34 @@
       }
     },
 
-    mounted () {
-      $('.datepicker').datepicker({
-        weekStart:1,
-        color: 'red'
-      });
+    watch: {
+      from(val) {
+        if (this.to && this.from > this.to) {
+          this.from = this.to
+          // to-do: must update also input text!
+        }
+      },
+      to(val) {
+        if (this.from && this.to < this.from) {
+          this.to = this.from
+          // to-do: must update also input text!
+        }
+      },
     }
   }  
 </script>
 <style>
-  @import '../../../assets/css/bootstrap-datepicker.css';
-
-  .datepicker p {
-    color: inherit
+  .form-control {
+    box-shadow: gray 0px 0px 7px;
   }
 
-  .datepicker-input {
+  .vdp-datepicker, input {
     box-shadow: gray 0px 0px 7px;
+    width: 100%;
     text-align: center;
+    background-color: transparent;
+    border-color: #2b3553;
+    border-radius: 0.4285rem;
+    color: gray;
   }
 </style>

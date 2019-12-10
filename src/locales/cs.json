@@ -167,8 +167,9 @@
         "to": "Do",
         "assets": "Aktiva",
         "patterns": "Patterny",
-        "enterAsset": "Vložte aktivum",
-        "enterPattern": "Vložte pattern",
+        "searchAsset": "Hledat podle aktiva",
+        "searchPattern": "Hledat podle patternu",
+        "pickDate": "Vyberte datum",
         "addChart": "Přidat graf",
         "patternsHistory": {
           "title": "Historie patternů",
