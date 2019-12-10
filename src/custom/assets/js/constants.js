@@ -1,6 +1,7 @@
-const baseUrl = "https://dev.analyticalplatform.com"
-// process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
-const tickerPartUrl = "/api/sp/Ticker"
+const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
+const SPPartUrl = "/api/sp"
+const PLPartUrl = "/api/pl"
+const tickerPartUrl = "/Ticker"
 const reportPartUrl = "/api/xreport"
 const statsPartUrl = reportPartUrl + "/last_report"
 const chartPartUrl = reportPartUrl + "/compute"
@@ -24,10 +25,11 @@ export default {
     maxRows: 20, // to-do: use some pagination or More... button for all rows
 
     urls: {
-        ticker: {
-             base : baseUrl + tickerPartUrl,
-             stock: baseUrl + tickerPartUrl + "OHLC?ticker="
+        tickerSP: {
+             base : baseUrl + SPPartUrl + tickerPartUrl,
+             stock: baseUrl + SPPartUrl + tickerPartUrl + "OHLC?ticker="
         },
+        tickerPL: baseUrl + PLPartUrl + tickerPartUrl + "?search=",
 
         auth: baseUrl + "/rest-auth",
 

@@ -4,7 +4,7 @@
     <h4 v-if="showTitle" slot="header" class="card-title">{{title}}</h4>
     <div>
       <section v-if="isError">
-        <p>{{$t('errorPrefix') + " " + title + ". " + $t('errorSuffix')}}</p>
+        <p>{{ $t('dataError') }}</p>
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[finishedLoadings ? dataClass : noDataClass, loaderClass]"/>

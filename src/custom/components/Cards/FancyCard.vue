@@ -12,7 +12,7 @@
          onMouseOver="this.classList.add('mouseOver')"
          onMouseOut="this.classList.remove('mouseOver')">
     <section v-if="isError">
-      <p>{{$t('errorPrefix') + " " + title + ". " + $t('errorSuffix')}}</p>
+      <p>{{ $t('dataError') }}</p>
     </section>
     <section v-else>
       <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ statsData.length ? dataClass : noDataClass, loaderClass ]"/>

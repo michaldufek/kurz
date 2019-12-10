@@ -9,8 +9,7 @@
 
     <div class="row">
       <div class="col-12">
-        <fancy-chart title="Dashboard"
-                     :fullTitle="$t('dashboard.chart')"
+        <fancy-chart :title="$t('dashboard.title')"
                      :apiUrls="apiUrls(forChart=true)">
         </fancy-chart>
       </div>

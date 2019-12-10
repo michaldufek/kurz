@@ -3,8 +3,7 @@
   "companyTitle": "CYRRUS ADVISORY, a.s.",
   "schoolTitle": "Mendel University in Brno",
   "loading": "Loading of",
-  "errorPrefix": "We are sorry, at this moment we are unable to get", 
-  "errorSuffix": "We'll try again later...",
+  "dataError": "We are sorry, at this moment we are unable to get the data. We'll try again later...",
   "chartUpdatedPrefix": "Updated at",
   "chartNeverUpdated": "Never updated",
   "ytd": "YTD",
@@ -55,7 +54,6 @@
   },
   "dashboard": { 
     "title": "Dashboard",
-    "chart": "chart of composite equity",
     "performanceStatistics": "Performance statistics",
     "lastTradesTable": {
       "title": "Last trades",
@@ -113,7 +111,6 @@
     },
     "stockPickingLab": {
       "stock": "Stock data",
-      "chart": "Stock chart",
       "xLabel": "Date",
       "yLabel": "Price",
       "watchlistAdd": "Add to stocks watchlist",
@@ -161,15 +158,14 @@
       }
     },
     "patternLab": { 
+      "assets": "Assets",
+      "patterns": "Patterns",
+      "type2search": "Type to search",
+      "pickDate": "Pick a date",
       "chart": {
         "title": "Chart",
         "from": "From",
         "to": "To",
-        "assets": "Assets",
-        "patterns": "Patterns",
-        "searchAsset": "Search by asset",
-        "searchPattern": "Search by pattern",
-        "pickDate": "Pick a date",
         "addChart": "Add chart",
         "patternsHistory": {
           "title": "Patterns history",

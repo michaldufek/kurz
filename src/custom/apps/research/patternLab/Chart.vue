@@ -12,8 +12,7 @@
                     {{ $t("research.patternLab.chart.from") }}: 
                   </td>
                   <td style="border-top: 0px;">
-                    <datepicker v-model="from" :placeholder="$t('research.patternLab.chart.pickDate')"></datepicker>
-                    {{from}}
+                    <datepicker v-model="from" :disabled-dates="disabledDatesFrom" :clear-button="true" :format="dateFormat" :placeholder="$t('research.patternLab.pickDate')"></datepicker>
                   </td>
                   <!-- </slot> -->
                 </tr>
@@ -23,8 +22,7 @@
                     {{ $t("research.patternLab.chart.to") }}: 
                   </td>
                   <td style="border-top: 0px;">
-                    <datepicker v-model="to" :placeholder="$t('research.patternLab.chart.pickDate')"></datepicker>
-                    {{to}}
+                    <datepicker v-model="to" :disabled-dates="disabledDatesTo" :clear-button="true" :format="dateFormat" :placeholder="$t('research.patternLab.pickDate')"></datepicker>
                   </td>
                   <!-- </slot> -->
                 </tr>
@@ -33,26 +31,46 @@
           </div>
         </div>
         <card style="text-align: center;">
-          <base-input :label="$t('research.patternLab.chart.assets')" type="search" :placeholder="$t('research.patternLab.chart.searchAsset')">
-          </base-input>
+          <label>{{ $t('research.patternLab.assets') }}</label>
+          <Dropdown :options="assets"
+                    :disabled="false"
+                    name="ddAssets"
+                    :maxItem="maxItems"
+                    :placeholder="$t('research.patternLab.type2search')"
+                    @filter="getAssets"
+                    @selected="selectAsset">
+          </Dropdown>
+          <base-table :data="selectedAssets" :columns="['name']">
+            <template slot="columns">
+              <th></th>
+            </template>  
+            <template slot-scope="{row}">
+              <td style="font-size: smaller;">{{row.name}}</td>
+              <td class="td-actions text-right">
+                <base-button size="sm" icon @click="removeAsset(row.name)">
+                  <i class="tim-icons icon-simple-remove"></i>
+                </base-button>
+              </td>
+            </template>    
+          </base-table>
         </card>
         <card style="text-align: center;">
-          <base-input :label="$t('research.patternLab.chart.patterns')" type="search" :placeholder="$t('research.patternLab.chart.searchPattern')">
+          <base-input :label="$t('research.patternLab.patterns')" type="search" :placeholder="$t('research.patternLab.type2search')">
           </base-input>
         </card>
         <base-button native-type="submit" type="secondary" style="width: 100%">{{ $t('research.patternLab.chart.addChart') }}</base-button>
       </div>
 
       <div class="col-lg-7 col-md-12">
-        <fancy-chart :fullTitle="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title').toLowerCase()"
+        <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl">
         </fancy-chart>
       </div>
 
       <div class="col-lg-3 col-md-12">
         <fancy-table :title="$t('research.patternLab.chart.patternsHistory.title')"
-                    :apiUrls="patternsHistoryUrl"
-                    :columns="$t('research.patternLab.chart.patternsHistory.columns')">
+                     :apiUrls="patternsHistoryUrl"
+                     :columns="$t('research.patternLab.chart.patternsHistory.columns')">
         </fancy-table>
       </div>
     </div>
@@ -60,47 +78,89 @@
 </template>
 <script>
   import Datepicker from 'vuejs-datepicker';
+  import Dropdown from 'vue-simple-search-dropdown';
+
   import FancyChart from '@/custom/components/FancyChart';
   import FancyTable from '@/custom/components/FancyTable';  
+  import { BaseTable } from '@/components'
+
+  import axios from '@/../node_modules/axios';
   import constants from '@/custom/assets/js/constants';
 
 
   export default {
     components: {  
-      Datepicker,    
+      Datepicker,   
+      Dropdown,
       FancyChart,
-      FancyTable      
+      FancyTable,
+      BaseTable   
     },
 
     data() {
       return {
         from: null,
-        to: null
+        to: null,
+        selectedAssets: [],
+        assets: []
       }
     },
 
     computed: {
-      patternsHistoryUrl() {
-        return [ "https://dev.analyticalplatform.com/api/pl/Backtests?patterns=1&symbols=MSFT&timeframe=1" ]
+      dateFormat() {
+        return "yyyy-MM-dd"
+      },
+      disabledDatesFrom() {
+        return {
+          from: this.to
+        }
+      },
+      disabledDatesTo() {
+        return {
+          to: this.from
+        }
+      },
+      maxItems() {
+        return constants.maxRows
       },
       chartUrl() {
         return [ constants.urls.chart["MF Report"] ]
+      },
+      patternsHistoryUrl() {
+        return [ "https://dev.analyticalplatform.com/api/pl/Backtests?patterns=1&symbols=MSFT&timeframe=1" ]
       }
     },
 
-    watch: {
-      from(val) {
-        if (this.to && this.from > this.to) {
-          this.from = this.to
-          // to-do: must update also input text!
+    methods: {
+      selectAsset(asset) {
+        if ('id' in asset) {
+          this.selectedAssets.push(asset)
         }
       },
-      to(val) {
-        if (this.from && this.to < this.from) {
-          this.to = this.from
-          // to-do: must update also input text!
-        }
+      removeAsset(asset) {
+        this.selectedAssets.splice( this.selectedAssets.indexOf(asset), 1 );
       },
+      getAssets(query) {
+        // to-do: eliminate component's bug - redudant call for selected item
+        if (query) {
+          axios
+          .get(constants.urls.tickerPL + query)
+          .then(response => {
+            let i = 1
+            this.assets = response.data.results.map(result => { 
+              return {
+                id: i++, 
+                name: result.symbol + ' (' + result.name + ')' 
+              }
+            })
+          })
+          .catch(error => {
+            // to-do: notify error
+          })
+          .finally(() => {
+          })
+        }
+      }
     }
   }  
 </script>
@@ -109,13 +169,53 @@
     box-shadow: gray 0px 0px 7px;
   }
 
-  .vdp-datepicker, input {
+  .dropdown input,
+  .vdp-datepicker span,
+  .vdp-datepicker input {
     box-shadow: gray 0px 0px 7px;
-    width: 100%;
+    width: 94%;
     text-align: center;
     background-color: transparent;
-    border-color: #2b3553;
+    border-radius: 0.4285rem !important;
+    color: gray; 
+    border: none;
+  }
+
+  .vdp-datepicker span {
+    box-shadow: none;    
+    color: inherit; 
+  }
+
+    .dropdown input {
+    background: transparent !important;
+    color: gray !important;
+    border: none !important;
+    min-width: 100% !important;
+  }
+
+  /* .dropdown:focus { // to-do: this focus should be on all inputs (ie.dtpicker, dropdowns)
+    border-color: #1d8cf8 !important
+  } */
+
+  .dropdown .dropdown-content,
+  .vdp-datepicker__calendar {
+    background-color: darkslategrey !important;
     border-radius: 0.4285rem;
-    color: gray;
+    opacity: 0.8;
+    min-width: 100% !important;
+    border: none !important;
+    box-shadow: gray 0px 0px 7px !important;
+  }
+
+  .disabled {
+    color: gray !important
+  }
+
+  .day__month_btn up {
+    color: white !important
+  }
+
+  .vdp-datepicker__calendar header .prev:not(.disabled):hover, .vdp-datepicker__calendar header .next:not(.disabled):hover, .vdp-datepicker__calendar header .up:not(.disabled):hover {
+    background: darkgray !important
   }
 </style>
