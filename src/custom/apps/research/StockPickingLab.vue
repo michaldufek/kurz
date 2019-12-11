@@ -265,7 +265,7 @@
         this.error = false
 
         axios
-        .get(constants.urls.ticker.base + "?" + this.encodeQueryData(this.getQueryData()))
+        .get(constants.urls.tickerSP.base + "?" + this.encodeQueryData(this.getQueryData()))
         .then(response => {
           this.nrOfPages = Math.ceil(response.data.count / constants.maxRows)
 

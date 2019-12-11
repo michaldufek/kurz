@@ -8,7 +8,7 @@
     <br/>
     <div class="chart-area" style="height: 425px">
       <section v-if="isError" style="text-align: center">
-        <p>{{$t('errorPrefix') + " " + fullTitle + ". " + $t('errorSuffix')}}</p>
+        <p>{{ $t('dataError') }}</p>
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
@@ -60,10 +60,6 @@ export default {
     title: {
       type: String,
       description: "Chart title"
-    },
-    fullTitle: {
-      type: String,
-      description: "Longer chart title used for errors"
     },
     showTitle: {
       type: Boolean,

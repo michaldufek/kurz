@@ -3,8 +3,7 @@
   "companyTitle": "CYRRUS ADVISORY, a.s.",
   "schoolTitle": "Mendelova univerzita v Brně",
   "loading": "Načítání",
-  "errorPrefix": "Omlouváme se, nejsme schopní získat data k", 
-  "errorSuffix": "Zkusíme to později...",
+  "dataError": "Omlouváme se, nejsme schopní získat data. Zkusíme to později...",
   "chartUpdatedPrefix": "Aktualizováno o",
   "chartNeverUpdated": "Ještě neaktualizováno",
   "ytd": "YTD",
@@ -55,7 +54,6 @@
   },
   "dashboard": { 
     "title": "Nástěnka",
-    "chart": "graf složené equity",
     "performanceStatistics": "Výkon - statistiky",
     "lastTradesTable": {
       "title": "Poslední obchody",
@@ -113,7 +111,6 @@
     },
     "stockPickingLab": {
       "stock": "Data akce",
-      "chart": "Graf akce",
       "xLabel": "Datum",
       "yLabel": "Cena",
       "watchlistAdd": "Přidat na seznam sledovaných aktiv",
@@ -161,14 +158,14 @@
       }
     },
     "patternLab": { 
+      "assets": "Aktiva",
+      "patterns": "Patterny",
+      "type2search": "Hledejte psaním",
+      "pickDate": "Vyberte datum",
       "chart": {
         "title": "Graf",
         "from": "Od",
         "to": "Do",
-        "assets": "Aktiva",
-        "patterns": "Patterny",
-        "enterAsset": "Vložte aktivum",
-        "enterPattern": "Vložte pattern",
         "addChart": "Přidat graf",
         "patternsHistory": {
           "title": "Historie patternů",
