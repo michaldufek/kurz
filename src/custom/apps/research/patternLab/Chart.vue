@@ -38,16 +38,18 @@
                     :maxItem="maxItems"
                     :placeholder="$t('research.patternLab.type2search')"
                     @filter="getAssets"
-                    @selected="selectAsset">
+                    @selected="ddSelectAsset">
           </Dropdown>
-          <base-table :data="selectedAssets" :columns="['name']">
+          <base-table :data="selectedAssets" :columns="[ 'symbol', 'name' ]">
             <template slot="columns">
+              <th></th>
               <th></th>
             </template>  
             <template slot-scope="{row}">
-              <td style="font-size: smaller;">{{row.name}}</td>
-              <td class="td-actions text-right">
-                <base-button size="sm" icon @click="removeAsset(row.name)">
+              <a href="#" @click="selectAsset(row.symbol)"><td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
+              <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td></a>
+              <td class="td-actions text-right" style="border: none">
+                <base-button size="sm" icon @click="removeAsset(row.symbol)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
                   <i class="tim-icons icon-simple-remove"></i>
                 </base-button>
               </td>
@@ -101,6 +103,7 @@
       return {
         from: null,
         to: null,
+        selectedAsset: null,
         selectedAssets: [],
         assets: []
       }
@@ -132,13 +135,17 @@
     },
 
     methods: {
-      selectAsset(asset) {
-        if ('id' in asset) {
+      ddSelectAsset(asset) {
+        if ('id' in asset && !this.selectedAssets.map(sa => sa.symbol).includes(asset.symbol)) {
           this.selectedAssets.push(asset)
         }
       },
-      removeAsset(asset) {
-        this.selectedAssets.splice( this.selectedAssets.indexOf(asset), 1 );
+      selectAsset(assetSymbol) {
+        this.selectedAsset = assetSymbol
+        // to-do: disabledDates acc.to asset chosen (with notifications)
+      },
+      removeAsset(assetSymbol) {
+        this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(assetSymbol), 1);
       },
       getAssets(query) {
         // to-do: eliminate component's bug - redudant call for selected item
@@ -147,12 +154,15 @@
           .get(constants.urls.tickerPL + query)
           .then(response => {
             let i = 1
-            this.assets = response.data.results.map(result => { 
-              return {
-                id: i++, 
-                name: result.symbol + ' (' + result.name + ')' 
-              }
-            })
+            this.assets = response.data.results
+                          .filter(result => !this.selectedAssets.map(sa => sa.symbol).includes(result.symbol))
+                          .map(result => { 
+                            return {
+                              id: i++, 
+                              symbol: result.symbol,
+                              name: result.name
+                            }
+                          })
           })
           .catch(error => {
             // to-do: notify error
