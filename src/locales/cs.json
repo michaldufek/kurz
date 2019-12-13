@@ -216,8 +216,8 @@
     "lose": "Ztráta",
     "breakEven": "Bez ztráty",
     "settingsCleared": "Všechna nastavení smazána úspěšně.",
-    "fromChanged" : "Datum Od byl upraven podle rozsahu aktiva",
-    "toChanged" : "Datum Do byl upraven podle rozsahu aktiva",
+    "fromChanged" : "Datum 'Od' byl upraven podle rozsahu aktiva",
+    "toChanged" : "Datum 'Do' byl upraven podle rozsahu aktiva",
     "addChartNoAsset": "Musíte označit alespoň jedno aktivum",
     "addChartNoPattern": "Musíte zaškrtnout alespoň jeden pattern"
   },

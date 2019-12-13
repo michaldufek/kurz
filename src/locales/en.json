@@ -216,8 +216,8 @@
     "lose": "Lose",
     "breakEven": "Break even",
     "settingsCleared": "All settings cleared successfully.",
-    "fromChanged" : "From date was adjusted to asset range",
-    "toChanged" : "To date was adjusted to asset range",
+    "fromChanged" : "The 'From' date was adjusted to asset range",
+    "toChanged" : "The 'To' date was adjusted to asset range",
     "addChartNoAsset": "You must select at least one asset",
     "addChartNoPattern": "You must check at least one pattern"
   },

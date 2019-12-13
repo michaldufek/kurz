@@ -130,7 +130,7 @@
       return {
         from: null,
         to: null,
-        // disabledDates: null,
+        disabledDatesAsset: null,
         selectedAsset: null,
         selectedAssets: [],
         assets: [],
@@ -152,12 +152,14 @@
       },
       disabledDatesFrom() {
         return {
-          from: this.to // // to-do: set acc.to this.disabledDates also
+          from: this.disabledDatesAsset ? (this.to ? new Date(Math.min(this.to, this.disabledDatesAsset.from)) : this.disabledDatesAsset.from) : this.to,
+          to: this.disabledDatesAsset ? this.disabledDatesAsset.to : null
         }
       },
       disabledDatesTo() {
         return {
-          to: this.from // to-do: set acc.to this.disabledDates also
+          from: this.disabledDatesAsset ? this.disabledDatesAsset.from : null,
+          to: this.disabledDatesAsset ? (this.from ? new Date(Math.max(this.from, this.disabledDatesAsset.to)) : this.disabledDatesAsset.to) : this.from
         }
       },
       maxItems() {
@@ -182,38 +184,37 @@
         if (this.selectedAsset !== asset) {
           this.selectedAsset = asset
 
-          // axios
-          // .get(constants.urls.patternLab.chart + asset.id + '/' + this.timeframe)
-          // .then(response => {
-          //   this.disabledDates = {
-          //     from: new Date(Math.max(...Object.keys(response.data.Close))),
-          //     to: new Date(Math.min(...Object.keys(response.data.Close)))
-          //   }
-          // })
-          // .catch(error => {
-          //   console.log(error);
+          axios
+          .get(constants.urls.patternLab.chart + asset.id + '/' + this.timeframe)
+          .then(response => {
+            this.disabledDatesAsset = {
+              from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
+              to: new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
+            }
+          })
+          .catch(error => {
+            console.log(error);
             
-          //   if (error.message === constants.strings.networkError) {
-          //     this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
-          //   }
-          // })
-          // .finally(() => {
-          //   console.log(this.disabledDates);
-          //   if (this.from && this.from < this.disabledDates.to) {
-          //     this.from = this.disabledDates.to
-          //     this.$notify({
-          //       type: 'warning', 
-          //       message: this.$t('notifications.fromChanged') + '(' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ')'
-          //     })
-          //   }
-          //   if (this.to && this.to > this.disabledDates.from) {
-          //     this.to = this.disabledDates.from
-          //     this.$notify({
-          //       type: 'warning', 
-          //       message: this.$t('notifications.toChanged') + '(' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ')'
-          //     })
-          //   }
-          // })
+            if (error.message === constants.strings.networkError) {
+              this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+            }
+          })
+          .finally(() => {
+            if (this.from && (this.from < this.disabledDatesAsset.to || this.from > this.disabledDatesAsset.from)) {
+              this.from = this.disabledDatesAsset.to
+              this.$notify({
+                type: 'warning', 
+                message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+              })
+            }
+            if (this.to && (this.to > this.disabledDatesAsset.from || this.to < this.disabledDatesAsset.to)) {
+              this.to = this.disabledDatesAsset.from
+              this.$notify({
+                type: 'warning', 
+                message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+              })
+            }
+          })
         }
       },
       removeAsset(assetSymbol) {
@@ -221,6 +222,7 @@
 
         if (this.selectedAsset && this.selectedAsset.symbol === assetSymbol) {
           this.selectedAsset = null
+          this.disabledDatesAsset = null
         }
       },
       getAssets(query) {
@@ -320,27 +322,7 @@
         
         return data
       },
-    },
-    // watch: {
-    //   from(val) {
-    //     if (this.disabledDates && val < this.disabledDates.to) {
-    //       this.from = this.disabledDates.to
-    //       this.$notify({
-    //         type: 'warning', 
-    //         message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-    //       })
-    //     }
-    //   },
-    //   to(val) {
-    //     if (this.disabledDates && val > this.disabledDates.from) {
-    //       this.to = this.disabledDates.from
-    //       this.$notify({
-    //         type: 'warning', 
-    //         message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-    //       })
-    //     }
-    //   }
-    // }
+    }
   }  
 </script>
 <style>
