@@ -153,6 +153,7 @@
   
   import axios from '@/../node_modules/axios';
   import constants from '@/custom/assets/js/constants';
+  import helper from '@/custom/assets/js/helper';
   
 
   export default {
@@ -265,7 +266,7 @@
         this.error = false
 
         axios
-        .get(constants.urls.tickerSP.base + "?" + this.encodeQueryData(this.getQueryData()))
+        .get(constants.urls.tickerSP.base + "?" + helper.encodeQueryData(this.getQueryData()))
         .then(response => {
           this.nrOfPages = Math.ceil(response.data.count / constants.maxRows)
 
@@ -335,16 +336,6 @@
         }
         
         return data
-      },
-
-      encodeQueryData(data) {
-        const ret = [];
-        for (let d in data) {
-          if (data[d] !== null && data[d] !== undefined) {
-            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
-          }
-        }
-        return ret.join('&');
       },
 
       notifyAudio(audioEl, type, msg) {

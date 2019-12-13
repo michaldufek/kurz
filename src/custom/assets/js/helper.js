@@ -128,6 +128,16 @@ export default {
         return val instanceof Number || typeof val === 'number'
     },
 
+    encodeQueryData(data) {
+        const ret = [];
+        for (let d in data) {
+            if (data[d] !== null && data[d] !== undefined) {
+                ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+            }
+        }
+        return ret.join('&');
+    },
+
     // global filters
     roundToFixed(value) {
         // rounds to 2 mantissa places
