@@ -1,5 +1,6 @@
 <template>
   <div>
+    <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div class="row">
       <div class="col-lg-2 col-md-12 container">
         <!-- date pickers -->
@@ -49,8 +50,12 @@
               <th></th>
             </template>  
             <template slot-scope="{row}">
-              <a href="#" @click="selectAsset(row.symbol)"><td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
-              <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td></a>
+              <a href="#" @click="selectAsset(row)">
+                <div :class="{ 'selectedAsset': selectedAsset && selectedAsset.symbol === row.symbol }">
+                  <td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
+                  <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td>
+                </div>
+              </a>
               <td class="td-actions text-right" style="border: none">
                 <base-button size="sm" icon @click="removeAsset(row.symbol)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
                   <i class="tim-icons icon-simple-remove"></i>
@@ -71,32 +76,29 @@
                     @filter="getPatterns"
                     @selected="ddSelectPattern">
           </Dropdown>
-          <base-table :data="selectedPatterns" :columns="[ 'name' ]">
-            <template slot="columns">
-              <th></th>
-            </template>  
-            <template slot-scope="{row}">
-              <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">
-                <base-checkbox class="chb">{{row.name}}</base-checkbox>
-                 <!-- v-model="index" -->
-              </td>
-            </template>    
-          </base-table>
+          <ul style="list-style-type: none; text-align: left; margin-top: 15px;">
+            <li v-for="selectedPattern in selectedPatterns">   
+              <input type="checkbox" :id="selectedPattern.id" :value="selectedPattern.id" v-model="checkedPatterns">
+              <label :for="selectedPattern.id" style="margin-left: 10px">{{ selectedPattern.name }}</label>
+            </li>
+          </ul> 
         </card>
 
-        <base-button native-type="submit" type="secondary" style="width: 100%">{{ $t('research.patternLab.chart.addChart') }}</base-button>
+        <base-button native-type="submit" type="secondary" @click="addChart" style="width: 100%">{{ $t('research.patternLab.chart.addChart') }}</base-button>
       </div>
 
       <div class="col-lg-7 col-md-12">
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
-                     :apiUrls="chartUrl">
+                     :apiUrls="chartUrl"
+                     :key="chartKey">
         </fancy-chart>
       </div>
 
       <div class="col-lg-3 col-md-12">
         <fancy-table :title="$t('research.patternLab.chart.patternsHistory.title')"
                      :apiUrls="patternsHistoryUrl"
-                     :columns="$t('research.patternLab.chart.patternsHistory.columns')">
+                     :columns="$t('research.patternLab.chart.patternsHistory.columns')"
+                     :key="tableKey">
         </fancy-table>
       </div>
     </div>
@@ -112,6 +114,7 @@
 
   import axios from '@/../node_modules/axios';
   import constants from '@/custom/assets/js/constants';
+  import helper from '@/custom/assets/js/helper';
 
 
   export default {
@@ -127,12 +130,19 @@
       return {
         from: null,
         to: null,
+        // disabledDates: null,
         selectedAsset: null,
         selectedAssets: [],
         assets: [],
-        checkedPatterns: [],
         selectedPatterns: [],
-        patterns: []
+        checkedPatterns: [],
+        patterns: [],
+        checkedNames: [],
+        timeframe: 1,
+        chartUrl: [],
+        patternsHistoryUrl: [],
+        chartKey: 0,
+        tableKey: 0
       }
     },
 
@@ -142,22 +152,16 @@
       },
       disabledDatesFrom() {
         return {
-          from: this.to
+          from: this.to // // to-do: set acc.to this.disabledDates also
         }
       },
       disabledDatesTo() {
         return {
-          to: this.from
+          to: this.from // to-do: set acc.to this.disabledDates also
         }
       },
       maxItems() {
         return constants.maxRows
-      },
-      chartUrl() {
-        return [ constants.urls.chart["MF Report"] ]
-      },
-      patternsHistoryUrl() {
-        return [ "https://dev.analyticalplatform.com/api/pl/Backtests?patterns=1&symbols=MSFT&timeframe=1" ]
       }
     },
 
@@ -173,18 +177,57 @@
           selectedItems.push(item)
         }
       },
-      selectAsset(assetSymbol) {
-        this.selectedAsset = assetSymbol
-        // to-do: disabledDates acc.to asset chosen (with notifications)
+
+      selectAsset(asset) {
+        if (this.selectedAsset !== asset) {
+          this.selectedAsset = asset
+
+          // axios
+          // .get(constants.urls.patternLab.chart + asset.id + '/' + this.timeframe)
+          // .then(response => {
+          //   this.disabledDates = {
+          //     from: new Date(Math.max(...Object.keys(response.data.Close))),
+          //     to: new Date(Math.min(...Object.keys(response.data.Close)))
+          //   }
+          // })
+          // .catch(error => {
+          //   console.log(error);
+            
+          //   if (error.message === constants.strings.networkError) {
+          //     this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+          //   }
+          // })
+          // .finally(() => {
+          //   console.log(this.disabledDates);
+          //   if (this.from && this.from < this.disabledDates.to) {
+          //     this.from = this.disabledDates.to
+          //     this.$notify({
+          //       type: 'warning', 
+          //       message: this.$t('notifications.fromChanged') + '(' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ')'
+          //     })
+          //   }
+          //   if (this.to && this.to > this.disabledDates.from) {
+          //     this.to = this.disabledDates.from
+          //     this.$notify({
+          //       type: 'warning', 
+          //       message: this.$t('notifications.toChanged') + '(' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ')'
+          //     })
+          //   }
+          // })
+        }
       },
       removeAsset(assetSymbol) {
         this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(assetSymbol), 1);
+
+        if (this.selectedAsset && this.selectedAsset.symbol === assetSymbol) {
+          this.selectedAsset = null
+        }
       },
       getAssets(query) {
         // to-do: eliminate component's bug - redudant call for selected item
         if (query) {
           axios
-          .get(constants.urls.tickersPL.asset + query)
+          .get(constants.urls.patternLab.asset + query)
           .then(response => {
             let i = 1
             this.assets = response.data.results
@@ -198,19 +241,23 @@
                           })
           })
           .catch(error => {
-            // to-do: notify error
+            console.log(error);
+            
+            if (error.message === constants.strings.networkError) {
+              this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+            }
           })
           .finally(() => {
           })
         }
       },
+
       getPatterns(query) {
         // to-do: eliminate component's bug - redudant call for selected item        
         if (query) {
           axios
-          .get(constants.urls.tickersPL.pattern + query)
+          .get(constants.urls.patternLab.pattern + query)
           .then(response => {
-            debugger
             let i = 1
             this.patterns = response.data
                           .filter(result => !this.selectedPatterns.map(sp => sp.name).includes(result.name))
@@ -222,13 +269,78 @@
                           })
           })
           .catch(error => {
-            // to-do: notify error
+            console.log(error);
+            
+            if (error.message === constants.strings.networkError) {
+              this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+            }
           })
           .finally(() => {
           })
         }
-      }
-    }
+      },
+
+      notifyAudio(audioEl, type, msg) {
+        document.getElementById(audioEl).play();
+
+        this.$notify({
+          type: type, 
+          message: msg
+        })
+      },
+
+      addChart() {
+        if (!this.selectedAsset) {
+          this.$notify({
+            type: 'warning', 
+            message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+          })    
+          return
+        }
+        this.chartUrl = [ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.timeframe ]
+        this.chartKey += 1 // force reload of fancy-chart component
+
+        if (this.checkedPatterns.length === 0) {
+          this.$notify({
+            type: 'warning', 
+            message: this.$t('notifications.addChartNoPattern') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+          })    
+          return
+        }
+        this.patternsHistoryUrl = [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]
+        this.tableKey += 1 // force reload of fancy-chart component
+      },
+
+      getQueryData() {
+        let data = {}
+
+        data['patterns'] = this.checkedPatterns.join(',')
+        data['symbols'] = this.selectedAsset.symbol // or can be more selected ?
+        data['timeframe'] = this.timeframe
+        
+        return data
+      },
+    },
+    // watch: {
+    //   from(val) {
+    //     if (this.disabledDates && val < this.disabledDates.to) {
+    //       this.from = this.disabledDates.to
+    //       this.$notify({
+    //         type: 'warning', 
+    //         message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+    //       })
+    //     }
+    //   },
+    //   to(val) {
+    //     if (this.disabledDates && val > this.disabledDates.from) {
+    //       this.to = this.disabledDates.from
+    //       this.$notify({
+    //         type: 'warning', 
+    //         message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+    //       })
+    //     }
+    //   }
+    // }
   }  
 </script>
 <style>
@@ -284,5 +396,10 @@
 
   .vdp-datepicker__calendar header .prev:not(.disabled):hover, .vdp-datepicker__calendar header .next:not(.disabled):hover, .vdp-datepicker__calendar header .up:not(.disabled):hover {
     background: darkgray !important
+  }
+
+  .selectedAsset {
+    background-color: #1d8cf8;
+    border-radius: 0.4285rem
   }
 </style>

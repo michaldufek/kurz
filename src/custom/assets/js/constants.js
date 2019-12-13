@@ -31,10 +31,12 @@ export default {
              base : baseUrl + SPPartUrl + tickerPartUrl,
              stock: baseUrl + SPPartUrl + tickerPartUrl + "OHLC?ticker="
         },
-        tickersPL: {
+        patternLab: {
             asset: baseUrl + PLPartUrl + tickerPartUrl + searchPartUrl,
-            pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl
-        },        
+            pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl,
+            chart: baseUrl + PLPartUrl + "/HistoryData/",
+            patternsHistory: baseUrl + PLPartUrl + "/Backtests"
+        },
 
         auth: baseUrl + "/rest-auth",
 

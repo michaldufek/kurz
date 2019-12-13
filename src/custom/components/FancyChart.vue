@@ -161,8 +161,10 @@ export default {
     loadData() {
       let finishedLoadings = 0
       let errorLoadings = 0
-      this.loading = true
-      this.error = false
+      if (this.apiUrls.length > 0) {
+        this.loading = true
+        this.error = false
+      }
 
       this.apiUrls.forEach(apiUrl => {
         axios
