@@ -2,6 +2,8 @@ const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin :
 const SPPartUrl = "/api/sp"
 const PLPartUrl = "/api/pl"
 const tickerPartUrl = "/Ticker"
+const patternPartUrl = "/Pattern"
+const searchPartUrl = "?search="
 const reportPartUrl = "/api/xreport"
 const statsPartUrl = reportPartUrl + "/last_report"
 const chartPartUrl = reportPartUrl + "/compute"
@@ -29,7 +31,10 @@ export default {
              base : baseUrl + SPPartUrl + tickerPartUrl,
              stock: baseUrl + SPPartUrl + tickerPartUrl + "OHLC?ticker="
         },
-        tickerPL: baseUrl + PLPartUrl + tickerPartUrl + "?search=",
+        tickersPL: {
+            asset: baseUrl + PLPartUrl + tickerPartUrl + searchPartUrl,
+            pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl
+        },        
 
         auth: baseUrl + "/rest-auth",
 

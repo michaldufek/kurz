@@ -2,6 +2,7 @@
   <div>
     <div class="row">
       <div class="col-lg-2 col-md-12 container">
+        <!-- date pickers -->
         <div class="col-xs-3">
           <div class="controls">
             <table class="table tablesorter">
@@ -30,6 +31,8 @@
             </table>
           </div>
         </div>
+
+        <!-- assets -->
         <card style="text-align: center;">
           <label>{{ $t('research.patternLab.assets') }}</label>
           <Dropdown :options="assets"
@@ -56,10 +59,31 @@
             </template>    
           </base-table>
         </card>
+
+        <!-- patterns -->
         <card style="text-align: center;">
-          <base-input :label="$t('research.patternLab.patterns')" type="search" :placeholder="$t('research.patternLab.type2search')">
-          </base-input>
+          <label>{{ $t('research.patternLab.patterns') }}</label>
+          <Dropdown :options="patterns"
+                    :disabled="false"
+                    name="ddPatterns"
+                    :maxItem="maxItems"
+                    :placeholder="$t('research.patternLab.type2search')"
+                    @filter="getPatterns"
+                    @selected="ddSelectPattern">
+          </Dropdown>
+          <base-table :data="selectedPatterns" :columns="[ 'name' ]">
+            <template slot="columns">
+              <th></th>
+            </template>  
+            <template slot-scope="{row}">
+              <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">
+                <base-checkbox class="chb">{{row.name}}</base-checkbox>
+                 <!-- v-model="index" -->
+              </td>
+            </template>    
+          </base-table>
         </card>
+
         <base-button native-type="submit" type="secondary" style="width: 100%">{{ $t('research.patternLab.chart.addChart') }}</base-button>
       </div>
 
@@ -105,7 +129,10 @@
         to: null,
         selectedAsset: null,
         selectedAssets: [],
-        assets: []
+        assets: [],
+        checkedPatterns: [],
+        selectedPatterns: [],
+        patterns: []
       }
     },
 
@@ -136,8 +163,14 @@
 
     methods: {
       ddSelectAsset(asset) {
-        if ('id' in asset && !this.selectedAssets.map(sa => sa.symbol).includes(asset.symbol)) {
-          this.selectedAssets.push(asset)
+        this.ddSelect(asset, asset => asset.symbol, this.selectedAssets)
+      },
+      ddSelectPattern(pattern) {
+        this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns)
+      },
+      ddSelect(item, itemKeySelector, selectedItems) {
+        if ('id' in item && !selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {
+          selectedItems.push(item)
         }
       },
       selectAsset(assetSymbol) {
@@ -151,7 +184,7 @@
         // to-do: eliminate component's bug - redudant call for selected item
         if (query) {
           axios
-          .get(constants.urls.tickerPL + query)
+          .get(constants.urls.tickersPL.asset + query)
           .then(response => {
             let i = 1
             this.assets = response.data.results
@@ -160,6 +193,30 @@
                             return {
                               id: i++, 
                               symbol: result.symbol,
+                              name: result.name
+                            }
+                          })
+          })
+          .catch(error => {
+            // to-do: notify error
+          })
+          .finally(() => {
+          })
+        }
+      },
+      getPatterns(query) {
+        // to-do: eliminate component's bug - redudant call for selected item        
+        if (query) {
+          axios
+          .get(constants.urls.tickersPL.pattern + query)
+          .then(response => {
+            debugger
+            let i = 1
+            this.patterns = response.data
+                          .filter(result => !this.selectedPatterns.map(sp => sp.name).includes(result.name))
+                          .map(result => { 
+                            return {
+                              id: i++, 
                               name: result.name
                             }
                           })
