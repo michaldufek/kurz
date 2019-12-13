@@ -104,8 +104,10 @@ export default {
     loadData() {
       this.finishedLoadings = 0
       let errorLoadings = 0
-      this.loading = true
-      this.error = false
+      if (this.apiUrls.length > 0) {
+        this.loading = true
+        this.error = false
+      }
 
       const loadRoutine = () => new Promise ((resolve, reject) => {           
         let responses = []
