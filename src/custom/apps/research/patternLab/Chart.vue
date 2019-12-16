@@ -90,6 +90,7 @@
       <div class="col-lg-7 col-md-12">
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl"
+                     :dataFields="[ 'Close', 'Volume' ]"
                      :key="chartKey">
         </fancy-chart>
       </div>
