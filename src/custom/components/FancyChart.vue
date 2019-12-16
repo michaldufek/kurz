@@ -17,7 +17,8 @@
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
-                    :extra-options="extraOptions">
+                    :extra-options="extraOptions"
+                    :key="chartKey">
         </line-chart>
       </section>
     </div>
@@ -112,7 +113,8 @@ export default {
         labels: []      
       },
       chartMins: [],
-      chartMaxes: []
+      chartMaxes: [],
+      chartKey: 0
     }
   },
 
@@ -298,15 +300,17 @@ export default {
           allData.push(aggValue)
         })
 
-        if (Math.min(allData) < this.chartMins[datasetNr]) {
-          this.chartMins[datasetNr] = Math.min(allData)
+        if (Math.min(...allData) < this.chartMins[datasetNr]) {
+          this.chartMins[datasetNr] = Math.min(...allData)
+        }        
+        if (Math.max(...allData) > this.chartMaxes[datasetNr]) {
+          this.chartMaxes[datasetNr] = Math.max(...allData)
         }
-        if (Math.max(allData) > this.chartMaxes[datasetNr]) {
-          this.chartMaxes[datasetNr] = Math.max(allData)
-        }
+        // this.chartKey++ // force reload of chart because mins and maxes changed so extraOptions needs recomputation
+        // to-do: fix extraOptions recomputation
 
         let datasetSetting = defaultDatasets  
-        let color = Object.values(config.colors)[datasetNr]      
+        let color = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
         datasetSetting.borderColor = color
         datasetSetting.pointBackgroundColor = color
         datasetSetting.pointHoverBackgroundColor = color
