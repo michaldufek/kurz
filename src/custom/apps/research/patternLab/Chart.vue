@@ -91,6 +91,7 @@
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl"
                      :dataFields="[ 'Close', 'Volume' ]"
+                     :range="{ from: this.from, to: this.to }"
                      :key="chartKey">
         </fancy-chart>
       </div>
