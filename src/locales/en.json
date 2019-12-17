@@ -167,6 +167,16 @@
         "from": "From",
         "to": "To",
         "addChart": "Add chart",
+        "chartTypes": [
+          "OHLC bar",
+          "Candlestick",
+          "Line"
+        ],
+        "timeframes": [
+          "Daily",
+          "Weekly",
+          "Monthly"
+        ],
         "patternsHistory": {
           "title": "Patterns history",
           "columns": [
