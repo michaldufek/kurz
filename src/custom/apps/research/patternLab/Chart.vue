@@ -124,13 +124,14 @@
           </base-dropdown>
         </div>
 
-        <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
+        <!-- <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: this.from, to: this.to }"
                      style="top: -45px; height: 830px"
                      :key="chartKey">
-        </fancy-chart>
+        </fancy-chart> -->
+        <ohlc-chart :apiUrl="chartUrl"></ohlc-chart>
       </div>
 
       <!-- patterns history -->
@@ -148,7 +149,8 @@
   import Datepicker from 'vuejs-datepicker';
   import Dropdown from 'vue-simple-search-dropdown';
 
-  import FancyChart from '@/custom/components/FancyChart';
+  // import FancyChart from '@/custom/components/FancyChart';
+  import OhlcChart from '@/custom/components/OhlcChart';
   import FancyTable from '@/custom/components/FancyTable';  
   import { BaseTable } from '@/components'
 
@@ -161,7 +163,8 @@
     components: {  
       Datepicker,   
       Dropdown,
-      FancyChart,
+      // FancyChart,
+      OhlcChart,
       FancyTable,
       BaseTable   
     },
@@ -179,7 +182,7 @@
         patterns: [],
         checkedNames: [],
         timeframe: 1,
-        chartUrl: [],
+        chartUrl: null, //[],
         patternsHistoryUrl: [],
         chartType: this.$t('research.patternLab.chart.chartTypes')[0],
         timeframe: this.$t('research.patternLab.chart.timeframes')[0],
@@ -360,7 +363,7 @@
           return false
         }
 
-        this.chartUrl = [ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery() ]
+        this.chartUrl = /*[*/ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery() //]
         this.chartKey += 1 // force reload of fancy-chart component
         return true
       },
