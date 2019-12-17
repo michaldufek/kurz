@@ -24,7 +24,7 @@
                      title-classes="btn btn-secondary" 
                      :title="currenciesTitle">
         <ul style="list-style-type: none;">
-          <li v-for="currency in currencies">            
+          <li v-for="currency in currencies.filter(el => el !== selectedCurrency)">            
             <a class="dropdown-item" 
                @click="selectCurrency(currency)" 
                href="#" 
@@ -47,7 +47,7 @@
                      title-classes="btn btn-secondary" 
                      :title="exchangesTitle">
         <ul style="list-style-type: none;">
-          <li v-for="exchange in exchanges">
+          <li v-for="exchange in exchanges.filter(el => el !== selectedExchange)">
             <a class="dropdown-item" 
                @click="selectExchange(exchange)" 
                href="#"
@@ -74,7 +74,7 @@
                      title-classes="btn btn-secondary" 
                      :title="sectorsTitle">
         <ul style="list-style-type: none;">
-          <li v-for="sector in sectors">
+          <li v-for="sector in sectors.filter(el => el !== selectedSector)">
             <a class="dropdown-item" 
                @click="selectSector(sector)" 
                href="#"

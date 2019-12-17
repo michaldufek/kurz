@@ -167,6 +167,16 @@
         "from": "Od",
         "to": "Do",
         "addChart": "Přidat graf",
+        "chartTypes": [
+          "OHLC sloupce",
+          "Svíčkový",
+          "Čárový"
+        ],
+        "timeframes": [
+          "Denní",
+          "Týdenní",
+          "Měsíční"
+        ],
         "patternsHistory": {
           "title": "Historie patternů",
           "columns": [

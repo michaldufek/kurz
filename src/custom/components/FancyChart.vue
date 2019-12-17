@@ -8,7 +8,7 @@
     <br/>
     <div class="chart-area" style="height: 425px">
       <section v-if="isError" style="text-align: center">
-        <p>{{ $t('dataError') }}</p>
+        <p style="padding-top: 50px">{{ $t('dataError') }}</p>
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
@@ -75,6 +75,20 @@ export default {
       type: Array,
       default: () => [],
       description: "URLs to API data sources"
+    },
+    dataFields: {
+      type: Array,
+      default: () => {
+        return [ 'Close' ]
+      },
+      description: "Response data fields to use for distinctive lines in chart"      
+    },
+    range: {
+      type: Object,
+      default: () => {
+        return {}
+      },
+      description: "Date range of values displayed"
     }
   },
 
@@ -87,7 +101,7 @@ export default {
 
       // chart
       bigLineChart: {
-          gradientColors: config.colors.primaryGradient,
+          gradientColors: config.colors.gradients.primaryGradient,
           gradientStops: [1, 0.4, 0],
       },
       chartData: {
@@ -97,8 +111,8 @@ export default {
         }],
         labels: []      
       },
-      chartMin: Number.MAX_VALUE,
-      chartMax: 0
+      chartMins: [],
+      chartMaxes: []
     }
   },
 
@@ -108,8 +122,14 @@ export default {
     },
     extraOptions() {
       let eOp = chartConfigs.purpleChartOptions
-      eOp.scales.yAxes[0].ticks.suggestedMin = this.chartMin
-      eOp.scales.yAxes[0].ticks.suggestedMax = this.chartMax
+
+      let dfNr = 0
+      this.dataFields.forEach(field => {        
+        eOp.scales.yAxes[dfNr].id = field
+        eOp.scales.yAxes[dfNr].position = dfNr === 0 ? 'left' : 'right'
+        eOp.scales.yAxes[dfNr].ticks.suggestedMin = this.chartMins[dfNr]
+        eOp.scales.yAxes[dfNr].ticks.suggestedMax = this.chartMaxes[dfNr]
+      })
 
       eOp.scales.xAxes[0].scaleLabel = {
         display: this.axesLabels.length > 0,
@@ -171,11 +191,15 @@ export default {
         .get(apiUrl)
         .then(response => {
           if (!finishedLoadings) {
-            this.chartData = {
-              datasets: [{
+            let datasets = []
+            this.dataFields.forEach(_ => datasets.push({
                 ...defaultDatasets,
                 data: []
-              }],
+              })
+            )
+
+            this.chartData = {
+              datasets: datasets,
               labels: []
             } 
           }
@@ -184,11 +208,24 @@ export default {
             // data in ticker symbol format
             let times = []
             let equities = []
+            let firstTime = true
 
-            for (const [key, value] of Object.entries(response.data.Close)) { // to-do: use (only) Close ?
-              times.push(Number(key))
-              equities.push(value)
-            }
+            this.dataFields.forEach(field => {
+              let fieldEquities = []
+
+              if (field in response.data) {
+                for (const [key, value] of Object.entries(response.data[field])) {
+                  if (firstTime) {
+                    // times are same for all price fields
+                    times.push(Number(key))
+                  }
+                  fieldEquities.push(value)
+                }
+              }
+
+              equities.push(fieldEquities)
+              firstTime = false
+            })            
 
             var data = {
               time: times,
@@ -197,7 +234,12 @@ export default {
               report_timestamp: helper.formatDateTime(times[times.length - 1])
             }
           } else {
-            data = response.data            
+            data = {
+              time: response.data.time,
+              equity: [ response.data.equity ],
+              WARNING: response.data.WARNING,
+              report_timestamp: response.data.report_timestamp
+            }            
           }
 
           this.createChartData(data)
@@ -234,30 +276,57 @@ export default {
     },
 
     createChartData(data) {
-      // add new dates and sort it
-      let allLabels = this.chartData.labels.concat(helper.formatDateTimes(data.time)).sort()
-      let allData = []
-      // aggregate values for all dates
-      allLabels.forEach(label => {
-        let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[0].data)
-                        + this.nearestValue(label, helper.formatDateTimes(data.time), data.equity)
+      let datasets = []
+      let allLabels = []
+      let datasetNr = 0
+      
+      data.equity.forEach(equity => {
+        // add new dates and sort it
+        allLabels = this.chartData.labels.concat(
+                      helper.formatDateTimes(
+                        data.time.filter(
+                          t => (('from' in this.range && t >= this.range.from) || (!('from' in this.range)))
+                               && (('to' in this.range && this.range.to && t <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
+                        )
+                      )
+                    )
+        let allData = []
+        // aggregate values for all dates
+        allLabels.forEach(label => {
+          let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[datasetNr].data)
+                          + this.nearestValue(label, helper.formatDateTimes(data.time), equity)
 
-        // add to final data array
-        allData.push(aggValue)
-      })
+          // add to final data array
+          allData.push(aggValue)
+        })
 
-      if (Math.min(allData) < this.chartMin) {
-        this.chartMin = Math.min(allData)
-      }
-      if (Math.max(allData) > this.chartMax) {
-        this.chartMax = Math.max(allData)
-      }
+        if (Math.min(...allData) < this.chartMins[datasetNr]) {
+          this.chartMins[datasetNr] = Math.min(...allData)
+        }        
+        if (Math.max(...allData) > this.chartMaxes[datasetNr]) {
+          this.chartMaxes[datasetNr] = Math.max(...allData)
+        }
+        // to-do: fix extraOptions recomputation
 
+        let datasetSetting = defaultDatasets  
+        let color = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
+        datasetSetting.borderColor = color
+        datasetSetting.pointBackgroundColor = color
+        datasetSetting.pointHoverBackgroundColor = color
+        
+        let dataset = {
+          ...datasetSetting,
+          data: allData,
+        }
+        if (allData.length > 0 && this.dataFields.length > 1) {
+          dataset.label = this.dataFields[datasetNr++]
+        } 
+
+        datasets.push(dataset)  
+      })    
+      
       this.chartData = {
-        datasets: [{
-          ...defaultDatasets,
-          data: allData
-        }],
+        datasets: datasets,
         labels: allLabels
       }       
     },
@@ -273,6 +342,11 @@ export default {
   },
 
   mounted() {
+    this.dataFields.forEach(_ => {
+      this.chartMins.push(Number.MAX_VALUE)
+      this.chartMaxes.push(0)
+    })    
+
     this.initData();
   }
 };

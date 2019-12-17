@@ -19,8 +19,7 @@
                     {{strategy[0]}}
                   </td>
                   <td style="border-top: 0px;">
-                    <base-button v-if="enableLive" type="secondary" style="float:right" fill>{{$t('research.portfolioManager.live')}}</base-button>
-                    <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
+                    <base-button v-if="enableLive" type="secondary" style="float:right; margin-left: 10px" fill>{{$t('research.portfolioManager.live')}}</base-button>
                     <base-button v-if="enableStore" type="secondary" style="float:right;" fill>{{$t('research.portfolioManager.store')}}</base-button>        
                   </td>
                 <!-- </slot> -->

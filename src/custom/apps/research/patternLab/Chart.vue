@@ -84,16 +84,55 @@
           </ul> 
         </card>
 
+        <!-- Add chart button -->
         <base-button native-type="submit" type="secondary" @click="addChart" style="width: 100%">{{ $t('research.patternLab.chart.addChart') }}</base-button>
       </div>
 
+      <!-- chart -->
       <div class="col-lg-7 col-md-12">
+        <!-- chart settings -->
+        <div style="position: relative; left: 10px; top: 10px; z-index: 1">
+          <base-dropdown class="dd" 
+                         menu-classes="dropdown-black" 
+                         title-classes="btn btn-secondary"
+                         :title="chartType"
+                         style="width: 20%">
+            <ul style="list-style-type: none;">
+              <li v-for="chartType in $t('research.patternLab.chart.chartTypes').filter(el => el !== chartType)">            
+                <a class="dropdown-item" 
+                   @click="selectChartType(chartType)" 
+                   href="#">
+                  {{ chartType }}
+                </a>
+              </li>
+            </ul>
+          </base-dropdown>
+          <base-dropdown class="dd" 
+                         menu-classes="dropdown-black" 
+                         title-classes="btn btn-secondary"
+                         :title="timeframe">
+            <ul style="list-style-type: none;">
+              <li v-for="timeframe in $t('research.patternLab.chart.timeframes').filter(el => el !== timeframe)">            
+                <a class="dropdown-item" 
+                   @click="selectTimeframe(timeframe)" 
+                   href="#">
+                  {{ timeframe }}
+                </a>
+              </li>
+            </ul>
+          </base-dropdown>
+        </div>
+
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl"
+                     :dataFields="[ 'Close', 'Volume' ]"
+                     :range="{ from: this.from, to: this.to }"
+                     style="top: -45px; height: 830px"
                      :key="chartKey">
         </fancy-chart>
       </div>
 
+      <!-- patterns history -->
       <div class="col-lg-3 col-md-12">
         <fancy-table :title="$t('research.patternLab.chart.patternsHistory.title')"
                      :apiUrls="patternsHistoryUrl"
@@ -141,6 +180,8 @@
         timeframe: 1,
         chartUrl: [],
         patternsHistoryUrl: [],
+        chartType: this.$t('research.patternLab.chart.chartTypes')[0],
+        timeframe: this.$t('research.patternLab.chart.timeframes')[0],
         chartKey: 0,
         tableKey: 0
       }
@@ -185,7 +226,7 @@
           this.selectedAsset = asset
 
           axios
-          .get(constants.urls.patternLab.chart + asset.id + '/' + this.timeframe)
+          .get(constants.urls.patternLab.chart + asset.id + '/' + this.getTimeframeQuery()) // to-do: cache this result !
           .then(response => {
             this.disabledDatesAsset = {
               from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
@@ -292,15 +333,9 @@
       },
 
       addChart() {
-        if (!this.selectedAsset) {
-          this.$notify({
-            type: 'warning', 
-            message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-          })    
+        if (!this.loadChart()) {
           return
         }
-        this.chartUrl = [ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.timeframe ]
-        this.chartKey += 1 // force reload of fancy-chart component
 
         if (this.checkedPatterns.length === 0) {
           this.$notify({
@@ -309,16 +344,44 @@
           })    
           return
         }
+
         this.patternsHistoryUrl = [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]
-        this.tableKey += 1 // force reload of fancy-chart component
+        this.tableKey += 1 // force reload of fancy-table component
+      },
+      loadChart(notify=true) {
+        if (!this.selectedAsset) {
+          if (notify) {
+            this.$notify({
+              type: 'warning', 
+              message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+            })    
+          }
+          return false
+        }
+
+        this.chartUrl = [ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery() ]
+        this.chartKey += 1 // force reload of fancy-chart component
+        return true
       },
 
+      selectChartType(chartType) {
+        this.chartType = chartType
+        this.loadChart(false)
+      },
+      selectTimeframe(timeframe) {
+        this.timeframe = timeframe
+        this.loadChart(false)
+      },
+
+      getTimeframeQuery() {
+        return this.$t('research.patternLab.chart.timeframes').indexOf(this.timeframe) + 1
+      },
       getQueryData() {
         let data = {}
 
         data['patterns'] = this.checkedPatterns.join(',')
         data['symbols'] = this.selectedAsset.symbol // or can be more selected ?
-        data['timeframe'] = this.timeframe
+        data['timeframe'] = this.getTimeframeQuery()
         
         return data
       },
