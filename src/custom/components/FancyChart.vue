@@ -17,8 +17,7 @@
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
-                    :extra-options="extraOptions"
-                    :key="chartKey">
+                    :extra-options="extraOptions">
         </line-chart>
       </section>
     </div>
@@ -113,8 +112,7 @@ export default {
         labels: []      
       },
       chartMins: [],
-      chartMaxes: [],
-      chartKey: 0
+      chartMaxes: []
     }
   },
 
@@ -288,7 +286,7 @@ export default {
                       helper.formatDateTimes(
                         data.time.filter(
                           t => (('from' in this.range && t >= this.range.from) || (!('from' in this.range)))
-                               && (('to' in this.range && t <= this.range.to) || (!('to' in this.range)))
+                               && (('to' in this.range && this.range.to && t <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
                         )
                       )
                     )
@@ -308,7 +306,6 @@ export default {
         if (Math.max(...allData) > this.chartMaxes[datasetNr]) {
           this.chartMaxes[datasetNr] = Math.max(...allData)
         }
-        // this.chartKey++ // force reload of chart because mins and maxes changed so extraOptions needs recomputation
         // to-do: fix extraOptions recomputation
 
         let datasetSetting = defaultDatasets  
@@ -317,12 +314,16 @@ export default {
         datasetSetting.pointBackgroundColor = color
         datasetSetting.pointHoverBackgroundColor = color
         
-        datasets.push({
+        let dataset = {
           ...datasetSetting,
           data: allData,
-          label: this.dataFields.length > 1 ? this.dataFields[datasetNr++] : null,
-        })
-      })      
+        }
+        if (allData.length > 0 && this.dataFields.length > 1) {
+          dataset.label = this.dataFields[datasetNr++]
+        } 
+
+        datasets.push(dataset)  
+      })    
       
       this.chartData = {
         datasets: datasets,

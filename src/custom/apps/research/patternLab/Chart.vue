@@ -128,7 +128,7 @@
                      :apiUrls="chartUrl"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: this.from, to: this.to }"
-                     style="top: -45px;"
+                     style="top: -45px; height: 830px"
                      :key="chartKey">
         </fancy-chart>
       </div>
@@ -227,7 +227,7 @@
           this.selectedAsset = asset
 
           axios
-          .get(constants.urls.patternLab.chart + asset.id + '/' + this.timeframe)
+          .get(constants.urls.patternLab.chart + asset.id + '/' + this.getTimeframeQuery()) // to-do: cache this result !
           .then(response => {
             this.disabledDatesAsset = {
               from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
