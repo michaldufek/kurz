@@ -8,7 +8,7 @@
     <br/>
     <div class="chart-area" style="height: 425px">
       <section v-if="isError" style="text-align: center">
-        <p>{{ $t('dataError') }}</p>
+        <p style="padding-top: 50px">{{ $t('dataError') }}</p>
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
@@ -215,12 +215,14 @@ export default {
             this.dataFields.forEach(field => {
               let fieldEquities = []
 
-              for (const [key, value] of Object.entries(response.data[field])) {
-                if (firstTime) {
-                  // times are same for all price fields
-                  times.push(Number(key))
+              if (field in response.data) {
+                for (const [key, value] of Object.entries(response.data[field])) {
+                  if (firstTime) {
+                    // times are same for all price fields
+                    times.push(Number(key))
+                  }
+                  fieldEquities.push(value)
                 }
-                fieldEquities.push(value)
               }
 
               equities.push(fieldEquities)
