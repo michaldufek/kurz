@@ -17,7 +17,9 @@
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
-                    :extra-options="extraOptions">
+                    :extra-options="extraOptions"
+                    :height="null"
+                    :width="null">
         </line-chart>
       </section>
     </div>

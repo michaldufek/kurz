@@ -124,14 +124,18 @@
           </base-dropdown>
         </div>
 
-        <!-- <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
-                     :apiUrls="chartUrl"
+        <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
+                     :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
+                     :apiUrls="lineChartUrls"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: this.from, to: this.to }"
-                     style="top: -45px; height: 830px"
-                     :key="chartKey">
-        </fancy-chart> -->
-        <ohlc-chart :apiUrl="chartUrl" style="top: -45px; height: 830px" :key="chartKey" />
+                     style="top: -45px;"
+                     :key="lineChartKey" />
+                      <!-- height: 830px -->
+        <!-- <ohlc-chart :apiUrl="lineChartUrls" style="top: -45px; height: 830px" :key="lineChartKey" /> -->
+        <Ohlc v-else
+              :chart-data="ohlcDatacollection" 
+              :options="ohlcOptions"/>
       </div>
 
       <!-- patterns history -->
@@ -149,8 +153,9 @@
   import Datepicker from 'vuejs-datepicker';
   import Dropdown from 'vue-simple-search-dropdown';
 
-  // import FancyChart from '@/custom/components/Charts/FancyChart';
-  import OhlcChart from '@/custom/components/Charts/OhlcChart';
+  import FancyChart from '@/custom/components/Charts/FancyChart';
+  // import OhlcChart from '@/custom/components/Charts/OhlcChart';
+  import Ohlc from '@/custom/components/Ohlc';
   import FancyTable from '@/custom/components/Tables/FancyTable';  
   import { BaseTable } from '@/components'
 
@@ -163,30 +168,50 @@
     components: {  
       Datepicker,   
       Dropdown,
-      // FancyChart,
-      OhlcChart,
+      FancyChart,
+      // OhlcChart,
+      Ohlc,
       FancyTable,
       BaseTable   
     },
 
     data() {
+      // fixes x-axes label overlapping
+      // https://www.chartjs.org/docs/latest/axes/cartesian/?h=autoskip
       return {
+        // datepickers
         from: null,
         to: null,
+
+        // assets
         disabledDatesAsset: null,
         selectedAsset: null,
         selectedAssets: [],
         assets: [],
+
+        // patterns
         selectedPatterns: [],
         checkedPatterns: [],
         patterns: [],
-        checkedNames: [],
-        timeframe: 1,
-        chartUrl: null, //[],
-        patternsHistoryUrl: [],
+
+        // chart
         chartType: this.$t('research.patternLab.chart.chartTypes')[0],
         timeframe: this.$t('research.patternLab.chart.timeframes')[0],
-        chartKey: 0,
+        ohlcDatacollection: {},
+        ohlcOptions: {
+          scales: {
+            xAxes: [{
+              ticks: {
+                autoSkip: true,
+              },
+            }],
+          },
+        },
+        lineChartKey: 0,
+        lineChartUrls: null,
+
+        // patterns history
+        patternsHistoryUrl: [],
         tableKey: 0
       }
     },
@@ -363,9 +388,60 @@
           return false
         }
 
-        this.chartUrl = /*[*/ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery() //]
-        this.chartKey += 1 // force reload of fancy-chart component
+        if (this.chartType === this.$t('research.patternLab.chart.chartTypes')[0]) {
+          this.lineChartUrls = [ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery() ]
+          this.lineChartKey += 1 // force reload of fancy-chart component
+        } else {
+          this.fillOhlcData()
+        }
+
         return true
+      },
+      fillOhlcData() {
+        this.ohlcDatacollection = {
+          datasets: [
+            {
+              label: 'Series 1',
+              backgroundColor: '#f87979',
+              data: [{
+                o: 350,
+                h: 360,
+                l: 345,
+                c: 350,
+                t: new Date('2019-01-10').getTime(),
+              },
+              {
+                o: 350,
+                h: 370,
+                l: 340,
+                c: 360,
+                t: new Date('2019-01-11').getTime(),
+              },
+              {
+                o: 360,
+                h: 370,
+                l: 355,
+                c: 355,
+                t: new Date('2019-01-12').getTime(),
+              },
+              {
+                o: 355,
+                h: 380,
+                l: 360,
+                c: 370,
+                t: new Date('2019-01-13').getTime(),
+              },
+              {
+                o: 370,
+                h: 365,
+                l: 340,
+                c: 350,
+                t: new Date('2019-01-14').getTime(),
+              }],
+            },
+          ]
+          ,
+        };
       },
 
       selectChartType(chartType) {
