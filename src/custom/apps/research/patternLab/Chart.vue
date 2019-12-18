@@ -97,7 +97,7 @@
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
                          :title="chartType"
-                         style="width: 20%">
+                         style="width: 15%">
             <ul style="list-style-type: none;">
               <li v-for="chartType in $t('research.patternLab.chart.chartTypes').filter(el => el !== chartType)">            
                 <a class="dropdown-item" 
@@ -129,7 +129,8 @@
                      :apiUrls="lineChartUrls"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: this.from, to: this.to }"
-                     style="top: -45px;"
+                     :responsive="true"
+                     style="top: -45px; height: 100%"
                      :key="lineChartKey" />
                       <!-- height: 830px -->
         <!-- <ohlc-chart :apiUrl="lineChartUrls" style="top: -45px; height: 830px" :key="lineChartKey" /> -->
@@ -208,7 +209,7 @@
           },
         },
         lineChartKey: 0,
-        lineChartUrls: null,
+        lineChartUrls: [],
 
         // patterns history
         patternsHistoryUrl: [],
