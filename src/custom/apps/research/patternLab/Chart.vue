@@ -131,7 +131,7 @@
                      style="top: -45px; height: 830px"
                      :key="chartKey">
         </fancy-chart> -->
-        <ohlc-chart :apiUrl="chartUrl"></ohlc-chart>
+        <ohlc-chart :apiUrl="chartUrl" style="top: -45px; height: 830px" :key="chartKey" />
       </div>
 
       <!-- patterns history -->
@@ -149,9 +149,9 @@
   import Datepicker from 'vuejs-datepicker';
   import Dropdown from 'vue-simple-search-dropdown';
 
-  // import FancyChart from '@/custom/components/FancyChart';
-  import OhlcChart from '@/custom/components/OhlcChart';
-  import FancyTable from '@/custom/components/FancyTable';  
+  // import FancyChart from '@/custom/components/Charts/FancyChart';
+  import OhlcChart from '@/custom/components/Charts/OhlcChart';
+  import FancyTable from '@/custom/components/Tables/FancyTable';  
   import { BaseTable } from '@/components'
 
   import axios from '@/../node_modules/axios';

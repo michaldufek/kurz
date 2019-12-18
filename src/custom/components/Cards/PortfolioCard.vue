@@ -43,7 +43,7 @@
 </template>
 <script>
 import { BaseButton } from "@/components";
-import FancyTable from '@/custom/components/FancyTable';
+import FancyTable from '@/custom/components/Tables/FancyTable';
 import helper from '@/custom/assets/js/helper';
 
 export default {

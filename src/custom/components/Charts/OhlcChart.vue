@@ -27,10 +27,11 @@
 </template>
 <script>
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
+// import * as chartFinancial from '@/custom/assets/js/chartjs-chart-financial'
 
 import axios from '@/../node_modules/axios';
-import config from '@/config';
-import helper from '@/custom/assets/js/helper';
+// import config from '@/config';
+// import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
 
 
@@ -63,14 +64,15 @@ export default {
       loading: false,
 
       // chart
-      chartMins: [],
-      chartMaxes: []
+      chartData: [],
+      chartMin: Number.MAX_VALUE,
+      chartMax: 0
     }
   },
 
   computed: {
     isError() {
-      return !this.chartData.datasets[0].data.length && this.error
+      return !this.chartData.length && this.error
     }
   },
 
@@ -84,58 +86,54 @@ export default {
     },
 
     loadData() {
-      let finishedLoadings = 0
-      let errorLoadings = 0
-      if (this.apiUrls.length > 0) {
-        this.loading = true
-        this.error = false
-      }
+      this.loading = true
+      this.error = false
+      
+      axios
+      .get(this.apiUrl)
+      .then(response => {
+        this.createChart(response.data)
 
-      this.apiUrls.forEach(apiUrl => {
-        axios
-        .get(apiUrl)
-        .then(response => {
-          this.createChart(data)
+        // if at least one source is live we are live
+        // this.live = this.live || !data.WARNING
 
-          // if at least one source is live we are live
-          // this.live = this.live || !data.WARNING
-
-          // if (!this.updateTs) {
-          //   this.updateTs = data.report_timestamp
-          // }
-          // get last report's TimeStamp
-          // this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
-        })
-        .catch(error => {
-          console.log(error);
-          if (++errorLoadings === this.apiUrls.length) {
-            this.error = true
-          }
-
-          if (error.message === constants.strings.networkError) {
-            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
-          }
-        })
-        .finally(() => {
-          this.loading = false
-
-          if (!this.live && !this.error) {
-            this.notifyAudio('connectionLost', 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
-          }
-        });
+        // if (!this.updateTs) {
+        //   this.updateTs = data.report_timestamp
+        // }
+        // get last report's TimeStamp
+        // this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
       })
+      .catch(error => {
+        debugger
+        console.log(error);
+        this.error = true
+
+        if (error.message === constants.strings.networkError) {
+          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+        }
+      })
+      .finally(() => {
+        debugger
+        this.loading = false
+
+        if (!this.live && !this.error) {
+          this.notifyAudio('connectionLost', 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+        }
+      });
     },
 
     createChart(data) {
+      debugger
       var ctx = document.getElementById('chart').getContext('2d');
       ctx.canvas.width = 1000;
       ctx.canvas.height = 250;
+      this.chartData = this.createChartData(data)
       var chart = new Chart(ctx, {
         type: 'candlestick',
         data: {
           datasets: [{
             label: 'CHRT - Chart.js Corporation',
-            data: this.createChartData(data)
+            data: this.chartData
           }]
         },
         options: {
@@ -170,7 +168,9 @@ export default {
             }]
           }
         }
-      });           
+      });     
+      
+      this.updateChart(chart)
     },
     createChartData(data) {
       let newData = [];
@@ -187,6 +187,40 @@ export default {
 
       return newData
     },
+    updateChart(chart) {
+      var dataset = chart.config.data.datasets[0];
+
+      // candlestick vs ohlc
+      var type = document.getElementById('type').value;
+      dataset.type = type;
+
+      // color
+      var colorScheme = document.getElementById('color-scheme').value;
+      if (colorScheme === 'neon') {
+        dataset.color = {
+          up: '#01ff01',
+          down: '#fe0000',
+          unchanged: '#999',
+        };
+      } else {
+        delete dataset.color;
+      }
+
+      // border
+      var border = document.getElementById('border').value;
+      var defaultOpts = Chart.defaults.global.elements[type];
+      if (border === 'true') {
+        dataset.borderColor = defaultOpts.borderColor;
+      } else {
+        dataset.borderColor = {
+          up: defaultOpts.color.up,
+          down: defaultOpts.color.down,
+          unchanged: defaultOpts.color.up
+        };
+      }
+
+      chart.update();
+    },
 
     notifyAudio(audioEl, type, msg) {
       document.getElementById(audioEl).play();
@@ -199,11 +233,6 @@ export default {
   },
 
   mounted() {
-    this.dataFields.forEach(_ => {
-      this.chartMins.push(Number.MAX_VALUE)
-      this.chartMaxes.push(0)
-    })    
-
     this.initData();
   }
 };

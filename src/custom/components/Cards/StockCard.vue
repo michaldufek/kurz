@@ -23,7 +23,7 @@
 </template>
 <script>
 import FancyCard from '@/custom/components/Cards/FancyCard.vue';
-import FancyChart from '@/custom/components/FancyChart';
+import FancyChart from '@/custom/components/Charts/FancyChart';
 import constants from '@/custom/assets/js/constants';
 
 export default {
