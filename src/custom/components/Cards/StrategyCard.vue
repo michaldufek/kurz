@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import FancyChart from '@/custom/components/FancyChart';
+import FancyChart from '@/custom/components/Charts/FancyChart';
 import FancyCard from "@/custom/components/Cards/FancyCard.vue";
 
 export default {

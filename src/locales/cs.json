@@ -168,9 +168,9 @@
         "to": "Do",
         "addChart": "Přidat graf",
         "chartTypes": [
-          "OHLC sloupce",
-          "Svíčkový",
-          "Čárový"
+          "Čárový",
+          "OHLC sloupcový",
+          "Svíčkový"
         ],
         "timeframes": [
           "Denní",
