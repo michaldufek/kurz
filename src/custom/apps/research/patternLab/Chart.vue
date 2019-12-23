@@ -135,7 +135,7 @@
                       <!-- height: 830px -->
         <ohlc-chart v-else 
                     :apiUrl="lineChartUrl" 
-                    type="chartType"
+                    :type="chartType"
                     style="top: -45px; height: 830px" 
                     :key="lineChartKey" />
       </div>
