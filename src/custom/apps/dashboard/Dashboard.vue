@@ -49,8 +49,8 @@
   </div>
 </template>
 <script>
-  import FancyChart from '@/custom/components/FancyChart';
-  import FancyTable from '@/custom/components/FancyTable';
+  import FancyChart from '@/custom/components/Charts/FancyChart';
+  import FancyTable from '@/custom/components/Tables/FancyTable';
 
   import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';

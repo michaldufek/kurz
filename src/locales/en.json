@@ -168,9 +168,9 @@
         "to": "To",
         "addChart": "Add chart",
         "chartTypes": [
+          "Line",
           "OHLC bar",
-          "Candlestick",
-          "Line"
+          "Candlestick"          
         ],
         "timeframes": [
           "Daily",

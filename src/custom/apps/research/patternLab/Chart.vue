@@ -123,13 +123,20 @@
           </base-dropdown>
         </div>
 
-        <fancy-chart :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
-                     :apiUrls="chartUrl"
+        <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
+                     :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
+                     :apiUrls="[ lineChartUrl ]"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: this.from, to: this.to }"
-                     style="top: -45px; height: 830px"
-                     :key="chartKey">
-        </fancy-chart>
+                     :responsive="true"
+                     style="top: -45px; height: 100%"
+                     :key="lineChartKey" />
+                      <!-- height: 830px -->
+        <ohlc-chart v-else 
+                    :apiUrl="lineChartUrl" 
+                    type="chartType"
+                    style="top: -45px; height: 830px" 
+                    :key="lineChartKey" />
       </div>
 
       <!-- patterns history -->
@@ -147,8 +154,9 @@
   import Datepicker from 'vuejs-datepicker';
   import Dropdown from 'vue-simple-search-dropdown';
 
-  import FancyChart from '@/custom/components/FancyChart';
-  import FancyTable from '@/custom/components/FancyTable';  
+  import FancyChart from '@/custom/components/Charts/FancyChart';
+  import OhlcChart from '@/custom/components/Charts/OhlcChart';
+  import FancyTable from '@/custom/components/Tables/FancyTable';  
   import { BaseTable } from '@/components'
 
   import axios from '@/../node_modules/axios';
@@ -161,28 +169,38 @@
       Datepicker,   
       Dropdown,
       FancyChart,
+      OhlcChart,
       FancyTable,
       BaseTable   
     },
 
     data() {
+      // fixes x-axes label overlapping
+      // https://www.chartjs.org/docs/latest/axes/cartesian/?h=autoskip
       return {
+        // datepickers
         from: null,
         to: null,
+
+        // assets
         disabledDatesAsset: null,
         selectedAsset: null,
         selectedAssets: [],
         assets: [],
+
+        // patterns
         selectedPatterns: [],
         checkedPatterns: [],
         patterns: [],
-        checkedNames: [],
-        timeframe: 1,
-        chartUrl: [],
-        patternsHistoryUrl: [],
+
+        // chart
         chartType: this.$t('research.patternLab.chart.chartTypes')[0],
         timeframe: this.$t('research.patternLab.chart.timeframes')[0],
-        chartKey: 0,
+        lineChartUrl: null,
+        lineChartKey: 0,        
+
+        // patterns history
+        patternsHistoryUrl: [],
         tableKey: 0
       }
     },
@@ -359,10 +377,11 @@
           return false
         }
 
-        this.chartUrl = [ constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery() ]
-        this.chartKey += 1 // force reload of fancy-chart component
+        this.lineChartUrl = constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery()
+        this.lineChartKey += 1 // force reload of fancy-chart component
+
         return true
-      },
+      },      
 
       selectChartType(chartType) {
         this.chartType = chartType
