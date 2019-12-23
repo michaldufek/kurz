@@ -16,7 +16,7 @@ module.exports = {
     devtool: 'source-map',
     resolve: {
       alias: {
-        'chart.js': 'chart.js/dist/Chart.js'
+        'chart.js': 'chart.js/dist/Chart.bundle.js'
       }
     },
     plugins: [

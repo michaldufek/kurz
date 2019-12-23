@@ -1,5 +1,5 @@
 // note: importing vue-charts from src/lib/vue-charts/index.js
-import { Ohlc, mixins } from '@/custom/lib/vue-charts';
+import { Ohlc, mixins } from './lib/vue-charts';
 
 const { reactiveProp } = mixins;
 

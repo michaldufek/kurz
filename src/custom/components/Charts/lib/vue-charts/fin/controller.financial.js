@@ -45,8 +45,7 @@ export default function (Chart) {
     updateElementGeometry: function updateElementGeometry(element, index, reset) {
       const me = this;
       const model = element._model;
-      debugger
-      const vscale = me.getValueScale();
+      const vscale = me._getValueScale();
       const base = vscale.getBasePixel();
       const horizontal = vscale.isHorizontal();
       const ruler = me._ruler || me.getRuler();

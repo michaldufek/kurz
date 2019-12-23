@@ -11,41 +11,41 @@
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
-        <!-- <line-chart ref="bigChart"
-                    chart-id="big-line-chart"
-                    :chart-data="chartData"
-                    :gradient-colors="bigLineChart.gradientColors"
-                    :gradient-stops="bigLineChart.gradientStops"
-                    :extra-options="extraOptions">
-        </line-chart> -->
-        <div style="width:1000px">
-          <canvas id="chart"></canvas>
-        </div>
+        <Ohlc v-if="type === $t('research.patternLab.chart.chartTypes')[1]"
+              :chart-data="datacollection" 
+              :options="options"/>
+        <Candlestick v-else
+              :chart-data="datacollection" 
+              :options="options"/>
       </section>
     </div>
   </card>
 </template>
 <script>
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
-// import * as chartFinancial from '@/custom/assets/js/chartjs-chart-financial'
+import Ohlc from '@/custom/components/Charts/Ohlc';
+import Candlestick from '@/custom/components/Charts/Candlestick';
 
 import axios from '@/../node_modules/axios';
-// import config from '@/config';
-// import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
 
 
 export default {
   name: "ohlc-chart",
   components: {
-    DualRingLoader
+    DualRingLoader,
+    Ohlc,
+    Candlestick
   },
 
   props: {
     apiUrl: {
       type: String,
-      default: null,
       description: "URL to API data source"
+    },
+    type: {
+      type: String,
+      description: "Type of chart - OHLC or Candlestick"
     },
     range: {
       type: Object,
@@ -64,15 +64,22 @@ export default {
       loading: false,
 
       // chart
-      chartData: [],
-      chartMin: Number.MAX_VALUE,
-      chartMax: 0
+      datacollection: {},
+      options: {
+        scales: {
+          xAxes: [{
+            ticks: {
+              autoSkip: true,
+            },
+          }],
+        },
+      }
     }
   },
 
   computed: {
     isError() {
-      return !this.chartData.length && this.error
+      return this.datacollection.datasets && !this.datacollection.datasets.length && this.error
     }
   },
 
@@ -92,7 +99,7 @@ export default {
       axios
       .get(this.apiUrl)
       .then(response => {
-        this.createChart(response.data)
+        this.fillChartData(response.data)
 
         // if at least one source is live we are live
         // this.live = this.live || !data.WARNING
@@ -104,7 +111,6 @@ export default {
         // this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
       })
       .catch(error => {
-        debugger
         console.log(error);
         this.error = true
 
@@ -113,7 +119,6 @@ export default {
         }
       })
       .finally(() => {
-        debugger
         this.loading = false
 
         if (!this.live && !this.error) {
@@ -122,62 +127,25 @@ export default {
       });
     },
 
-    createChart(data) {
-      debugger
-      var ctx = document.getElementById('chart').getContext('2d');
-      ctx.canvas.width = 1000;
-      ctx.canvas.height = 250;
-      this.chartData = this.createChartData(data)
-      var chart = new Chart(ctx, {
-        type: 'candlestick',
-        data: {
-          datasets: [{
-            label: 'CHRT - Chart.js Corporation',
-            data: this.chartData
-          }]
-        },
-        options: {
-          scales: {
-            xAxes: [{
-              afterBuildTicks: function(scale, ticks) {
-                var majorUnit = scale._majorUnit;
-                var firstTick = ticks[0];
-                var i, ilen, val, tick, currMajor, lastMajor;
-
-                val = luxon.DateTime.fromMillis(ticks[0].value);
-                if ((majorUnit === 'minute' && val.second === 0)
-                    || (majorUnit === 'hour' && val.minute === 0)
-                    || (majorUnit === 'day' && val.hour === 9)
-                    || (majorUnit === 'month' && val.day <= 3 && val.weekday === 1)
-                    || (majorUnit === 'year' && val.month === 0)) {
-                  firstTick.major = true;
-                } else {
-                  firstTick.major = false;
-                }
-                lastMajor = val.get(majorUnit);
-
-                for (i = 1, ilen = ticks.length; i < ilen; i++) {
-                  tick = ticks[i];
-                  val = luxon.DateTime.fromMillis(tick.value);
-                  currMajor = val.get(majorUnit);
-                  tick.major = currMajor !== lastMajor;
-                  lastMajor = currMajor;
-                }
-                return ticks;
-              }
-            }]
-          }
-        }
-      });     
-      
-      this.updateChart(chart)
+    fillChartData(data) {
+      this.datacollection = {
+        datasets: [
+          {
+            label: 'Series 1',
+            backgroundColor: '#f87979',
+            data: this.createChartData(data),
+          },
+        ]
+        ,
+      };
     },
+
     createChartData(data) {
       let newData = [];
 
       for (const [key, val] of Object.entries(data.Open)) {
         newData.push({
-          t: new Date(Number(key)),
+          t: new Date(Number(key)), //new Date('2019-01-14').getTime(),
           o: val,
           h: data.High[key],
           l: data.Low[key],
@@ -186,40 +154,6 @@ export default {
       }
 
       return newData
-    },
-    updateChart(chart) {
-      var dataset = chart.config.data.datasets[0];
-
-      // candlestick vs ohlc
-      var type = document.getElementById('type').value;
-      dataset.type = type;
-
-      // color
-      var colorScheme = document.getElementById('color-scheme').value;
-      if (colorScheme === 'neon') {
-        dataset.color = {
-          up: '#01ff01',
-          down: '#fe0000',
-          unchanged: '#999',
-        };
-      } else {
-        delete dataset.color;
-      }
-
-      // border
-      var border = document.getElementById('border').value;
-      var defaultOpts = Chart.defaults.global.elements[type];
-      if (border === 'true') {
-        dataset.borderColor = defaultOpts.borderColor;
-      } else {
-        dataset.borderColor = {
-          up: defaultOpts.color.up,
-          down: defaultOpts.color.down,
-          unchanged: defaultOpts.color.up
-        };
-      }
-
-      chart.update();
     },
 
     notifyAudio(audioEl, type, msg) {
