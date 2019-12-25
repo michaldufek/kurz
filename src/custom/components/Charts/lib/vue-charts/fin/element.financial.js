@@ -9,6 +9,7 @@ export default function (Chart) {
     },
     fractionalDigitsCount: undefined,
   };
+  globalOpts.defaultFontColor = "rgba(255, 255, 255, 0.7)";
 
   function isVertical(bar) {
     return bar._view.width !== undefined;

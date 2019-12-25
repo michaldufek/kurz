@@ -11,7 +11,7 @@ export default function (Chart) {
         categoryPercentage: 0.8,
         barPercentage: 0.9,
         ticks: {
-          source: 'data',
+          source: 'auto'
         },
       }],
       yAxes: [{
