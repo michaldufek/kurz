@@ -76,9 +76,9 @@
                     @filter="getPatterns"
                     @selected="ddSelectPattern">
           </Dropdown>
-          <ul style="list-style-type: none; text-align: left; margin-top: 15px;">
+          <ul style="list-style-type: none; text-align: left; margin-top: 15px; padding-left: 0px">
             <li v-for="selectedPattern in selectedPatterns">   
-              <input type="checkbox" :id="selectedPattern.id" :value="selectedPattern.id" v-model="checkedPatterns">
+              <input type="checkbox" :id="selectedPattern.id" :value="selectedPattern" v-model="checkedPatterns">
               <label :for="selectedPattern.id" style="margin-left: 10px">{{ selectedPattern.name }}</label>
             </li>
           </ul> 
@@ -131,10 +131,11 @@
                      :responsive="true"
                      style="top: -45px; height: 100%"
                      :key="lineChartKey" />
-                      <!-- height: 830px -->
         <ohlc-chart v-else 
+                    :title="ohlcChartTitle"
                     :apiUrl="lineChartUrl" 
                     :type="chartType"
+                    :range="{ from: this.from, to: this.to }"
                     style="top: -45px; height: 830px" 
                     :key="lineChartKey" />
       </div>
@@ -159,7 +160,6 @@
   import FancyTable from '@/custom/components/Tables/FancyTable';  
   import { BaseTable } from '@/components'
 
-  import axios from '@/../node_modules/axios';
   import constants from '@/custom/assets/js/constants';
   import helper from '@/custom/assets/js/helper';
 
@@ -223,6 +223,16 @@
       },
       maxItems() {
         return constants.maxRows
+      },
+      ohlcChartTitle() {
+        // title in form <asset> ([patterns]) - more than 3 patterns will be replaced by '...'
+        const maxPatterns = 3
+        let patterns = this.checkedPatterns.slice(0, maxPatterns).map(p => p.name)
+        if (this.checkedPatterns.length > maxPatterns) {
+          patterns = patterns.concat([ '...' ])
+        }
+
+        return this.selectedAsset.symbol + (patterns.length > 0 ? ' (' + patterns.join(', ') + ')' : '')
       }
     },
 
@@ -243,7 +253,7 @@
         if (this.selectedAsset !== asset) {
           this.selectedAsset = asset
 
-          axios
+          this.$http
           .get(constants.urls.patternLab.chart + asset.id + '/' + this.getTimeframeQuery()) // to-do: cache this result !
           .then(response => {
             this.disabledDatesAsset = {
@@ -287,7 +297,7 @@
       getAssets(query) {
         // to-do: eliminate component's bug - redudant call for selected item
         if (query) {
-          axios
+          this.$http
           .get(constants.urls.patternLab.asset + query)
           .then(response => {
             let i = 1
@@ -316,7 +326,7 @@
       getPatterns(query) {
         // to-do: eliminate component's bug - redudant call for selected item        
         if (query) {
-          axios
+          this.$http
           .get(constants.urls.patternLab.pattern + query)
           .then(response => {
             let i = 1
@@ -398,7 +408,7 @@
       getQueryData() {
         let data = {}
 
-        data['patterns'] = this.checkedPatterns.join(',')
+        data['patterns'] = this.checkedPatterns.map(chp => chp.id).join(',')
         data['symbols'] = this.selectedAsset.symbol // or can be more selected ?
         data['timeframe'] = this.getTimeframeQuery()
         
