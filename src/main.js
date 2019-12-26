@@ -23,6 +23,8 @@ import i18n from "./i18n"
 
 import './registerServiceWorker'
 import helper from '@/custom/assets/js/helper';
+import Axios from 'axios'
+// import { cacheAdapterEnhancer } from 'axios-extensions';
 
 Vue.use(BlackDashboard);
 Vue.use(VueRouter);
@@ -31,6 +33,14 @@ Vue.use(RouterPrefetch);
 // global filter on the Vue instance
 Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
 Vue.filter(helper.chartUpdateTsText.name, helper.chartUpdateTsText)
+
+// const http = Axios.create({
+//   baseURL: '/',
+//   // headers: { 'Cache-Control': 'no-cache' },
+//   // cache will be enabled by default
+//   adapter: cacheAdapterEnhancer(Axios.defaults.adapter)
+// });
+Vue.prototype.$http = Axios//http;
 
 /* eslint-disable no-new */
 new Vue({

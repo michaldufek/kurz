@@ -40,7 +40,6 @@ import LineChart from '@/components/Charts/LineChart';
 import * as chartConfigs from '@/components/Charts/config';
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
-import axios from '@/../node_modules/axios';
 import config from '@/config';
 import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
@@ -203,7 +202,7 @@ export default {
       }
 
       this.apiUrls.forEach(apiUrl => {
-        axios
+        this.$http
         .get(apiUrl)
         .then(response => {
           if (!finishedLoadings) {

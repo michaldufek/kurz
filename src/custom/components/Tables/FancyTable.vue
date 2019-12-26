@@ -21,7 +21,6 @@
 import BaseTable from './BaseTable.vue';
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
-import axios from '@/../node_modules/axios';
 import constants from '@/custom/assets/js/constants';
 import helper from '@/custom/assets/js/helper';
 
@@ -113,7 +112,7 @@ export default {
         let responses = []
 
         this.apiUrls.forEach(apiUrl => {
-          axios
+          this.$http
           .get(apiUrl)
           .then(response => {
             if (!this.finishedLoadings) {

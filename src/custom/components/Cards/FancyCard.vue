@@ -27,8 +27,6 @@
 </template>
 <script>
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
-
-import axios from '@/../node_modules/axios';
 import constants from '@/custom/assets/js/constants';
 
 
@@ -130,7 +128,7 @@ export default {
         this.loading = true
         this.error = false      
 
-        axios
+        this.$http
         .get(this.apiUrl)
         .then(response => {
           this.indexValues(this.valuesCreator(response.data))

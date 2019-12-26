@@ -161,7 +161,6 @@
   import FancyTable from '@/custom/components/Tables/FancyTable';  
   import { BaseTable } from '@/components'
 
-  import axios from '@/../node_modules/axios';
   import constants from '@/custom/assets/js/constants';
   import helper from '@/custom/assets/js/helper';
 
@@ -255,7 +254,7 @@
         if (this.selectedAsset !== asset) {
           this.selectedAsset = asset
 
-          axios
+          this.$http
           .get(constants.urls.patternLab.chart + asset.id + '/' + this.getTimeframeQuery()) // to-do: cache this result !
           .then(response => {
             this.disabledDatesAsset = {
@@ -299,7 +298,7 @@
       getAssets(query) {
         // to-do: eliminate component's bug - redudant call for selected item
         if (query) {
-          axios
+          this.$http
           .get(constants.urls.patternLab.asset + query)
           .then(response => {
             let i = 1
@@ -328,7 +327,7 @@
       getPatterns(query) {
         // to-do: eliminate component's bug - redudant call for selected item        
         if (query) {
-          axios
+          this.$http
           .get(constants.urls.patternLab.pattern + query)
           .then(response => {
             let i = 1

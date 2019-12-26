@@ -151,7 +151,6 @@
   import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
   import StockCard from '@/custom/components/Cards/StockCard.vue';
   
-  import axios from '@/../node_modules/axios';
   import constants from '@/custom/assets/js/constants';
   import helper from '@/custom/assets/js/helper';
   
@@ -265,7 +264,7 @@
         this.loading = true
         this.error = false
 
-        axios
+        this.$http
         .get(constants.urls.tickerSP.base + "?" + helper.encodeQueryData(this.getQueryData()))
         .then(response => {
           this.nrOfPages = Math.ceil(response.data.count / constants.maxRows)

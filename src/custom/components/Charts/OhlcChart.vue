@@ -25,8 +25,6 @@
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 import Ohlc from '@/custom/components/Charts/Ohlc';
 import Candlestick from '@/custom/components/Charts/Candlestick';
-
-import axios from '@/../node_modules/axios';
 import constants from '@/custom/assets/js/constants';
 
 
@@ -100,7 +98,7 @@ export default {
       this.loading = true
       this.error = false
       
-      axios
+      this.$http
       .get(this.apiUrl)
       .then(response => {
         this.fillChartData(response.data)
