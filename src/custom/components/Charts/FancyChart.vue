@@ -193,7 +193,7 @@ export default {
       return val
     },
 
-    loadData() {
+    loadData() {      
       let finishedLoadings = 0
       let errorLoadings = 0
       if (this.apiUrls.length > 0) {
@@ -208,10 +208,9 @@ export default {
           if (!finishedLoadings) {
             let datasets = []
             this.dataFields.forEach(_ => datasets.push({
-                ...defaultDatasets,
-                data: []
-              })
-            )
+              ...defaultDatasets,
+              data: []
+            }))
 
             this.chartData = {
               datasets: datasets,
