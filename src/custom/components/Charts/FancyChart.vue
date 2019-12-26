@@ -40,7 +40,7 @@ import LineChart from '@/components/Charts/LineChart';
 import * as chartConfigs from '@/components/Charts/config';
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
-import axios from '@/../node_modules/axios';
+// import axios from '@/../node_modules/axios';
 import config from '@/config';
 import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
@@ -87,6 +87,11 @@ export default {
       type: Array,
       default: () => [],
       description: "URLs to API data sources"
+    },
+    data: {
+      type: Array,
+      default: () => [],
+      description: "Chart data (cache) to use for the first load of data instead of API call"
     },
     dataFields: {
       type: Array,
@@ -199,13 +204,27 @@ export default {
       let errorLoadings = 0
       if (this.apiUrls.length > 0) {
         this.loading = true
+        console.log('loading on')
         this.error = false
       }
 
       this.apiUrls.forEach(apiUrl => {
-        axios
-        .get(apiUrl)
-        .then(response => {
+        const loadRoutine = () => new Promise ((resolve, reject) => {  
+          if (this.data.length > 0) {
+            resolve(this.data.pop())
+          } else {
+            this.$http
+            .get(apiUrl)
+            .then(response => {
+              var responseData = response.data
+            })
+            .catch(error => reject(error))
+            .finally(() => resolve(responseData))
+          }
+        })
+
+        loadRoutine()
+        .then(responseData => {
           if (!finishedLoadings) {
             let datasets = []
             this.dataFields.forEach(_ => datasets.push({
@@ -220,7 +239,7 @@ export default {
             } 
           }
 
-          if (!response.data.time) {
+          if (!responseData.time) {
             // data in ticker symbol format
             let times = []
             let equities = []
@@ -229,8 +248,8 @@ export default {
             this.dataFields.forEach(field => {
               let fieldEquities = []
 
-              if (field in response.data) {
-                for (const [key, value] of Object.entries(response.data[field])) {
+              if (field in responseData) {
+                for (const [key, value] of Object.entries(responseData[field])) {
                   if (firstTime) {
                     // times are same for all price fields
                     times.push(Number(key))
@@ -251,10 +270,10 @@ export default {
             }
           } else {
             data = {
-              time: response.data.time,
-              equity: [ response.data.equity ],
-              WARNING: response.data.WARNING,
-              report_timestamp: response.data.report_timestamp
+              time: responseData.time,
+              equity: [ responseData.equity ],
+              WARNING: responseData.WARNING,
+              report_timestamp: responseData.report_timestamp
             }            
           }
 
@@ -282,6 +301,7 @@ export default {
         .finally(() => {
           if (++finishedLoadings === this.apiUrls.length) {
             this.loading = false
+            console.log('loading off')
 
             if (!this.live && !this.error) {
               this.notifyAudio('connectionLost', 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')

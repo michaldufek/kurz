@@ -47,6 +47,13 @@ export default {
       type: String,
       description: "URL to API data source"
     },
+    data: {
+      type: Object,
+      default: () => {
+        return null
+      },
+      description: "Chart data to use for the first load of data instead of API call"
+    },
     type: {
       type: String,
       description: "Type of chart - OHLC or Candlestick"
@@ -103,8 +110,15 @@ export default {
       axios
       .get(this.apiUrl)
       .then(response => {
-        this.fillChartData(response.data)
-        this.updateTs = new Date(Number(Math.max(...Object.keys(response.data.Open))))
+        if (this.data) {
+          var responseData = JSON.parse(JSON.stringify(this.data))
+          this.data = null
+        } else {
+          var responseData = response.data
+        }
+
+        this.fillChartData(responseData)
+        this.updateTs = new Date(Number(Math.max(...Object.keys(responseData.Open))))
       })
       .catch(error => {
         console.log(error);

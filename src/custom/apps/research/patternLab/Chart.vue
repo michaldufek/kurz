@@ -127,6 +127,7 @@
         <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
                      :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="[ lineChartUrl ]"
+                     :data="[ chartData ]"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: this.from, to: this.to }"
                      :responsive="true"
@@ -135,6 +136,7 @@
         <ohlc-chart v-else 
                     :title="ohlcChartTitle"
                     :apiUrl="lineChartUrl" 
+                    :data="chartData"
                     :type="chartType"
                     :range="{ from: this.from, to: this.to }"
                     style="top: -45px; height: 830px" 
@@ -196,6 +198,7 @@
         patterns: [],
 
         // chart
+        cache: null,
         chartType: this.$t('research.patternLab.chart.chartTypes')[0],
         timeframe: this.$t('research.patternLab.chart.timeframes')[0],
         lineChartUrl: null,
@@ -225,6 +228,10 @@
       },
       maxItems() {
         return constants.maxRows
+      },
+      chartData() {
+        // use chart data from cache if not older than dataReloadInterval
+        return this.cache && (new Date().getTime() - this.cache.dateTime.getTime() < constants.dataReloadInterval) ? this.cache.data : null
       },
       ohlcChartTitle() {
         // title in form <asset> ([patterns]) - more than 3 patterns will be replaced by '...'
@@ -256,8 +263,14 @@
           this.selectedAsset = asset
 
           axios
-          .get(constants.urls.patternLab.chart + asset.id + '/' + this.getTimeframeQuery()) // to-do: cache this result !
+          .get(constants.urls.patternLab.chart + asset.id + '/' + this.getTimeframeQuery())
           .then(response => {
+            this.cache = {
+              dateTime: new Date(),
+              data: response.data
+            }
+            console.log('cache set')
+
             this.disabledDatesAsset = {
               from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
               to: new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
@@ -390,7 +403,8 @@
         }
 
         this.lineChartUrl = constants.urls.patternLab.chart + this.selectedAsset.id + '/' + this.getTimeframeQuery()
-        this.lineChartKey += 1 // force reload of fancy-chart component
+        this.lineChartKey += 1 // force reload of chart components
+        console.log('force chart reload')
 
         return true
       },      
