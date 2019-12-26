@@ -52,7 +52,6 @@
   import FancyChart from '@/custom/components/Charts/FancyChart';
   import FancyTable from '@/custom/components/Tables/FancyTable';
 
-  import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';
   import constants from '@/custom/assets/js/constants';
 
@@ -92,7 +91,7 @@
 
       checkOrdersStatusChange() {
         // to-do: right definitions when to notify (blocker: BE)
-        axios
+        this.$http
         .get(constants.urls.stats["MF Report"])
         .then(response => {
           response.data.openTrades.forEach(openTrade => {

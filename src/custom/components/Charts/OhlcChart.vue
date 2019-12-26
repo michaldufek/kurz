@@ -25,8 +25,6 @@
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 import Ohlc from '@/custom/components/Charts/Ohlc';
 import Candlestick from '@/custom/components/Charts/Candlestick';
-
-import axios from '@/../node_modules/axios';
 import constants from '@/custom/assets/js/constants';
 
 
@@ -39,6 +37,10 @@ export default {
   },
 
   props: {
+    title: {
+      type: String,
+      description: "Chart title"
+    },
     apiUrl: {
       type: String,
       description: "URL to API data source"
@@ -96,19 +98,11 @@ export default {
       this.loading = true
       this.error = false
       
-      axios
+      this.$http
       .get(this.apiUrl)
       .then(response => {
         this.fillChartData(response.data)
-
-        // if at least one source is live we are live
-        // this.live = this.live || !data.WARNING
-
-        // if (!this.updateTs) {
-        //   this.updateTs = data.report_timestamp
-        // }
-        // get last report's TimeStamp
-        // this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
+        this.updateTs = new Date(Number(Math.max(...Object.keys(response.data.Open))))
       })
       .catch(error => {
         console.log(error);
@@ -128,24 +122,15 @@ export default {
     },
 
     fillChartData(data) {
-      this.datacollection = {
-        datasets: [
-          {
-            label: 'Series 1',
-            backgroundColor: '#f87979',
-            data: this.createChartData(data),
-          },
-        ]
-        ,
-      };
-    },
-
-    createChartData(data) {
       let newData = [];
 
-      for (const [key, val] of Object.entries(data.Open)) {
+      let filteredData = Object.entries(data.Open).filter(
+                          t => (('from' in this.range && new Date(Number(t[0])) >= this.range.from) || (!('from' in this.range)))
+                               && (('to' in this.range && this.range.to && new Date(Number(t[0])) <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
+                         )
+      for (const [_, [key, val]] of Object.entries(filteredData)) {
         newData.push({
-          t: new Date(Number(key)), //new Date('2019-01-14').getTime(),
+          t: new Date(Number(key)),
           o: val,
           h: data.High[key],
           l: data.Low[key],
@@ -153,7 +138,12 @@ export default {
         })
       }
 
-      return newData
+      this.datacollection = {
+        datasets: [{
+          label: this.title,
+          data: newData         
+        }],
+      }
     },
 
     notifyAudio(audioEl, type, msg) {
