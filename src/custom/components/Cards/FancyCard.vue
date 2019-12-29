@@ -18,9 +18,9 @@
       <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ statsData.length ? dataClass : noDataClass, loaderClass ]"/>
       <div>
         <div v-for="stat in Object.entries(statsData).slice(0, Math.ceil(Object.keys(statsData).length / 2))" 
-        class="dataDiv"><p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}</div>
+        class="dataDiv"><p :title="titles ? titles[stat[0].toLowerCase()] : null" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}</div>
         <div v-for="stat in Object.entries(statsData).slice(Math.ceil(Object.keys(statsData).length / 2), Object.keys(statsData).length)" 
-             class="dataDiv"><p :title="titles[stat[0].toLowerCase()]" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}</div>
+             class="dataDiv"><p :title="titles ? titles[stat[0].toLowerCase()] : null" style="display: inline-block">{{stat[0]}}:&nbsp;</p>{{stat[1] | roundToFixed}}</div>
       </div>
     </section>
   </card>
@@ -59,7 +59,7 @@ export default {
     items: {
       type: Array,
       default: () => [],
-      description: "Performance statistics names"
+      description: "Statistics names"
     },  
     values: {
       type: Array,
@@ -202,7 +202,9 @@ export default {
   },
 
   mounted() {
-    this.initWatchlist()
+    if (this.watchable) {
+      this.initWatchlist()
+    }
     this.initData();
   }
 };

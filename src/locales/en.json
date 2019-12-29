@@ -186,7 +186,26 @@
         }
       },
       "patternStatistics": {
-        "title": "Pattern statistics"
+        "title": "Pattern statistics",
+        "statistics": {
+          "title": "Statistics",
+          "items": [
+            "Total patterns",
+            "Bullish",
+            "Bearish"
+          ]
+        },
+        "patterns": [
+          "Asset", 
+          "Pattern",
+          "# of occurence", 
+          "Pattern length", 
+          "Direction", 
+          "Average frequency", 
+          "1 day up_down", 
+          "5 days up_down", 
+          "10 days up_down"
+        ]
       }
     },  
     "wareHouse": {

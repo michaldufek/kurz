@@ -21,7 +21,7 @@ const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/S
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
 // PatternLab SubViews
 const Chart = () => import(/* webpackChunkName: "chart" */"@/custom/apps/research/patternLab/Chart.vue");
-// const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
+const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
 
 
 import auth from '@/custom/assets/js/auth'
@@ -115,11 +115,11 @@ const routes = [
             name: "chart",
             component: Chart
           },   
-          // {
-          //   path: "/research/patternLab/patternStatistics",
-          //   name: "patternStatistics",
-          //   component: PatternStatistics
-          // },
+          {
+            path: "/research/patternLab/patternStatistics",
+            name: "patternStatistics",
+            component: PatternStatistics
+          },
           // {
           //   path: "/research/patternLab/backtests",
           //   name: "backtests",
