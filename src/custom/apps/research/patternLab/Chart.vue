@@ -301,12 +301,11 @@
           this.$http
           .get(constants.urls.patternLab.asset + query)
           .then(response => {
-            let i = 1
             this.assets = response.data.results
                           .filter(result => !this.selectedAssets.map(sa => sa.symbol).includes(result.symbol))
                           .map(result => { 
                             return {
-                              id: i++, 
+                              id: result.id, 
                               symbol: result.symbol,
                               name: result.name
                             }
@@ -330,12 +329,11 @@
           this.$http
           .get(constants.urls.patternLab.pattern + query)
           .then(response => {
-            let i = 1
             this.patterns = response.data
                           .filter(result => !this.selectedPatterns.map(sp => sp.name).includes(result.name))
                           .map(result => { 
                             return {
-                              id: i++, 
+                              id: result.id, 
                               name: result.name
                             }
                           })
