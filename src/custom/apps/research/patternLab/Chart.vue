@@ -307,7 +307,7 @@
                             return {
                               id: result.id, 
                               symbol: result.symbol,
-                              name: result.name
+                              name: result.name ? result.name : result.symbol
                             }
                           })
           })
@@ -329,14 +329,7 @@
           this.$http
           .get(constants.urls.patternLab.pattern + query)
           .then(response => {
-            this.patterns = response.data
-                          .filter(result => !this.selectedPatterns.map(sp => sp.name).includes(result.name))
-                          .map(result => { 
-                            return {
-                              id: result.id, 
-                              name: result.name
-                            }
-                          })
+            this.patterns = response.data.filter(result => !this.selectedPatterns.map(sp => sp.name).includes(result.name))
           })
           .catch(error => {
             console.log(error);

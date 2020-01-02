@@ -13,8 +13,6 @@
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
         <line-chart v-if="responsive"
-                    ref="bigChart"
-                    chart-id="big-line-chart"
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
@@ -24,8 +22,6 @@
         <!-- height and width nulls is workaround of responsiveness library bug - will be fixed in vue-chartjs v4.0.0 (added as milestone) -->
         </line-chart>
         <line-chart v-else
-                    ref="bigChart"
-                    chart-id="big-line-chart"
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
