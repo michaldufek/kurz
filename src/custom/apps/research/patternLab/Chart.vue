@@ -240,9 +240,11 @@
     methods: {
       ddSelectAsset(asset) {
         this.ddSelect(asset, asset => asset.symbol, this.selectedAssets)
+        localStorage.setItem('selectedAssets', JSON.stringify(this.selectedAssets))
       },
       ddSelectPattern(pattern) {
         this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns)
+        localStorage.setItem('selectedPatterns', JSON.stringify(this.selectedPatterns))
       },
       ddSelect(item, itemKeySelector, selectedItems) {
         if ('id' in item && !selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {

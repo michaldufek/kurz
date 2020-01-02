@@ -287,24 +287,23 @@ export default {
 
     createChartData(data) {
       let datasets = []
-      let allLabels = []
       let datasetNr = 0
+
+      let dataTimes = helper.formatDateTimes(
+        data.time.filter(
+          t => (('from' in this.range && t >= this.range.from) || (!('from' in this.range)))
+               && (('to' in this.range && this.range.to && t <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
+        )
+      )
+      let allLabels = this.chartData.labels.concat(dataTimes)
       
       data.equity.forEach(equity => {
         // add new dates and sort it
-        allLabels = this.chartData.labels.concat(
-                      helper.formatDateTimes(
-                        data.time.filter(
-                          t => (('from' in this.range && t >= this.range.from) || (!('from' in this.range)))
-                               && (('to' in this.range && this.range.to && t <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
-                        )
-                      )
-                    )
         let allData = []
         // aggregate values for all dates
         allLabels.forEach(label => {
           let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[datasetNr].data)
-                          + this.nearestValue(label, helper.formatDateTimes(data.time), equity)
+                          + this.nearestValue(label, dataTimes, equity)
 
           // add to final data array
           allData.push(aggValue)

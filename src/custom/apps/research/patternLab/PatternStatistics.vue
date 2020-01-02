@@ -8,14 +8,47 @@
                     :showTitle="true"
                     :items="$t('research.patternLab.patternStatistics.statistics.items')"
                     :proportion="1"
-                    :values="stats">
+                    :values="stats"
+                    style="margin-bottom: 0px;">
         </fancy-card>
 
-        <card>
-        </card>
+        <div style="position: relative; left: 10px; top: 50px; z-index: 1">
+          <base-dropdown class="dd" 
+                         menu-classes="dropdown-black" 
+                         title-classes="btn btn-secondary"
+                         :title="selectedAsset"
+                         style="width: 20%">
+            <ul style="list-style-type: none;">
+              <li v-for="asset in selectedAssets">            
+                <a class="dropdown-item" 
+                   @click="selectedAsset = asset" 
+                   href="#">
+                  {{ asset }}
+                </a>
+              </li>
+            </ul>
+          </base-dropdown>
+        </div>
+        <pie-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.patternsByStock')" />
 
-        <card>
-        </card>
+        <div style="position: relative; left: 10px; top: 50px; z-index: 1">
+          <base-dropdown class="dd" 
+                         menu-classes="dropdown-black" 
+                         title-classes="btn btn-secondary"
+                         :title="selectedPattern"
+                         style="width: 20%">
+            <ul style="list-style-type: none;">
+              <li v-for="pattern in selectedPatterns">            
+                <a class="dropdown-item" 
+                   @click="selectedPattern = pattern" 
+                   href="#">
+                  {{ pattern }}
+                </a>
+              </li>
+            </ul>
+          </base-dropdown>
+        </div>
+        <pie-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')" />
       </div>
 
       <div class="col-lg-9 col-md-12">
@@ -30,6 +63,8 @@
 <script>
   import FancyTable from '@/custom/components/Tables/FancyTable';  
   import FancyCard from '@/custom/components/Cards/FancyCard';  
+  import OhlcChart from '@/custom/components/Charts/OhlcChart';
+  import PieCard from '@/custom/components/Charts/PieCard'
 
   import constants from '@/custom/assets/js/constants';
 
@@ -37,12 +72,18 @@
   export default {
     components: {  
       FancyTable,
-      FancyCard
+      FancyCard,
+      OhlcChart,
+      PieCard
     },
 
     data() {
       return {
-        stats: [ 1540, 540, 1000 ]
+        stats: [ 1540, 540, 1000 ],
+        selectedAsset: null,
+        selectedAssets: [],
+        selectedPattern: null,
+        selectedPatterns: []
       }
     },
 
@@ -53,6 +94,17 @@
     },
 
     methods: {
+      initData() {
+        if ('selectedAssets' in localStorage) {
+          this.selectedAssets = JSON.parse(localStorage.selectedAssets).map(sa => sa.symbol)
+          this.selectedAsset = this.selectedAssets[0]
+        }
+        if ('selectedPatterns' in localStorage) {
+          this.selectedPatterns = JSON.parse(localStorage.selectedPatterns).map(sp => sp.name)
+          this.selectedPattern = this.selectedPatterns[0]
+        }
+      },
+
       notifyAudio(audioEl, type, msg) {
         document.getElementById(audioEl).play();
 
@@ -71,40 +123,20 @@
         
       //   return data
       // },
+    },
+
+    mounted() {
+      this.initData();
     }
   }  
 </script>
 <style>
-  .form-control {
-    box-shadow: gray 0px 0px 7px;
-  }
-
-  .dropdown input {
-    box-shadow: gray 0px 0px 7px;
-    width: 94%;
-    text-align: center;
-    background-color: transparent;
-    border-radius: 0.4285rem !important;
-    background: transparent !important;
-    color: gray !important;
-    border: none !important;
-    min-width: 100% !important;
-  }
-
-  /* .dropdown:focus { // to-do: this focus should be on all inputs (ie.dtpicker, dropdowns)
-    border-color: #1d8cf8 !important
-  } */
-
-  .dropdown .dropdown-content {
-    background-color: darkslategrey !important;
-    border-radius: 0.4285rem;
-    opacity: 0.8;
-    min-width: 100% !important;
-    border: none !important;
-    box-shadow: gray 0px 0px 7px !important;
-  }
-
   .table > thead > tr > th {
     font-size: inherit
+  }
+
+  .dd {
+    float: left;
+    width: 10%
   }
 </style>
