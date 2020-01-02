@@ -186,7 +186,28 @@
         }
       },
       "patternStatistics": {
-        "title": "Pattern statistiky"
+        "title": "Pattern statistiky",
+        "statistics": {
+          "title": "Statistiky",
+          "items": [
+            "Celkově patternů:",
+            "Bullish:",
+            "Bearish:"
+          ]
+        },
+        "patternsByStock": "Patterny dle akcie",
+        "stocksByPattern": "Akcie dle patternů",
+        "patterns": [
+          "Akce", 
+          "Pattern",
+          "# výskytů", 
+          "Délka patternu", 
+          "Směr", 
+          "Průměrná frekvence", 
+          "1 denní up_down", 
+          "5 denní up_down", 
+          "10 denní up_down"
+        ]
       }
     },  
     "wareHouse": {

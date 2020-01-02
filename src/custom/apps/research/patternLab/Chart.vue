@@ -239,9 +239,11 @@
     methods: {
       ddSelectAsset(asset) {
         this.ddSelect(asset, asset => asset.symbol, this.selectedAssets)
+        localStorage.setItem('selectedAssets', JSON.stringify(this.selectedAssets))
       },
       ddSelectPattern(pattern) {
         this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns)
+        localStorage.setItem('selectedPatterns', JSON.stringify(this.selectedPatterns))
       },
       ddSelect(item, itemKeySelector, selectedItems) {
         if ('id' in item && !selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {
@@ -300,14 +302,13 @@
           this.$http
           .get(constants.urls.patternLab.asset + query)
           .then(response => {
-            let i = 1
             this.assets = response.data.results
                           .filter(result => !this.selectedAssets.map(sa => sa.symbol).includes(result.symbol))
                           .map(result => { 
                             return {
-                              id: i++, 
+                              id: result.id, 
                               symbol: result.symbol,
-                              name: result.name
+                              name: result.name ? result.name : result.symbol
                             }
                           })
           })
@@ -329,15 +330,7 @@
           this.$http
           .get(constants.urls.patternLab.pattern + query)
           .then(response => {
-            let i = 1
-            this.patterns = response.data
-                          .filter(result => !this.selectedPatterns.map(sp => sp.name).includes(result.name))
-                          .map(result => { 
-                            return {
-                              id: i++, 
-                              name: result.name
-                            }
-                          })
+            this.patterns = response.data.filter(result => !this.selectedPatterns.map(sp => sp.name).includes(result.name))
           })
           .catch(error => {
             console.log(error);

@@ -13,8 +13,6 @@
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
         <line-chart v-if="responsive"
-                    ref="bigChart"
-                    chart-id="big-line-chart"
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
@@ -24,8 +22,6 @@
         <!-- height and width nulls is workaround of responsiveness library bug - will be fixed in vue-chartjs v4.0.0 (added as milestone) -->
         </line-chart>
         <line-chart v-else
-                    ref="bigChart"
-                    chart-id="big-line-chart"
                     :chart-data="chartData"
                     :gradient-colors="bigLineChart.gradientColors"
                     :gradient-stops="bigLineChart.gradientStops"
@@ -291,24 +287,23 @@ export default {
 
     createChartData(data) {
       let datasets = []
-      let allLabels = []
       let datasetNr = 0
+
+      let dataTimes = helper.formatDateTimes(
+        data.time.filter(
+          t => (('from' in this.range && t >= this.range.from) || (!('from' in this.range)))
+               && (('to' in this.range && this.range.to && t <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
+        )
+      )
+      let allLabels = this.chartData.labels.concat(dataTimes)
       
       data.equity.forEach(equity => {
         // add new dates and sort it
-        allLabels = this.chartData.labels.concat(
-                      helper.formatDateTimes(
-                        data.time.filter(
-                          t => (('from' in this.range && t >= this.range.from) || (!('from' in this.range)))
-                               && (('to' in this.range && this.range.to && t <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
-                        )
-                      )
-                    )
         let allData = []
         // aggregate values for all dates
         allLabels.forEach(label => {
           let aggValue = this.nearestValue(label, this.chartData.labels, this.chartData.datasets[datasetNr].data)
-                          + this.nearestValue(label, helper.formatDateTimes(data.time), equity)
+                          + this.nearestValue(label, dataTimes, equity)
 
           // add to final data array
           allData.push(aggValue)
