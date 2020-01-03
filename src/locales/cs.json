@@ -208,6 +208,9 @@
           "5 denní up_down", 
           "10 denní up_down"
         ]
+      },
+      "backtestPatterns": {
+        "title": "Backtest - patterny"
       }
     },  
     "wareHouse": {
