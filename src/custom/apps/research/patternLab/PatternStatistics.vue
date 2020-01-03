@@ -3,6 +3,7 @@
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div class="row">
       <div class="col-lg-3 col-md-12 container">
+        <!-- statistics -->
         <fancy-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.statistics.title')"
                     :fullTitle="$t('research.patternLab.patternStatistics.statistics.title')"
                     :showTitle="true"
@@ -12,6 +13,7 @@
                     style="margin-bottom: 0px;">
         </fancy-card>
 
+        <!-- pie charts -->
         <div style="position: relative; left: 10px; top: 50px; z-index: 1">
           <base-dropdown class="dd" 
                          menu-classes="dropdown-black" 
@@ -19,11 +21,11 @@
                          :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in selectedAssets.map(sa => sa.symbol)">            
+              <li v-for="asset in selectedAssets">            
                 <a class="dropdown-item" 
-                   @click="selectedAsset = asset" 
+                   @click="selectAsset(asset)" 
                    href="#">
-                  {{ asset }}
+                  {{ asset.symbol }}
                 </a>
               </li>
             </ul>
@@ -38,11 +40,11 @@
                          :title="selectedPattern ? selectedPattern.name : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="pattern in selectedPatterns.map(sp => sp.name)">            
+              <li v-for="pattern in selectedPatterns">            
                 <a class="dropdown-item" 
-                   @click="selectedPattern = pattern" 
+                   @click="selectPattern(pattern)" 
                    href="#">
-                  {{ pattern }}
+                  {{ pattern.name }}
                 </a>
               </li>
             </ul>
@@ -51,10 +53,14 @@
         <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')" />
       </div>
 
+      <!-- patterns table -->
       <div class="col-lg-9 col-md-12">
         <fancy-table :showTitle="false"
-                     :apiUrls="patternsHistoryUrl"
-                     :columns="$t('research.patternLab.patternStatistics.patterns')">
+                     :apiUrls="patternsUrl"
+                     :columns="$t('research.patternLab.patternStatistics.patterns')"
+                     :rowsCreator="rowsCreator"
+                     :sortable="true"
+                     :key="tableKey">
         </fancy-table>
       </div>
     </div>
@@ -80,19 +86,18 @@
 
     data() {
       return {
+        // statistics card
         stats: [ 1540, 540, 1000 ],
+
+        // pie charts
         selectedAsset: null,
         selectedAssets: [],
         selectedPattern: null,
-        selectedPatterns: []
-      }
-    },
+        selectedPatterns: [],
 
-    computed: {
-      patternsHistoryUrl() {
-        return this.selectedPattern && this.selectedAsset 
-               ? [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]
-               : []
+        // patterns table
+        patternsUrl: [],
+        tableKey: 0
       }
     },
 
@@ -106,6 +111,49 @@
           this.selectedPatterns = JSON.parse(localStorage.selectedPatterns)
           this.selectedPattern = this.selectedPatterns[0]
         }
+
+        this.loadTable()
+      },
+
+      loadTable() {
+        this.patternsUrl = this.selectedAsset && this.selectedPattern
+                            ? [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]
+                            : []
+        this.tableKey += 1 // force reload of fancy-table component
+      },
+      rowsCreator(responseData) {
+        let rows = []
+
+
+        //   "", 
+        //   "Pattern length", 
+        //   "Direction", 
+        //   "Average frequency", 
+        //   "1 day up_down", 
+        //   "5 days up_down", 
+        //   "10 days up_down"
+
+        responseData.forEach(data => {
+            let row = []
+
+            row.push(data.history.ticker.symbol) // Asset
+            row.push(data.pattern.name) // Pattern
+            row.push(data.count) // # of occurence
+
+            rows.push(row);
+          });
+        rows.push(['SMB', 'PTRN', 85]); // temp!
+
+        return rows
+      },
+
+      selectAsset(asset) {
+        this.selectedAsset = asset
+        this.loadTable()
+      },
+      selectPattern(pattern) {
+        this.selectedPattern = pattern
+        this.loadTable()
       },
 
       notifyAudio(audioEl, type, msg) {

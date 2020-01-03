@@ -43,6 +43,7 @@ export default {
       loading: false,
 
       // chart
+      // to-do: fix colors
       datacollection: {
 				datasets: [{
 					data: [

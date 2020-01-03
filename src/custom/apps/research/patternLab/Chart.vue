@@ -238,17 +238,25 @@
     },
 
     methods: {
+      initData() {
+        if ('selectedAssets' in localStorage) {
+          this.selectedAssets = JSON.parse(localStorage.selectedAssets)
+        }
+        if ('selectedPatterns' in localStorage) {
+          this.selectedPatterns = JSON.parse(localStorage.selectedPatterns)
+        }
+      },
+
       ddSelectAsset(asset) {
-        this.ddSelect(asset, asset => asset.symbol, this.selectedAssets)
-        localStorage.setItem('selectedAssets', JSON.stringify(this.selectedAssets))
+        this.ddSelect(asset, asset => asset.symbol, this.selectedAssets, 'selectedAssets') 
       },
       ddSelectPattern(pattern) {
-        this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns)
-        localStorage.setItem('selectedPatterns', JSON.stringify(this.selectedPatterns))
+        this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns, 'selectedPatterns')
       },
-      ddSelect(item, itemKeySelector, selectedItems) {
+      ddSelect(item, itemKeySelector, selectedItems, varName) {
         if ('id' in item && !selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {
           selectedItems.push(item)
+          localStorage.setItem(varName, JSON.stringify(selectedItems))
         }
       },
 
@@ -408,6 +416,10 @@
         
         return data
       },
+    },
+
+    mounted() {
+      this.initData()
     }
   }  
 </script>
