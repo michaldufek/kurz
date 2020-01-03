@@ -1,5 +1,5 @@
 <template>
-  <card type="chart">
+  <card type="chart" style="margin-bottom: 0px;">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div class="chart-area" style="margin-top: 50px; height: 100%">
       <section v-if="isError" style="text-align: center">
@@ -20,7 +20,7 @@ import constants from '@/custom/assets/js/constants';
 
 
 export default {
-  name: "pie-card",
+  name: "pie-chart-card",
   components: {
     DualRingLoader,
     PieChart
@@ -43,6 +43,7 @@ export default {
       loading: false,
 
       // chart
+      // to-do: fix colors
       datacollection: {
 				datasets: [{
 					data: [

@@ -11,7 +11,8 @@
         <base-table :data="tableData"
                     :titles="titles"
                     :columns="columns"
-                    thead-classes="text-primary">
+                    thead-classes="text-primary"
+                    :sortable="sortable">
         </base-table>
       </section>
     </div>
@@ -70,6 +71,10 @@ export default {
       default: () => [],
       description: "Table columns"
     },
+    sortable: {
+      type: Boolean,
+      description: "Whether columns can be sorted by header click"
+    }
   },
 
   data() {
@@ -78,6 +83,7 @@ export default {
       loading: false,
       tableData: [],
       finishedLoadings: 0,
+      
       // css classes
       dataClass: 'data',      
       noDataClass: 'noData',

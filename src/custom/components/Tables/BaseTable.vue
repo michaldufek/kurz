@@ -3,13 +3,18 @@
     <thead :class="theadClasses">
     <tr>
       <slot name="columns">
-        <th v-for="column in columns" :key="column" 
-            style="text-align: right;">{{column}}</th>
+        <th v-for="column in columns" 
+            :key="column" 
+            @click="sort(column)"
+            style="text-align: right;"
+            :class="{ 'sortable': sortable }">
+            {{column}}&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
+        </th>
       </slot>
     </tr>
     </thead>
     <tbody :class="tbodyClasses">
-    <tr v-for="(item, index) in data" :key="index">
+    <tr v-for="(item, index) in sortedData" :key="index">
       <slot :row="item">
         <td v-for="(column, index) in columns"
             :key="index" 
@@ -48,6 +53,10 @@
         default: "",
         description: "Whether table is striped or hover type"
       },
+      sortable: {
+        type: Boolean,
+        description: "Whether columns can be sorted by header click"
+      },
       theadClasses: {
         type: String,
         default: '',
@@ -60,7 +69,29 @@
       }
     },
 
+    data() {
+      return {
+        sorting: {}
+      }
+    },
+
     computed: {
+      sortedData() {
+        if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) { // object not empty    
+          let column = Object.keys(this.sorting)[0].toLowerCase()
+          let order = Object.values(this.sorting)[0]        
+
+          var data = this.data.sort((item1,item2) => order === 'asc' 
+                                                      ? String(item1[column]).localeCompare(String(item2[column])) 
+                                                      : String(item2[column]).localeCompare(String(item1[column]))
+                                    )
+        } else {
+          data = this.data
+        }
+
+        return data
+      },
+
       tableClass() {
         return this.type && `table-${this.type}`;
       }
@@ -89,6 +120,12 @@
     },
 
     methods: {
+      sort(column) {
+        let origOrder = this.sorting[column]
+        this.sorting = {} // to-do: sort by multiple columns?
+        this.sorting[column] = origOrder === 'asc' ? 'desc' : 'asc'
+      },
+
       hasValue(item, column) {
         return item[column.toLowerCase()] !== "undefined";
       },
@@ -111,4 +148,7 @@
   }
 </script>
 <style>
+.sortable {
+  cursor: pointer
+}
 </style>
