@@ -208,6 +208,9 @@
           "5 days up_down", 
           "10 days up_down"
         ]
+      },
+      "backtestPatterns": {
+        "title": "Backtest - patterns"
       }
     },  
     "wareHouse": {
