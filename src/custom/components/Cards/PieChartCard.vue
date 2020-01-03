@@ -20,7 +20,7 @@ import constants from '@/custom/assets/js/constants';
 
 
 export default {
-  name: "pie-card",
+  name: "pie-chart-card",
   components: {
     DualRingLoader,
     PieChart

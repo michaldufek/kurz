@@ -16,10 +16,10 @@
           <base-dropdown class="dd" 
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
-                         :title="selectedAsset"
+                         :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in selectedAssets">            
+              <li v-for="asset in selectedAssets.map(sa => sa.symbol)">            
                 <a class="dropdown-item" 
                    @click="selectedAsset = asset" 
                    href="#">
@@ -29,16 +29,16 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.patternsByStock')" />
+        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.patternsByStock')" />
 
         <div style="position: relative; left: 10px; top: 50px; z-index: 1">
           <base-dropdown class="dd" 
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
-                         :title="selectedPattern"
+                         :title="selectedPattern ? selectedPattern.name : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="pattern in selectedPatterns">            
+              <li v-for="pattern in selectedPatterns.map(sp => sp.name)">            
                 <a class="dropdown-item" 
                    @click="selectedPattern = pattern" 
                    href="#">
@@ -48,7 +48,7 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')" />
+        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')" />
       </div>
 
       <div class="col-lg-9 col-md-12">
@@ -64,9 +64,10 @@
   import FancyTable from '@/custom/components/Tables/FancyTable';  
   import FancyCard from '@/custom/components/Cards/FancyCard';  
   import OhlcChart from '@/custom/components/Charts/OhlcChart';
-  import PieCard from '@/custom/components/Charts/PieCard'
+  import PieChartCard from '@/custom/components/Cards/PieChartCard'
 
   import constants from '@/custom/assets/js/constants';
+  import helper from '@/custom/assets/js/helper';
 
 
   export default {
@@ -74,7 +75,7 @@
       FancyTable,
       FancyCard,
       OhlcChart,
-      PieCard
+      PieChartCard
     },
 
     data() {
@@ -89,18 +90,20 @@
 
     computed: {
       patternsHistoryUrl() {
-        return [ constants.urls.patternLab.patternsHistory + "?patterns=1,2,3&symbols=MSFT,TSLA&timeframe=1" ]
+        return this.selectedPattern && this.selectedAsset 
+               ? [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]
+               : []
       }
     },
 
     methods: {
       initData() {
         if ('selectedAssets' in localStorage) {
-          this.selectedAssets = JSON.parse(localStorage.selectedAssets).map(sa => sa.symbol)
+          this.selectedAssets = JSON.parse(localStorage.selectedAssets)
           this.selectedAsset = this.selectedAssets[0]
         }
         if ('selectedPatterns' in localStorage) {
-          this.selectedPatterns = JSON.parse(localStorage.selectedPatterns).map(sp => sp.name)
+          this.selectedPatterns = JSON.parse(localStorage.selectedPatterns)
           this.selectedPattern = this.selectedPatterns[0]
         }
       },
@@ -114,15 +117,15 @@
         })
       },
 
-      // getQueryData() {
-      //   let data = {}
+      getQueryData() {
+        let data = {}
 
-      //   data['patterns'] = this.checkedPatterns.map(chp => chp.id).join(',')
-      //   data['symbols'] = this.selectedAsset.symbol // or can be more selected ?
-      //   data['timeframe'] = this.getTimeframeQuery()
+        data['patterns'] = this.selectedPattern.id
+        data['symbols'] = this.selectedAsset.symbol // or can be more selected ?
+        data['timeframe'] = 1
         
-      //   return data
-      // },
+        return data
+      }
     },
 
     mounted() {
