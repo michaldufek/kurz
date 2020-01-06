@@ -162,6 +162,8 @@
       "patterns": "Patterns",
       "type2search": "Type to search",
       "pickDate": "Pick a date",
+      "checkAll": "Check all",
+      "uncheckAll": "Uncheck all",
       "chart": {
         "title": "Chart",
         "from": "From",

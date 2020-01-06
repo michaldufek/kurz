@@ -162,6 +162,8 @@
       "patterns": "Patterny",
       "type2search": "Hledejte psaním",
       "pickDate": "Vyberte datum",
+      "checkAll": "Zaškrtnout vše",
+      "uncheckAll": "Odškrtnout vše",
       "chart": {
         "title": "Graf",
         "from": "Od",

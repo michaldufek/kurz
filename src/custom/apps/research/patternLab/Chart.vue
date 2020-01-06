@@ -78,6 +78,9 @@
                     @selected="ddSelectPattern">
           </Dropdown>
           <ul style="list-style-type: none; text-align: left; margin-top: 15px; padding-left: 0px">
+            <li :title="checkedAllPatterns ? $t('research.patternLab.uncheckAll') : $t('research.patternLab.checkAll')">   
+              <input type="checkbox" @click="checkAllPatterns" v-model="checkedAllPatterns">
+            </li>
             <li v-for="selectedPattern in selectedPatterns">   
               <input type="checkbox" :id="selectedPattern.id" :value="selectedPattern" v-model="checkedPatterns">
               <label :for="selectedPattern.id" style="margin-left: 10px">{{ selectedPattern.name }}</label>
@@ -193,6 +196,7 @@
         // patterns
         selectedPatterns: [],
         checkedPatterns: [],
+        checkedAllPatterns: false,
         patterns: [],
 
         // chart
@@ -335,6 +339,13 @@
         }
       },
 
+      checkAllPatterns() {
+        if (this.checkedAllPatterns) {
+          this.checkedPatterns = []
+        } else {          
+          this.checkedPatterns = this.selectedPatterns          
+        }
+      },
       getPatterns(query) {
         // to-do: eliminate component's bug - redudant call for selected item        
         if (query) {

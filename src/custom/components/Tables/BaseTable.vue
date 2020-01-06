@@ -6,9 +6,9 @@
         <th v-for="column in columns" 
             :key="column"
             @dblclick="filter(column)"
-            style="text-align: right;"
-            :class="{ 'sortable': sortable || filtrable }"
             @keyup.esc="filtering = {}"
+            style="text-align: right;"
+            :class="{ 'sortable': sortable || filtrable }"            
             :title="headerTitle">
             <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
             <base-input v-if="column in filtering && filtrable" placeholder="Filter" v-model="filterText"/>
