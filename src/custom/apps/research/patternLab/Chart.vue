@@ -77,6 +77,9 @@
                     @selected="ddSelectPattern">
           </Dropdown>
           <ul style="list-style-type: none; text-align: left; margin-top: 15px; padding-left: 0px">
+            <li :title="checkedAllPatterns ? $t('research.patternLab.uncheckAll') : $t('research.patternLab.checkAll')">   
+              <input type="checkbox" @click="checkAllPatterns" v-model="checkedAllPatterns">
+            </li>
             <li v-for="selectedPattern in selectedPatterns">   
               <input type="checkbox" :id="selectedPattern.id" :value="selectedPattern" v-model="checkedPatterns">
               <label :for="selectedPattern.id" style="margin-left: 10px">{{ selectedPattern.name }}</label>
@@ -145,6 +148,7 @@
         <fancy-table :title="$t('research.patternLab.chart.patternsHistory.title')"
                      :apiUrls="patternsHistoryUrl"
                      :columns="$t('research.patternLab.chart.patternsHistory.columns')"
+                     :rowsCreator="rowsCreator"
                      :key="tableKey">
         </fancy-table>
       </div>
@@ -191,6 +195,7 @@
         // patterns
         selectedPatterns: [],
         checkedPatterns: [],
+        checkedAllPatterns: false,
         patterns: [],
 
         // chart
@@ -246,6 +251,7 @@
         }
       },
 
+      // selecting asset/patterns
       ddSelectAsset(asset) {
         this.ddSelect(asset, asset => asset.symbol, this.selectedAssets, 'selectedAssets') 
       },
@@ -332,6 +338,13 @@
         }
       },
 
+      checkAllPatterns() {
+        if (this.checkedAllPatterns) {
+          this.checkedPatterns = []
+        } else {          
+          this.checkedPatterns = this.selectedPatterns          
+        }
+      },
       getPatterns(query) {
         // to-do: eliminate component's bug - redudant call for selected item        
         if (query) {
@@ -352,15 +365,7 @@
         }
       },
 
-      notifyAudio(audioEl, type, msg) {
-        document.getElementById(audioEl).play();
-
-        this.$notify({
-          type: type, 
-          message: msg
-        })
-      },
-
+      // chart methods
       addChart() {
         if (!this.loadChart()) {
           return
@@ -401,6 +406,37 @@
       selectTimeframe(timeframe) {
         this.timeframe = timeframe
         this.loadChart(false)
+      },
+
+      // table methods (patterns history)
+      rowsCreator(responseData) {
+        let rows = []
+
+        responseData.forEach(data => {            
+            let pattern = data.pattern.name
+            
+            data.signal_set.forEach(signal => {
+              let row = []
+
+              row.push(signal.date)
+              row.push(pattern)
+              row.push(helper.convertDirection(signal.direction))
+
+              rows.push(row);
+            })
+          });
+
+        return rows
+      },
+
+      // helper methods
+      notifyAudio(audioEl, type, msg) {
+        document.getElementById(audioEl).play();
+
+        this.$notify({
+          type: type, 
+          message: msg
+        })
       },
 
       getTimeframeQuery() {

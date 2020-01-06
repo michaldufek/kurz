@@ -12,7 +12,9 @@
                     :titles="titles"
                     :columns="columns"
                     thead-classes="text-primary"
-                    :sortable="sortable">
+                    :sortable="sortable"
+                    :filtrable="filtrable"
+                    :headerTitle="headerTitle">
         </base-table>
       </section>
     </div>
@@ -66,6 +68,10 @@ export default {
       default: () => {},
       description: "Table data values descriptions"
     },
+    headerTitle: {
+      type: String,
+      description: "Table header description"
+    },
     columns: {
       type: Array,
       default: () => [],
@@ -74,7 +80,11 @@ export default {
     sortable: {
       type: Boolean,
       description: "Whether columns can be sorted by header click"
-    }
+    },
+    filtrable: {
+      type: Boolean,
+      description: "Whether columns can be filtered by header double-click"
+    },
   },
 
   data() {

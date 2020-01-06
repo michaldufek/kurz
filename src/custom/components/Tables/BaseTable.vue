@@ -4,17 +4,20 @@
     <tr>
       <slot name="columns">
         <th v-for="column in columns" 
-            :key="column" 
-            @click="sort(column)"
+            :key="column"
+            @dblclick="filter(column)"
+            @keyup.esc="filtering = {}"
             style="text-align: right;"
-            :class="{ 'sortable': sortable }">
-            {{column}}&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
+            :class="{ 'sortable': sortable || filtrable }"            
+            :title="headerTitle">
+            <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
+            <base-input v-if="column in filtering && filtrable" placeholder="Filter" v-model="filterText" style="min-width: 75px"/>
         </th>
       </slot>
     </tr>
     </thead>
     <tbody :class="tbodyClasses">
-    <tr v-for="(item, index) in sortedData" :key="index">
+    <tr v-for="(item, index) in sortedFilteredData" :key="index">
       <slot :row="item">
         <td v-for="(column, index) in columns"
             :key="index" 
@@ -48,6 +51,10 @@
         default: () => {},
         description: "Table data values descriptions"
       },
+      headerTitle: {
+        type: String,
+        description: "Table header description"
+      },
       type: {
         type: String, // striped | hover
         default: "",
@@ -56,6 +63,10 @@
       sortable: {
         type: Boolean,
         description: "Whether columns can be sorted by header click"
+      },
+      filtrable: {
+        type: Boolean,
+        description: "Whether columns can be filtered by header double-click"
       },
       theadClasses: {
         type: String,
@@ -71,22 +82,30 @@
 
     data() {
       return {
-        sorting: {}
+        sorting: {},
+        filtering: {},
+        filterText: null
       }
     },
 
     computed: {
-      sortedData() {
+      sortedFilteredData() {
+        let data = this.data
+
+        if (!(Object.keys(this.filtering).length === 0 && this.filtering.constructor === Object)) { // object not empty 
+          let column = Object.keys(this.filtering)[0]
+          data = data.filter(item => column in this.filtering && this.filterText 
+                                      && String(item[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase()) 
+                                      || !(column in this.filtering) || !this.filterText)
+        }
         if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) { // object not empty    
-          let column = Object.keys(this.sorting)[0].toLowerCase()
+          let column = Object.keys(this.sorting)[0].toLowerCase()          
           let order = Object.values(this.sorting)[0]        
 
-          var data = this.data.sort((item1,item2) => order === 'asc' 
-                                                      ? String(item1[column]).localeCompare(String(item2[column])) 
-                                                      : String(item2[column]).localeCompare(String(item1[column]))
-                                    )
-        } else {
-          data = this.data
+          data = data.sort((item1,item2) => order === 'asc' 
+                                            ? String(item1[column]).localeCompare(String(item2[column])) 
+                                            : String(item2[column]).localeCompare(String(item1[column]))
+                          )
         }
 
         return data
@@ -99,7 +118,7 @@
 
     filters: {
       toFixed2(nr) {
-        if (!nr) {
+        if (!nr || Number.isInteger(nr)) {
           return nr
         }
 
@@ -121,9 +140,16 @@
 
     methods: {
       sort(column) {
-        let origOrder = this.sorting[column]
-        this.sorting = {} // to-do: sort by multiple columns?
-        this.sorting[column] = origOrder === 'asc' ? 'desc' : 'asc'
+        if (this.sortable) {
+          let origOrder = this.sorting[column]
+          this.sorting = {} // to-do: sort by multiple columns?
+          this.sorting[column] = origOrder === 'asc' ? 'desc' : 'asc'
+        }
+      },
+      filter(column) {
+        this.filtering = {}
+        this.filterText = null
+        this.filtering[column] = true
       },
 
       hasValue(item, column) {

@@ -162,6 +162,8 @@
       "patterns": "Patterny",
       "type2search": "Hledejte psaním",
       "pickDate": "Vyberte datum",
+      "checkAll": "Zaškrtnout vše",
+      "uncheckAll": "Odškrtnout vše",
       "chart": {
         "title": "Graf",
         "from": "Od",
@@ -181,7 +183,8 @@
           "title": "Historie patternů",
           "columns": [
             "Datum",
-            "Pattern"
+            "Pattern",
+            "Směr"
           ]
         }
       },
@@ -197,7 +200,7 @@
         },
         "patternsByStock": "Patterny dle akcie",
         "stocksByPattern": "Akcie dle patternů",
-        "patterns": [
+        "patternsTable": [
           "Akce", 
           "Pattern",
           "# výskytů", 
@@ -207,7 +210,8 @@
           "1 denní up_down", 
           "5 denní up_down", 
           "10 denní up_down"
-        ]
+        ],
+        "patternsTitle": "Klikni pro třídení, dvoj-klik pro filtrování."
       },
       "backtestPatterns": {
         "title": "Backtest - patterny"

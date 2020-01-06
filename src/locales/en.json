@@ -162,6 +162,8 @@
       "patterns": "Patterns",
       "type2search": "Type to search",
       "pickDate": "Pick a date",
+      "checkAll": "Check all",
+      "uncheckAll": "Uncheck all",
       "chart": {
         "title": "Chart",
         "from": "From",
@@ -181,7 +183,8 @@
           "title": "Patterns history",
           "columns": [
             "Date",
-            "Pattern"
+            "Pattern",
+            "Direction"
           ]
         }
       },
@@ -197,7 +200,7 @@
         },
         "patternsByStock": "Patterns by stock chart",
         "stocksByPattern": "Stocks by pattern chart",
-        "patterns": [
+        "patternsTable": [
           "Asset", 
           "Pattern",
           "# of occurence", 
@@ -207,7 +210,8 @@
           "1 day up_down", 
           "5 days up_down", 
           "10 days up_down"
-        ]
+        ],
+        "patternsTitle": "Click for sort, double-click for filter."
       },
       "backtestPatterns": {
         "title": "Backtest - patterns"
