@@ -181,7 +181,8 @@
           "title": "Historie patternů",
           "columns": [
             "Datum",
-            "Pattern"
+            "Pattern",
+            "Směr"
           ]
         }
       },

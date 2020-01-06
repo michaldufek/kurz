@@ -138,6 +138,10 @@ export default {
         return ret.join('&');
     },
 
+    convertDirection(nr) {
+        return nr === 100 ? 'Bullish' : 'Bearish'
+    },
+
     // global filters
     roundToFixed(value) {
         // rounds to 2 mantissa places

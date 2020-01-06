@@ -181,7 +181,8 @@
           "title": "Patterns history",
           "columns": [
             "Date",
-            "Pattern"
+            "Pattern",
+            "Direction"
           ]
         }
       },
