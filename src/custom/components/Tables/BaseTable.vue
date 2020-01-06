@@ -11,7 +11,7 @@
             :class="{ 'sortable': sortable || filtrable }"            
             :title="headerTitle">
             <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
-            <base-input v-if="column in filtering && filtrable" placeholder="Filter" v-model="filterText"/>
+            <base-input v-if="column in filtering && filtrable" placeholder="Filter" v-model="filterText" style="min-width: 75px"/>
         </th>
       </slot>
     </tr>
@@ -118,7 +118,7 @@
 
     filters: {
       toFixed2(nr) {
-        if (!nr) {
+        if (!nr || Number.isInteger(nr)) {
           return nr
         }
 

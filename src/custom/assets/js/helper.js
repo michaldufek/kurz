@@ -1,4 +1,5 @@
 import i18n from "@/i18n"
+import constants from './constants';
 
 export default { 
     // statistics
@@ -139,11 +140,15 @@ export default {
     },
 
     convertDirection(nr) {
-        return nr === 100 ? 'Bullish' : 'Bearish'
+        return !nr ? nr : (nr > 0 ? constants.strings.bullish : constants.strings.bearish)
     },
 
     // global filters
     roundToFixed(value) {
+        if (!value || Number.isInteger(value)) {
+            return value
+        }
+
         // rounds to 2 mantissa places
         return value ? ((value instanceof Number || typeof value === 'number')
                         ? value.toFixed(2)

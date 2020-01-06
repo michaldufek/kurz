@@ -7,10 +7,10 @@
         <fancy-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.statistics.title')"
                     :fullTitle="$t('research.patternLab.patternStatistics.statistics.title')"
                     :showTitle="true"
-                    :items="$t('research.patternLab.patternStatistics.statistics.items')"
-                    :proportion="1"
-                    :values="stats"
-                    style="margin-bottom: 0px;">
+                    :items="$t('research.patternLab.patternStatistics.statistics.items')"                    
+                    :values="[ patternsStats.total, patternsStats.bullish, patternsStats.bearish ]"
+                    style="margin-bottom: 0px;"
+                    :key="cardKey">
         </fancy-card>
 
         <!-- pie charts -->
@@ -21,7 +21,7 @@
                          :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in selectedAssets">            
+              <li v-for="asset in assets">            
                 <a class="dropdown-item" 
                    @click="selectAsset(asset)" 
                    href="#">
@@ -31,7 +31,8 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.patternsByStock')" />
+        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.patternsByStock')"
+                        :chartData="chartData.patternsByAsset" />
 
         <div style="position: relative; left: 10px; top: 50px; z-index: 1">
           <base-dropdown class="dd" 
@@ -40,7 +41,7 @@
                          :title="selectedPattern ? selectedPattern.name : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="pattern in selectedPatterns">            
+              <li v-for="pattern in patterns">            
                 <a class="dropdown-item" 
                    @click="selectPattern(pattern)" 
                    href="#">
@@ -50,7 +51,8 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')" />
+        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')"
+                        :chartData="chartData.assetsByPattern" />
       </div>
 
       <!-- patterns table -->
@@ -89,73 +91,165 @@
     data() {
       return {
         // statistics card
-        stats: [ 1540, 540, 1000 ],
+        patternsStats: {
+          total: 0,
+          bullish: 0,
+          bearish: 0
+        },
 
         // pie charts
         selectedAsset: null,
-        selectedAssets: [],
+        assets: [],
         selectedPattern: null,
-        selectedPatterns: [],
+        patterns: [],
+        chartData: {
+          patternsByAsset: null,
+          assetsByPattern: null
+        },
 
         // patterns table
         patternsUrl: [],
+        cardKey: 0,
         tableKey: 0
       }
     },
 
     methods: {
-      initData() {
+      initTable() {
+        let assets = []
+        let patterns = []
+
         if ('selectedAssets' in localStorage) {
-          this.selectedAssets = JSON.parse(localStorage.selectedAssets)
-          this.selectedAsset = this.selectedAssets[0]
+          assets = JSON.parse(localStorage.selectedAssets)
         }
         if ('selectedPatterns' in localStorage) {
-          this.selectedPatterns = JSON.parse(localStorage.selectedPatterns)
-          this.selectedPattern = this.selectedPatterns[0]
+          patterns = JSON.parse(localStorage.selectedPatterns)
         }
 
-        this.loadTable()
-      },
-
-      loadTable() {
-        this.patternsUrl = this.selectedAsset && this.selectedPattern
-                            ? [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]
+        this.patternsUrl = assets.length && patterns.length
+                            ? [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData(assets, patterns)) ]
                             : []
         this.tableKey += 1 // force reload of fancy-table component
       },
+
       rowsCreator(responseData) {
-        let rows = []
-
-
-        //   "", 
-        //   "Pattern length", 
-        //   "Direction", 
-        //   "Average frequency", 
-        //   "1 day up_down", 
-        //   "5 days up_down", 
-        //   "10 days up_down"
+        this.patternsStats = {
+          total: 0,
+          bullish: 0,
+          bearish: 0
+        }
+        this.assets = []
+        this.patterns = []
+        let rows = []  
+        let patternsByAsset = {} 
+        let assetsByPattern = {}      
 
         responseData.forEach(data => {
+          if (data.count) {
             let row = []
-
-            row.push(data.history.ticker.symbol) // Asset
-            row.push(data.pattern.name) // Pattern
-            row.push(data.count) // # of occurence
-
+            let direction = this.createRow(data, row)
             rows.push(row);
-          });
-        rows.push(['SMB', 'PTRN', 85]); // temp!
 
+            if (!this.assets.map(a => a.id).includes(data.history.ticker.id)) {
+              this.assets.push({
+                id: data.history.ticker.id,
+                symbol: data.history.ticker.symbol
+              }) 
+            }            
+            if (!this.patterns.map(p => p.id).includes(data.pattern.id)) {
+              this.patterns.push({
+                id: data.pattern.id,
+                name: data.pattern.name
+              })
+            }
+
+            this.updatePatternsStats(direction, data.count)
+
+            // updating pie charts data
+            if (!(data.history.ticker.symbol in patternsByAsset)) {
+              patternsByAsset[data.history.ticker.symbol] = {}              
+            }
+            if (!(data.pattern.name in patternsByAsset[data.history.ticker.symbol])) {
+              patternsByAsset[data.history.ticker.symbol][data.pattern.name] = 0              
+            }
+            patternsByAsset[data.history.ticker.symbol][data.pattern.name] += data.count
+
+            if (!(data.pattern.name in assetsByPattern)) {
+              assetsByPattern[data.pattern.name] = {}              
+            }
+            if (!(data.history.ticker.symbol in assetsByPattern[data.pattern.name])) {
+              assetsByPattern[data.pattern.name][data.history.ticker.symbol] = 0              
+            }
+            assetsByPattern[data.pattern.name][data.history.ticker.symbol] += data.count
+          }
+        });
+
+        // setting valid value of selected asset and pattern
+        if (!this.selectedAsset || !this.assets.map(a => a.id).includes(this.selectedAsset.id)) {
+          this.selectedAsset = this.assets[0]
+        }
+        if (!this.selectedPattern || !this.patterns.map(p => p.id).includes(this.selectedPattern.id)) {
+          this.selectedPattern = this.patterns[0]
+        }
+
+        // creating pie charts data
+        this.chartData.patternsByAsset = this.createChartData(patternsByAsset[this.selectedAsset.symbol])
+        this.chartData.assetsByPattern = this.createChartData(assetsByPattern[this.selectedPattern.name])
+
+         // force reload of fancy-card component
+        this.cardKey += 1
+        
         return rows
+      },
+      createRow(data, row) {
+        row.push(data.history.ticker.symbol) // Asset
+        row.push(data.pattern.name) // Pattern
+        row.push(data.count) // # of occurence          
+        row.push(data.signal_set.length) // Pattern length
+
+        let directionNr = 0
+        data.signal_set.forEach(signal => directionNr += signal.direction) // to-do: how to calculate overall direction?
+        let direction = helper.convertDirection(directionNr)
+        row.push(direction) // Direction
+
+        row.push(data.count_mean ? 1 / data.count_mean : null) // Average frequency
+
+        if (direction === constants.strings.bullish) {
+          row.push(data.d1_bull_up * 100 + ' %')  // 1 day up_down
+          row.push(data.d5_bull_up * 100 + ' %')  // 5 days up_down
+          row.push(data.d10_bull_up * 100 + ' %') // 10 days up_down
+        } else if (direction === constants.strings.bearish) {
+          row.push(data.d1_bear_down * 100 + ' %')
+          row.push(data.d5_bear_down * 100 + ' %')
+          row.push(data.d10_bear_down * 100 + ' %')
+        }
+
+        return direction
+      },
+      updatePatternsStats(direction, count) {
+        this.patternsStats.total += count
+
+        if (direction === constants.strings.bullish) {
+          this.patternsStats.bullish += count
+        } else if (direction === constants.strings.bearish) {
+          this.patternsStats.bearish += count
+        }
+      },
+      createChartData(items) {
+        return {
+          datasets: [{
+            data: Object.values(items),
+            backgroundColor: Object.keys(items).map(_ => "#"+((1<<24)*Math.random()|0).toString(16)) // random colors
+          }],
+          labels: Object.keys(items)
+        }
       },
 
       selectAsset(asset) {
         this.selectedAsset = asset
-        this.loadTable()
       },
       selectPattern(pattern) {
         this.selectedPattern = pattern
-        this.loadTable()
       },
 
       notifyAudio(audioEl, type, msg) {
@@ -167,11 +261,11 @@
         })
       },
 
-      getQueryData() {
+      getQueryData(assets, patterns) {
         let data = {}
 
-        data['patterns'] = this.selectedPattern.id
-        data['symbols'] = this.selectedAsset.symbol // or can be more selected ?
+        data['patterns'] = patterns.map(sp => sp.id)
+        data['symbols'] = assets.map(sa => sa.symbol)
         data['timeframe'] = 1
         
         return data
@@ -179,7 +273,7 @@
     },
 
     mounted() {
-      this.initData();
+      this.initTable();
     }
   }  
 </script>
