@@ -215,7 +215,8 @@
         "patternsTitle": "Click for sort, double-click for filter."
       },
       "backtestPatterns": {
-        "title": "Backtest - patterns"
+        "title": "Backtest - patterns",
+        "addPattern": "Add pattern"
       }
     },  
     "wareHouse": {

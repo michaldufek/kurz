@@ -2,10 +2,12 @@
   <div>
     <div class="row">
 
-      <asset-patterns-picker :title="$t('research.patternLab.chart.title')"
-                             :btnText="$t('research.patternLab.chart.addChart')" 
-                             @btnClicked="addChart" 
-                             @timeframeChanged="timeframeChanged" />      
+      <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
+                              :btnText="$t('research.patternLab.chart.addChart')" 
+                              :tfLeftPos="325"
+                              :dpTexts="{ from: $t('research.patternLab.from'), to: $t('research.patternLab.to') }"
+                              @btnClicked="addChart" 
+                              @timeframeChanged="timeframeChanged" />      
 
       <!-- chart -->
       <div class="col-lg-7 col-md-12">
@@ -60,7 +62,7 @@
 <script>
   import Dropdown from 'vue-simple-search-dropdown';
 
-  import AssetPatternsPicker from '@/custom/components/AssetPatternsPicker'
+  import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
   import FancyChart from '@/custom/components/Charts/FancyChart';
   import OhlcChart from '@/custom/components/Charts/OhlcChart';
   import FancyTable from '@/custom/components/Tables/FancyTable';  
@@ -71,7 +73,7 @@
 
   export default {
     components: {  
-      AssetPatternsPicker,
+      AssetsPatternsPicker,
       Dropdown,
       FancyChart,
       OhlcChart,
@@ -82,7 +84,7 @@
       // fixes x-axes label overlapping
       // https://www.chartjs.org/docs/latest/axes/cartesian/?h=autoskip
       return {
-        // asset-patterns-picker
+        // assets-patterns-picker
         from: null,
         to: null,
         timeframe: null,
@@ -121,7 +123,7 @@
         this.from = data.from,
         this.to = data.to,
         this.timeframe = data.timeframe
-        this.asset = data.asset
+        this.asset = data.assets[0]
         this.patterns = data.patterns        
 
         this.loadChart()

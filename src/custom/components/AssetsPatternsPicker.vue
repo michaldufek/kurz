@@ -3,7 +3,7 @@
         <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
 
         <!-- timeframe dropdown -->
-        <div style="position: relative; left: 325px; top: 10px; z-index: 1">
+        <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
             <base-dropdown class="dd" 
                            menu-classes="dropdown-black" 
                            title-classes="btn btn-secondary"
@@ -21,14 +21,14 @@
         </div>
 
         <!-- date pickers -->
-        <div class="col-xs-3" style="position: relative; top: -25px;">
+        <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: -25px')">
             <div class="controls">
                 <table class="table tablesorter">
                     <tbody>
                         <tr>
                             <!-- <slot :row="item"> -->
                             <td style="border-top: 0px; text-align: right">
-                                {{ $t("research.patternLab.from") }}: 
+                                {{ dpTexts.from ? dpTexts.from + ':' : '' }}
                             </td>
                             <td style="border-top: 0px;">
                                 <datepicker v-model="from" 
@@ -42,7 +42,7 @@
                         <tr>
                             <!-- <slot :row="item"> -->
                             <td style="border-top: 0px; text-align: right">
-                                {{ $t("research.patternLab.to") }}: 
+                                {{ dpTexts.to ? dpTexts.to + ':' : '' }}
                             </td>
                             <td style="border-top: 0px;">
                                 <datepicker v-model="to" 
@@ -76,7 +76,7 @@
                 </template>  
                 <template slot-scope="{row}">
                     <a href="#" @click="selectAsset(row)">
-                        <div :class="{ 'selectedAsset': selectedAsset && selectedAsset.symbol === row.symbol }">
+                        <div :class="{ 'selectedAsset': checkedAssets.map(a => a.symbol).includes(row.symbol) }">
                             <td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
                             <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td>
                         </div>
@@ -126,7 +126,7 @@ import constants from '@/custom/assets/js/constants';
 import helper from '@/custom/assets/js/helper';
 
 export default {
-    name: 'asset-patterns-picker',
+    name: 'assets-patterns-picker',
     components: {  
       Datepicker,   
       Dropdown,
@@ -137,6 +137,21 @@ export default {
             type: String,
             description: "Title used in errors"
         },
+        dpTexts: {
+            type: Object,
+            default: () => {
+                return {
+                    from: null,
+                    to: null
+                }
+            },
+            description: "Texts before datepickers"
+        },
+        tfLeftPos: {
+            type: Number,
+            default: 30,
+            description: "Position of timeFrame dropdown from left in pixels"
+        },
         btnText: {
             type: String,
             description: "Text of main submit button"
@@ -145,6 +160,7 @@ export default {
 
     data() {
         return {
+            defaultTfLeftPos: 30,
             timeframe: this.$t('research.patternLab.timeframes')[0],
 
             // datepickers
@@ -152,9 +168,9 @@ export default {
             to: null,
 
             // assets
-            disabledDatesAsset: null,
-            selectedAsset: null,
+            disabledDatesAsset: null,            
             selectedAssets: [],
+            checkedAssets: [],
             assets: [],
 
             // patterns
@@ -220,47 +236,47 @@ export default {
         },
 
         selectAsset(asset) {
-            if (this.selectedAsset !== asset) {
-            this.selectedAsset = asset
+            if (!this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+                this.checkedAssets.push(asset)
 
-            this.$http
-            .get(constants.urls.patternLab.chart + asset.id + '/' + helper.convertTimeframe(this.timeframe)) // to-do: cache this result !
-            .then(response => {
-                this.disabledDatesAsset = {
-                    from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
-                    to: new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
-                }
-            })
-            .catch(error => {
-                console.log(error);
-                
-                if (error.message === constants.strings.networkError) {
-                    this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
-                }
-            })
-            .finally(() => {
-                if (this.from && (this.from < this.disabledDatesAsset.to || this.from > this.disabledDatesAsset.from)) {
-                    this.from = this.disabledDatesAsset.to
-                    this.$notify({
-                        type: 'warning', 
-                        message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-                    })
-                }
-                if (this.to && (this.to > this.disabledDatesAsset.from || this.to < this.disabledDatesAsset.to)) {
-                    this.to = this.disabledDatesAsset.from
-                    this.$notify({
-                        type: 'warning', 
-                        message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-                    })
-                }
-            })
+                this.$http
+                .get(constants.urls.patternLab.chart + asset.id + '/' + helper.convertTimeframe(this.timeframe)) // to-do: cache this result !
+                .then(response => {
+                    this.disabledDatesAsset = {
+                        from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
+                        to: new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    
+                    if (error.message === constants.strings.networkError) {
+                        this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+                    }
+                })
+                .finally(() => {
+                    if (this.from && (this.from < this.disabledDatesAsset.to || this.from > this.disabledDatesAsset.from)) {
+                        this.from = this.disabledDatesAsset.to
+                        this.$notify({
+                            type: 'warning', 
+                            message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+                        })
+                    }
+                    if (this.to && (this.to > this.disabledDatesAsset.from || this.to < this.disabledDatesAsset.to)) {
+                        this.to = this.disabledDatesAsset.from
+                        this.$notify({
+                            type: 'warning', 
+                            message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+                        })
+                    }
+                })
             }
         },
         removeAsset(assetSymbol) {
             this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(assetSymbol), 1);
 
-            if (this.selectedAsset && this.selectedAsset.symbol === assetSymbol) {
-                this.selectedAsset = null
+            if (this.checkedAssets.map(a => a.symbol).includes(assetSymbol)) {
+                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(assetSymbol), 1);
                 this.disabledDatesAsset = null
             }
         },
@@ -318,12 +334,11 @@ export default {
         },
 
         btnClick() {
-            if (!this.selectedAsset) {
+            if (!this.checkedAssets.length) {
                 this.$notify({
                     type: 'warning', 
                     message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
                 })    
-
                 return
             }
             
@@ -338,7 +353,7 @@ export default {
                 from: this.from,
                 to: this.to,
                 timeframe: this.timeframe,
-                asset: this.selectedAsset,
+                assets: this.checkedAssets,
                 patterns: this.checkedPatterns
             })
         },

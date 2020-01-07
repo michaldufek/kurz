@@ -215,7 +215,8 @@
         "patternsTitle": "Klikni pro třídení, dvoj-klik pro filtrování."
       },
       "backtestPatterns": {
-        "title": "Backtest - patterny"
+        "title": "Backtest - patterny",
+        "addPattern": "Přidat pattern"
       }
     },  
     "wareHouse": {
