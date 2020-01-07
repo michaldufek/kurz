@@ -129,6 +129,9 @@ export default {
         return val instanceof Number || typeof val === 'number'
     },
 
+    convertTimeframe(timeframe) {
+        return i18n.t('research.patternLab.timeframes').indexOf(timeframe) + 1
+    },
     encodeQueryData(data) {
         const ret = [];
         for (let d in data) {

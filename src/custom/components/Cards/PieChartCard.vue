@@ -2,8 +2,8 @@
   <card type="chart" style="margin-bottom: 0px;">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div class="chart-area" style="margin-top: 50px; height: 100%">
-      <section v-if="isError" style="text-align: center">
-        <p style="padding-top: 50px">{{ $t('dataError') }}</p>
+      <section v-if="noData" style="text-align: center">
+        <p style="padding-top: 50px">{{ $t('noData') }}</p>
       </section>
       <section v-else>
         <pie-chart :chart-data="chartData"
@@ -44,7 +44,7 @@ export default {
   },
 
   computed: {
-    isError() {
+    noData() {
       return !this.chartData || !('datasets' in this.chartData) || !(this.chartData.datasets.length)
     }
   }

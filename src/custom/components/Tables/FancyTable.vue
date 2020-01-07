@@ -3,7 +3,10 @@
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <h4 v-if="showTitle" slot="header" class="card-title">{{title}}</h4>
     <div>
-      <section v-if="isError">
+      <section v-if="noData">
+        <p>{{ $t('noData') }}</p>
+      </section>
+      <section v-else-if="isError">
         <p>{{ $t('dataError') }}</p>
       </section>
       <section v-else>
@@ -102,8 +105,11 @@ export default {
   },
 
   computed: {
+    noData() {
+      return !this.loading && !this.tableData.length
+    },
     isError() {
-      return !this.tableData.length && this.error
+      return this.error
     }
   },
 

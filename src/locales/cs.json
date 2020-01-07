@@ -4,6 +4,7 @@
   "schoolTitle": "Mendelova univerzita v Brně",
   "loading": "Načítání",
   "dataError": "Omlouváme se, nejsme schopní získat data. Zkusíme to později...",
+  "noData": "Žádné data na zobrazení.",
   "chartUpdatedPrefix": "Aktualizováno o",
   "chartNeverUpdated": "Ještě neaktualizováno",
   "ytd": "YTD",
@@ -161,24 +162,24 @@
       "assets": "Aktiva",
       "patterns": "Patterny",
       "type2search": "Hledejte psaním",
+      "from": "Od",
+      "to": "Do",
       "pickDate": "Vyberte datum",
       "checkAll": "Zaškrtnout vše",
       "uncheckAll": "Odškrtnout vše",
+      "timeframes": [
+        "Denní",
+        "Týdenní",
+        "Měsíční"
+      ],
       "chart": {
-        "title": "Graf",
-        "from": "Od",
-        "to": "Do",
+        "title": "Graf",        
         "addChart": "Přidat graf",
         "chartTypes": [
           "Čárový",
           "OHLC sloupcový",
           "Svíčkový"
-        ],
-        "timeframes": [
-          "Denní",
-          "Týdenní",
-          "Měsíční"
-        ],
+        ],        
         "patternsHistory": {
           "title": "Historie patternů",
           "columns": [
@@ -214,7 +215,8 @@
         "patternsTitle": "Klikni pro třídení, dvoj-klik pro filtrování."
       },
       "backtestPatterns": {
-        "title": "Backtest - patterny"
+        "title": "Backtest - patterny",
+        "addPattern": "Přidat pattern"
       }
     },  
     "wareHouse": {

@@ -6,7 +6,10 @@
     </div>
     <br/>
     <div class="chart-area" style="height: 425px">
-      <section v-if="isError" style="text-align: center">
+      <section v-if="noData" style="text-align: center">
+        <p style="padding-top: 50px">{{ $t('noData') }}</p>
+      </section>
+      <section v-else-if="isError" style="text-align: center">
         <p style="padding-top: 50px">{{ $t('dataError') }}</p>
       </section>
       <section v-else>
@@ -80,8 +83,11 @@ export default {
   },
 
   computed: {
+    noData() {
+      return !this.loading && (!('datasets' in this.datacollection) || !this.datacollection.datasets.length)
+    },
     isError() {
-      return this.datacollection.datasets && !this.datacollection.datasets.length && this.error
+      return this.error
     }
   },
 

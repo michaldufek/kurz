@@ -96,6 +96,7 @@
           bullish: 0,
           bearish: 0
         },
+        cardKey: 0,
 
         // pie charts
         selectedAsset: null,
@@ -103,13 +104,16 @@
         selectedPattern: null,
         patterns: [],
         chartData: {
+          // only chosen asset and pattern
           patternsByAsset: null,
-          assetsByPattern: null
+          assetsByPattern: null 
         },
+        // all assets and patterns
+        patternsByAsset: {},
+        assetsByPattern: {},
 
         // patterns table
         patternsUrl: [],
-        cardKey: 0,
         tableKey: 0
       }
     },
@@ -139,10 +143,10 @@
           bearish: 0
         }
         this.assets = []
-        this.patterns = []
-        let rows = []  
-        let patternsByAsset = {} 
-        let assetsByPattern = {}      
+        this.patterns = []        
+        this.patternsByAsset = {} 
+        this.assetsByPattern = {}   
+        let rows = []     
 
         responseData.forEach(data => {
           if (data.count) {
@@ -164,23 +168,7 @@
             }
 
             this.updatePatternsStats(direction, data.count)
-
-            // updating pie charts data
-            if (!(data.history.ticker.symbol in patternsByAsset)) {
-              patternsByAsset[data.history.ticker.symbol] = {}              
-            }
-            if (!(data.pattern.name in patternsByAsset[data.history.ticker.symbol])) {
-              patternsByAsset[data.history.ticker.symbol][data.pattern.name] = 0              
-            }
-            patternsByAsset[data.history.ticker.symbol][data.pattern.name] += data.count
-
-            if (!(data.pattern.name in assetsByPattern)) {
-              assetsByPattern[data.pattern.name] = {}              
-            }
-            if (!(data.history.ticker.symbol in assetsByPattern[data.pattern.name])) {
-              assetsByPattern[data.pattern.name][data.history.ticker.symbol] = 0              
-            }
-            assetsByPattern[data.pattern.name][data.history.ticker.symbol] += data.count
+            this.updateChartDatas(data)            
           }
         });
 
@@ -193,8 +181,7 @@
         }
 
         // creating pie charts data
-        this.chartData.patternsByAsset = this.createChartData(patternsByAsset[this.selectedAsset.symbol])
-        this.chartData.assetsByPattern = this.createChartData(assetsByPattern[this.selectedPattern.name])
+        this.createChartDatas()
 
          // force reload of fancy-card component
         this.cardKey += 1
@@ -235,6 +222,27 @@
           this.patternsStats.bearish += count
         }
       },
+      updateChartDatas(data) {
+        if (!(data.history.ticker.symbol in this.patternsByAsset)) {
+          this.patternsByAsset[data.history.ticker.symbol] = {}              
+        }
+        if (!(data.pattern.name in this.patternsByAsset[data.history.ticker.symbol])) {
+          this.patternsByAsset[data.history.ticker.symbol][data.pattern.name] = 0              
+        }
+        this.patternsByAsset[data.history.ticker.symbol][data.pattern.name] += data.count
+
+        if (!(data.pattern.name in this.assetsByPattern)) {
+          this.assetsByPattern[data.pattern.name] = {}              
+        }
+        if (!(data.history.ticker.symbol in this.assetsByPattern[data.pattern.name])) {
+          this.assetsByPattern[data.pattern.name][data.history.ticker.symbol] = 0              
+        }
+        this.assetsByPattern[data.pattern.name][data.history.ticker.symbol] += data.count
+      },
+      createChartDatas() {
+        this.chartData.patternsByAsset = this.createChartData(this.patternsByAsset[this.selectedAsset.symbol])
+        this.chartData.assetsByPattern = this.createChartData(this.assetsByPattern[this.selectedPattern.name])
+      },
       createChartData(items) {
         return {
           datasets: [{
@@ -243,13 +251,15 @@
           }],
           labels: Object.keys(items)
         }
-      },
+      },      
 
       selectAsset(asset) {
         this.selectedAsset = asset
+        this.createChartDatas()
       },
       selectPattern(pattern) {
         this.selectedPattern = pattern
+        this.createChartDatas()
       },
 
       notifyAudio(audioEl, type, msg) {

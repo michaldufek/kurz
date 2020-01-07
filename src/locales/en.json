@@ -4,6 +4,7 @@
   "schoolTitle": "Mendel University in Brno",
   "loading": "Loading of",
   "dataError": "We are sorry, at this moment we are unable to get the data. We'll try again later...",
+  "noData": "No data to show.",
   "chartUpdatedPrefix": "Updated at",
   "chartNeverUpdated": "Never updated",
   "ytd": "YTD",
@@ -160,25 +161,25 @@
     "patternLab": { 
       "assets": "Assets",
       "patterns": "Patterns",
+      "from": "From",
+      "to": "To",
       "type2search": "Type to search",
       "pickDate": "Pick a date",
       "checkAll": "Check all",
       "uncheckAll": "Uncheck all",
+      "timeframes": [
+        "Daily",
+        "Weekly",
+        "Monthly"
+      ],
       "chart": {
-        "title": "Chart",
-        "from": "From",
-        "to": "To",
+        "title": "Chart",        
         "addChart": "Add chart",
         "chartTypes": [
           "Line",
           "OHLC bar",
           "Candlestick"          
-        ],
-        "timeframes": [
-          "Daily",
-          "Weekly",
-          "Monthly"
-        ],
+        ],        
         "patternsHistory": {
           "title": "Patterns history",
           "columns": [
@@ -214,7 +215,8 @@
         "patternsTitle": "Click for sort, double-click for filter."
       },
       "backtestPatterns": {
-        "title": "Backtest - patterns"
+        "title": "Backtest - patterns",
+        "addPattern": "Add pattern"
       }
     },  
     "wareHouse": {

@@ -54,6 +54,8 @@ export default {
     strings: {
         networkError: "Network Error",
         etc: "...",
-        all: "all"
+        all: "all",
+        bullish: "Bullish",
+        bearish: "Bearish"
     }
 }

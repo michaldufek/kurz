@@ -7,7 +7,10 @@
     </div>
     <br/>
     <div class="chart-area" style="height: 425px">
-      <section v-if="isError" style="text-align: center">
+      <section v-if="noData" style="text-align: center">
+        <p style="padding-top: 50px">{{ $t('noData') }}</p>
+      </section>
+      <section v-else-if="isError" style="text-align: center">
         <p style="padding-top: 50px">{{ $t('dataError') }}</p>
       </section>
       <section v-else>
@@ -128,8 +131,11 @@ export default {
   },
 
   computed: {
+    noData() {
+      return !this.loading && !this.chartData.datasets[0].data.length
+    },
     isError() {
-      return !this.chartData.datasets[0].data.length && this.error
+      return this.error
     },
     extraOptions() {
       let eOp = chartConfigs.purpleChartOptions
