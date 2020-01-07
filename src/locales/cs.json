@@ -4,6 +4,7 @@
   "schoolTitle": "Mendelova univerzita v Brně",
   "loading": "Načítání",
   "dataError": "Omlouváme se, nejsme schopní získat data. Zkusíme to později...",
+  "noData": "Žádné data na zobrazení.",
   "chartUpdatedPrefix": "Aktualizováno o",
   "chartNeverUpdated": "Ještě neaktualizováno",
   "ytd": "YTD",
@@ -164,6 +165,11 @@
       "pickDate": "Vyberte datum",
       "checkAll": "Zaškrtnout vše",
       "uncheckAll": "Odškrtnout vše",
+      "timeframes": [
+        "Denní",
+        "Týdenní",
+        "Měsíční"
+      ],
       "chart": {
         "title": "Graf",
         "from": "Od",
@@ -173,12 +179,7 @@
           "Čárový",
           "OHLC sloupcový",
           "Svíčkový"
-        ],
-        "timeframes": [
-          "Denní",
-          "Týdenní",
-          "Měsíční"
-        ],
+        ],        
         "patternsHistory": {
           "title": "Historie patternů",
           "columns": [

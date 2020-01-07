@@ -116,7 +116,7 @@
                          title-classes="btn btn-secondary"
                          :title="timeframe">
             <ul style="list-style-type: none;">
-              <li v-for="timeframe in $t('research.patternLab.chart.timeframes').filter(el => el !== timeframe)">            
+              <li v-for="timeframe in $t('research.patternLab.timeframes').filter(el => el !== timeframe)">            
                 <a class="dropdown-item" 
                    @click="selectTimeframe(timeframe)" 
                    href="#">
@@ -201,7 +201,7 @@
 
         // chart
         chartType: this.$t('research.patternLab.chart.chartTypes')[0],
-        timeframe: this.$t('research.patternLab.chart.timeframes')[0],
+        timeframe: this.$t('research.patternLab.timeframes')[0],
         lineChartUrl: null,
         lineChartKey: 0,        
 
@@ -441,7 +441,7 @@
       },
 
       getTimeframeQuery() {
-        return this.$t('research.patternLab.chart.timeframes').indexOf(this.timeframe) + 1
+        return this.$t('research.patternLab.timeframes').indexOf(this.timeframe) + 1
       },
       getQueryData() {
         let data = {}
@@ -481,7 +481,7 @@
     color: inherit; 
   }
 
-    .dropdown input {
+  .dropdown input {
     background: transparent !important;
     color: gray !important;
     border: none !important;

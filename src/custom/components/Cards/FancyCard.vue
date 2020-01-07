@@ -11,7 +11,10 @@
          class="watchlist"
          onMouseOver="this.classList.add('mouseOver')"
          onMouseOut="this.classList.remove('mouseOver')">
-    <section v-if="isError">
+    <section v-if="noData">
+      <p>{{ $t('noData') }}</p>
+    </section>
+    <section v-else-if="isError">
       <p>{{ $t('dataError') }}</p>
     </section>
     <section v-else>
@@ -96,8 +99,11 @@ export default {
   },
 
   computed: {
+    noData() {
+      return !this.loading && !Object.keys(this.statsData).length
+    },
     isError() {
-      return !Object.keys(this.statsData).length && this.error
+      return this.error
     },
 
     watchlistSrc() {
