@@ -162,6 +162,8 @@
       "assets": "Aktiva",
       "patterns": "Patterny",
       "type2search": "Hledejte psaním",
+      "from": "Od",
+      "to": "Do",
       "pickDate": "Vyberte datum",
       "checkAll": "Zaškrtnout vše",
       "uncheckAll": "Odškrtnout vše",
@@ -171,9 +173,7 @@
         "Měsíční"
       ],
       "chart": {
-        "title": "Graf",
-        "from": "Od",
-        "to": "Do",
+        "title": "Graf",        
         "addChart": "Přidat graf",
         "chartTypes": [
           "Čárový",

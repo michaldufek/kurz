@@ -161,6 +161,8 @@
     "patternLab": { 
       "assets": "Assets",
       "patterns": "Patterns",
+      "from": "From",
+      "to": "To",
       "type2search": "Type to search",
       "pickDate": "Pick a date",
       "checkAll": "Check all",
@@ -171,9 +173,7 @@
         "Monthly"
       ],
       "chart": {
-        "title": "Chart",
-        "from": "From",
-        "to": "To",
+        "title": "Chart",        
         "addChart": "Add chart",
         "chartTypes": [
           "Line",
