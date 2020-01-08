@@ -82,7 +82,7 @@
                         </div>
                     </a>
                     <td class="td-actions text-right" style="border: none">
-                        <base-button size="sm" icon @click="removeAsset(row.symbol)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
+                        <base-button size="sm" icon @click="removeAsset(row)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
                             <i class="tim-icons icon-simple-remove"></i>
                         </base-button>
                     </td>
@@ -240,19 +240,42 @@ export default {
         },
 
         selectAsset(asset) {
-            if (!this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+            if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+                // remove from checked assets
+                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1);
+            } else {
                 if (this.oneAssetLimit && this.checkedAssets.length === 1) {
-                    // only one asset can be checked
-                    this.checkedAssets = []                    
+                    // if only one asset can be checked change checked asset
+                    this.checkedAssets = []
                 }
                 this.checkedAssets.push(asset)
+            }    
+            
+            this.updateDisabledDatesAsset()
+        },
+        removeAsset(asset) {
+            this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(asset.symbol), 1);
 
+            if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1);
+                this.updateDisabledDatesAsset()
+            }
+        },
+        updateDisabledDatesAsset() {
+            this.disabledDatesAsset = null
+            let fromChanged = false
+            let toChanged = false
+
+            this.checkedAssets.forEach(asset => {
                 this.$http
                 .get(constants.urls.patternLab.chart + asset.id + '/' + helper.convertTimeframe(this.timeframe)) // to-do: cache this result !
                 .then(response => {
+                    let newFrom = new Date(Math.max(...Object.keys(response.data.Close)))    // maximum asset date !                    
+                    let newTo = new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
+
                     this.disabledDatesAsset = {
-                        from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
-                        to: new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
+                        from: new Date(this.disabledDatesAsset ? Math.min(this.disabledDatesAsset.from, newFrom)  : newFrom),
+                        to: new Date(this.disabledDatesAsset ? Math.max(this.disabledDatesAsset.to, newTo) : newTo)
                     }
                 })
                 .catch(error => {
@@ -265,28 +288,28 @@ export default {
                 .finally(() => {
                     if (this.from && (this.from < this.disabledDatesAsset.to || this.from > this.disabledDatesAsset.from)) {
                         this.from = this.disabledDatesAsset.to
-                        this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-                        })
+
+                        if (!fromChanged) {
+                            this.$notify({
+                                type: 'warning', 
+                                message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+                            })
+                            fromChanged = true
+                        }
                     }
                     if (this.to && (this.to > this.disabledDatesAsset.from || this.to < this.disabledDatesAsset.to)) {
                         this.to = this.disabledDatesAsset.from
-                        this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-                        })
+
+                        if (!toChanged) {
+                            this.$notify({
+                                type: 'warning', 
+                                message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+                            })
+                            toChanged = true
+                        }
                     }
                 })
-            }
-        },
-        removeAsset(assetSymbol) {
-            this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(assetSymbol), 1);
-
-            if (this.checkedAssets.map(a => a.symbol).includes(assetSymbol)) {
-                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(assetSymbol), 1);
-                this.disabledDatesAsset = null
-            }
+            })
         },
         getAssets(query) {
             // to-do: eliminate component's bug - redudant call for selected item
