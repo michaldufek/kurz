@@ -217,6 +217,10 @@
       "backtestPatterns": {
         "title": "Backtest - patterns",
         "addPattern": "Add pattern"
+      },
+      "alerts": {
+        "title": "Alerts",
+        "addAlert": "Add alert"        
       }
     },  
     "wareHouse": {

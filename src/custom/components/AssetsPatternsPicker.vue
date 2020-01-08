@@ -2,59 +2,61 @@
     <div class="col-lg-2 col-md-12 container">
         <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
 
-        <!-- timeframe dropdown -->
-        <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
-            <base-dropdown class="dd" 
-                           menu-classes="dropdown-black" 
-                           title-classes="btn btn-secondary"
-                           :title="timeframe">
-                <ul style="list-style-type: none;">
-                    <li v-for="tframe in $t('research.patternLab.timeframes').filter(el => el !== timeframe)">            
-                        <a class="dropdown-item" 
-                           @click="selectTimeframe(tframe)" 
-                           href="#">
-                           {{ tframe }}
-                        </a>
-                    </li>
-                </ul>
-            </base-dropdown>
-        </div>
+        <div v-if="showDatePickers">
+            <!-- timeframe dropdown -->
+            <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
+                <base-dropdown class="dd" 
+                               menu-classes="dropdown-black" 
+                               title-classes="btn btn-secondary"
+                               :title="timeframe">
+                    <ul style="list-style-type: none;">
+                        <li v-for="tframe in $t('research.patternLab.timeframes').filter(el => el !== timeframe)">            
+                            <a class="dropdown-item" 
+                               @click="selectTimeframe(tframe)" 
+                               href="#">
+                               {{ tframe }}
+                            </a>
+                        </li>
+                    </ul>
+                </base-dropdown>
+            </div>
 
-        <!-- date pickers -->
-        <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: -25px')">
-            <div class="controls">
-                <table class="table tablesorter">
-                    <tbody>
-                        <tr>
-                            <!-- <slot :row="item"> -->
-                            <td style="border-top: 0px; text-align: right">
-                                {{ dpTexts.from ? dpTexts.from + ':' : '' }}
-                            </td>
-                            <td style="border-top: 0px;">
-                                <datepicker v-model="from" 
-                                            :disabled-dates="disabledDatesFrom" 
-                                            :clear-button="true" 
-                                            :format="dateFormat" 
-                                            :placeholder="$t('research.patternLab.pickDate')" />
-                            </td>
-                            <!-- </slot> -->
-                        </tr>
-                        <tr>
-                            <!-- <slot :row="item"> -->
-                            <td style="border-top: 0px; text-align: right">
-                                {{ dpTexts.to ? dpTexts.to + ':' : '' }}
-                            </td>
-                            <td style="border-top: 0px;">
-                                <datepicker v-model="to" 
-                                            :disabled-dates="disabledDatesTo" 
-                                            :clear-button="true" 
-                                            :format="dateFormat" 
-                                            :placeholder="$t('research.patternLab.pickDate')" />
-                            </td>
-                            <!-- </slot> -->
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- date pickers -->
+            <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: -25px')">
+                <div class="controls">
+                    <table class="table tablesorter">
+                        <tbody>
+                            <tr>
+                                <!-- <slot :row="item"> -->
+                                <td style="border-top: 0px; text-align: right">
+                                    {{ dpTexts.from ? dpTexts.from + ':' : '' }}
+                                </td>
+                                <td style="border-top: 0px;">
+                                    <datepicker v-model="from" 
+                                                :disabled-dates="disabledDatesFrom" 
+                                                :clear-button="true" 
+                                                :format="dateFormat" 
+                                                :placeholder="$t('research.patternLab.pickDate')" />
+                                </td>
+                                <!-- </slot> -->
+                            </tr>
+                            <tr>
+                                <!-- <slot :row="item"> -->
+                                <td style="border-top: 0px; text-align: right">
+                                    {{ dpTexts.to ? dpTexts.to + ':' : '' }}
+                                </td>
+                                <td style="border-top: 0px;">
+                                    <datepicker v-model="to" 
+                                                :disabled-dates="disabledDatesTo" 
+                                                :clear-button="true" 
+                                                :format="dateFormat" 
+                                                :placeholder="$t('research.patternLab.pickDate')" />
+                                </td>
+                                <!-- </slot> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -140,6 +142,11 @@ export default {
         oneAssetLimit: {
             type: Boolean,
             description: "Whether only one asset can be checked"
+        },
+        showDatePickers: {
+            type: Boolean,
+            default: true,
+            description: "Whether datepickers (and timeFrame dropdown) section should be showed"
         },
         dpTexts: {
             type: Object,
