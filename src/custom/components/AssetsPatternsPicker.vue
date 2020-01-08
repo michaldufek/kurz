@@ -102,7 +102,7 @@
                       @selected="ddSelectPattern">
             </Dropdown>
             <ul style="list-style-type: none; text-align: left; margin-top: 15px; padding-left: 0px">
-                <li :title="checkedAllPatterns ? $t('research.patternLab.uncheckAll') : $t('research.patternLab.checkAll')">   
+                <li v-if="selectedPatterns.length" :title="checkedAllPatterns ? $t('research.patternLab.uncheckAll') : $t('research.patternLab.checkAll')">   
                     <input type="checkbox" @click="checkAllPatterns" v-model="checkedAllPatterns">
                 </li>
                 <li v-for="selectedPattern in selectedPatterns">   
@@ -136,6 +136,10 @@ export default {
         title: {
             type: String,
             description: "Title used in errors"
+        },
+        oneAssetLimit: {
+            type: Boolean,
+            description: "Whether only one asset can be checked"
         },
         dpTexts: {
             type: Object,
@@ -237,6 +241,10 @@ export default {
 
         selectAsset(asset) {
             if (!this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+                if (this.oneAssetLimit && this.checkedAssets.length === 1) {
+                    // only one asset can be checked
+                    this.checkedAssets = []                    
+                }
                 this.checkedAssets.push(asset)
 
                 this.$http
