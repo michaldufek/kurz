@@ -1,14 +1,15 @@
 <template>
   <div>
     <div class="row">
-
-      <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
-                              :oneAssetLimit="true"
-                              :btnText="$t('research.patternLab.chart.addChart')" 
-                              :tfLeftPos="425"
-                              :dpTexts="{ from: $t('research.patternLab.from'), to: $t('research.patternLab.to') }"
-                              @btnClicked="addChart" 
-                              @timeframeChanged="timeframeChanged" />      
+      <div class="col-lg-2 col-md-12 container">
+        <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
+                                :oneAssetLimit="true"
+                                :btnText="$t('research.patternLab.chart.addChart')" 
+                                :tfLeftPos="425"
+                                :dpTexts="{ from: $t('research.patternLab.from'), to: $t('research.patternLab.to') }"
+                                @btnClicked="addChart" 
+                                @timeframeChanged="timeframeChanged" />      
+      </div>
 
       <!-- chart -->
       <div class="col-lg-7 col-md-12">

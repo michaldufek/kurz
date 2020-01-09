@@ -201,17 +201,20 @@
         },
         "patternsByStock": "Patterns by stock chart",
         "stocksByPattern": "Stocks by pattern chart",
-        "patternsTable": [
-          "Asset", 
-          "Pattern",
-          "# of occurence", 
-          "Pattern length", 
-          "Direction", 
-          "Average frequency", 
-          "1 day up_down", 
-          "5 days up_down", 
-          "10 days up_down"
-        ],
+        "patternsTable": {
+          "title": "Patterns",
+          "columns": [
+            "Asset", 
+            "Pattern",
+            "# of occurence", 
+            "Pattern length", 
+            "Direction", 
+            "Average frequency", 
+            "1 day up_down", 
+            "5 days up_down", 
+            "10 days up_down"
+          ]
+        },
         "patternsTitle": "Click for sort, double-click for filter."
       },
       "backtestPatterns": {
@@ -220,7 +223,13 @@
       },
       "alerts": {
         "title": "Alerts",
-        "addAlert": "Add alert"        
+        "addAlert": "Add alert",
+        "alertsTable": [
+          "Pattern",
+          "Asset",
+          "Email notification",
+          "App notification"
+        ]
       }
     },  
     "wareHouse": {

@@ -16,7 +16,7 @@
                     :columns="columns"
                     thead-classes="text-primary"
                     :sortable="sortable"
-                    :filtrable="filtrable"
+                    :filterable="filterable"
                     :headerTitle="headerTitle">
         </base-table>
       </section>
@@ -84,7 +84,7 @@ export default {
       type: Boolean,
       description: "Whether columns can be sorted by header click"
     },
-    filtrable: {
+    filterable: {
       type: Boolean,
       description: "Whether columns can be filtered by header double-click"
     },

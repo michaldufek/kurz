@@ -1,5 +1,5 @@
 <template>
-    <div class="col-lg-2 col-md-12 container">
+    <div>
         <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
 
         <div v-if="showDatePickers">
