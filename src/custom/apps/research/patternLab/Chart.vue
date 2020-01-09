@@ -1,13 +1,15 @@
 <template>
   <div>
     <div class="row">
-
-      <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
-                              :btnText="$t('research.patternLab.chart.addChart')" 
-                              :tfLeftPos="325"
-                              :dpTexts="{ from: $t('research.patternLab.from'), to: $t('research.patternLab.to') }"
-                              @btnClicked="addChart" 
-                              @timeframeChanged="timeframeChanged" />      
+      <div class="col-lg-2 col-md-12 container">
+        <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
+                                :oneAssetLimit="true"
+                                :btnText="$t('research.patternLab.chart.addChart')" 
+                                :tfLeftPos="425"
+                                :dpTexts="{ from: $t('research.patternLab.from'), to: $t('research.patternLab.to') }"
+                                @btnClicked="addChart" 
+                                @timeframeChanged="timeframeChanged" />      
+      </div>
 
       <!-- chart -->
       <div class="col-lg-7 col-md-12">
@@ -16,8 +18,7 @@
           <base-dropdown class="dd" 
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
-                         :title="chartType"
-                         style="width: 20%">
+                         :title="chartType">
             <ul style="list-style-type: none;">
               <li v-for="chartType in $t('research.patternLab.chart.chartTypes').filter(el => el !== chartType)">            
                 <a class="dropdown-item" 

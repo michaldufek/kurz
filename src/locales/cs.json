@@ -201,22 +201,35 @@
         },
         "patternsByStock": "Patterny dle akcie",
         "stocksByPattern": "Akcie dle patternů",
-        "patternsTable": [
-          "Akce", 
-          "Pattern",
-          "# výskytů", 
-          "Délka patternu", 
-          "Směr", 
-          "Průměrná frekvence", 
-          "1 denní up_down", 
-          "5 denní up_down", 
-          "10 denní up_down"
-        ],
+        "patternsTable": {
+          "title": "Patterny",
+          "columns": [
+            "Akce", 
+            "Pattern",
+            "# výskytů", 
+            "Délka patternu", 
+            "Směr", 
+            "Průměrná frekvence", 
+            "1 denní up_down", 
+            "5 denní up_down", 
+            "10 denní up_down"
+          ]
+        },
         "patternsTitle": "Klikni pro třídení, dvoj-klik pro filtrování."
       },
       "backtestPatterns": {
         "title": "Backtest - patterny",
         "addPattern": "Přidat pattern"
+      },
+      "alerts": {
+        "title": "Upozornění",
+        "addAlert": "Přidat upozornění",
+        "alertsTable": [
+          "Pattern",
+          "Akce",
+          "Email notifikace",
+          "Aplikační notifikace"
+        ]
       }
     },  
     "wareHouse": {

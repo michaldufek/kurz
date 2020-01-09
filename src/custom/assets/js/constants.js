@@ -3,6 +3,7 @@ const SPPartUrl = "/api/sp"
 const PLPartUrl = "/api/pl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
+const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
 const reportPartUrl = "/api/xreport"
 const statsPartUrl = reportPartUrl + "/last_report"
@@ -35,7 +36,8 @@ export default {
             asset: baseUrl + PLPartUrl + tickerPartUrl + searchPartUrl,
             pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl,
             chart: baseUrl + PLPartUrl + "/HistoryData/",
-            patternsHistory: baseUrl + PLPartUrl + "/Backtests"
+            patternsHistory: baseUrl + PLPartUrl + "/Backtests",
+            alerts: baseUrl + PLPartUrl + alertPartUrl + "s"
         },
 
         auth: baseUrl + "/rest-auth",

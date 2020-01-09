@@ -57,12 +57,13 @@
 
       <!-- patterns table -->
       <div class="col-lg-9 col-md-12">
-        <fancy-table :showTitle="false"
+        <fancy-table :title="$t('research.patternLab.patternStatistics.patternsTable.title')"
+                     :showTitle="false"
                      :apiUrls="patternsUrl"
-                     :columns="$t('research.patternLab.patternStatistics.patternsTable')"
+                     :columns="$t('research.patternLab.patternStatistics.patternsTable.columns')"
                      :rowsCreator="rowsCreator"
                      :sortable="true"
-                     :filtrable="true"
+                     :filterable="true"
                      :headerTitle="$t('research.patternLab.patternStatistics.patternsTitle')"
                      :key="tableKey">
         </fancy-table>
