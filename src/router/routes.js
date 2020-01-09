@@ -23,6 +23,7 @@ const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.v
 const Chart = () => import(/* webpackChunkName: "chart" */"@/custom/apps/research/patternLab/Chart.vue");
 const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
 const BacktestPatterns = () => import(/* webpackChunkName: "backtestPatterns" */"@/custom/apps/research/patternLab/BacktestPatterns.vue");
+const Alerts = () => import(/* webpackChunkName: "plAlerts" */"@/custom/apps/research/patternLab/Alerts.vue"); // app doesn't work with webpackChunkName: "alerts" !
 
 
 import auth from '@/custom/assets/js/auth'
@@ -126,11 +127,11 @@ const routes = [
             name: "backtestPatterns",
             component: BacktestPatterns
           },
-          // {
-          //   path: "/research/patternLab/alerts",
-          //   name: "alerts",
-          //   component: Alerts
-          // }  
+          {
+            path: "/research/patternLab/alerts",
+            name: "alerts",
+            component: Alerts
+          }  
         ],
       },
       // {

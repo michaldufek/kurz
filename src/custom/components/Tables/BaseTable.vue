@@ -8,10 +8,10 @@
             @dblclick="filter(column)"
             @keyup.esc="filtering = {}"
             style="text-align: right;"
-            :class="{ 'sortable': sortable || filtrable }"            
+            :class="{ 'sortable': sortable || filterable }"            
             :title="headerTitle">
             <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
-            <base-input v-if="column in filtering && filtrable" placeholder="Filter" v-model="filterText" style="min-width: 75px"/>
+            <base-input v-if="column in filtering && filterable" placeholder="Filter" v-model="filterText" style="min-width: 75px"/>
         </th>
       </slot>
     </tr>
@@ -64,7 +64,7 @@
         type: Boolean,
         description: "Whether columns can be sorted by header click"
       },
-      filtrable: {
+      filterable: {
         type: Boolean,
         description: "Whether columns can be filtered by header double-click"
       },

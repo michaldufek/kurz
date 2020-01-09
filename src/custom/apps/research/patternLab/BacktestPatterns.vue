@@ -1,18 +1,20 @@
 <template>
   <div class="row">
 
+    <div class="col-lg-2 col-md-12 container">
       <assets-patterns-picker :title="$t('research.patternLab.backtestPatterns.title')"
                               :btnText="$t('research.patternLab.backtestPatterns.addPattern')" 
                               @btnClicked="addPattern" 
                               @timeframeChanged="timeframeChanged" />
+    </div>
 
-      <!-- strategy settings  -->
-      <div class="col-lg-2 col-md-12">
-      </div>
+    <!-- strategy settings  -->
+    <div class="col-lg-2 col-md-12">
+    </div>
 
-      <!-- performance results  -->
-      <div class="col-lg-8 col-md-12">
-      </div>
+    <!-- performance results  -->
+    <div class="col-lg-8 col-md-12">
+    </div>
 
   </div>
 </template>

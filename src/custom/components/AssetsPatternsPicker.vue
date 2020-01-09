@@ -1,60 +1,62 @@
 <template>
-    <div class="col-lg-2 col-md-12 container">
+    <div>
         <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
 
-        <!-- timeframe dropdown -->
-        <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
-            <base-dropdown class="dd" 
-                           menu-classes="dropdown-black" 
-                           title-classes="btn btn-secondary"
-                           :title="timeframe">
-                <ul style="list-style-type: none;">
-                    <li v-for="tframe in $t('research.patternLab.timeframes').filter(el => el !== timeframe)">            
-                        <a class="dropdown-item" 
-                           @click="selectTimeframe(tframe)" 
-                           href="#">
-                           {{ tframe }}
-                        </a>
-                    </li>
-                </ul>
-            </base-dropdown>
-        </div>
+        <div v-if="showDatePickers">
+            <!-- timeframe dropdown -->
+            <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
+                <base-dropdown class="dd" 
+                               menu-classes="dropdown-black" 
+                               title-classes="btn btn-secondary"
+                               :title="timeframe">
+                    <ul style="list-style-type: none;">
+                        <li v-for="tframe in $t('research.patternLab.timeframes').filter(el => el !== timeframe)">            
+                            <a class="dropdown-item" 
+                               @click="selectTimeframe(tframe)" 
+                               href="#">
+                               {{ tframe }}
+                            </a>
+                        </li>
+                    </ul>
+                </base-dropdown>
+            </div>
 
-        <!-- date pickers -->
-        <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: -25px')">
-            <div class="controls">
-                <table class="table tablesorter">
-                    <tbody>
-                        <tr>
-                            <!-- <slot :row="item"> -->
-                            <td style="border-top: 0px; text-align: right">
-                                {{ dpTexts.from ? dpTexts.from + ':' : '' }}
-                            </td>
-                            <td style="border-top: 0px;">
-                                <datepicker v-model="from" 
-                                            :disabled-dates="disabledDatesFrom" 
-                                            :clear-button="true" 
-                                            :format="dateFormat" 
-                                            :placeholder="$t('research.patternLab.pickDate')" />
-                            </td>
-                            <!-- </slot> -->
-                        </tr>
-                        <tr>
-                            <!-- <slot :row="item"> -->
-                            <td style="border-top: 0px; text-align: right">
-                                {{ dpTexts.to ? dpTexts.to + ':' : '' }}
-                            </td>
-                            <td style="border-top: 0px;">
-                                <datepicker v-model="to" 
-                                            :disabled-dates="disabledDatesTo" 
-                                            :clear-button="true" 
-                                            :format="dateFormat" 
-                                            :placeholder="$t('research.patternLab.pickDate')" />
-                            </td>
-                            <!-- </slot> -->
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- date pickers -->
+            <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: -25px')">
+                <div class="controls">
+                    <table class="table tablesorter">
+                        <tbody>
+                            <tr>
+                                <!-- <slot :row="item"> -->
+                                <td style="border-top: 0px; text-align: right">
+                                    {{ dpTexts.from ? dpTexts.from + ':' : '' }}
+                                </td>
+                                <td style="border-top: 0px;">
+                                    <datepicker v-model="from" 
+                                                :disabled-dates="disabledDatesFrom" 
+                                                :clear-button="true" 
+                                                :format="dateFormat" 
+                                                :placeholder="$t('research.patternLab.pickDate')" />
+                                </td>
+                                <!-- </slot> -->
+                            </tr>
+                            <tr>
+                                <!-- <slot :row="item"> -->
+                                <td style="border-top: 0px; text-align: right">
+                                    {{ dpTexts.to ? dpTexts.to + ':' : '' }}
+                                </td>
+                                <td style="border-top: 0px;">
+                                    <datepicker v-model="to" 
+                                                :disabled-dates="disabledDatesTo" 
+                                                :clear-button="true" 
+                                                :format="dateFormat" 
+                                                :placeholder="$t('research.patternLab.pickDate')" />
+                                </td>
+                                <!-- </slot> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -82,7 +84,7 @@
                         </div>
                     </a>
                     <td class="td-actions text-right" style="border: none">
-                        <base-button size="sm" icon @click="removeAsset(row.symbol)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
+                        <base-button size="sm" icon @click="removeAsset(row)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
                             <i class="tim-icons icon-simple-remove"></i>
                         </base-button>
                     </td>
@@ -102,7 +104,7 @@
                       @selected="ddSelectPattern">
             </Dropdown>
             <ul style="list-style-type: none; text-align: left; margin-top: 15px; padding-left: 0px">
-                <li :title="checkedAllPatterns ? $t('research.patternLab.uncheckAll') : $t('research.patternLab.checkAll')">   
+                <li v-if="selectedPatterns.length" :title="checkedAllPatterns ? $t('research.patternLab.uncheckAll') : $t('research.patternLab.checkAll')">   
                     <input type="checkbox" @click="checkAllPatterns" v-model="checkedAllPatterns">
                 </li>
                 <li v-for="selectedPattern in selectedPatterns">   
@@ -136,6 +138,15 @@ export default {
         title: {
             type: String,
             description: "Title used in errors"
+        },
+        oneAssetLimit: {
+            type: Boolean,
+            description: "Whether only one asset can be checked"
+        },
+        showDatePickers: {
+            type: Boolean,
+            default: true,
+            description: "Whether datepickers (and timeFrame dropdown) section should be showed"
         },
         dpTexts: {
             type: Object,
@@ -236,15 +247,42 @@ export default {
         },
 
         selectAsset(asset) {
-            if (!this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+            if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+                // remove from checked assets
+                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1);
+            } else {
+                if (this.oneAssetLimit && this.checkedAssets.length === 1) {
+                    // if only one asset can be checked change checked asset
+                    this.checkedAssets = []
+                }
                 this.checkedAssets.push(asset)
+            }    
+            
+            this.updateDisabledDatesAsset()
+        },
+        removeAsset(asset) {
+            this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(asset.symbol), 1);
 
+            if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1);
+                this.updateDisabledDatesAsset()
+            }
+        },
+        updateDisabledDatesAsset() {
+            this.disabledDatesAsset = null
+            let fromChanged = false
+            let toChanged = false
+
+            this.checkedAssets.forEach(asset => {
                 this.$http
                 .get(constants.urls.patternLab.chart + asset.id + '/' + helper.convertTimeframe(this.timeframe)) // to-do: cache this result !
                 .then(response => {
+                    let newFrom = new Date(Math.max(...Object.keys(response.data.Close)))    // maximum asset date !                    
+                    let newTo = new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
+
                     this.disabledDatesAsset = {
-                        from: new Date(Math.max(...Object.keys(response.data.Close))),    // maximum asset date !
-                        to: new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
+                        from: new Date(this.disabledDatesAsset ? Math.min(this.disabledDatesAsset.from, newFrom)  : newFrom),
+                        to: new Date(this.disabledDatesAsset ? Math.max(this.disabledDatesAsset.to, newTo) : newTo)
                     }
                 })
                 .catch(error => {
@@ -257,28 +295,28 @@ export default {
                 .finally(() => {
                     if (this.from && (this.from < this.disabledDatesAsset.to || this.from > this.disabledDatesAsset.from)) {
                         this.from = this.disabledDatesAsset.to
-                        this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-                        })
+
+                        if (!fromChanged) {
+                            this.$notify({
+                                type: 'warning', 
+                                message: this.$t('notifications.fromChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+                            })
+                            fromChanged = true
+                        }
                     }
                     if (this.to && (this.to > this.disabledDatesAsset.from || this.to < this.disabledDatesAsset.to)) {
                         this.to = this.disabledDatesAsset.from
-                        this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
-                        })
+
+                        if (!toChanged) {
+                            this.$notify({
+                                type: 'warning', 
+                                message: this.$t('notifications.toChanged') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.chart.title') + ').'
+                            })
+                            toChanged = true
+                        }
                     }
                 })
-            }
-        },
-        removeAsset(assetSymbol) {
-            this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(assetSymbol), 1);
-
-            if (this.checkedAssets.map(a => a.symbol).includes(assetSymbol)) {
-                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(assetSymbol), 1);
-                this.disabledDatesAsset = null
-            }
+            })
         },
         getAssets(query) {
             // to-do: eliminate component's bug - redudant call for selected item
