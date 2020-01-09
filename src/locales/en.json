@@ -219,7 +219,35 @@
       },
       "backtestPatterns": {
         "title": "Backtest - patterns",
-        "addPattern": "Add pattern"
+        "addPattern": "Add pattern",
+        "initialCapital": "Initial capital",
+        "numberUSD": "Number in USD",
+        "entryRules": {
+          "title": "Entry rules",
+          "entryType": "Entry type",
+          "entryTypes": [
+            "Market",
+            "Stop",
+            "Limit",
+            "Pending STOP",
+            "Pending LIMIT"
+          ],
+          "direction": "Direction",
+          "directions": [
+            "BUY",
+            "SELL"
+          ],
+          "price": "Price",
+          "trendFilter": "Trend filter",
+          "movingAverage": "Moving average",
+          "movingAverageTip": "Moving average period",
+          "expirationTip": "Expiration for pending entry type",
+          "expiration": "Expiration",
+          "numberDays": "Number in days"
+        },
+        "exitRules": {
+          "title": "Exit rules"
+        }
       },
       "alerts": {
         "title": "Alerts",

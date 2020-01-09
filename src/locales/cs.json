@@ -219,7 +219,35 @@
       },
       "backtestPatterns": {
         "title": "Backtest - patterny",
-        "addPattern": "Přidat pattern"
+        "addPattern": "Přidat pattern",
+        "initialCapital": "Počáteční kapitál",
+        "numberUSD": "Číslo v USD",
+        "entryRules": {
+          "title": "Vstupní pravidla",
+          "entryType": "Typ vstupu",
+          "entryTypes": [
+            "Market",
+            "Stop",
+            "Limit",
+            "Pending STOP",
+            "Pending LIMIT"
+          ],
+          "direction": "Směr",
+          "directions": [
+            "BUY",
+            "SELL"
+          ],
+          "price": "Cena",
+          "trendFilter": "Trend filter",
+          "movingAverage": "Klouzavý průměr",
+          "movingAverageTip": "Perioda klouzavého průměru",
+          "expirationTip": "Expirace pro čekající typ vstupu",
+          "expiration": "Expirace",
+          "numberDays": "Číslo v dnech"
+        },
+        "exitRules": {
+          "title": "Výstupní pravidla"
+        }
       },
       "alerts": {
         "title": "Upozornění",
