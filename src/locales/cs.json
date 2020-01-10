@@ -222,6 +222,9 @@
         "addPattern": "Přidat pattern",
         "initialCapital": "Počáteční kapitál",
         "numberUSD": "Číslo v USD",
+        "movingAverage": "Klouzavý průměr",
+        "movingAverageTip": "Perioda klouzavého průměru",
+        "trendFilter": "Trend filter",
         "entryRules": {
           "title": "Vstupní pravidla",
           "entryType": "Typ vstupu",
@@ -238,11 +241,7 @@
             "SELL"
           ],
           "price": "Cena",
-          "trendFilter": "Trend filter",
-          "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",
-          "movingAverage": "Klouzavý průměr",
-          "movingAverageTip": "Perioda klouzavého průměru",
-          "expirationTip": "Expirace pro čekající typ vstupu",
+          "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         "expirationTip": "Expirace pro čekající typ vstupu",
           "expiration": "Expirace",
           "numberDays": "Číslo v dnech"
         },
@@ -257,7 +256,8 @@
           ],
           "profitTarget": "ProfitTarget",
           "stopLoss": "StopLoss",
-          "breakEven": "BreakEven"
+          "breakEven": "BreakEven",
+          "breakEvenTip": "Při jaké hodnotě otevřeného zisku má dojít k posunu Stop Loss na úroveň ceny vstupu."
         }
       },
       "alerts": {

@@ -222,6 +222,9 @@
         "addPattern": "Add pattern",
         "initialCapital": "Initial capital",
         "numberUSD": "Number in USD",
+        "movingAverage": "Moving average",
+        "movingAverageTip": "Moving average period",
+        "trendFilter": "Trend filter",
         "entryRules": {
           "title": "Entry rules",
           "entryType": "Entry type",
@@ -238,10 +241,7 @@
             "SELL"
           ],
           "price": "Price",
-          "trendFilter": "Trend filter",
           "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
-          "movingAverage": "Moving average",
-          "movingAverageTip": "Moving average period",
           "expirationTip": "Expiration for pending entry type",
           "expiration": "Expiration",
           "numberDays": "Number in days"
@@ -257,7 +257,8 @@
           ],
           "profitTarget": "ProfitTarget",
           "stopLoss": "StopLoss",
-          "breakEven": "BreakEven"
+          "breakEven": "BreakEven",
+          "breakEvenTip": "Value of open profit when Stop Loss will be moved to entry price value level."
         }
       },
       "alerts": {
