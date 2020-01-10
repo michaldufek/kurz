@@ -92,7 +92,7 @@
                     type="text"
                     style="float: left; width: 6%; margin-right: 10px"
                     v-model="marketPriceGte"
-                    :placeholder="$t('research.stockPickingLab.filters.number')"
+                    :placeholder="$t('number')"
                     @keyup.enter="marketPriceGteEnter">
         </base-input>
         <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.and')}}</p>
@@ -100,7 +100,7 @@
                     type="text"
                     style="float: left; width: 6%"
                     v-model="marketPriceLte"
-                    :placeholder="$t('research.stockPickingLab.filters.number')"
+                    :placeholder="$t('number')"
                     @keyup.enter="marketPriceLteEnter">
         </base-input>
       </div>

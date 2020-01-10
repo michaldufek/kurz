@@ -29,7 +29,7 @@
                             <tr>
                                 <!-- <slot :row="item"> -->
                                 <td style="border-top: 0px; text-align: right">
-                                    {{ dpTexts.from ? dpTexts.from + ':' : '' }}
+                                    {{ dpTexts.from ? dpTexts.from : '' }}
                                 </td>
                                 <td style="border-top: 0px;">
                                     <datepicker v-model="from" 
@@ -43,7 +43,7 @@
                             <tr>
                                 <!-- <slot :row="item"> -->
                                 <td style="border-top: 0px; text-align: right">
-                                    {{ dpTexts.to ? dpTexts.to + ':' : '' }}
+                                    {{ dpTexts.to ? dpTexts.to : '' }}
                                 </td>
                                 <td style="border-top: 0px;">
                                     <datepicker v-model="to" 

@@ -19,6 +19,7 @@
   "card": "card",
   "chart": "chart",
   "table": "table",
+  "number": "Number",
   "paging": {
     "previous": "Previous",
     "next": "Next"
@@ -129,7 +130,6 @@
         "sector": "Sector",
         "marketPrice": "Market price between",
         "and": "and",
-        "number": "Number",
         "text": "Text",
         "watchlistActivate": "Activate stocks watchlist",
         "watchlistDeactivate": "Deactivate stocks watchlist",
@@ -219,7 +219,47 @@
       },
       "backtestPatterns": {
         "title": "Backtest - patterns",
-        "addPattern": "Add pattern"
+        "addPattern": "Add pattern",
+        "initialCapital": "Initial capital",
+        "numberUSD": "Number in USD",
+        "movingAverage": "Moving average",
+        "movingAverageTip": "Moving average period",
+        "trendFilter": "Trend filter",
+        "entryRules": {
+          "title": "Entry rules",
+          "entryType": "Entry type",
+          "entryTypes": [
+            "Market",
+            "Stop",
+            "Limit",
+            "Pending STOP",
+            "Pending LIMIT"
+          ],
+          "direction": "Direction",
+          "directions": [
+            "BUY",
+            "SELL"
+          ],
+          "price": "Price",
+          "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
+          "expirationTip": "Expiration for pending entry type",
+          "expiration": "Expiration",
+          "numberDays": "Number in days"
+        },
+        "exitRules": {
+          "title": "Exit rules",
+          "analyze": "Analyze",
+          "analyzeTip": "Number of next bars after pattern/s occurrence that should be analyzed.",
+          "numberBars": "Nr. in next bars",
+          "units": [
+            "USD",
+            "%"
+          ],
+          "profitTarget": "ProfitTarget",
+          "stopLoss": "StopLoss",
+          "breakEven": "BreakEven",
+          "breakEvenTip": "Value of open profit when Stop Loss will be moved to entry price value level."
+        }
       },
       "alerts": {
         "title": "Alerts",
