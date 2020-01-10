@@ -19,6 +19,7 @@
   "card": "card",
   "chart": "chart",
   "table": "table",
+  "number": "Number",
   "paging": {
     "previous": "Previous",
     "next": "Next"
@@ -129,7 +130,6 @@
         "sector": "Sector",
         "marketPrice": "Market price between",
         "and": "and",
-        "number": "Number",
         "text": "Text",
         "watchlistActivate": "Activate stocks watchlist",
         "watchlistDeactivate": "Deactivate stocks watchlist",
@@ -239,6 +239,7 @@
           ],
           "price": "Price",
           "trendFilter": "Trend filter",
+          "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
           "movingAverage": "Moving average",
           "movingAverageTip": "Moving average period",
           "expirationTip": "Expiration for pending entry type",
@@ -246,7 +247,17 @@
           "numberDays": "Number in days"
         },
         "exitRules": {
-          "title": "Exit rules"
+          "title": "Exit rules",
+          "analyze": "Analyze",
+          "analyzeTip": "Number of next bars after pattern/s occurrence that should be analyzed.",
+          "numberBars": "Nr. in next bars",
+          "units": [
+            "USD",
+            "%"
+          ],
+          "profitTarget": "ProfitTarget",
+          "stopLoss": "StopLoss",
+          "breakEven": "BreakEven"
         }
       },
       "alerts": {

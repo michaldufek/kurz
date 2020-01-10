@@ -19,6 +19,7 @@
   "card": "karta",
   "chart": "graf",
   "table": "tabulka",
+  "number": "Číslo",
   "paging": {
     "previous": "Předchozí",
     "next": "Další"
@@ -129,7 +130,6 @@
         "sector": "Sektor",
         "marketPrice": "Trhová cena mezi",
         "and": "a",
-        "number": "Číslo",
         "text": "Text",
         "watchlistActivate": "Aktivovat seznam sledovaných aktiv",
         "watchlistDeactivate": "Deaktivovat seznam sledovaných aktiv",
@@ -239,6 +239,7 @@
           ],
           "price": "Cena",
           "trendFilter": "Trend filter",
+          "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",
           "movingAverage": "Klouzavý průměr",
           "movingAverageTip": "Perioda klouzavého průměru",
           "expirationTip": "Expirace pro čekající typ vstupu",
@@ -246,7 +247,17 @@
           "numberDays": "Číslo v dnech"
         },
         "exitRules": {
-          "title": "Výstupní pravidla"
+          "title": "Výstupní pravidla",
+          "analyze": "Analýza",
+          "analyzeTip": "Počet nasledujících barů po vyskytnutí vzoru/ů, ktere se mají analyzovat.",
+          "numberBars": "Č. v nasl.barech",
+          "units": [
+            "USD",
+            "%"
+          ],
+          "profitTarget": "ProfitTarget",
+          "stopLoss": "StopLoss",
+          "breakEven": "BreakEven"
         }
       },
       "alerts": {
