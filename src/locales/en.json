@@ -259,7 +259,8 @@
           "stopLoss": "StopLoss",
           "breakEven": "BreakEven",
           "breakEvenTip": "Value of open profit when Stop Loss will be moved to entry price value level."
-        }
+        },
+        "runStrategy": "Run strategy"
       },
       "alerts": {
         "title": "Alerts",

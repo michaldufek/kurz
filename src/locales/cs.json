@@ -241,7 +241,8 @@
             "SELL"
           ],
           "price": "Cena",
-          "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         "expirationTip": "Expirace pro čekající typ vstupu",
+          "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
+          "expirationTip": "Expirace pro čekající typ vstupu",
           "expiration": "Expirace",
           "numberDays": "Číslo v dnech"
         },
@@ -258,7 +259,8 @@
           "stopLoss": "StopLoss",
           "breakEven": "BreakEven",
           "breakEvenTip": "Při jaké hodnotě otevřeného zisku má dojít k posunu Stop Loss na úroveň ceny vstupu."
-        }
+        },
+        "runStrategy": "Spustit strategii"
       },
       "alerts": {
         "title": "Upozornění",

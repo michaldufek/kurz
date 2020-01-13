@@ -86,7 +86,7 @@
 
         <!-- expiration -->
         <div :title="$t('research.patternLab.backtestPatterns.entryRules.expirationTip')">
-          <p style="width: 40%; position: relative; top: 25px">{{ $t('research.patternLab.backtestPatterns.entryRules.expiration') }}</p>
+          <p style="width: 40%; position: relative; top: 30px">{{ $t('research.patternLab.backtestPatterns.entryRules.expiration') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 60%"
@@ -112,8 +112,8 @@
         </div>
 
         <table>
+          <!-- profit target -->
           <tr>
-            <!-- profit target -->
             <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.profitTarget') }}</p></td>
             <td><base-input alternative
                         type="text"                        
@@ -134,8 +134,8 @@
               </ul>
             </base-dropdown></td>
 
+          <!-- stop loss -->
           <tr>
-            <!-- stop loss -->
             <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.stopLoss') }}</p></td>
             <td><base-input alternative
                         type="text"
@@ -157,8 +157,8 @@
             </base-dropdown></td>
           </tr>
 
-          <tr :title="$t('research.patternLab.backtestPatterns.exitRules.breakEvenTip')">
-            <!-- break even -->
+          <!-- break even -->
+          <tr :title="$t('research.patternLab.backtestPatterns.exitRules.breakEvenTip')">            
             <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.breakEven') }}</p></td>
             <td><base-input alternative
                         type="text"
@@ -183,7 +183,7 @@
 
         <!-- moving average -->
         <div :title="$t('research.patternLab.backtestPatterns.movingAverageTip')">
-          <p style="width: 46%">{{ $t('research.patternLab.backtestPatterns.movingAverage') }}</p>
+          <p style="width: 46%; top: 10px; position: relative;">{{ $t('research.patternLab.backtestPatterns.movingAverage') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 52%; margin-top: -25px"
@@ -193,13 +193,22 @@
         </div>
 
         <!-- break even check -->
-        <p class="label" style="margin-top: 5px">{{ $t('research.patternLab.backtestPatterns.exitRules.breakEven') }}</p>
-        <input type="checkbox" v-model="breakEven.check" class="input">
+        <div>
+          <p class="label" style="margin-top: 17px">{{ $t('research.patternLab.backtestPatterns.exitRules.breakEven') }}</p>
+          <input type="checkbox" v-model="breakEven.check" class="input">
+        </div>
 
         <!-- trend filter check -->
-        <p class="label" style="margin-top: 5px">{{ $t('research.patternLab.backtestPatterns.trendFilter') + '(' + $t('research.patternLab.backtestPatterns.movingAverage') + ')' }}</p>
-        <input type="checkbox" v-model="trendFilterExitRules" class="input">
+        <div :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')">
+          <input type="checkbox" style="width: 60%; position: relative; top: 25px" v-model="trendFilterExitRules">
+          <p style="width: 60%">{{ $t('research.patternLab.backtestPatterns.trendFilter') + ' (' + $t('research.patternLab.backtestPatterns.movingAverage') + ')' }}</p>          
+        </div>
+
       </card>
+
+      <!-- Run strategy button -->
+      <base-button native-type="submit" type="secondary" @click="runStrategyClick" style="width: 100%">{{ $t('research.patternLab.backtestPatterns.runStrategy') }}</base-button>
+
     </div>
 
     <!-- performance results  -->
@@ -262,6 +271,10 @@
 
       timeframeChanged() {
 
+      },
+
+      runStrategyClick() {
+        
       }
     }
   }  
