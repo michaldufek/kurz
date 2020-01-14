@@ -225,6 +225,10 @@
         "movingAverage": "Moving average",
         "movingAverageTip": "Moving average period",
         "trendFilter": "Trend filter",
+        "units": [
+          "USD",
+          "%"
+        ],
         "entryRules": {
           "title": "Entry rules",
           "entryType": "Entry type",
@@ -241,6 +245,13 @@
             "SELL"
           ],
           "price": "Price",
+          "offset": "Offset",
+          "ohlcs": [
+            "Open",
+            "High",
+            "Low",
+            "Close"
+          ],
           "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
           "expirationTip": "Expiration for pending entry type",
           "expiration": "Expiration",
@@ -250,17 +261,75 @@
           "title": "Exit rules",
           "analyze": "Analyze",
           "analyzeTip": "Number of next bars after pattern/s occurrence that should be analyzed.",
-          "numberBars": "Nr. in next bars",
-          "units": [
-            "USD",
-            "%"
-          ],
+          "numberBars": "Nr. in next bars",          
           "profitTarget": "ProfitTarget",
           "stopLoss": "StopLoss",
           "breakEven": "BreakEven",
           "breakEvenTip": "Value of open profit when Stop Loss will be moved to entry price value level."
         },
-        "runStrategy": "Run strategy"
+        "runStrategy": "Run strategy",
+        "performanceResults": {
+          "title": "Performance results",
+          "patterns": {
+            "title": "Patterns",
+            "columns": [
+              "From",
+              "To", 
+              "Time frame", 
+              "Asset", 
+              "Pattern", 
+              "Initial capital", 
+              "Analyze", 
+              "Profit Target", 
+              "Stop Loss", 
+              "Break Even", 
+              "Moving average", 
+              "Trend filter (moving average)", 
+              "Entry price", 
+              "Direction", 
+              "Price", 
+              "Expiration"
+            ]
+          },
+          "trades": {
+            "title": "Trades",
+            "columns": [
+              "#", 
+              "Asset",
+              "Pattern", 
+              "Direction", 
+              "Entry price", 
+              "Exit price", 
+              "Entry time", 
+              "Exit time", 
+              "Amount", 
+              "PnL", 
+              "Exit type"
+            ]
+          },
+          "performanceMetrics": {
+            "title": "Performance metrics",
+            "columns": [
+              "Asset", 
+              "Pattern", 
+              "# of trades", 
+              "Initial capital", 
+              "End capital", 
+              "Net profit", 
+              "Performance", 
+              "CAGR", 
+              "Sharpe ratio", 
+              "PT", 
+              "SL", 
+              "BE", 
+              "Average trade", 
+              "Max DD"
+            ]
+          },
+          "chart": {
+            "title": "Chart"
+          }
+        }
       },
       "alerts": {
         "title": "Alerts",
