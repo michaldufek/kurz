@@ -60,13 +60,44 @@
 
         <!-- price (show only if Entry type not MARKET) -->
         <div v-if="entryType !== $t('research.patternLab.backtestPatterns.entryRules.entryTypes')[0]">
-          <p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.price') }}</p>
-          <base-input alternative
-                      type="text"
-                      class="input"
-                      v-model="price"n
-                      :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
-          </base-input>
+          <table>
+            <tr>
+              <td><p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.price') }}</p></td>
+              <td><base-dropdown class="input" 
+                            menu-classes="dropdown-black" 
+                            title-classes="btn btn-secondary"
+                            :title="price.ohlc">
+                <ul style="list-style-type: none;">
+                  <li v-for="ohlc in $t('research.patternLab.backtestPatterns.entryRules.ohlcs').filter(po => po !== price.ohlc)">
+                    <a class="dropdown-item" 
+                      @click="price.ohlc = ohlc" 
+                      href="#">
+                      {{ ohlc }}
+                    </a>
+                  </li>
+                </ul>
+              </base-dropdown></td>
+              <td><base-input alternative
+                          type="text"
+                          class="input"
+                          v-model="price.value"
+                          :placeholder="$t('research.patternLab.backtestPatterns.entryRules.offset')">
+              </base-input></td>
+              <td><base-dropdown menu-classes="dropdown-black" 
+                            title-classes="btn btn-secondary"
+                            :title="price.unit">
+                <ul style="list-style-type: none;">
+                  <li v-for="unit in $t('research.patternLab.backtestPatterns.units').filter(u => u !== price.unit)">
+                    <a class="dropdown-item" 
+                      @click="price.unit = unit" 
+                      href="#">
+                      {{ unit }}
+                    </a>
+                  </li>
+                </ul>
+              </base-dropdown></td>
+            </tr>
+          </table>
         </div>
 
         <!-- trend filter -->
@@ -74,7 +105,7 @@
         <!-- to-do: tip not visible because of position:relative of moving average -->
         <input type="checkbox" v-model="trendFilterEntryRules" class="input" style="margin-top: 5px">
         <!-- moving average -->
-        <div v-if="trendFilterEntryRules" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
+        <div v-if="trendFilterEntryRules" :title="$t('research.patternLab.backtestPatterns.movingAverageTip')">
           <p style="width: 46%; position: relative; top: 10px">{{ $t('research.patternLab.backtestPatterns.movingAverage') }}</p>
           <base-input alternative
                       type="text"
@@ -86,7 +117,7 @@
 
         <!-- expiration -->
         <div :title="$t('research.patternLab.backtestPatterns.entryRules.expirationTip')">
-          <p style="width: 40%; position: relative; top: 25px">{{ $t('research.patternLab.backtestPatterns.entryRules.expiration') }}</p>
+          <p style="width: 40%; position: relative; top: 30px">{{ $t('research.patternLab.backtestPatterns.entryRules.expiration') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 60%"
@@ -112,8 +143,8 @@
         </div>
 
         <table>
+          <!-- profit target -->
           <tr>
-            <!-- profit target -->
             <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.profitTarget') }}</p></td>
             <td><base-input alternative
                         type="text"                        
@@ -124,7 +155,7 @@
                           title-classes="btn btn-secondary"
                           :title="profitTarget.unit">
               <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.backtestPatterns.exitRules.units').filter(u => u !== profitTarget.unit)">
+                <li v-for="unit in $t('research.patternLab.backtestPatterns.units').filter(u => u !== profitTarget.unit)">
                   <a class="dropdown-item" 
                     @click="profitTarget.unit = unit" 
                     href="#">
@@ -134,8 +165,8 @@
               </ul>
             </base-dropdown></td>
 
+          <!-- stop loss -->
           <tr>
-            <!-- stop loss -->
             <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.stopLoss') }}</p></td>
             <td><base-input alternative
                         type="text"
@@ -146,7 +177,7 @@
                           title-classes="btn btn-secondary"
                           :title="stopLoss.unit">
               <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.backtestPatterns.exitRules.units').filter(u => u !== stopLoss.unit)">
+                <li v-for="unit in $t('research.patternLab.backtestPatterns.units').filter(u => u !== stopLoss.unit)">
                   <a class="dropdown-item" 
                     @click="stopLoss.unit = unit" 
                     href="#">
@@ -157,8 +188,8 @@
             </base-dropdown></td>
           </tr>
 
-          <tr :title="$t('research.patternLab.backtestPatterns.exitRules.breakEvenTip')">
-            <!-- break even -->
+          <!-- break even -->
+          <tr :title="$t('research.patternLab.backtestPatterns.exitRules.breakEvenTip')">            
             <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.breakEven') }}</p></td>
             <td><base-input alternative
                         type="text"
@@ -169,7 +200,7 @@
                           title-classes="btn btn-secondary"
                           :title="breakEven.unit">
               <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.backtestPatterns.exitRules.units').filter(u => u !== breakEven.unit)">
+                <li v-for="unit in $t('research.patternLab.backtestPatterns.units').filter(u => u !== breakEven.unit)">
                   <a class="dropdown-item" 
                     @click="breakEven.unit = unit" 
                     href="#">
@@ -183,7 +214,7 @@
 
         <!-- moving average -->
         <div :title="$t('research.patternLab.backtestPatterns.movingAverageTip')">
-          <p style="width: 46%">{{ $t('research.patternLab.backtestPatterns.movingAverage') }}</p>
+          <p style="width: 46%; top: 10px; position: relative;">{{ $t('research.patternLab.backtestPatterns.movingAverage') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 52%; margin-top: -25px"
@@ -193,27 +224,50 @@
         </div>
 
         <!-- break even check -->
-        <p class="label" style="margin-top: 5px">{{ $t('research.patternLab.backtestPatterns.exitRules.breakEven') }}</p>
-        <input type="checkbox" v-model="breakEven.check" class="input">
+        <div>
+          <p class="label" style="margin-top: 17px">{{ $t('research.patternLab.backtestPatterns.exitRules.breakEven') }}</p>
+          <input type="checkbox" v-model="breakEven.check" class="input">
+        </div>
 
         <!-- trend filter check -->
-        <p class="label" style="margin-top: 5px">{{ $t('research.patternLab.backtestPatterns.trendFilter') + '(' + $t('research.patternLab.backtestPatterns.movingAverage') + ')' }}</p>
-        <input type="checkbox" v-model="trendFilterExitRules" class="input">
+        <div :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')">
+          <input type="checkbox" style="width: 60%; position: relative; top: 25px" v-model="trendFilterExitRules">
+          <p style="width: 60%">{{ $t('research.patternLab.backtestPatterns.trendFilter') + ' (' + $t('research.patternLab.backtestPatterns.movingAverage') + ')' }}</p>          
+        </div>
+
       </card>
+
+      <!-- Run strategy button -->
+      <base-button native-type="submit" type="secondary" @click="runStrategyClick" style="width: 100%">{{ $t('research.patternLab.backtestPatterns.runStrategy') }}</base-button>
+
     </div>
 
     <!-- performance results  -->
-    <div class="col-lg-8 col-md-12">
-    </div>
+    <card class="col-lg-8 col-md-12">
+      <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.backtestPatterns.performanceResults.title') }}</h4>
+
+      <top-navbar></top-navbar>
+
+      <dashboard-content @click.native="toggleSidebar" style="margin-top: 50px">
+
+      </dashboard-content>
+    </card>
 
   </div>
 </template>
 <script>
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
 
+  import TopNavbar from "@/custom/layout/application/patternLab/performanceResults/TopNavbar.vue";
+  import DashboardContent from "@/custom/layout/application/patternLab/Content.vue";
+  import MobileMenu from "@/layout/dashboard/MobileMenu";
+
   export default {
     components: {
-      AssetsPatternsPicker
+      AssetsPatternsPicker,
+      TopNavbar,
+      DashboardContent,
+      MobileMenu
     },
 
     data() {
@@ -228,7 +282,11 @@
         // entry rules
         entryType: this.$t('research.patternLab.backtestPatterns.entryRules.entryTypes')[0],
         direction: this.$t('research.patternLab.backtestPatterns.entryRules.directions')[0],
-        price: null,
+        price: {
+          ohlc: this.$t('research.patternLab.backtestPatterns.entryRules.ohlcs')[0],
+          value: null,
+          unit: this.$t('research.patternLab.backtestPatterns.units')[0]
+        },
         trendFilterEntryRules: false,
         trendFilterExitRules: false,
         movingAverageEntryRules: null,
@@ -238,15 +296,15 @@
         analyze: null,
         profitTarget: {
           value: null,
-          unit: this.$t('research.patternLab.backtestPatterns.exitRules.units')[0]
+          unit: this.$t('research.patternLab.backtestPatterns.units')[0]
         },
         stopLoss: {
           value: null,
-          unit: this.$t('research.patternLab.backtestPatterns.exitRules.units')[0]
+          unit: this.$t('research.patternLab.backtestPatterns.units')[0]
         },
         breakEven: {
           value: null,
-          unit: this.$t('research.patternLab.backtestPatterns.exitRules.units')[0],
+          unit: this.$t('research.patternLab.backtestPatterns.units')[0],
           check: false
         }
       }
@@ -254,13 +312,17 @@
 
     computed: {
     },
-
+    
     methods: {
       addPattern() {
 
       },
 
       timeframeChanged() {
+
+      },
+
+      runStrategyClick() {
 
       }
     }
