@@ -136,7 +136,8 @@ const routes = [
               {
                 path: "/research/patternLab/backtestPatterns/performanceResults/patterns",
                 name: "patterns",
-                component: Patterns
+                component: Patterns,
+                props: true
               },
               {
                 path: "/research/patternLab/backtestPatterns/performanceResults/trades",

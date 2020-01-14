@@ -127,6 +127,7 @@ import { BaseTable } from '@/components'
 import constants from '@/custom/assets/js/constants';
 import helper from '@/custom/assets/js/helper';
 
+
 export default {
     name: 'assets-patterns-picker',
     components: {  
@@ -171,6 +172,8 @@ export default {
 
     data() {
         return {
+            storeKey: 'research.patternLab.AssetsPatternsPicker',
+
             defaultTfLeftPos: 30,
             timeframe: this.$t('research.patternLab.timeframes')[0],
 
@@ -225,10 +228,27 @@ export default {
             if ('selectedPatterns' in localStorage) {
                 this.selectedPatterns = JSON.parse(localStorage.selectedPatterns)
             }
+
+            let data = this.$store.getItem(this.storeKey)
+            if (data) {
+                this.from = new Date(data.from)
+                this.to = new Date(data.to)
+                this.timeframe = data.timeframe ? data.timeframe : this.$t('research.patternLab.timeframes')[0]
+                this.checkedAssets = data.assets ? data.assets : []
+                this.checkedPatterns = data.patterns ? data.patterns : []
+            }
         },
 
         selectTimeframe(timeframe) {
             this.timeframe = timeframe
+
+            let data = this.$store.getItem(this.storeKey)
+            if (!data) {
+                data = {}                
+            }
+            data['timeframe'] = timeframe
+            this.$store.setItem(this.storeKey, data)
+
             this.$emit('timeframeChanged', this.timeframe)
         },
 
@@ -371,29 +391,33 @@ export default {
             }
         },
 
-        btnClick() {
+        btnClick(notify=true) {
             if (!this.checkedAssets.length) {
-                this.$notify({
-                    type: 'warning', 
-                    message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
-                })    
+                if (notify) {
+                    this.$notify({
+                        type: 'warning', 
+                        message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
+                    })    
+                }
                 return
             }
             
-            if (!this.checkedPatterns.length) {
+            if (!this.checkedPatterns.length && notify) {
                 this.$notify({
                     type: 'warning', 
                     message: this.$t('notifications.addChartNoPattern') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
                 })  
             }
 
-            this.$emit('btnClicked', {
+            let data = {
                 from: this.from,
                 to: this.to,
                 timeframe: this.timeframe,
                 assets: this.checkedAssets,
                 patterns: this.checkedPatterns
-            })
+            }
+            this.$store.setItem(this.storeKey, data)
+            this.$emit('btnClicked', data)
         },
 
         notifyAudio(audioEl, type, msg) {
@@ -408,6 +432,7 @@ export default {
 
     mounted() {
       this.initData()
+      this.btnClick(false)
     }
 }
 </script>

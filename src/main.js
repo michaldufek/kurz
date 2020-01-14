@@ -34,6 +34,17 @@ Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
 Vue.filter(helper.chartUpdateTsText.name, helper.chartUpdateTsText)
 
 Vue.prototype.$http = Axios
+Vue.prototype.$store = {
+  setItem(key, value) {
+    localStorage.setItem(key, JSON.stringify(value))
+  },
+  getItem(key) {
+    return JSON.parse(localStorage.getItem(key))
+  },
+  removeItem(key) {
+    localStorage.removeItem(key)
+  }
+}
 
 /* eslint-disable no-new */
 new Vue({

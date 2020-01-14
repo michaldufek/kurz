@@ -246,11 +246,9 @@
     <card class="col-lg-8 col-md-12">
       <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.backtestPatterns.performanceResults.title') }}</h4>
 
-      <top-navbar></top-navbar>
+      <top-navbar :params="params" :key="navBarKey" />
 
-      <dashboard-content @click.native="toggleSidebar" style="margin-top: 50px">
-
-      </dashboard-content>
+      <dashboard-content @click.native="toggleSidebar" style="margin-top: 50px" />
     </card>
 
   </div>
@@ -306,7 +304,13 @@
           value: null,
           unit: this.$t('research.patternLab.backtestPatterns.units')[0],
           check: false
-        }
+        },
+
+        params: {
+          pattern: null,
+          strategy: null
+        },
+        navBarKey: 0
       }
     },
 
@@ -314,8 +318,11 @@
     },
     
     methods: {
-      addPattern() {
-
+      addPattern(data) {
+        this.params.pattern = data
+        // console.log('BT Patterns - addPattern:')
+        // console.log(this.params)
+        this.navBarKey++
       },
 
       timeframeChanged() {
@@ -323,8 +330,26 @@
       },
 
       runStrategyClick() {
+        this.params.strategy = {
+            entry_type: this.entryType, 
+            direction: this.direction, 
+            profit_take: this.profitTarget.value, 
+            stoploss: this.stopLoss.value
+          }
+        // console.log('BT Patterns - runStrategyClick:')
+        // console.log(this.params)
+        this.navBarKey++
+      },
 
+      toggleSidebar() {
+        if (this.$sidebar.showSidebar) {
+          this.$sidebar.displaySidebar(false);
+        }
       }
+    },
+
+    mounted() {
+      this.runStrategyClick()      
     }
   }  
 </script>

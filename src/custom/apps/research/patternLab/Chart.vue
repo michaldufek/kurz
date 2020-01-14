@@ -5,7 +5,7 @@
         <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
                                 :oneAssetLimit="true"
                                 :btnText="$t('research.patternLab.chart.addChart')" 
-                                :tfLeftPos="425"
+                                :tfLeftPos="475"
                                 :dpTexts="{ from: $t('research.patternLab.from'), to: $t('research.patternLab.to') }"
                                 @btnClicked="addChart" 
                                 @timeframeChanged="timeframeChanged" />      
@@ -85,6 +85,8 @@
       // fixes x-axes label overlapping
       // https://www.chartjs.org/docs/latest/axes/cartesian/?h=autoskip
       return {
+        storeKey: 'research.patternLab.chart',
+
         // assets-patterns-picker
         from: null,
         to: null,
@@ -125,8 +127,8 @@
         this.to = data.to,
         this.timeframe = data.timeframe
         this.asset = data.assets[0]
-        this.patterns = data.patterns        
-
+        this.patterns = data.patterns    
+        
         this.loadChart()
 
         if (this.patterns.length) {
@@ -148,6 +150,14 @@
       },
       selectChartType(chartType) {
         this.chartType = chartType
+
+        let data = this.$store.getItem(this.storeKey)
+        if (!data) {
+          data = {}
+        }
+        data['chartType'] = chartType
+        this.$store.setItem(this.storeKey, data)
+
         this.loadChart()
       },
 
@@ -172,7 +182,7 @@
         return rows
       },
 
-      getQueryData(data) {
+      getQueryData() {
         let query = {}
 
         query['patterns'] = this.patterns.map(chp => chp.id).join(',')
@@ -180,7 +190,14 @@
         query['timeframe'] = helper.convertTimeframe(this.timeframe)
         
         return query
-      },
+      }
+    },
+
+    mounted() {
+      let data = this.$store.getItem(this.storeKey)
+      if (data) {
+        this.chartType = data.chartType
+      }
     }
   }  
 </script>
