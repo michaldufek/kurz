@@ -98,10 +98,10 @@ export default {
         return String(nr).length < 2 ? "0" + nr : nr
     },
 
-    formatDate(dt) {
+    formatDate(dt, delimiter="-") {
         // returns RRRR-MM-DD format
         let newDt = new Date(dt)
-        return newDt.getFullYear() + "-" + this.pad(Number(newDt.getMonth() + 1)) + "-" + this.pad(newDt.getDate())
+        return newDt.getFullYear() + delimiter + this.pad(Number(newDt.getMonth() + 1)) + delimiter + this.pad(newDt.getDate())
     },
 
     formatDateTime(dt) {

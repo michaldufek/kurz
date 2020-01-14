@@ -18,6 +18,12 @@ export default {
     components: {
         FancyTable
     },
+
+    data() {
+        return {
+            tableKey: 0
+        }
+    },
     
     computed: {
       url() {}

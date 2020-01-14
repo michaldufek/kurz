@@ -182,7 +182,7 @@
         return rows
       },
 
-      getQueryData(data) {
+      getQueryData() {
         let query = {}
 
         query['patterns'] = this.patterns.map(chp => chp.id).join(',')
