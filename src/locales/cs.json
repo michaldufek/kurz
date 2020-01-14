@@ -225,6 +225,10 @@
         "movingAverage": "Klouzavý průměr",
         "movingAverageTip": "Perioda klouzavého průměru",
         "trendFilter": "Trend filter",
+        "units": [
+          "USD",
+          "%"
+        ],
         "entryRules": {
           "title": "Vstupní pravidla",
           "entryType": "Typ vstupu",
@@ -241,7 +245,15 @@
             "SELL"
           ],
           "price": "Cena",
-          "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         "expirationTip": "Expirace pro čekající typ vstupu",
+          "offset": "Posun",
+          "ohlcs": [
+            "Open",
+            "High",
+            "Low",
+            "Close"
+          ],
+          "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
+          "expirationTip": "Expirace pro čekající typ vstupu",
           "expiration": "Expirace",
           "numberDays": "Číslo v dnech"
         },
@@ -250,14 +262,72 @@
           "analyze": "Analýza",
           "analyzeTip": "Počet nasledujících barů po vyskytnutí vzoru/ů, ktere se mají analyzovat.",
           "numberBars": "Č. v nasl.barech",
-          "units": [
-            "USD",
-            "%"
-          ],
           "profitTarget": "ProfitTarget",
           "stopLoss": "StopLoss",
           "breakEven": "BreakEven",
           "breakEvenTip": "Při jaké hodnotě otevřeného zisku má dojít k posunu Stop Loss na úroveň ceny vstupu."
+        },
+        "runStrategy": "Spustit strategii",
+        "performanceResults": {
+          "patterns": {
+            "title": "Patterny",
+            "columns": [
+              "Od",
+              "Do", 
+              "Čas. rámec", 
+              "Akce", 
+              "Pattern", 
+              "Počáteční kapitál", 
+              "Analýza", 
+              "Profit Target", 
+              "Stop Loss", 
+              "Break Even", 
+              "Klouzavý průměr", 
+              "Trend filter (klouzavý průměr)", 
+              "Vstupní cena", 
+              "Směr", 
+              "Cena", 
+              "Expirace"
+            ]
+          },
+          "trades": {
+            "title": "Obchody",
+            "columns": [
+              "#", 
+              "Akce",
+              "Pattern", 
+              "Směr", 
+              "Vstupní cena", 
+              "Výstupní cena", 
+              "Vstupní čas", 
+              "Výstupní čas", 
+              "Množství", 
+              "PnL", 
+              "Typ výstupu"
+            ]
+          },
+          "performanceMetrics": {
+            "title": "Výkonnostní metriky",
+            "columns": [
+              "Akce", 
+              "Pattern", 
+              "# obchodů", 
+              "Počáteční kapitál", 
+              "Koncový kapitál", 
+              "Čistý zisk", 
+              "Výkon", 
+              "CAGR", 
+              "Sharpe ratio", 
+              "PT", 
+              "SL", 
+              "BE", 
+              "Průměrný obchod", 
+              "Max DD"
+            ]
+          },
+          "chart": {
+            "title": "Graf"
+          }
         }
       },
       "alerts": {

@@ -20,10 +20,15 @@ const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps
 const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
 // PatternLab SubViews
-const Chart = () => import(/* webpackChunkName: "chart" */"@/custom/apps/research/patternLab/Chart.vue");
+const PatternLabChart = () => import(/* webpackChunkName: "patternLabchart" */"@/custom/apps/research/patternLab/Chart.vue");
 const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
 const BacktestPatterns = () => import(/* webpackChunkName: "backtestPatterns" */"@/custom/apps/research/patternLab/BacktestPatterns.vue");
-const Alerts = () => import(/* webpackChunkName: "plAlerts" */"@/custom/apps/research/patternLab/Alerts.vue"); // app doesn't work with webpackChunkName: "alerts" !
+const Alerts = () => import(/* webpackChunkName: "patternLabAlerts" */"@/custom/apps/research/patternLab/Alerts.vue"); // app doesn't work with webpackChunkName: "alerts" !
+// BacktestPatterns SubViews
+const Patterns = () => import(/* webpackChunkName: "patterns" */"@/custom/apps/research/patternLab/performanceResults/Patterns.vue");
+const Trades = () => import(/* webpackChunkName: "trades" */"@/custom/apps/research/patternLab/performanceResults/Trades.vue");
+const PerformanceMetrics = () => import(/* webpackChunkName: "performanceMetrics" */"@/custom/apps/research/patternLab/performanceResults/PerformanceMetrics.vue");
+const PerformanceResultsChart = () => import(/* webpackChunkName: "performanceResultsChart" */"@/custom/apps/research/patternLab/performanceResults/Chart.vue");
 
 
 import auth from '@/custom/assets/js/auth'
@@ -114,8 +119,8 @@ const routes = [
         children: [   
           {
             path: "/research/patternLab/chart",
-            name: "chart",
-            component: Chart
+            name: "patternLabChart",
+            component: PatternLabChart
           },   
           {
             path: "/research/patternLab/patternStatistics",
@@ -125,7 +130,30 @@ const routes = [
           {
             path: "/research/patternLab/backtestPatterns",
             name: "backtestPatterns",
-            component: BacktestPatterns
+            redirect: "/research/patternLab/backtestPatterns/performanceResults/patterns",
+            component: BacktestPatterns,
+            children: [
+              {
+                path: "/research/patternLab/backtestPatterns/performanceResults/patterns",
+                name: "patterns",
+                component: Patterns
+              },
+              {
+                path: "/research/patternLab/backtestPatterns/performanceResults/trades",
+                name: "trades",
+                component: Trades
+              },
+              {
+                path: "/research/patternLab/backtestPatterns/performanceResults/performanceMetrics",
+                name: "performanceMetrics",
+                component: PerformanceMetrics
+              },
+              {
+                path: "/research/patternLab/backtestPatterns/performanceResults/chart",
+                name: "performanceResultsChart",
+                component: PerformanceResultsChart
+              }
+            ]
           },
           {
             path: "/research/patternLab/alerts",
