@@ -1,6 +1,11 @@
 <template>
 
-    <fancy-table :title="$t('research.patternLab.backtestPatterns.performanceResults.patterns.title')"
+    <base-table :data="data" 
+                :columns="$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')"
+                :editable="true">
+    </base-table>
+      
+    <!-- <fancy-table :title="$t('research.patternLab.backtestPatterns.performanceResults.patterns.title')"
                 :showTitle="false"
                 :apiUrls="url"
                 :columns="$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')"
@@ -8,85 +13,66 @@
                 :editable="true"
                 :headerTitle="$t('research.patternLab.backtestPatterns.performanceResults.patterns.title')"
                 :key="tableKey">
-    </fancy-table>
+    </fancy-table> -->
     
 </template>
 <script>
-import FancyTable from '@/custom/components/Tables/FancyTable';  
-import constants from '@/custom/assets/js/constants';
-import helper from '@/custom/assets/js/helper';
+import { BaseTable } from '@/components'
 
 export default {
     components: {
-        FancyTable
-    },
-
-    props: {
-        params: {
-            type: Object,
-            default: () => {
-                return {
-                    pattern: null,
-                    strategy: null
-                }
-            },
-            description: 'All parameters used in the component.'
-        }
+        BaseTable
     },
 
     data() {
         return {
-            tableKey: 0
+            data: null
         }
-    },
-    
-    computed: {
-      url() {
-          return this.params.pattern && this.params.strategy ? [ constants.urls.patternLab.backtestPatterns  + "?" + helper.encodeQueryData(this.getQueryData()) ] : []
-      }
     },
 
     methods: {
-        getQueryData() {
-            //    https://dev.analyticalplatform.com/api/pl/ComplexBacktest?timeframe=1&start_date=20010102&finish_date=20101230&assets=MSFT&pattern_ids=3&params={"entry_type": "market", "direction": "buy", "profit_take": 0.01, "stoploss": 0.01}
-            let query = {}
+        initData() {
+            this.data = []
 
-            query['timeframe'] = helper.convertTimeframe(this.params.pattern.timeframe)
-            query['start_date'] = helper.formatDate(this.params.pattern.from, '')
-            query['finish_date'] = helper.formatDate(this.params.pattern.to, '')
-            query['assets'] = this.params.pattern.assets.map(a => a.symbol).join(',')
-            query['pattern_ids'] = this.params.pattern.patterns.map(p => p.id).join(',')
+            let data = this.$store.getItem('research.patternLab.backtestPatterns.title')
+            if (data) {
+                let row = {}
 
-            query['params'] = JSON.stringify(this.params.strategy)
-            
-            return query
-        },
+                if ('pattern' in data) {
+                    row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[0].toLowerCase()] = data.pattern.from    // From
+                    row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[1].toLowerCase()] = data.pattern.to    // To
+                    row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[2].toLowerCase()] = data.pattern.timeframe    // Time frame
 
-        rowsCreator(data) {
-            return [
-                    "From",
-                    "To", 
-                    "Time frame", 
-                    "Asset", 
-                    "Pattern", 
-                    "Initial capital", 
-                    "Analyze", 
-                    "Profit Target", 
-                    "Stop Loss", 
-                    "Break Even", 
-                    "Moving average", 
-                    "Trend filter (moving average)", 
-                    "Entry price", 
-                    "Direction", 
-                    "Price", 
-                    "Expiration"
-                ]
+                    data.pattern.assets.forEach(asset => {
+                        row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[3].toLowerCase()] = asset.symbol    // Asset
+
+                        data.pattern.patterns.forEach(pattern => {
+                            row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[4].toLowerCase()] = pattern.name    // Pattern
+
+                            if ('strategy' in data) {                
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[5].toLowerCase()] = data.strategy.initialCapital    // Initial capital
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[6].toLowerCase()] = data.strategy.analyze    // Analyze
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[7].toLowerCase()] = data.strategy.profitTarget ? data.strategy.profitTarget.value : null    // Profit Target
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[8].toLowerCase()] = data.strategy.stopLoss ? data.strategy.stopLoss.value : null    // Stop Loss
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[9].toLowerCase()] = data.strategy.breakEven ? data.strategy.breakEven.value : null    // Break Even
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[10].toLowerCase()] = data.strategy.movingAverageEntryRules    // Moving average
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[11].toLowerCase()] = data.strategy.movingAverageExitRules    // Trend filter (moving average)
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[12].toLowerCase()] = data.strategy.price ? data.strategy.price.value : null    // Entry price
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[13].toLowerCase()] = data.strategy.direction    // Direction
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[14].toLowerCase()] = data.strategy.price ? data.strategy.price.value : null    // ??? what Price ?
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[15].toLowerCase()] = data.strategy.expiration    // Expiration
+                            }
+                        })
+                    });
+                }                
+
+                this.data.push(row)
+            }
         }
     },
 
     mounted() {
-        // console.log('Patterns')
-        // console.log(this.params)
+        this.initData()
     }
 }
 </script>

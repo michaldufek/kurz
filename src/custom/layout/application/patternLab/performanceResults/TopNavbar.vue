@@ -31,11 +31,6 @@
 
     methods: {
       exportClick() {}
-    },
-
-    mounted() {
-      // console.log('NavBar:')
-      // console.log(this.params)
     }
   };
 </script>

@@ -243,10 +243,10 @@
     </div>
 
     <!-- performance results  -->
-    <card class="col-lg-8 col-md-12">
+    <card class="col-lg-8 col-md-12" :key="cardKey">
       <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.backtestPatterns.performanceResults.title') }}</h4>
 
-      <top-navbar :params="params" :key="navBarKey" />
+      <top-navbar />
 
       <dashboard-content @click.native="toggleSidebar" style="margin-top: 15px" />
     </card>
@@ -270,6 +270,8 @@
 
     data() {
       return {
+        storeKey: 'research.patternLab.backtestPatterns.title',
+
         // assets-patterns picker data
         timeframe: null,
         startDate: null,    
@@ -305,12 +307,8 @@
           unit: this.$t('research.patternLab.backtestPatterns.units')[0],
           check: false
         },
-
-        params: {
-          pattern: null,
-          strategy: null
-        },
-        navBarKey: 0
+        
+        cardKey: 0
       }
     },
 
@@ -319,26 +317,35 @@
     
     methods: {
       addPattern(data) {
-        this.params.pattern = data
-        // console.log('BT Patterns - addPattern:')
-        // console.log(this.params)
-        this.navBarKey++
+        // data from AssetsPatternsPicker btnClicked emit
+        let storeData = this.$store.getItem(this.storeKey)
+        if (!storeData) {
+          storeData = {}
+        }
+        storeData['pattern'] = data
+        this.$store.setItem(this.storeKey, storeData)
+
+        this.cardKey++
       },
 
-      timeframeChanged() {
+      timeframeChanged() { // to-do
 
       },
 
       runStrategyClick() {
-        this.params.strategy = {
-            entry_type: this.entryType, 
-            direction: this.direction, 
-            profit_take: this.profitTarget.value, 
-            stoploss: this.stopLoss.value
-          }
-        // console.log('BT Patterns - runStrategyClick:')
-        // console.log(this.params)
-        this.navBarKey++
+        let data = this.$store.getItem(this.storeKey)
+        if (!data) {
+          data = {}
+        }
+        data['strategy'] = {
+          entry_type: this.entryType, 
+          direction: this.direction, 
+          profit_take: this.profitTarget.value, 
+          stoploss: this.stopLoss.value
+        }
+        this.$store.setItem(this.storeKey, data)
+
+        this.cardKey++
       },
 
       toggleSidebar() {
