@@ -225,6 +225,7 @@
         "movingAverage": "Moving average",
         "movingAverageTip": "Moving average period",
         "trendFilter": "Trend filter",
+        "export": "Export",
         "units": [
           "USD",
           "%"

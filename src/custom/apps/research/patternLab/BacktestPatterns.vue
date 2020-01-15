@@ -248,7 +248,7 @@
 
       <top-navbar :params="params" :key="navBarKey" />
 
-      <dashboard-content @click.native="toggleSidebar" style="margin-top: 50px" />
+      <dashboard-content @click.native="toggleSidebar" style="margin-top: 15px" />
     </card>
 
   </div>

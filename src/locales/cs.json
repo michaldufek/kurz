@@ -225,6 +225,7 @@
         "movingAverage": "Klouzavý průměr",
         "movingAverageTip": "Perioda klouzavého průměru",
         "trendFilter": "Trend filter",
+        "export": "Export",
         "units": [
           "USD",
           "%"
