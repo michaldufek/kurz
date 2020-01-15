@@ -36,17 +36,15 @@ export default {
 
             let data = this.$store.getItem('research.patternLab.backtestPatterns.title')
             if (data) {
-                let row = {}
-
                 if ('pattern' in data) {
-                    row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[0].toLowerCase()] = data.pattern.from    // From
-                    row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[1].toLowerCase()] = data.pattern.to    // To
-                    row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[2].toLowerCase()] = data.pattern.timeframe    // Time frame
-
                     data.pattern.assets.forEach(asset => {
-                        row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[3].toLowerCase()] = asset.symbol    // Asset
-
                         data.pattern.patterns.forEach(pattern => {
+                            let row = {}
+                            
+                            row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[0].toLowerCase()] = data.pattern.from    // From
+                            row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[1].toLowerCase()] = data.pattern.to    // To
+                            row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[2].toLowerCase()] = data.pattern.timeframe    // Time frame
+                            row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[3].toLowerCase()] = asset.symbol    // Asset
                             row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[4].toLowerCase()] = pattern.name    // Pattern
 
                             if ('strategy' in data) {                
@@ -57,16 +55,16 @@ export default {
                                 row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[9].toLowerCase()] = data.strategy.breakEven ? data.strategy.breakEven.value : null    // Break Even
                                 row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[10].toLowerCase()] = data.strategy.movingAverageEntryRules    // Moving average
                                 row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[11].toLowerCase()] = data.strategy.movingAverageExitRules    // Trend filter (moving average)
-                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[12].toLowerCase()] = data.strategy.price ? data.strategy.price.value : null    // Entry price
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[12].toLowerCase()] = data.strategy.entryType    // Entry type
                                 row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[13].toLowerCase()] = data.strategy.direction    // Direction
-                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[14].toLowerCase()] = data.strategy.price ? data.strategy.price.value : null    // ??? what Price ?
+                                row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[14].toLowerCase()] = data.strategy.price ? data.strategy.price.value : null    // Price 
                                 row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[15].toLowerCase()] = data.strategy.expiration    // Expiration
-                            }
+                            }                                            
+
+                            this.data.push(row)
                         })
                     });
-                }                
-
-                this.data.push(row)
+                }
             }
         }
     },

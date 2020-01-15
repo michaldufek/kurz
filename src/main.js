@@ -23,6 +23,7 @@ import i18n from "./i18n"
 
 import './registerServiceWorker'
 import helper from '@/custom/assets/js/helper';
+import constants from '@/custom/assets/js/constants';
 import Axios from 'axios'
 
 Vue.use(BlackDashboard);
@@ -33,7 +34,79 @@ Vue.use(RouterPrefetch);
 Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
 Vue.filter(helper.chartUpdateTsText.name, helper.chartUpdateTsText)
 
-Vue.prototype.$http = Axios
+// axios get routine with automatic offline detection and fabrication
+// const getRoutine = (url) => new Promise ((resolve, reject) => {
+//   let response = {}
+//   Axios
+//   .get(url)
+//   .then(resp => response = resp)
+//   .catch(error => {
+//     if (url) {
+//       response = {
+//         data: null
+//       }
+//     }
+
+//     if (true) {
+//       console.log('Fabricating data for ' + url + '... (' + error + ')')
+//     } else {  // cannot fabricate data
+//       reject(error)
+//     }
+//   })
+//   .finally(() => resolve(response))
+// })
+const getOfflineRoutine = url => new Promise ((resolve, __) => {
+  let data = null
+  if (url.includes(constants.urls.patternLab.asset)) {
+    data = {
+              results: [{
+                id: 0, 
+                symbol: 'symbol',
+                name: 'name'
+              },
+              {
+                id: 1, 
+                symbol: 'symbol2',
+                name: 'name2'
+              }]
+            }
+  } else if (url.includes(constants.urls.patternLab.pattern)) {
+    data = [{
+              id: 0,
+              name: 'pattern'
+            },
+            {
+              id: 1,
+              name: 'pattern2'
+            }]
+  }
+
+  resolve({
+    data: data
+  })
+})
+const getOnlineRoutine = url => new Promise ((resolve, reject) => {
+  let response = {}
+  Axios
+  .get(url)
+  .then(resp => response = resp)
+  .catch(error => reject(error))
+  .finally(() => resolve(response))
+})
+const offline = false
+Vue.prototype.$http = {
+  get(url) {
+    if (offline) {
+      console.log('Offline. Fabricating data for ' + url + ' ...')
+      var getRoutine = getOfflineRoutine
+    } else {
+      getRoutine = getOnlineRoutine
+    }
+
+    return getRoutine(url)
+  }
+}
+
 Vue.prototype.$store = {
   setItem(key, value) {
     localStorage.setItem(key, JSON.stringify(value))

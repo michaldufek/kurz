@@ -33,7 +33,7 @@
 
         <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
                      :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
-                     :apiUrls="[ lineChartUrl ]"
+                     :apiUrls="lineChartUrl ? [ lineChartUrl ] : []"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: from, to: to }"
                      :responsive="true"
