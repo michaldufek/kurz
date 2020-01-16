@@ -4,7 +4,7 @@
       <div class="col-lg-8 col-md-12">
         <fancy-chart :title="title"
                      :showTitle="true"
-                     :apiUrls="[apiUrl]">
+                     :apiUrls="apiUrl ? [ apiUrl ] : []">
         </fancy-chart>
       </div>
 

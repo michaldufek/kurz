@@ -1,3 +1,5 @@
+import i18n from "@/i18n"
+
 const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
 const SPPartUrl = "/api/sp"
 const PLPartUrl = "/api/pl"
@@ -26,6 +28,8 @@ export default {
     
     // maximum number of rows shown in fancy tables
     maxRows: 20, // to-do: use some pagination or More... button for all rows
+
+    defaultUnit: i18n.t('research.patternLab.units')[0],
 
     urls: {
         tickerSP: {

@@ -2,11 +2,13 @@
   <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
     <div class="container-fluid">
       <div class="navbar-wrapper">
-        <div style="margin-top: -10px;">
+        <div style="margin-top: -40px;">
           <router-link class="navbar-brand" :to="{ name: 'patterns', params: { params } }">{{$t("research.patternLab.backtestPatterns.performanceResults.patterns.title")}}</router-link>
-          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/trades" style="margin-left: 100px;">{{$t("research.patternLab.backtestPatterns.performanceResults.trades.title")}}</router-link>
-          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/performanceMetrics" style="margin-left: 175px;">{{$t("research.patternLab.backtestPatterns.performanceResults.performanceMetrics.title")}}</router-link>
-          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/chart" style="margin-left: 375px;">{{$t("research.patternLab.backtestPatterns.performanceResults.chart.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/trades">{{$t("research.patternLab.backtestPatterns.performanceResults.trades.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/performanceMetrics">{{$t("research.patternLab.backtestPatterns.performanceResults.performanceMetrics.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/chart">{{$t("research.patternLab.backtestPatterns.performanceResults.chart.title")}}</router-link>
+
+          <base-button native-type="submit" type="secondary" size="sm" @click="exportClick">{{ $t('research.patternLab.backtestPatterns.export') }}</base-button>
         </div>
       </div>
     </div>
@@ -27,9 +29,8 @@
       }
     },
 
-    mounted() {
-      // console.log('NavBar:')
-      // console.log(this.params)
+    methods: {
+      exportClick() {}
     }
   };
 </script>
