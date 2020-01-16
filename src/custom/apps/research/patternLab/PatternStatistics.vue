@@ -203,13 +203,13 @@
         row.push(data.count_mean ? 1 / data.count_mean : null) // Average frequency
 
         if (direction === constants.strings.bullish) {
-          row.push(data.d1_bull_up * 100 + ' %')  // 1 day up_down
-          row.push(data.d5_bull_up * 100 + ' %')  // 5 days up_down
-          row.push(data.d10_bull_up * 100 + ' %') // 10 days up_down
+          row.push(data.d1_bull_up + ' %')  // 1 day up_down
+          row.push(data.d5_bull_up + ' %')  // 5 days up_down
+          row.push(data.d10_bull_up + ' %') // 10 days up_down
         } else if (direction === constants.strings.bearish) {
-          row.push(data.d1_bear_down * 100 + ' %')
-          row.push(data.d5_bear_down * 100 + ' %')
-          row.push(data.d10_bear_down * 100 + ' %')
+          row.push(data.d1_bear_down + ' %')
+          row.push(data.d5_bear_down + ' %')
+          row.push(data.d10_bear_down + ' %')
         }
 
         return direction
