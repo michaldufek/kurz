@@ -167,10 +167,19 @@
       "pickDate": "Pick a date",
       "checkAll": "Check all",
       "uncheckAll": "Uncheck all",
+      "breakEven": "BreakEven",
+      "entry": "Entry",
+      "exit": "Exit",
+      "rules": "rules",        
+      "movingAverage": "Moving average",
       "timeframes": [
         "Daily",
         "Weekly",
         "Monthly"
+      ],
+      "units": [
+        "USD",
+        "%"
       ],
       "chart": {
         "title": "Chart",        
@@ -222,15 +231,10 @@
         "addPattern": "Add pattern",
         "initialCapital": "Initial capital",
         "numberUSD": "Number in USD",
-        "movingAverage": "Moving average",
         "movingAverageTip": "Moving average period",
         "trendFilter": "Trend filter",
-        "units": [
-          "USD",
-          "%"
-        ],
+        "export": "Export",
         "entryRules": {
-          "title": "Entry rules",
           "entryType": "Entry type",
           "entryTypes": [
             "Market",
@@ -258,13 +262,11 @@
           "numberDays": "Number in days"
         },
         "exitRules": {
-          "title": "Exit rules",
           "analyze": "Analyze",
           "analyzeTip": "Number of next bars after pattern/s occurrence that should be analyzed.",
           "numberBars": "Nr. in next bars",          
           "profitTarget": "ProfitTarget",
           "stopLoss": "StopLoss",
-          "breakEven": "BreakEven",
           "breakEvenTip": "Value of open profit when Stop Loss will be moved to entry price value level."
         },
         "runStrategy": "Run strategy",
@@ -272,6 +274,8 @@
           "title": "Performance results",
           "patterns": {
             "title": "Patterns",
+            "bars": "bars",
+            "days": "days",
             "columns": [
               "From",
               "To", 
@@ -280,15 +284,15 @@
               "Pattern", 
               "Initial capital", 
               "Analyze", 
-              "Profit Target", 
-              "Stop Loss", 
-              "Break Even", 
-              "Moving average", 
-              "Trend filter (moving average)", 
-              "Entry price", 
+              "ProfitTarget", 
+              "StopLoss", 
+              "Entry type", 
               "Direction", 
               "Price", 
-              "Expiration"
+              "Expiration",
+              "BreakEven", 
+              "Entry moving average", 
+              "Exit moving average"
             ]
           },
           "trades": {

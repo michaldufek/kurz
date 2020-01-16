@@ -15,9 +15,9 @@
         </div>
         
         <div style="margin-top: -10px;">
-          <router-link class="navbar-brand" to="/" style="margin-top: -25px;" exact><img src="../../assets/img/logogf_small.png" class="logo navbar-brand" :alt="$t('siteTitle')" style="float: left"/></router-link>
-          <router-link class="navbar-brand" to="/dashboard" style="margin-left: 150px;">{{$t("dashboard.title")}}</router-link>
-          <router-link class="navbar-brand" to="/research" style="margin-left: 250px;">{{$t("research.title")}}</router-link>
+          <router-link class="navbar-brand" to="/" exact><img src="../../assets/img/logogf_small.png" class="logo navbar-brand" :alt="$t('siteTitle')"/></router-link>
+          <router-link class="navbar-brand" to="/dashboard" style="margin-top: 10px">{{$t("dashboard.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research">{{$t("research.title")}}</router-link>
         </div>
       </div>
       <button class="navbar-toggler" type="button"
