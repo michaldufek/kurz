@@ -167,10 +167,19 @@
       "pickDate": "Vyberte datum",
       "checkAll": "Zaškrtnout vše",
       "uncheckAll": "Odškrtnout vše",
+      "breakEven": "BreakEven",
+      "entry": "Vstupní",
+      "exit": "Výstupní",
+      "rules": "pravidla",
+      "movingAverage": "Klouzavý průměr",
       "timeframes": [
         "Denní",
         "Týdenní",
         "Měsíční"
+      ],
+      "units": [
+        "USD",
+        "%"
       ],
       "chart": {
         "title": "Graf",        
@@ -222,16 +231,10 @@
         "addPattern": "Přidat pattern",
         "initialCapital": "Počáteční kapitál",
         "numberUSD": "Číslo v USD",
-        "movingAverage": "Klouzavý průměr",
         "movingAverageTip": "Perioda klouzavého průměru",
         "trendFilter": "Trend filter",
         "export": "Export",
-        "units": [
-          "USD",
-          "%"
-        ],
         "entryRules": {
-          "title": "Vstupní pravidla",
           "entryType": "Typ vstupu",
           "entryTypes": [
             "Market",
@@ -259,19 +262,19 @@
           "numberDays": "Číslo v dnech"
         },
         "exitRules": {
-          "title": "Výstupní pravidla",
           "analyze": "Analýza",
           "analyzeTip": "Počet nasledujících barů po vyskytnutí vzoru/ů, ktere se mají analyzovat.",
           "numberBars": "Č. v nasl.barech",
           "profitTarget": "ProfitTarget",
           "stopLoss": "StopLoss",
-          "breakEven": "BreakEven",
           "breakEvenTip": "Při jaké hodnotě otevřeného zisku má dojít k posunu Stop Loss na úroveň ceny vstupu."
         },
         "runStrategy": "Spustit strategii",
         "performanceResults": {
           "patterns": {
             "title": "Patterny",
+            "bars": "barů",
+            "days": "dnů",
             "columns": [
               "Od",
               "Do", 
@@ -280,15 +283,15 @@
               "Pattern", 
               "Počáteční kapitál", 
               "Analýza", 
-              "Profit Target", 
-              "Stop Loss", 
-              "Break Even", 
-              "Klouzavý průměr", 
-              "Trend filter (klouzavý průměr)", 
+              "ProfitTarget", 
+              "StopLoss", 
               "Typ vstupu", 
               "Směr", 
               "Cena", 
-              "Expirace"
+              "Expirace",
+              "BreakEven", 
+              "Vstupní klouzavý průměr", 
+              "Výstupní klouzavý průměr"
             ]
           },
           "trades": {
