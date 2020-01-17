@@ -28,7 +28,9 @@
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 import Ohlc from '@/custom/components/Charts/Ohlc';
 import Candlestick from '@/custom/components/Charts/Candlestick';
+
 import constants from '@/custom/assets/js/constants';
+import helper from '@/custom/assets/js/helper';
 
 
 export default {

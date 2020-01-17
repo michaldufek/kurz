@@ -167,8 +167,8 @@ export default {
                 
                 // assets
                 selectedAssets: data.selectedAssets ? data.selectedAssets : [],
-                checkedAssets: data.checkedAssets ? data.checkedAssets : [],
-                lastCheckedAsset: data.lastCheckedAsset,
+                checkedAssets: data.checkedAssets ? data.checkedAssets : (data.selectedAssets ? data.selectedAssets : []),
+                checkedAsset: data.checkedAsset ? data.checkedAsset : (data.checkedAssets && data.checkedAssets.length ? data.checkedAssets[0] : null),
 
                 // patterns
                 selectedPatterns: data.selectedPatterns ? data.selectedPatterns : [],
@@ -177,13 +177,13 @@ export default {
             }
         }
     },
-    updateStore(store, key, value) {
-        let storeData = store.getItem(constants.patternLabStoreKey)
+    updateStore(store, key, value, storeKey=constants.patternLabStoreKey) {
+        let storeData = store.getItem(storeKey)
         if (!storeData) {
             storeData = {}
         }
         storeData[key] = value
-        store.setItem(constants.patternLabStoreKey, storeData)
+        store.setItem(storeKey, storeData)
     },
 
     // global filters

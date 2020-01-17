@@ -125,7 +125,7 @@
       addChart() {
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
-          ({ from:this.from, to:this.to, timeframe:this.timeframe, lastCheckedAsset:this.asset, checkedPatterns:this.patterns } = data)
+          ({ from:this.from, to:this.to, timeframe:this.timeframe, checkedAsset:this.asset, checkedPatterns:this.patterns } = data)
         }
         
         this.loadChart()
@@ -153,7 +153,7 @@
       },
       selectChartType(chartType) {
         this.chartType = chartType
-        helper.updateStore(this.$store, 'chartType', chartType)
+        helper.updateStore(this.$store, 'chartType', chartType, this.storeKey)
         this.loadChart()
       },
 
