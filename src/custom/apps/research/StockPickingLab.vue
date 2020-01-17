@@ -291,7 +291,7 @@
           this.error = true
 
           if (error.message === constants.strings.networkError) {
-            this.notifyAudio('connectionLost', 'warning', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
           }
         })
         .finally(() => {
@@ -335,15 +335,6 @@
         }
         
         return data
-      },
-
-      notifyAudio(audioEl, type, msg) {
-        document.getElementById(audioEl).play();
-
-        this.$notify({
-          type: type, 
-          message: msg
-        })
       },
 
       // dropdowns selections

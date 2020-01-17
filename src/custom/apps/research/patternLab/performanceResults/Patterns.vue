@@ -31,12 +31,10 @@ export default {
             // add or delete dynamic columns and get their indexes
             let movingAverageClName = this.$t('research.patternLab.movingAverage').toLowerCase()
             let indexes = {
-                breakEven: this.addDeleteColumn(data.strategy.breakEven.allowed, this.$t('research.patternLab.breakEven')),
-                trendFilter: {
-                    entryRules: this.addDeleteColumn(data.strategy.trendFilter.entryRules, this.$t('research.patternLab.entry') + ' ' + movingAverageClName),
-                    exitRules: this.addDeleteColumn(data.strategy.trendFilter.exitRules, this.$t('research.patternLab.exit') + ' ' + movingAverageClName)            
-                }
+                entryRules: this.addDeleteColumn(data.strategy.trendFilter.entryRules, this.$t('research.patternLab.entry') + ' ' + movingAverageClName),
+                exitRules: this.addDeleteColumn(data.strategy.trendFilter.exitRules, this.$t('research.patternLab.exit') + ' ' + movingAverageClName)            
             }
+
             console.log(this.columns)
             console.log(indexes)
 
@@ -64,9 +62,6 @@ export default {
                                 row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[nr++].toLowerCase()] = data.strategy.expiration ? data.strategy.expiration + ' ' + this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.days') : null    // Expiration
 
                                 // columns that can be dynamically added or deleted
-                                if (data.strategy.breakEven.alowed) {
-                                    row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[indexes.breakEven].toLowerCase()] = data.strategy.breakEven.value ? data.strategy.breakEven.value + ' ' + data.strategy.breakEven.unit : null    // Break Even
-                                }
                                 if (data.strategy.trendFilter.entryRules) {
                                     console.log(this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[indexes.trendFilter.entryRules])
                                     row[this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')[indexes.trendFilter.entryRules].toLowerCase()] = data.strategy.movingAverage.entryRules ? data.strategy.movingAverage.entryRules + ' ' + constants.defaultUnit : null    // Entry moving average

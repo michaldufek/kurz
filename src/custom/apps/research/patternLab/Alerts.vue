@@ -57,9 +57,11 @@
     },
 
     methods: {
-      addAlert(data) {
-        this.assets = data.assets
-        this.patterns = data.patterns
+      addAlert() {
+        let data = helper.getAssetsPatternsPickerData(this.$store)
+        if (data) {
+          ({ checkedAssets:this.assets, checkedPatterns:this.patterns } = data)
+        }
 
         this.setTableData()
       },

@@ -129,9 +129,25 @@ export default {
         return val instanceof Number || typeof val === 'number'
     },
 
+    notifyAudio(self, element, type, msg) {
+        element.play();
+
+        self.$notify({
+          type: type, 
+          message: msg
+        })
+    },
+
+    // convertors
     convertTimeframe(timeframe) {
         return i18n.t('research.patternLab.timeframes').indexOf(timeframe) + 1
     },
+
+    convertDirection(nr) {
+        return !nr ? nr : (nr > 0 ? constants.strings.bullish : constants.strings.bearish)
+    },
+
+    // data helpers
     encodeQueryData(data) {
         const ret = [];
         for (let d in data) {
@@ -141,9 +157,33 @@ export default {
         }
         return ret.join('&');
     },
+    getAssetsPatternsPickerData(store) {
+        let data = store.getItem(constants.patternLabStoreKey)
+        if (data) {
+            return {
+                timeframe: data.timeframe ? data.timeframe : i18n.t('research.patternLab.timeframes')[0],
+                from: data.from ? new Date(data.from) : null,
+                to: data.to ? new Date(data.to) : null,
+                
+                // assets
+                selectedAssets: data.selectedAssets ? data.selectedAssets : [],
+                checkedAssets: data.checkedAssets ? data.checkedAssets : [],
+                lastCheckedAsset: data.lastCheckedAsset,
 
-    convertDirection(nr) {
-        return !nr ? nr : (nr > 0 ? constants.strings.bullish : constants.strings.bearish)
+                // patterns
+                selectedPatterns: data.selectedPatterns ? data.selectedPatterns : [],
+                checkedPatterns: data.checkedPatterns ? data.checkedPatterns : [],
+                checkedAllPatterns: data.checkedAllPatterns
+            }
+        }
+    },
+    updateStore(store, key, value) {
+        let storeData = store.getItem(constants.patternLabStoreKey)
+        if (!storeData) {
+            storeData = {}
+        }
+        storeData[key] = value
+        store.setItem(constants.patternLabStoreKey, storeData)
     },
 
     // global filters

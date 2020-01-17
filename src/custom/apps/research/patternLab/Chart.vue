@@ -122,12 +122,11 @@
 
     methods: {
       // chart methods
-      addChart(data) {
-        this.from = data.from,
-        this.to = data.to,
-        this.timeframe = data.timeframe
-        this.asset = data.assets[0]
-        this.patterns = data.patterns    
+      addChart() {
+        let data = helper.getAssetsPatternsPickerData(this.$store)
+        if (data) {
+          ({ from:this.from, to:this.to, timeframe:this.timeframe, lastCheckedAsset:this.asset, checkedPatterns:this.patterns } = data)
+        }
         
         this.loadChart()
 
@@ -144,20 +143,17 @@
         }
       },      
 
-      timeframeChanged(timeframe) {
-        this.timeframe = timeframe
+      timeframeChanged() {
+        let data = helper.getAssetsPatternsPickerData(this.$store)
+        if (data) {
+          ({ timeframe:this.timeframe } = data)
+        }
+
         this.loadChart()
       },
       selectChartType(chartType) {
         this.chartType = chartType
-
-        let data = this.$store.getItem(this.storeKey)
-        if (!data) {
-          data = {}
-        }
-        data['chartType'] = chartType
-        this.$store.setItem(this.storeKey, data)
-
+        helper.updateStore(this.$store, 'chartType', chartType)
         this.loadChart()
       },
 

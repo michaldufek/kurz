@@ -151,7 +151,7 @@ export default {
             }
 
             if (error.message === constants.strings.networkError) {
-              this.notifyAudio('connectionLost', 'warning', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
             }
           })
           .finally(() => {
@@ -188,15 +188,6 @@ export default {
           let weight = response.data.equity ? response.data.equity[response.data.equity.length - 1] / eqOutsSum : 1
           this.tableData = this.aggregator(this.tableData, newTableData, weight).slice(0, constants.maxRows)
         })
-      })
-    },   
-
-    notifyAudio(audioEl, type, msg) {
-      document.getElementById(audioEl).play();
-
-      this.$notify({
-        type: type, 
-        message: msg
       })
     }
   },

@@ -1,6 +1,7 @@
 import i18n from "@/i18n"
 
 const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
+// const baseUrl = "https://dev.analyticalplatform.com"
 const SPPartUrl = "/api/sp"
 const PLPartUrl = "/api/pl"
 const tickerPartUrl = "/Ticker"
@@ -30,6 +31,8 @@ export default {
     maxRows: 20, // to-do: use some pagination or More... button for all rows
 
     defaultUnit: i18n.t('research.patternLab.units')[0],
+
+    patternLabStoreKey: 'research.patternLab.AssetsPatternsPicker',
 
     urls: {
         tickerSP: {

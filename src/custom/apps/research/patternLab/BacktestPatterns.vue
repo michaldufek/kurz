@@ -188,34 +188,6 @@
             </base-dropdown></td>
           </tr>
 
-          <!-- break even check -->
-          <tr>
-            <td><p class="label" style="margin-top: 17px">{{ $t('research.patternLab.breakEven') }}</p></td>
-            <td><input type="checkbox" v-model="strategy.breakEven.allowed" class="input"></td>
-          </tr>
-
-          <!-- break even -->
-          <tr v-if="strategy.breakEven.allowed" :title="$t('research.patternLab.backtestPatterns.exitRules.breakEvenTip')">            
-            <td><p class="label">{{ $t('research.patternLab.breakEven') }}</p></td>
-            <td><base-input alternative
-                        type="text"
-                        v-model="strategy.breakEven.value"
-                        :placeholder="$t('number')">
-            </base-input></td>
-            <td><base-dropdown menu-classes="dropdown-black" 
-                          title-classes="btn btn-secondary"
-                          :title="strategy.breakEven.unit">
-              <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.breakEven.unit)">
-                  <a class="dropdown-item" 
-                    @click="strategy.breakEven.unit = unit" 
-                    href="#">
-                    {{ unit }}
-                  </a>
-                </li>
-              </ul>
-            </base-dropdown></td>
-          </tr>
         </table>
 
         <!-- trend filter check -->
@@ -291,11 +263,6 @@
     stopLoss: {
       value: null,
       unit: constants.defaultUnit
-    },
-    breakEven: {
-      value: null,
-      unit: constants.defaultUnit,
-      allowed: false
     }
   }
 
@@ -329,26 +296,11 @@
         this.strategy = data ? data.strategy : defaultStrategy
       },
 
-      // methods for receiving data from AssetsPatternsPicker btnClicked emit
-      addPattern(data) {
-        let storeData = this.$store.getItem(this.storeKey)
-        if (!storeData) {
-          storeData = {}
-        }
-        storeData['pattern'] = data
-        this.$store.setItem(this.storeKey, storeData)
-
+      // methods from AssetsPatternsPicker emits
+      addPattern() {
         this.cardKey++
       },
-      timeframeChanged(timeframe) {
-        let storeData = this.$store.getItem(this.storeKey)
-        if (!storeData) {
-          storeData = {}
-          storeData['pattern'] = {}
-        }
-        storeData.pattern['timeframe'] = timeframe
-        this.$store.setItem(this.storeKey, storeData)
-
+      timeframeChanged() {
         this.cardKey++
       },
 
