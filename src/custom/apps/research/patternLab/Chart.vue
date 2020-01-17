@@ -154,6 +154,7 @@
 
         this.loadChart()
       },
+      
       selectChartType(chartType) {
         this.chartType = chartType
         helper.updateStore(this.$store, 'chartType', chartType, this.storeKey)
