@@ -4,7 +4,7 @@
     <h4 v-if="showTitle" slot="header" class="card-title">{{title}}</h4>
     <div>
       <section v-if="noData">
-        <p>{{ $t('noData') }}</p>
+        <h5>{{ noDataText ? noDataText : $t('noData') }}</h5>
       </section>
       <section v-else-if="isError">
         <p>{{ $t('dataError') }}</p>
@@ -41,6 +41,10 @@ export default {
     title: {
       type: String,
       description: "Table title"
+    },
+    noDataText: {
+      type: String,
+      description: "Text to show when no data"
     },
     showTitle: {
       type: Boolean,
