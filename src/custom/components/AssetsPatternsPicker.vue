@@ -246,12 +246,12 @@ export default {
                 return
             }
 
-            this.ddSelect(asset, asset => asset.symbol, this.selectedAssets, 'selectedAssets')
+            this.ddSelect(asset, asset => asset.id, this.selectedAssets)
 
             if (this.oneAssetLimit) {
                 this.checkedAsset = asset
             } else {
-                this.checkedAssets.push(asset)
+                this.ddSelect(asset, asset => asset.id, this.checkedAssets)
             }
         },
         ddSelectPattern(pattern) {
@@ -259,20 +259,18 @@ export default {
                 return
             }
 
-            this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns, 'selectedPatterns')
+            this.ddSelect(pattern, pattern => pattern.id, this.selectedPatterns)
+            this.ddSelect(pattern, pattern => pattern.id, this.checkedPatterns)
 
-            this.checkedPatterns.push(pattern)
-
-            if (this.checkedAllPatterns) {  // works only in debug -> why?
+            if (this.checkedAllPatterns) {  // works only in debug - why?
                 this.checkedAllPatterns = false
             } else if (this.checkedPatterns.length === this.selectedPatterns.length) {
                 this.checkedAllPatterns = true
             }
         },
-        ddSelect(item, itemKeySelector, selectedItems, varName) {
+        ddSelect(item, itemKeySelector, selectedItems) {
             if (!selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {
                 selectedItems.push(item)
-                localStorage.setItem(varName, JSON.stringify(selectedItems))
             }
         },
 

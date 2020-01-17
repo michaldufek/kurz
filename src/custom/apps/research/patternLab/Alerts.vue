@@ -68,6 +68,7 @@
 
         this.setTableData()
       },
+      
       setTableData() {
         let rows = []
 
