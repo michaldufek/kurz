@@ -167,7 +167,6 @@
       "pickDate": "Pick a date",
       "checkAll": "Check all",
       "uncheckAll": "Uncheck all",
-      "breakEven": "BreakEven",
       "entry": "Entry",
       "exit": "Exit",
       "rules": "rules",        
@@ -266,8 +265,7 @@
           "analyzeTip": "Number of next bars after pattern/s occurrence that should be analyzed.",
           "numberBars": "Nr. in next bars",          
           "profitTarget": "ProfitTarget",
-          "stopLoss": "StopLoss",
-          "breakEvenTip": "Value of open profit when Stop Loss will be moved to entry price value level."
+          "stopLoss": "StopLoss"
         },
         "runStrategy": "Run strategy",
         "performanceResults": {
@@ -290,7 +288,6 @@
               "Direction", 
               "Price", 
               "Expiration",
-              "BreakEven", 
               "Entry moving average", 
               "Exit moving average"
             ]

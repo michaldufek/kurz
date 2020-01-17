@@ -276,7 +276,7 @@ export default {
           }
 
           if (error.message === constants.strings.networkError) {
-            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
           }
         })
         .finally(() => {
@@ -284,7 +284,7 @@ export default {
             this.loading = false
 
             if (!this.live && !this.error) {
-              this.notifyAudio('connectionLost', 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
             }
           }
         });
@@ -344,15 +344,6 @@ export default {
         datasets: datasets,
         labels: allLabels
       }       
-    },
-
-    notifyAudio(audioEl, type, msg) {
-      document.getElementById(audioEl).play();
-
-      this.$notify({
-        type: type, 
-        message: msg
-      })
     }
   },
 

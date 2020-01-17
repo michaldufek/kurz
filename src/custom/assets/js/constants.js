@@ -31,6 +31,8 @@ export default {
 
     defaultUnit: i18n.t('research.patternLab.units')[0],
 
+    patternLabStoreKey: 'research.patternLab.AssetsPatternsPicker',
+
     urls: {
         tickerSP: {
              base : baseUrl + SPPartUrl + tickerPartUrl,

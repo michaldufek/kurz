@@ -167,7 +167,6 @@
       "pickDate": "Vyberte datum",
       "checkAll": "Zaškrtnout vše",
       "uncheckAll": "Odškrtnout vše",
-      "breakEven": "BreakEven",
       "entry": "Vstupní",
       "exit": "Výstupní",
       "rules": "pravidla",
@@ -266,8 +265,7 @@
           "analyzeTip": "Počet nasledujících barů po vyskytnutí vzoru/ů, ktere se mají analyzovat.",
           "numberBars": "Č. v nasl.barech",
           "profitTarget": "ProfitTarget",
-          "stopLoss": "StopLoss",
-          "breakEvenTip": "Při jaké hodnotě otevřeného zisku má dojít k posunu Stop Loss na úroveň ceny vstupu."
+          "stopLoss": "StopLoss"
         },
         "runStrategy": "Spustit strategii",
         "performanceResults": {
@@ -289,7 +287,6 @@
               "Směr", 
               "Cena", 
               "Expirace",
-              "BreakEven", 
               "Vstupní klouzavý průměr", 
               "Výstupní klouzavý průměr"
             ]

@@ -263,15 +263,6 @@
         this.createChartDatas()
       },
 
-      notifyAudio(audioEl, type, msg) {
-        document.getElementById(audioEl).play();
-
-        this.$notify({
-          type: type, 
-          message: msg
-        })
-      },
-
       getQueryData(assets, patterns) {
         let data = {}
 

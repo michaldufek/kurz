@@ -77,8 +77,8 @@
                     <th></th>
                 </template>  
                 <template slot-scope="{row}">
-                    <a href="#" @click="selectAsset(row)">
-                        <div :class="{ 'selectedAsset': checkedAssets.map(a => a.symbol).includes(row.symbol) }">
+                    <a href="#" @click="checkAsset(row)">
+                        <div :class="{ 'selectedAsset': (oneAssetLimit ? (lastCheckedAsset ? [ lastCheckedAsset ] : []) : checkedAssets).map(a => a.symbol).includes(row.symbol) }">
                             <td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
                             <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td>
                         </div>
@@ -172,8 +172,6 @@ export default {
 
     data() {
         return {
-            storeKey: 'research.patternLab.AssetsPatternsPicker',
-
             defaultTfLeftPos: 30,
             timeframe: this.$t('research.patternLab.timeframes')[0],
 
@@ -185,6 +183,7 @@ export default {
             disabledDatesAsset: null,            
             selectedAssets: [],
             checkedAssets: [],
+            lastCheckedAsset: null,
             assets: [],
 
             // patterns
@@ -222,42 +221,39 @@ export default {
 
     methods: {
         initData() {
-            if ('selectedAssets' in localStorage) {
-                this.selectedAssets = JSON.parse(localStorage.selectedAssets)
-            }
-            if ('selectedPatterns' in localStorage) {
-                this.selectedPatterns = JSON.parse(localStorage.selectedPatterns)
-            }
-
-            let data = this.$store.getItem(this.storeKey)
+            let data = helper.getAssetsPatternsPickerData(this.$store)
             if (data) {
-                this.from = new Date(data.from)
-                this.to = new Date(data.to)
-                this.timeframe = data.timeframe ? data.timeframe : this.$t('research.patternLab.timeframes')[0]
-                this.checkedAssets = data.assets ? data.assets : []
-                this.checkedPatterns = data.patterns ? data.patterns : []
+                ({ timeframe:this.timeframe, from:this.from, to:this.to, selectedAssets:this.selectedAssets, checkedAssets:this.checkedAssets, 
+                   lastCheckedAsset:this.lastCheckedAsset, selectedPatterns:this.selectedPatterns, checkedPatterns:this.checkedPatterns, 
+                   checkedAllPatterns:this.checkedAllPatterns } 
+                = data)
             }
         },
 
         selectTimeframe(timeframe) {
             this.timeframe = timeframe
-
-            let data = this.$store.getItem(this.storeKey)
-            if (!data) {
-                data = {}                
-            }
-            data['timeframe'] = timeframe
-            this.$store.setItem(this.storeKey, data)
-
-            this.$emit('timeframeChanged', this.timeframe)
+            this.$emit('timeframeChanged')
         },
 
         // selecting asset/patterns
         ddSelectAsset(asset) {
             this.ddSelect(asset, asset => asset.symbol, this.selectedAssets, 'selectedAssets') 
+            this.checkAsset(asset)
+            console.log(this.checkedAssets)
         },
         ddSelectPattern(pattern) {
             this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns, 'selectedPatterns')
+
+            if (!('id' in pattern)) { // workaround for strange handler js error
+                return
+            }
+            this.checkedPatterns.push(pattern)
+
+            if (this.checkedAllPatterns) {
+                this.checkedAllPatterns = false
+            } else if (this.checkedPatterns.length === this.selectedPatterns.length) {
+                this.checkAllPatterns = true
+            }
         },
         ddSelect(item, itemKeySelector, selectedItems, varName) {
             if ('id' in item && !selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {
@@ -266,14 +262,21 @@ export default {
             }
         },
 
-        selectAsset(asset) {
-            if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
-                // remove from checked assets
-                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1);
+        checkAsset(asset) {
+            if (!('id' in asset)) { // workaround for strange handler js error
+                return
+            }
+
+            if ((this.oneAssetLimit ? (this.lastCheckedAsset ? [ this.lastCheckedAsset ] : []) : this.checkedAssets).map(a => a.symbol).includes(asset.symbol)) {
+                // clicked on checked asset -> remove from checked assets
+                if (this.oneAssetLimit) {
+                    this.lastCheckedAsset = null                    
+                }
+                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1)                
             } else {
-                if (this.oneAssetLimit && this.checkedAssets.length === 1) {
-                    // if only one asset can be checked change checked asset
-                    this.checkedAssets = []
+                if (this.oneAssetLimit) {
+                    // if only one asset can be checked -> change last checked asset and add to checked assets list
+                    this.lastCheckedAsset = asset
                 }
                 this.checkedAssets.push(asset)
             }    
@@ -283,7 +286,11 @@ export default {
         removeAsset(asset) {
             this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(asset.symbol), 1);
 
-            if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {
+            if ((this.oneAssetLimit ? (this.lastCheckedAsset ? [ this.lastCheckedAsset ] : []) : this.checkedAssets).map(a => a.symbol).includes(asset.symbol)) {
+                // removing also checked asset
+                if (this.oneAssetLimit) {
+                    this.lastCheckedAsset = null                    
+                }
                 this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1);
                 this.updateDisabledDatesAsset()
             }
@@ -292,8 +299,9 @@ export default {
             this.disabledDatesAsset = null
             let fromChanged = false
             let toChanged = false
+            let checkedAssets = this.oneAssetLimit ? (this.lastCheckedAsset ? [ this.lastCheckedAsset ] : []) : this.checkedAssets // needs to be variable because of javascript error
 
-            this.checkedAssets.forEach(asset => {
+            checkedAssets.forEach(asset => {
                 this.$http
                 .get(constants.urls.patternLab.chart + asset.id + '/' + helper.convertTimeframe(this.timeframe)) // to-do: cache this result !
                 .then(response => {
@@ -301,7 +309,7 @@ export default {
                     let newTo = new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
 
                     this.disabledDatesAsset = {
-                        from: new Date(this.disabledDatesAsset ? Math.min(this.disabledDatesAsset.from, newFrom)  : newFrom),
+                        from: new Date(this.disabledDatesAsset ? Math.min(this.disabledDatesAsset.from, newFrom) : newFrom),
                         to: new Date(this.disabledDatesAsset ? Math.max(this.disabledDatesAsset.to, newTo) : newTo)
                     }
                 })
@@ -309,7 +317,7 @@ export default {
                     console.log(error);
                     
                     if (error.message === constants.strings.networkError) {
-                        this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+                        helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
                     }
                 })
                 .finally(() => {
@@ -358,7 +366,7 @@ export default {
                     console.log(error);
                     
                     if (error.message === constants.strings.networkError) {
-                        this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+                        helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
                     }
                 })
                 .finally(() => {})
@@ -384,7 +392,7 @@ export default {
                     console.log(error);
                     
                     if (error.message === constants.strings.networkError) {
-                        this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
+                        helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ')')
                     }
                 })
                 .finally(() => {})
@@ -409,30 +417,48 @@ export default {
                 })  
             }
 
-            let data = {
-                from: this.from,
-                to: this.to,
-                timeframe: this.timeframe,
-                assets: this.checkedAssets,
-                patterns: this.checkedPatterns
-            }
-            this.$store.setItem(this.storeKey, data)
-            this.$emit('btnClicked', data)
-        },
-
-        notifyAudio(audioEl, type, msg) {
-            document.getElementById(audioEl).play();
-
-            this.$notify({
-                type: type, 
-                message: msg
-            })
-        },
+            helper.updateStore(this.$store, 'timeframe', this.timeframe)            
+            this.$emit('btnClicked')
+        }
     },
 
     mounted() {
       this.initData()
       this.btnClick(false)
+    },
+
+    watch: {
+        timeframe(value) {
+            helper.updateStore(this.$store, 'timeframe', value)            
+        },
+        from(value) {
+            helper.updateStore(this.$store, 'from', value)            
+        },
+        to(value) {
+            helper.updateStore(this.$store, 'to', value)            
+        },
+
+        // assets
+        selectedAssets(value) {
+            helper.updateStore(this.$store, 'selectedAssets', value)            
+        },
+        checkedAssets(value) {
+            helper.updateStore(this.$store, 'checkedAssets', value)            
+        },
+        lastCheckedAsset(value) {
+            helper.updateStore(this.$store, 'lastCheckedAsset', value)            
+        },
+
+        // patterns
+        selectedPatterns(value) {
+            helper.updateStore(this.$store, 'selectedPatterns', value)            
+        },
+        checkedPatterns(value) {
+            helper.updateStore(this.$store, 'checkedPatterns', value)            
+        },
+        checkedAllPatterns(value) {
+            helper.updateStore(this.$store, 'checkedAllPatterns', value)            
+        }
     }
 }
 </script>

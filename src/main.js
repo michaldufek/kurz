@@ -109,10 +109,13 @@ Vue.prototype.$http = {
 
 Vue.prototype.$store = {
   setItem(key, value) {
-    localStorage.setItem(key, JSON.stringify(value))
+    if (value instanceof Array || value instanceof Object) {
+      value = JSON.stringify(value)
+    }
+    localStorage.setItem(key, value)
   },
   getItem(key) {
-    return JSON.parse(localStorage.getItem(key))
+    return JSON.parse(localStorage.getItem(key))    
   },
   removeItem(key) {
     localStorage.removeItem(key)

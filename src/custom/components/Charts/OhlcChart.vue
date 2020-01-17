@@ -115,14 +115,14 @@ export default {
         this.error = true
 
         if (error.message === constants.strings.networkError) {
-          this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+          helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
         }
       })
       .finally(() => {
         this.loading = false
 
         if (!this.live && !this.error) {
-          this.notifyAudio('connectionLost', 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+          helper.notifyAudio(this, document.getElementById('connectionLost'), 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
         }
       });
     },
@@ -150,15 +150,6 @@ export default {
           data: newData         
         }],
       }
-    },
-
-    notifyAudio(audioEl, type, msg) {
-      document.getElementById(audioEl).play();
-
-      this.$notify({
-        type: type, 
-        message: msg
-      })
     }
   },
 

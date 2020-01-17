@@ -144,7 +144,7 @@ export default {
           this.error = true
 
           if (error.message === constants.strings.networkError) {
-            this.notifyAudio('connectionLost', 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('card') + ')')
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('card') + ')')
           }
         })
         .finally(() => {
@@ -195,15 +195,6 @@ export default {
 
         this.setWatchlist(watchlist)
       }
-    },
-
-    notifyAudio(audioEl, type, msg) {
-      document.getElementById(audioEl).play();
-
-      this.$notify({
-        type: type, 
-        message: msg
-      })
     }
   },
 
