@@ -32,7 +32,10 @@
 <script>
   import { BaseTable } from '@/components'
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
+
   import constants from '@/custom/assets/js/constants';
+  import helper from '@/custom/assets/js/helper';
+  
 
   export default {
     components: {
@@ -65,6 +68,7 @@
 
         this.setTableData()
       },
+      
       setTableData() {
         let rows = []
 

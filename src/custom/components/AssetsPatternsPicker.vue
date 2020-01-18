@@ -77,13 +77,17 @@
                     <th></th>
                 </template>  
                 <template slot-scope="{row}">
-                    <a href="#" @click="checkAsset(row)">
-                        <div :class="{ 'selectedAsset': (oneAssetLimit ? (lastCheckedAsset ? [ lastCheckedAsset ] : []) : checkedAssets).map(a => a.symbol).includes(row.symbol) }">
-                            <td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
-                            <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td>
-                        </div>
-                    </a>
-                    <td class="td-actions text-right" style="border: none">
+                    <div>
+                        <td style="border: none">
+                            <input v-if="oneAssetLimit" type="radio" :id="row.id" :value="row" v-model="checkedAsset">
+                            <!-- <label for="one">One</label> -->
+                            <!-- <input v-if="oneAssetLimit" type="checkbox" :id="row.id" :value="row" v-model="checkedAsset"> -->
+                            <input v-else type="checkbox" :id="row.id" :value="row" v-model="checkedAssets">
+                        </td>
+                        <td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
+                        <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td>
+                    </div>
+                    <td class="td-actions text-right" style="border: none">                        
                         <base-button size="sm" icon @click="removeAsset(row)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
                             <i class="tim-icons icon-simple-remove"></i>
                         </base-button>
@@ -183,7 +187,7 @@ export default {
             disabledDatesAsset: null,            
             selectedAssets: [],
             checkedAssets: [],
-            lastCheckedAsset: null,
+            checkedAsset: null, // only used when oneAssetLimit is true
             assets: [],
 
             // patterns
@@ -224,7 +228,7 @@ export default {
             let data = helper.getAssetsPatternsPickerData(this.$store)
             if (data) {
                 ({ timeframe:this.timeframe, from:this.from, to:this.to, selectedAssets:this.selectedAssets, checkedAssets:this.checkedAssets, 
-                   lastCheckedAsset:this.lastCheckedAsset, selectedPatterns:this.selectedPatterns, checkedPatterns:this.checkedPatterns, 
+                   checkedAsset:this.checkedAsset, selectedPatterns:this.selectedPatterns, checkedPatterns:this.checkedPatterns, 
                    checkedAllPatterns:this.checkedAllPatterns } 
                 = data)
             }
@@ -232,74 +236,61 @@ export default {
 
         selectTimeframe(timeframe) {
             this.timeframe = timeframe
+            helper.updateStore(this.$store, 'timeframe', this.timeframe)            
             this.$emit('timeframeChanged')
         },
 
         // selecting asset/patterns
         ddSelectAsset(asset) {
-            this.ddSelect(asset, asset => asset.symbol, this.selectedAssets, 'selectedAssets') 
-            this.checkAsset(asset)
-            console.log(this.checkedAssets)
+            if (!('id' in asset)) {
+                return
+            }
+
+            this.ddSelect(asset, asset => asset.id, this.selectedAssets)
+
+            if (this.oneAssetLimit) {
+                this.checkedAsset = asset
+            } else {
+                this.ddSelect(asset, asset => asset.id, this.checkedAssets)
+            }
         },
         ddSelectPattern(pattern) {
-            this.ddSelect(pattern, pattern => pattern.name, this.selectedPatterns, 'selectedPatterns')
-
-            if (!('id' in pattern)) { // workaround for strange handler js error
+            if (!('id' in pattern)) {
                 return
             }
-            this.checkedPatterns.push(pattern)
 
-            if (this.checkedAllPatterns) {
+            this.ddSelect(pattern, pattern => pattern.id, this.selectedPatterns)
+            this.ddSelect(pattern, pattern => pattern.id, this.checkedPatterns)
+
+            if (this.checkedAllPatterns) {  // works only in debug - why?
                 this.checkedAllPatterns = false
             } else if (this.checkedPatterns.length === this.selectedPatterns.length) {
-                this.checkAllPatterns = true
+                this.checkedAllPatterns = true
             }
         },
-        ddSelect(item, itemKeySelector, selectedItems, varName) {
-            if ('id' in item && !selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {
+        ddSelect(item, itemKeySelector, selectedItems) {
+            if (!selectedItems.map(itemKeySelector).includes(itemKeySelector(item))) {
                 selectedItems.push(item)
-                localStorage.setItem(varName, JSON.stringify(selectedItems))
             }
         },
 
-        checkAsset(asset) {
-            if (!('id' in asset)) { // workaround for strange handler js error
-                return
-            }
-
-            if ((this.oneAssetLimit ? (this.lastCheckedAsset ? [ this.lastCheckedAsset ] : []) : this.checkedAssets).map(a => a.symbol).includes(asset.symbol)) {
-                // clicked on checked asset -> remove from checked assets
-                if (this.oneAssetLimit) {
-                    this.lastCheckedAsset = null                    
-                }
-                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1)                
-            } else {
-                if (this.oneAssetLimit) {
-                    // if only one asset can be checked -> change last checked asset and add to checked assets list
-                    this.lastCheckedAsset = asset
-                }
-                this.checkedAssets.push(asset)
-            }    
-            
-            this.updateDisabledDatesAsset()
-        },
         removeAsset(asset) {
             this.selectedAssets.splice(this.selectedAssets.map(sa => sa.symbol).indexOf(asset.symbol), 1);
 
-            if ((this.oneAssetLimit ? (this.lastCheckedAsset ? [ this.lastCheckedAsset ] : []) : this.checkedAssets).map(a => a.symbol).includes(asset.symbol)) {
-                // removing also checked asset
-                if (this.oneAssetLimit) {
-                    this.lastCheckedAsset = null                    
+            // remove also checked asset
+            if (this.oneAssetLimit) {
+                if (this.checkedAsset && this.checkedAsset.id === asset.id) {
+                    this.checkedAsset = null                    
                 }
-                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1);
-                this.updateDisabledDatesAsset()
+            } else if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {                
+                this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1)                
             }
         },
         updateDisabledDatesAsset() {
             this.disabledDatesAsset = null
             let fromChanged = false
             let toChanged = false
-            let checkedAssets = this.oneAssetLimit ? (this.lastCheckedAsset ? [ this.lastCheckedAsset ] : []) : this.checkedAssets // needs to be variable because of javascript error
+            let checkedAssets = this.oneAssetLimit ? (this.checkedAsset ? [ this.checkedAsset ] : []) : this.checkedAssets
 
             checkedAssets.forEach(asset => {
                 this.$http
@@ -400,11 +391,11 @@ export default {
         },
 
         btnClick(notify=true) {
-            if (!this.checkedAssets.length) {
+            if ((!this.oneAssetLimit && !this.checkedAssets.length) || (this.oneAssetLimit && !this.checkedAsset)) {
                 if (notify) {
                     this.$notify({
                         type: 'warning', 
-                        message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
+                        message: this.$t('notifications.addNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
                     })    
                 }
                 return
@@ -413,11 +404,10 @@ export default {
             if (!this.checkedPatterns.length && notify) {
                 this.$notify({
                     type: 'warning', 
-                    message: this.$t('notifications.addChartNoPattern') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
+                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
                 })  
             }
 
-            helper.updateStore(this.$store, 'timeframe', this.timeframe)            
             this.$emit('btnClicked')
         }
     },
@@ -428,9 +418,6 @@ export default {
     },
 
     watch: {
-        timeframe(value) {
-            helper.updateStore(this.$store, 'timeframe', value)            
-        },
         from(value) {
             helper.updateStore(this.$store, 'from', value)            
         },
@@ -443,10 +430,12 @@ export default {
             helper.updateStore(this.$store, 'selectedAssets', value)            
         },
         checkedAssets(value) {
-            helper.updateStore(this.$store, 'checkedAssets', value)            
+            helper.updateStore(this.$store, 'checkedAssets', value) 
+            this.updateDisabledDatesAsset()
         },
-        lastCheckedAsset(value) {
-            helper.updateStore(this.$store, 'lastCheckedAsset', value)            
+        checkedAsset(value) {
+            helper.updateStore(this.$store, 'checkedAsset', value) 
+            this.updateDisabledDatesAsset()
         },
 
         // patterns
