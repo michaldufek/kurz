@@ -4,7 +4,7 @@
     <h4 v-if="showTitle" slot="header" class="card-title">{{title}}</h4>
     <div>
       <section v-if="noData">
-        <p>{{ $t('noData') }}</p>
+        <h5>{{ noDataText ? noDataText : $t('noData') }}</h5>
       </section>
       <section v-else-if="isError">
         <p>{{ $t('dataError') }}</p>
@@ -41,6 +41,10 @@ export default {
     title: {
       type: String,
       description: "Table title"
+    },
+    noDataText: {
+      type: String,
+      description: "Text to show when no data"
     },
     showTitle: {
       type: Boolean,
@@ -125,7 +129,7 @@ export default {
     loadData() {
       this.finishedLoadings = 0
       let errorLoadings = 0
-      if (this.apiUrls.length > 0) {
+      if (this.apiUrls && this.apiUrls.length > 0) {
         this.loading = true
         this.error = false
       }
@@ -133,34 +137,38 @@ export default {
       const loadRoutine = () => new Promise ((resolve, reject) => {           
         let responses = []
 
-        this.apiUrls.forEach(apiUrl => {
-          this.$http
-          .get(apiUrl)
-          .then(response => {
-            if (!this.finishedLoadings) {
-              this.tableData = []
-            }
+        if (!this.apiUrls) {
+          resolve(responses)
+        } else {
+          this.apiUrls.forEach(apiUrl => {
+            this.$http
+            .get(apiUrl)
+            .then(response => {
+              if (!this.finishedLoadings) {
+                this.tableData = []
+              }
 
-            responses.push(response)          
-          })
-          .catch(error => {
-            console.log(error);
-            if (++errorLoadings === this.apiUrls.length) {
-              this.error = true
-              reject()
-            }
+              responses.push(response)          
+            })
+            .catch(error => {
+              console.log(error);
+              if (++errorLoadings === this.apiUrls.length) {
+                this.error = true
+                reject()
+              }
 
-            if (error.message === constants.strings.networkError) {
-              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
-            }
+              if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
+              }
+            })
+            .finally(() => {
+              if (++this.finishedLoadings === this.apiUrls.length) {
+                this.loading = false
+                resolve(responses)
+              }
+            });
           })
-          .finally(() => {
-            if (++this.finishedLoadings === this.apiUrls.length) {
-              this.loading = false
-              resolve(responses)
-            }
-          });
-        })
+        }
       })
 
       loadRoutine()

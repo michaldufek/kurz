@@ -258,6 +258,7 @@
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
           "expirationTip": "Expirace pro čekající typ vstupu",
           "expiration": "Expirace",
+          "risk": "Risk",
           "numberDays": "Číslo v dnech"
         },
         "exitRules": {
@@ -282,13 +283,14 @@
               "Počáteční kapitál", 
               "Analýza", 
               "ProfitTarget", 
-              "StopLoss", 
+              "StopLoss",              
+              "Vstupní klouzavý průměr", 
+              "Výstupní klouzavý průměr",
               "Typ vstupu", 
               "Směr", 
               "Cena", 
               "Expirace",
-              "Vstupní klouzavý průměr", 
-              "Výstupní klouzavý průměr"
+              "Risk"
             ]
           },
           "trades": {
@@ -381,8 +383,8 @@
     "settingsCleared": "Všechna nastavení smazána úspěšně.",
     "fromChanged" : "Datum 'Od' byl upraven podle rozsahu aktiva",
     "toChanged" : "Datum 'Do' byl upraven podle rozsahu aktiva",
-    "addChartNoAsset": "Musíte označit alespoň jedno aktivum",
-    "addChartNoPattern": "Musíte zaškrtnout alespoň jeden pattern"
+    "addNoAsset": "Musíte označit alespoň jedno aktivum",
+    "addNoPattern": "Musíte zaškrtnout alespoň jeden pattern"
   },
   "userMenu": {
     "title": "Uživatelské akce",

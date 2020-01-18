@@ -51,6 +51,7 @@
       <!-- patterns history -->
       <div class="col-lg-3 col-md-12">
         <fancy-table :title="$t('research.patternLab.chart.patternsHistory.title')"
+                     noDataText="No patterns detected."
                      :apiUrls="patternsHistoryUrl"
                      :columns="$t('research.patternLab.chart.patternsHistory.columns')"
                      :rowsCreator="rowsCreator"
@@ -125,22 +126,24 @@
       addChart() {
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
-          ({ from:this.from, to:this.to, timeframe:this.timeframe, lastCheckedAsset:this.asset, checkedPatterns:this.patterns } = data)
+          ({ from:this.from, to:this.to, timeframe:this.timeframe, checkedAsset:this.asset, checkedPatterns:this.patterns } = data)
         }
         
         this.loadChart()
 
+        this.patternsHistoryUrl = null
         if (this.patterns.length) {
-        // load patterns history table
-          this.patternsHistoryUrl = [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]
-          this.tableKey += 1 // force reload of fancy-table component
+          // load patterns history table
+          this.patternsHistoryUrl = [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]          
         }
+        this.tableKey += 1 // force reload of fancy-table component
       },
       loadChart() {
+        this.lineChartUrl = null
         if (this.asset) {
           this.lineChartUrl = constants.urls.patternLab.chart + this.asset.id + '/' + helper.convertTimeframe(this.timeframe)
-          this.lineChartKey += 1 // force reload of fancy-chart component
         }
+        this.lineChartKey += 1 // force reload of fancy-chart component
       },      
 
       timeframeChanged() {
@@ -151,9 +154,10 @@
 
         this.loadChart()
       },
+      
       selectChartType(chartType) {
         this.chartType = chartType
-        helper.updateStore(this.$store, 'chartType', chartType)
+        helper.updateStore(this.$store, 'chartType', chartType, this.storeKey)
         this.loadChart()
       },
 

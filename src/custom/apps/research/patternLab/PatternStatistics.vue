@@ -124,11 +124,9 @@
         let assets = []
         let patterns = []
 
-        if ('selectedAssets' in localStorage) {
-          assets = JSON.parse(localStorage.selectedAssets)
-        }
-        if ('selectedPatterns' in localStorage) {
-          patterns = JSON.parse(localStorage.selectedPatterns)
+        let data = helper.getAssetsPatternsPickerData(this.$store)
+        if (data) {
+          ({ selectedAssets:assets, selectedPatterns:patterns } = data)
         }
 
         this.patternsUrl = assets.length && patterns.length
