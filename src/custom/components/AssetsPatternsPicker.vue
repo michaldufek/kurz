@@ -395,7 +395,7 @@ export default {
                 if (notify) {
                     this.$notify({
                         type: 'warning', 
-                        message: this.$t('notifications.addChartNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
+                        message: this.$t('notifications.addNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
                     })    
                 }
                 return
@@ -404,7 +404,7 @@ export default {
             if (!this.checkedPatterns.length && notify) {
                 this.$notify({
                     type: 'warning', 
-                    message: this.$t('notifications.addChartNoPattern') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
+                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
                 })  
             }
 

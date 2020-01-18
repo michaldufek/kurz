@@ -4,8 +4,7 @@
     <div class="col-lg-2 col-md-12 container">
       <assets-patterns-picker :title="$t('research.patternLab.backtestPatterns.title')"
                               :btnText="$t('research.patternLab.backtestPatterns.addPattern')" 
-                              @btnClicked="addPattern" 
-                              @timeframeChanged="timeframeChanged" />
+                              @btnClicked="addPattern" />
     </div>
 
     <!-- strategy settings  -->
@@ -125,6 +124,17 @@
                       :placeholder="$t('research.patternLab.backtestPatterns.entryRules.numberDays')">
           </base-input>
         </div>
+
+        <!-- risk (fix-amount) -->
+        <div>
+          <p style="width: 40%; position: relative; top: 45px">{{ $t('research.patternLab.backtestPatterns.entryRules.risk') }}</p>
+          <base-input alternative
+                      type="text"
+                      style="float: right; width: 60%"
+                      v-model="strategy.risk"
+                      :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
+          </base-input>
+        </div>
       </card>
 
       <!-- exit rules -->
@@ -228,6 +238,7 @@
 <script>
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
   import constants from '@/custom/assets/js/constants'
+  import helper from '@/custom/assets/js/helper';
   import i18n from "@/i18n"
   
   import TopNavbar from "@/custom/layout/application/patternLab/performanceResults/TopNavbar.vue";
@@ -237,6 +248,7 @@
   
   const defaultStrategy = {
     initialCapital: null,
+
     // entry rules
     entryType: i18n.t('research.patternLab.backtestPatterns.entryRules.entryTypes')[0],
     direction: i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[0],
@@ -254,6 +266,8 @@
       exitRules: null
     },
     expiration: null,
+    risk: null,
+    
     // exit rules
     analyze: null,
     profitTarget: {
@@ -276,13 +290,6 @@
 
     data() {
       return {
-        storeKey: 'research.patternLab.backtestPatterns.title',
-
-        // assets-patterns picker data
-        timeframe: null,
-        startDate: null,    
-        endDate: null,
-
         // strategy settings
         strategy: defaultStrategy,
         
@@ -292,27 +299,42 @@
     
     methods: {
       initStrategyData() {
-        let data = this.$store.getItem(this.storeKey)
+        let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
         this.strategy = data ? data.strategy : defaultStrategy
       },
 
       // methods from AssetsPatternsPicker emits
       addPattern() {
-        this.cardKey++
-      },
-      timeframeChanged() {
+        helper.updateStore(this.$store, 'event', constants.events.addPattern, constants.storeKeys.backtestPatterns)
         this.cardKey++
       },
 
-      runStrategyClick() {
-        let data = this.$store.getItem(this.storeKey)
-        if (!data) {
-          data = {}
+      runStrategyClick(notify=true) {
+        let data = helper.getAssetsPatternsPickerData(this.$store)
+        if (data) {   
+          if (!data.checkedAssets.length) {
+            if (notify) {
+              this.$notify({
+                              type: 'warning', 
+                              message: this.$t('notifications.addNoAsset') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
+                          })
+            }    
+            return
+          }
+
+          if (!data.checkedPatterns.length && notify) {
+            this.$notify({
+                type: 'warning', 
+                message: this.$t('notifications.addNoPattern') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
+            })  
+          } else {
+            this.$store.setItem(constants.storeKeys.backtestPatterns, {
+              strategy: this.strategy,
+              event: constants.events.runStrategy
+            })
+            this.cardKey++
+          }
         }
-        data['strategy'] = this.strategy
-        this.$store.setItem(this.storeKey, data)
-
-        this.cardKey++
       },
 
       toggleSidebar() {
@@ -324,7 +346,7 @@
 
     mounted() {
       this.initStrategyData()     
-      this.runStrategyClick() 
+      this.runStrategyClick(false) 
     }
   }  
 </script>

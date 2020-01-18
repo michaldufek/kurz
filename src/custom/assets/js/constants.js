@@ -32,8 +32,6 @@ export default {
 
     defaultUnit: i18n.t('research.patternLab.units')[0],
 
-    patternLabStoreKey: 'research.patternLab.AssetsPatternsPicker',
-
     urls: {
         tickerSP: {
              base : baseUrl + SPPartUrl + tickerPartUrl,
@@ -59,6 +57,16 @@ export default {
             "MF Report": baseUrl + chartPartUrl + mfPartUrl, 
             "UVXY Report": baseUrl + chartPartUrl + uvxyPartUrl
         }
+    },
+
+    storeKeys: {
+        assetsPatternsPicker: 'research.patternLab.AssetsPatternsPicker',
+        backtestPatterns: 'research.patternLab.backtestPatterns',
+    },
+
+    events: {
+        addPattern: 'addPattern',
+        runStrategy: 'runStrategyClick'        
     },
 
     strings: {

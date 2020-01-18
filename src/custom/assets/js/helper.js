@@ -158,7 +158,7 @@ export default {
         return ret.join('&');
     },
     getAssetsPatternsPickerData(store) {
-        let data = store.getItem(constants.patternLabStoreKey)
+        let data = store.getItem(constants.storeKeys.assetsPatternsPicker)
         if (data) {
             return {
                 timeframe: data.timeframe ? data.timeframe : i18n.t('research.patternLab.timeframes')[0],
@@ -177,7 +177,7 @@ export default {
             }
         }
     },
-    updateStore(store, key, value, storeKey=constants.patternLabStoreKey) {
+    updateStore(store, key, value, storeKey=constants.storeKeys.assetsPatternsPicker) {
         let storeData = store.getItem(storeKey)
         if (!storeData) {
             storeData = {}
