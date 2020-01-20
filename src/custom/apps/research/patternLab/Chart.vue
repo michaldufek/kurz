@@ -141,7 +141,7 @@
       loadChart() {
         this.lineChartUrl = null
         if (this.asset) {
-          this.lineChartUrl = constants.urls.patternLab.chart + this.asset.id + '/' + helper.convertTimeframe(this.timeframe)
+          this.lineChartUrl = constants.urls.patternLab.chart + helper.encodeRouteParams([ this.asset.id, helper.convertTimeframe(this.timeframe) ])
         }
         this.lineChartKey += 1 // force reload of fancy-chart component
       },      

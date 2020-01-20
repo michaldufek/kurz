@@ -123,7 +123,6 @@
         "not": "NOT",
         "clearSelection": "Clear selection",
         "symbolName": "Symbol/Name:",
-        "currency": "Currency",
         "exchange": "Exchange",
         "index": "Index",
         "dividend": "Dividend",
@@ -133,11 +132,6 @@
         "text": "Text",
         "watchlistActivate": "Activate stocks watchlist",
         "watchlistDeactivate": "Deactivate stocks watchlist",
-        "currencies": [
-          "USD",
-          "EUR",
-          "CZK"
-        ],        
         "exchanges": [
           "NYQ",
           "NMS",
@@ -170,7 +164,6 @@
       "entry": "Entry",
       "exit": "Exit",
       "rules": "rules",        
-      "movingAverage": "Moving average",
       "timeframes": [
         "Daily",
         "Weekly",
@@ -230,18 +223,8 @@
         "addPattern": "Add pattern",
         "initialCapital": "Initial capital",
         "numberUSD": "Number in USD",
-        "movingAverageTip": "Moving average period",
-        "trendFilter": "Trend filter",
         "export": "Export",
         "entryRules": {
-          "entryType": "Entry type",
-          "entryTypes": [
-            "Market",
-            "Stop",
-            "Limit",
-            "Pending STOP",
-            "Pending LIMIT"
-          ],
           "direction": "Direction",
           "directions": [
             "BUY",
@@ -255,7 +238,10 @@
             "Low",
             "Close"
           ],
+          "trendFilter": "Trend filter",
           "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
+          "movingAverage": "Moving average",
+          "movingAverageTip": "Moving average period",
           "expirationTip": "Expiration for pending entry type",
           "expiration": "Expiration",
           "risk": "Risk",
@@ -273,7 +259,11 @@
           "title": "Performance results",
           "patterns": {
             "title": "Patterns",
+            "bar": "bar",
+            "barsTo4": "bars",
             "bars": "bars",
+            "day": "day",
+            "daysTo4": "days",
             "days": "days",
             "columns": [
               "From",
@@ -283,15 +273,12 @@
               "Pattern", 
               "Initial capital", 
               "Analyze", 
-              "ProfitTarget", 
-              "StopLoss", 
-              "Entry moving average", 
-              "Exit moving average",
-              "Entry type", 
+              "Profit Target", 
+              "Stop Loss", 
+              "Trend filter (Moving average)",
               "Direction", 
               "Price", 
-              "Expiration",
-              "Risk"
+              "Expiration"
             ]
           },
           "trades": {
@@ -306,8 +293,7 @@
               "Entry time", 
               "Exit time", 
               "Amount", 
-              "PnL", 
-              "Exit type"
+              "Profit"
             ]
           },
           "performanceMetrics": {
@@ -318,15 +304,13 @@
               "# of trades", 
               "Initial capital", 
               "End capital", 
-              "Net profit", 
-              "Performance", 
+              "Cummulative PnL final", 
               "CAGR", 
               "Sharpe ratio", 
               "PT", 
               "SL", 
-              "BE", 
               "Average trade", 
-              "Max DD"
+              "Max drawdown strategy"
             ]
           },
           "chart": {

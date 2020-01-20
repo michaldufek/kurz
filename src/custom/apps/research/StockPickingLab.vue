@@ -3,6 +3,7 @@
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div>
 
+      <!-- symbol/name search -->
       <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.symbolName')}}</p>
       <base-input alternative
                   type="text"
@@ -12,7 +13,8 @@
                   @keyup.enter="symbolSearchEnter">
       </base-input>
       
-      <img :src="notEqualSrc(selectedCurrencyNot)" 
+      <!-- currencies  -->
+      <!-- <img :src="notEqualSrc(selectedCurrencyNot)" 
            @click="selectCurrencyNot" 
            :title="$t('research.stockPickingLab.filters.change') + ' ' + $t('research.stockPickingLab.filters.currency').toLowerCase() + (!selectedCurrencyNot ? ' ' + $t('research.stockPickingLab.filters.not') : '') + ' ' + $t('research.stockPickingLab.filters.equal')" 
            class="notEqual"
@@ -33,8 +35,9 @@
             </a>
           </li>
         </ul>
-      </base-dropdown>      
+      </base-dropdown>       -->
 
+      <!-- exchanges -->
       <img :src="notEqualSrc(selectedExchangeNot)"
            @click="selectExchangeNot" 
            :title="$t('research.stockPickingLab.filters.change') + ' ' + $t('research.stockPickingLab.filters.exchange').toLowerCase() + (!selectedExchangeNot ? ' ' + $t('research.stockPickingLab.filters.not') : '') + ' ' + $t('research.stockPickingLab.filters.equal')" 
@@ -58,10 +61,13 @@
         </ul>
       </base-dropdown>
 
+      <!-- index -->
       <base-checkbox v-if="showIndex" class="chb" v-model="index">{{$t('research.stockPickingLab.filters.index')}}</base-checkbox>
 
+      <!-- dividend -->
       <base-checkbox v-if="showDividend" class="chb" v-model="dividend">{{$t('research.stockPickingLab.filters.dividend')}}</base-checkbox>      
 
+      <!-- sectors -->
       <img :src="notEqualSrc(selectedSectorNot)"
            @click="selectSectorNot" 
            :title="$t('research.stockPickingLab.filters.change') + ' ' + $t('research.stockPickingLab.filters.sector').toLowerCase() + (!selectedSectorNot ? ' ' + $t('research.stockPickingLab.filters.not') : '') + ' ' + $t('research.stockPickingLab.filters.equal')" 
@@ -105,6 +111,7 @@
         </base-input>
       </div>
 
+      <!-- watchlist -->
       <img :src="watchlistSrc" 
            style="float: right; border-radius: 10rem;"
            @click="watchlistDeActivate" 
@@ -174,8 +181,8 @@
 
         // filters
         symbolSearch: null,
-        selectedCurrency: null,
-        selectedCurrencyNot: false,
+        // selectedCurrency: null,
+        // selectedCurrencyNot: false,
         selectedExchange: null,
         selectedExchangeNot: false,
         selectedSector: null,      
@@ -195,15 +202,15 @@
 
       // initializing
       initSelectors() {
-        if (this.selectedCurrency && !('currency' in localStorage)) {
-          localStorage.setItem('currency', this.selectedCurrency)
-        } else {
-          this.selectedCurrency = localStorage.currency
-        }
-        if (!('currencyNot' in localStorage)) {
-          localStorage.setItem('currencyNot', this.selectedCurrencyNot)
-        }
-        this.selectedCurrencyNot = JSON.parse(localStorage.currencyNot)
+        // if (this.selectedCurrency && !('currency' in localStorage)) {
+        //   localStorage.setItem('currency', this.selectedCurrency)
+        // } else {
+        //   this.selectedCurrency = localStorage.currency
+        // }
+        // if (!('currencyNot' in localStorage)) {
+        //   localStorage.setItem('currencyNot', this.selectedCurrencyNot)
+        // }
+        // this.selectedCurrencyNot = JSON.parse(localStorage.currencyNot)
 
         if (this.selectedExchange && !('exchange' in localStorage)) {
           localStorage.setItem('exchange', this.selectedExchange)
@@ -318,11 +325,11 @@
           data['info__dividendDate__is_null'] = false
         }
 
-        if (this.selectedCurrencyNot) {
-          data['info__currency__exclude'] = this.selectedCurrency
-        } else {
-          data['info__currency'] = this.selectedCurrency
-        }
+        // if (this.selectedCurrencyNot) {
+        //   data['info__currency__exclude'] = this.selectedCurrency
+        // } else {
+        //   data['info__currency'] = this.selectedCurrency
+        // }
         if (this.selectedExchangeNot) {
           data['info__exchange__exclude'] = this.selectedExchange
         } else {
@@ -338,38 +345,35 @@
       },
 
       // dropdowns selections
-      selectCurrency(currency) {
-        if (currency === this.$t('research.stockPickingLab.filters.all')) {
-          this.selectedCurrency = null
-          localStorage.removeItem('currency')
+      // selectCurrency(currency) {
+      //   if (currency === this.$t('research.stockPickingLab.filters.all')) {
+      //     this.selectedCurrency = null
+      //     localStorage.removeItem('currency')
 
-          this.selectedCurrencyNot = false
-          localStorage.setItem('currencyNot', this.selectedCurrencyNot)
-        } else {
-          this.selectedCurrency = currency
-          localStorage.setItem('currency', currency)
-        }
-        if (this.selectedCurrencyNot !== currency) {
-          this.selectedCurrencyNot = null
-        }
+      //     this.selectedCurrencyNot = false
+      //     localStorage.setItem('currencyNot', this.selectedCurrencyNot)
+      //   } else {
+      //     this.selectedCurrency = currency
+      //     localStorage.setItem('currency', currency)
+      //   }
 
-        this.initData()
-      },
-      selectCurrencyNot() {
-        this.selectedCurrencyNot = !this.selectedCurrencyNot
-        localStorage.setItem('currencyNot', this.selectedCurrencyNot)
+      //   this.initData()
+      // },
+      // selectCurrencyNot() {
+      //   this.selectedCurrencyNot = !this.selectedCurrencyNot
+      //   localStorage.setItem('currencyNot', this.selectedCurrencyNot)
 
-        if (this.selectedCurrency) {
-          this.initData()
-        }
-      },
-      currencyTitle(currency) {
-        return currency === this.$t('research.stockPickingLab.filters.all') 
-               ? this.$t('research.stockPickingLab.filters.clearSelection') 
-               : this.$t('research.stockPickingLab.filters.currency') 
-                  + (this.selectedCurrencyNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
-                  + ' ' + this.$t('research.stockPickingLab.filters.equal')
-      },      
+      //   if (this.selectedCurrency) {
+      //     this.initData()
+      //   }
+      // },
+      // currencyTitle(currency) {
+      //   return currency === this.$t('research.stockPickingLab.filters.all') 
+      //          ? this.$t('research.stockPickingLab.filters.clearSelection') 
+      //          : this.$t('research.stockPickingLab.filters.currency') 
+      //             + (this.selectedCurrencyNot ? ' ' + this.$t('research.stockPickingLab.filters.not') : '') 
+      //             + ' ' + this.$t('research.stockPickingLab.filters.equal')
+      // },      
 
       selectExchange(exchange) {
         if (exchange === this.$t('research.stockPickingLab.filters.all')) {
@@ -477,12 +481,12 @@
         return this.watchlistActive ? require('@/custom/assets/img/favorite-on.png') : require('@/custom/assets/img/favorite-off.png')
       },
 
-      showCurrency() {
-        if (!('currencyEnabled' in localStorage)) {
-          localStorage.setItem('currencyEnabled', true)
-        } 
-        return JSON.parse(localStorage.currencyEnabled)
-      },
+      // showCurrency() {
+      //   if (!('currencyEnabled' in localStorage)) {
+      //     localStorage.setItem('currencyEnabled', true)
+      //   } 
+      //   return JSON.parse(localStorage.currencyEnabled)
+      // },
       showExchange() {
         if (!('exchangeEnabled' in localStorage)) {
           localStorage.setItem('exchangeEnabled', true)
@@ -508,16 +512,16 @@
         return JSON.parse(localStorage.sectorEnabled)
       },
 
-      currencies() {
-        let currencies = []
-        if (this.selectedCurrency) {
-          currencies = [this.$t('research.stockPickingLab.filters.all')]
-        }
-        return currencies.concat(this.$t('research.stockPickingLab.filters.currencies'))
-      },
-      currenciesTitle() {
-        return this.selectedCurrency ? this.selectedCurrency : this.$t('research.stockPickingLab.filters.currency')                
-      },
+      // currencies() {
+      //   let currencies = []
+      //   if (this.selectedCurrency) {
+      //     currencies = [this.$t('research.stockPickingLab.filters.all')]
+      //   }
+      //   return currencies.concat(this.$t('research.stockPickingLab.filters.currencies'))
+      // },
+      // currenciesTitle() {
+      //   return this.selectedCurrency ? this.selectedCurrency : this.$t('research.stockPickingLab.filters.currency')                
+      // },
       exchanges() {
         let exchanges = []
         if (this.selectedExchange) {

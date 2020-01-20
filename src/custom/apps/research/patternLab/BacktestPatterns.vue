@@ -1,7 +1,7 @@
 <template>
   <div class="row">
 
-    <div class="col-lg-2 col-md-12 container">
+    <div class="col-lg-2 col-md-12 container" style="max-width: 15%">
       <assets-patterns-picker :title="$t('research.patternLab.backtestPatterns.title')"
                               :btnText="$t('research.patternLab.backtestPatterns.addPattern')" 
                               @btnClicked="addPattern" />
@@ -23,23 +23,6 @@
       <card>
         <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.entry') + ' ' + $t('research.patternLab.rules') }}</h4>
 
-        <!-- entry types -->
-        <p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.entryType') }}</p>
-        <base-dropdown class="input" 
-                       menu-classes="dropdown-black" 
-                       title-classes="btn btn-secondary"
-                       :title="strategy.entryType">
-          <ul style="list-style-type: none;">
-            <li v-for="eType in $t('research.patternLab.backtestPatterns.entryRules.entryTypes').filter(et => et !== strategy.entryType)">            
-              <a class="dropdown-item" 
-                 @click="strategy.entryType = eType" 
-                 href="#">
-                 {{ eType }}
-              </a>
-            </li>
-          </ul>
-        </base-dropdown>
-
         <!-- direction -->
         <p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.direction') }}</p>
         <base-dropdown class="input" 
@@ -57,8 +40,8 @@
           </ul>
         </base-dropdown>
 
-        <!-- price (show only if Entry type not MARKET) -->
-        <div v-if="strategy.entryType !== $t('research.patternLab.backtestPatterns.entryRules.entryTypes')[0]">
+        <!-- price -->
+        <div>
           <table>
             <tr>
               <td><p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.price') }}</p></td>
@@ -100,16 +83,16 @@
         </div>
 
         <!-- trend filter -->
-        <p :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')" class="label">{{ $t('research.patternLab.backtestPatterns.trendFilter') }}</p>
+        <p :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')" class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.trendFilter') }}</p>
         <!-- to-do: tip not visible because of position:relative of moving average -->
-        <input type="checkbox" v-model="strategy.trendFilter.entryRules" class="input" style="margin-top: 5px">
+        <input type="checkbox" v-model="strategy.trendFilter" class="input" style="margin-top: 5px">
         <!-- moving average -->
-        <div v-if="strategy.trendFilter.entryRules" :title="$t('research.patternLab.backtestPatterns.movingAverageTip')">
-          <p style="width: 46%; position: relative; top: 10px">{{ $t('research.patternLab.movingAverage') }}</p>
+        <div v-if="strategy.trendFilter" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
+          <p style="width: 46%; position: relative; top: 10px">{{ $t('research.patternLab.backtestPatterns.entryRules.movingAverage') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 52%; margin-top: -25px"
-                      v-model="strategy.movingAverage.entryRules"
+                      v-model="strategy.movingAverage"
                       :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
           </base-input>
         </div>
@@ -200,23 +183,6 @@
 
         </table>
 
-        <!-- trend filter check -->
-        <div :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')">
-          <input type="checkbox" style="width: 60%; position: relative; top: 25px" v-model="strategy.trendFilter.exitRules">
-          <p style="width: 60%">{{ $t('research.patternLab.backtestPatterns.trendFilter') }}</p>          
-        </div>
-
-        <!-- moving average -->
-        <div v-if="strategy.trendFilter.exitRules" :title="$t('research.patternLab.backtestPatterns.movingAverageTip')">
-          <p style="width: 46%; top: 10px; position: relative;">{{ $t('research.patternLab.movingAverage') }}</p>
-          <base-input alternative
-                      type="text"
-                      style="float: right; width: 52%; margin-top: -25px"
-                      v-model="strategy.movingAverage.exitRules"
-                      :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
-          </base-input>
-        </div>
-
       </card>
 
       <!-- Run strategy button -->
@@ -250,21 +216,14 @@
     initialCapital: null,
 
     // entry rules
-    entryType: i18n.t('research.patternLab.backtestPatterns.entryRules.entryTypes')[0],
     direction: i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[0],
     price: {
       ohlc: i18n.t('research.patternLab.backtestPatterns.entryRules.ohlcs')[0],
       offset: null,
       unit: constants.defaultUnit
     },
-    trendFilter: {
-      entryRules: false,
-      exitRules: false
-    },
-    movingAverage: {
-      entryRules: null,
-      exitRules: null
-    },
+    trendFilter: false,
+    movingAverage: null,
     expiration: null,
     risk: null,
     
@@ -305,8 +264,7 @@
 
       // methods from AssetsPatternsPicker emits
       addPattern() {
-        helper.updateStore(this.$store, 'event', constants.events.addPattern, constants.storeKeys.backtestPatterns)
-        this.cardKey++
+        this.storeAndReloadCard(constants.events.addPattern)
       },
 
       runStrategyClick(notify=true) {
@@ -328,13 +286,18 @@
                 message: this.$t('notifications.addNoPattern') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
             })  
           } else {
-            this.$store.setItem(constants.storeKeys.backtestPatterns, {
-              strategy: this.strategy,
-              event: constants.events.runStrategy
-            })
-            this.cardKey++
+            this.storeAndReloadCard(constants.events.runStrategy)            
           }
         }
+      },
+
+      storeAndReloadCard(event) {
+        this.$store.setItem(constants.storeKeys.backtestPatterns, {
+          strategy: this.strategy,
+          event: event
+        })
+
+        this.cardKey++
       },
 
       toggleSidebar() {

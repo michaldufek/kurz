@@ -123,7 +123,6 @@
         "not": "NE",
         "clearSelection": "Zrušit výběr",
         "symbolName": "Symbol/Jméno:",
-        "currency": "Měna",
         "exchange": "Burza",
         "index": "Index",
         "dividend": "Dividenda",
@@ -133,11 +132,6 @@
         "text": "Text",
         "watchlistActivate": "Aktivovat seznam sledovaných aktiv",
         "watchlistDeactivate": "Deaktivovat seznam sledovaných aktiv",
-        "currencies": [
-          "USD",
-          "EUR",
-          "CZK"
-        ],        
         "exchanges": [
           "NYQ",
           "NMS",
@@ -170,7 +164,6 @@
       "entry": "Vstupní",
       "exit": "Výstupní",
       "rules": "pravidla",
-      "movingAverage": "Klouzavý průměr",
       "timeframes": [
         "Denní",
         "Týdenní",
@@ -230,18 +223,8 @@
         "addPattern": "Přidat pattern",
         "initialCapital": "Počáteční kapitál",
         "numberUSD": "Číslo v USD",
-        "movingAverageTip": "Perioda klouzavého průměru",
-        "trendFilter": "Trend filter",
         "export": "Export",
         "entryRules": {
-          "entryType": "Typ vstupu",
-          "entryTypes": [
-            "Market",
-            "Stop",
-            "Limit",
-            "Pending STOP",
-            "Pending LIMIT"
-          ],
           "direction": "Směr",
           "directions": [
             "BUY",
@@ -255,7 +238,10 @@
             "Low",
             "Close"
           ],
+          "trendFilter": "Trend filter",
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
+          "movingAverage": "Klouzavý průměr",
+          "movingAverageTip": "Perioda klouzavého průměru",
           "expirationTip": "Expirace pro čekající typ vstupu",
           "expiration": "Expirace",
           "risk": "Risk",
@@ -272,7 +258,11 @@
         "performanceResults": {
           "patterns": {
             "title": "Patterny",
+            "bar": "bar",
+            "barsTo4": "bary",
             "bars": "barů",
+            "day": "den",
+            "daysTo4": "dny",
             "days": "dnů",
             "columns": [
               "Od",
@@ -282,15 +272,12 @@
               "Pattern", 
               "Počáteční kapitál", 
               "Analýza", 
-              "ProfitTarget", 
-              "StopLoss",              
-              "Vstupní klouzavý průměr", 
-              "Výstupní klouzavý průměr",
-              "Typ vstupu", 
+              "Profit Target", 
+              "Stop Loss",              
+              "Trend filter (Klouzavý průměr)", 
               "Směr", 
               "Cena", 
-              "Expirace",
-              "Risk"
+              "Expirace"
             ]
           },
           "trades": {
@@ -305,8 +292,7 @@
               "Vstupní čas", 
               "Výstupní čas", 
               "Množství", 
-              "PnL", 
-              "Typ výstupu"
+              "Profit"
             ]
           },
           "performanceMetrics": {
@@ -317,15 +303,13 @@
               "# obchodů", 
               "Počáteční kapitál", 
               "Koncový kapitál", 
-              "Čistý zisk", 
-              "Výkon", 
+              "Kumulativní finální zisk", 
               "CAGR", 
               "Sharpe ratio", 
               "PT", 
               "SL", 
-              "BE", 
               "Průměrný obchod", 
-              "Max DD"
+              "Max drawdown strategie"
             ]
           },
           "chart": {

@@ -29,7 +29,7 @@ export default {
             this.tableData = []            
             let columnsKey = 'research.patternLab.backtestPatterns.performanceResults.patterns.columns'
             let apData = helper.getAssetsPatternsPickerData(this.$store)
-            let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)  // entry/exit rules
             let stratData = null
             let eventName = null
             if (bpData) {
@@ -43,8 +43,8 @@ export default {
                         let row = {}
                         let nr = 0
 
-                        row[this.$t(columnsKey)[nr++].toLowerCase()] = apData.from    // From
-                        row[this.$t(columnsKey)[nr++].toLowerCase()] = apData.to    // To
+                        row[this.$t(columnsKey)[nr++].toLowerCase()] = helper.formatDate(apData.from)    // From
+                        row[this.$t(columnsKey)[nr++].toLowerCase()] = helper.formatDate(apData.to)    // To
                         row[this.$t(columnsKey)[nr++].toLowerCase()] = apData.timeframe    // Time frame
                         row[this.$t(columnsKey)[nr++].toLowerCase()] = asset.symbol    // Asset
                         row[this.$t(columnsKey)[nr++].toLowerCase()] = pattern.name    // Pattern
@@ -76,16 +76,13 @@ export default {
         },
         updateRow(row, columnsKey, nr, stratData) {
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.initialCapital ? `${stratData.initialCapital} ${constants.defaultUnit}` : null    // Initial capital
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.analyze ? `${stratData.analyze} ${this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.bars')}` : null    // Analyze
+            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.analyze ? `${stratData.analyze} ${helper.pluralize(stratData.analyze, 'research.patternLab.backtestPatterns.performanceResults.patterns.bar')}` : null    // Analyze
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.profitTarget.value ? `${stratData.profitTarget.value} ${stratData.profitTarget.unit}` : null    // Profit Target
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.stopLoss.value ? `${stratData.stopLoss.value} ${stratData.stopLoss.unit}` : null    // Stop Loss
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.trendFilter.entryRules && stratData.movingAverage.entryRules ? `${stratData.movingAverage.entryRules} ${constants.defaultUnit}` : null    // Entry moving average
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.trendFilter.exitRules && stratData.movingAverage.exitRules ? `${stratData.movingAverage.exitRules} ${constants.defaultUnit}` : null     // Exit moving average
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.entryType    // Entry type
+            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.trendFilter && stratData.movingAverage ? `${stratData.movingAverage} ${constants.defaultUnit}` : null    // Trend filter (moving average)
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.direction    // Direction
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.price.offset ? `${stratData.price.ohlc} ${stratData.price.offset} ${stratData.price.unit}` : null    // Price 
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.expiration ? `${stratData.expiration} ${this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.days')}` : null    // Expiration
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.risk ? `${stratData.risk} ${constants.defaultUnit}` : null    // Risk
+            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.expiration ? `${stratData.expiration} ${helper.pluralize(stratData.expiration, 'research.patternLab.backtestPatterns.performanceResults.patterns.day')}` : null    // Expiration
         },
 
         addDeleteColumn(allowed, clName) {

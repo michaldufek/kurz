@@ -100,8 +100,10 @@ export default {
 
     formatDate(dt, delimiter="-") {
         // returns RRRR-MM-DD format
-        let newDt = new Date(dt)
-        return newDt.getFullYear() + delimiter + this.pad(Number(newDt.getMonth() + 1)) + delimiter + this.pad(newDt.getDate())
+        if (dt) {
+            let newDt = new Date(dt)
+            return newDt.getFullYear() + delimiter + this.pad(Number(newDt.getMonth() + 1)) + delimiter + this.pad(newDt.getDate())
+        }
     },
 
     formatDateTime(dt) {
@@ -157,6 +159,10 @@ export default {
         }
         return ret.join('&');
     },
+    encodeRouteParams(data) {
+        return data.join('/');
+    },
+
     getAssetsPatternsPickerData(store) {
         let data = store.getItem(constants.storeKeys.assetsPatternsPicker)
         if (data) {
@@ -186,6 +192,23 @@ export default {
         store.setItem(storeKey, storeData)
     },
 
+    // plurazlizer
+    pluralize(nr, translationKey) {
+        let nrsKey = translationKey + 's'
+
+        if (nr === 0) {
+            return i18n.t(nrsKey)
+        }
+        if (nr === 1) {
+            return i18n.t(translationKey)
+        }
+        if (nr < 5) {
+            return i18n.t(nrsKey + 'To4')
+        } else {
+            return i18n.t(nrsKey)
+        }
+    },
+
     // global filters
     roundToFixed(value) {
         if (!value || Number.isInteger(value)) {
@@ -202,12 +225,17 @@ export default {
                     : value
     },
     
-    chartUpdateTsText(ts) {
-        // returns RRRR-M-D H:M:S like formatted text for chart
-        if (ts) {
+    chartUpdateTsText(ts, loading) {
+        // returns RRRR-M-D H:M:S like formatted text for chart (if not loading)
+        if (loading) {
+            return null
+        }
+
+        if (ts) {            
             let newDt = new Date(ts)
             return i18n.t('chartUpdatedPrefix') + ' ' + newDt.getFullYear() + "-" + Number(newDt.getMonth() + 1) + "-" + newDt.getDate() + " " + newDt.getHours() + ":" + newDt.getMinutes() + ":" + newDt.getSeconds()
         }
+
         return i18n.t('chartNeverUpdated')
     }
 }
