@@ -293,8 +293,7 @@
               "Entry time", 
               "Exit time", 
               "Amount", 
-              "PnL", 
-              "Exit type"
+              "Profit"
             ]
           },
           "performanceMetrics": {

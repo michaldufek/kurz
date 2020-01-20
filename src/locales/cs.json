@@ -292,8 +292,7 @@
               "Vstupní čas", 
               "Výstupní čas", 
               "Množství", 
-              "PnL", 
-              "Typ výstupu"
+              "Profit"
             ]
           },
           "performanceMetrics": {
