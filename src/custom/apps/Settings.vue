@@ -5,9 +5,9 @@
         <card>
           <h5 class="title">{{$t('settings.metrics')}}</h5>
           <ul style="list-style-type: none; padding-left: 0px;">
-            <li >
+            <!-- <li >
               <base-checkbox v-model="currency">{{$t('research.stockPickingLab.filters.currency')}}</base-checkbox>
-            </li>
+            </li> -->
             <li >
               <base-checkbox v-model="exchange">{{$t('research.stockPickingLab.filters.exchange')}}</base-checkbox>
             </li>
@@ -54,10 +54,10 @@
     },
     methods: {
       init() {
-        if (!('currencyEnabled' in localStorage)) {
-          localStorage.setItem('currencyEnabled', true)
-        } 
-        this.currency = JSON.parse(localStorage.currencyEnabled)
+        // if (!('currencyEnabled' in localStorage)) {
+        //   localStorage.setItem('currencyEnabled', true)
+        // } 
+        // this.currency = JSON.parse(localStorage.currencyEnabled)
 
         if (!('exchangeEnabled' in localStorage)) {
           localStorage.setItem('exchangeEnabled', true)
@@ -96,7 +96,7 @@
     },
     data () {
       return {
-        currency: true,
+        // currency: true,
         exchange: true,
         index: true,
         dividend: true,
@@ -109,9 +109,9 @@
       this.init()
     },
     watch: {
-      currency(val) {
-        localStorage.currencyEnabled = val
-      },
+      // currency(val) {
+      //   localStorage.currencyEnabled = val
+      // },
       exchange(val) {
         localStorage.exchangeEnabled = val
       },

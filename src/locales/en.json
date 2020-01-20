@@ -123,7 +123,6 @@
         "not": "NOT",
         "clearSelection": "Clear selection",
         "symbolName": "Symbol/Name:",
-        "currency": "Currency",
         "exchange": "Exchange",
         "index": "Index",
         "dividend": "Dividend",
@@ -133,11 +132,6 @@
         "text": "Text",
         "watchlistActivate": "Activate stocks watchlist",
         "watchlistDeactivate": "Deactivate stocks watchlist",
-        "currencies": [
-          "USD",
-          "EUR",
-          "CZK"
-        ],        
         "exchanges": [
           "NYQ",
           "NMS",
@@ -281,7 +275,7 @@
               "Analyze", 
               "Profit Target", 
               "Stop Loss", 
-              "Trend filter (moving average)",
+              "Trend filter (Moving average)",
               "Direction", 
               "Price", 
               "Expiration"

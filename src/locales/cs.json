@@ -123,7 +123,6 @@
         "not": "NE",
         "clearSelection": "Zrušit výběr",
         "symbolName": "Symbol/Jméno:",
-        "currency": "Měna",
         "exchange": "Burza",
         "index": "Index",
         "dividend": "Dividenda",
@@ -133,11 +132,6 @@
         "text": "Text",
         "watchlistActivate": "Aktivovat seznam sledovaných aktiv",
         "watchlistDeactivate": "Deaktivovat seznam sledovaných aktiv",
-        "currencies": [
-          "USD",
-          "EUR",
-          "CZK"
-        ],        
         "exchanges": [
           "NYQ",
           "NMS",
@@ -280,7 +274,7 @@
               "Analýza", 
               "Profit Target", 
               "Stop Loss",              
-              "Trend filter (klouzavý průměr)", 
+              "Trend filter (Klouzavý průměr)", 
               "Směr", 
               "Cena", 
               "Expirace"
