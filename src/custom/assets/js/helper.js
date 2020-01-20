@@ -202,12 +202,18 @@ export default {
                     : value
     },
     
-    chartUpdateTsText(ts) {
-        // returns RRRR-M-D H:M:S like formatted text for chart
-        if (ts) {
-            let newDt = new Date(ts)
-            return i18n.t('chartUpdatedPrefix') + ' ' + newDt.getFullYear() + "-" + Number(newDt.getMonth() + 1) + "-" + newDt.getDate() + " " + newDt.getHours() + ":" + newDt.getMinutes() + ":" + newDt.getSeconds()
+    chartUpdateTsText(tsObj) {
+        // returns RRRR-M-D H:M:S like formatted text for chart (if not loading)
+        if (tsObj) {
+            if (tsObj.loading) {
+                return null
+            }
+            if (tsObj.updateTs) {
+                let newDt = new Date(tsObj.updateTs)
+                return i18n.t('chartUpdatedPrefix') + ' ' + newDt.getFullYear() + "-" + Number(newDt.getMonth() + 1) + "-" + newDt.getDate() + " " + newDt.getHours() + ":" + newDt.getMinutes() + ":" + newDt.getSeconds()
+            }
         }
+
         return i18n.t('chartNeverUpdated')
     }
 }

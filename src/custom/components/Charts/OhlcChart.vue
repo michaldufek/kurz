@@ -2,7 +2,7 @@
   <card type="chart">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div class="card-header">
-      <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updateTs | chartUpdateTsText}}</h5>
+      <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{ { loading, updateTs } | chartUpdateTsText }}</h5>
     </div>
     <br/>
     <div class="chart-area" style="height: 425px">
