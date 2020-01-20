@@ -100,8 +100,10 @@ export default {
 
     formatDate(dt, delimiter="-") {
         // returns RRRR-MM-DD format
-        let newDt = new Date(dt)
-        return newDt.getFullYear() + delimiter + this.pad(Number(newDt.getMonth() + 1)) + delimiter + this.pad(newDt.getDate())
+        if (dt) {
+            let newDt = new Date(dt)
+            return newDt.getFullYear() + delimiter + this.pad(Number(newDt.getMonth() + 1)) + delimiter + this.pad(newDt.getDate())
+        }
     },
 
     formatDateTime(dt) {
@@ -188,6 +190,23 @@ export default {
         }
         storeData[key] = value
         store.setItem(storeKey, storeData)
+    },
+
+    // plurazlizer
+    pluralize(nr, translationKey) {
+        let nrsKey = translationKey + 's'
+
+        if (nr === 0) {
+            return i18n.t(nrsKey)
+        }
+        if (nr === 1) {
+            return i18n.t(translationKey)
+        }
+        if (nr < 5) {
+            return i18n.t(nrsKey + 'To4')
+        } else {
+            return i18n.t(nrsKey)
+        }
     },
 
     // global filters

@@ -170,7 +170,6 @@
       "entry": "Vstupní",
       "exit": "Výstupní",
       "rules": "pravidla",
-      "movingAverage": "Klouzavý průměr",
       "timeframes": [
         "Denní",
         "Týdenní",
@@ -230,8 +229,6 @@
         "addPattern": "Přidat pattern",
         "initialCapital": "Počáteční kapitál",
         "numberUSD": "Číslo v USD",
-        "movingAverageTip": "Perioda klouzavého průměru",
-        "trendFilter": "Trend filter",
         "export": "Export",
         "entryRules": {
           "direction": "Směr",
@@ -247,7 +244,10 @@
             "Low",
             "Close"
           ],
+          "trendFilter": "Trend filter",
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
+          "movingAverage": "Klouzavý průměr",
+          "movingAverageTip": "Perioda klouzavého průměru",
           "expirationTip": "Expirace pro čekající typ vstupu",
           "expiration": "Expirace",
           "risk": "Risk",
@@ -264,7 +264,11 @@
         "performanceResults": {
           "patterns": {
             "title": "Patterny",
+            "bar": "bar",
+            "barsTo4": "bary",
             "bars": "barů",
+            "day": "den",
+            "daysTo4": "dny",
             "days": "dnů",
             "columns": [
               "Od",
@@ -274,15 +278,12 @@
               "Pattern", 
               "Počáteční kapitál", 
               "Analýza", 
-              "ProfitTarget", 
-              "StopLoss",              
-              "Vstupní klouzavý průměr", 
-              "Výstupní klouzavý průměr",
-              "Typ vstupu", 
+              "Profit Target", 
+              "Stop Loss",              
+              "Trend filter (klouzavý průměr)", 
               "Směr", 
               "Cena", 
-              "Expirace",
-              "Risk"
+              "Expirace"
             ]
           },
           "trades": {

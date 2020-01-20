@@ -170,7 +170,6 @@
       "entry": "Entry",
       "exit": "Exit",
       "rules": "rules",        
-      "movingAverage": "Moving average",
       "timeframes": [
         "Daily",
         "Weekly",
@@ -230,8 +229,6 @@
         "addPattern": "Add pattern",
         "initialCapital": "Initial capital",
         "numberUSD": "Number in USD",
-        "movingAverageTip": "Moving average period",
-        "trendFilter": "Trend filter",
         "export": "Export",
         "entryRules": {
           "direction": "Direction",
@@ -247,7 +244,10 @@
             "Low",
             "Close"
           ],
+          "trendFilter": "Trend filter",
           "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
+          "movingAverage": "Moving average",
+          "movingAverageTip": "Moving average period",
           "expirationTip": "Expiration for pending entry type",
           "expiration": "Expiration",
           "risk": "Risk",
@@ -265,7 +265,11 @@
           "title": "Performance results",
           "patterns": {
             "title": "Patterns",
+            "bar": "bar",
+            "barsTo4": "bars",
             "bars": "bars",
+            "day": "day",
+            "daysTo4": "days",
             "days": "days",
             "columns": [
               "From",
@@ -275,15 +279,12 @@
               "Pattern", 
               "Initial capital", 
               "Analyze", 
-              "ProfitTarget", 
-              "StopLoss", 
-              "Entry moving average", 
-              "Exit moving average",
-              "Entry type", 
+              "Profit Target", 
+              "Stop Loss", 
+              "Trend filter (moving average)",
               "Direction", 
               "Price", 
-              "Expiration",
-              "Risk"
+              "Expiration"
             ]
           },
           "trades": {
