@@ -304,15 +304,13 @@
               "# of trades", 
               "Initial capital", 
               "End capital", 
-              "Net profit", 
-              "Performance", 
+              "Cummulative PnL final", 
               "CAGR", 
               "Sharpe ratio", 
               "PT", 
               "SL", 
-              "BE", 
               "Average trade", 
-              "Max DD"
+              "Max drawdown strategy"
             ]
           },
           "chart": {

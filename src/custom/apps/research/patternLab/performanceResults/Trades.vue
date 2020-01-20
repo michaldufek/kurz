@@ -1,13 +1,13 @@
 <template>
 
-    <fancy-table :title="$t('research.patternLab.backtestPatterns.performanceResults.trades.title')"
+    <fancy-table :title="$t(tradesKey + '.title')"
                  :showTitle="false"
                  :apiUrls="url"
-                 :columns="$t('research.patternLab.backtestPatterns.performanceResults.trades.columns')"
+                 :columns="$t(tradesKey + '.columns')"
                  :rowsCreator="rowsCreator"
                  :sortable="true"
                  :filterable="true"
-                 :headerTitle="$t('research.patternLab.backtestPatterns.performanceResults.trades.title')"
+                 :headerTitle="$t(tradesKey + '.title')"
                  :key="tableKey">
     </fancy-table>
     
@@ -26,6 +26,7 @@ export default {
         return {
             assetsPatterns: null,
             rules: null,
+            tradesKey: 'research.patternLab.backtestPatterns.performanceResults.trades',
 
             tableKey: 0
         }
@@ -33,19 +34,15 @@ export default {
     
     computed: {
       url() {
-        // https://dev.analyticalplatform.com/api/pl/ComplexBacktest?timeframe=1&start_date=20010102&finish_date=20101230&assets=MSFT&pattern_ids=3&params={"entry_type": "market", "direction": "buy", "profit_take": 0.01, "stoploss": 0.01}
-        let ret = this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
-                   ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
-                        + "?" + helper.encodeQueryData(this.getQueryData()) ] 
-                   : []
-        console.log(ret)
-        return ret
+        return this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
+                ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
+                     + "?" + helper.encodeQueryData(this.getQueryData()) ] 
+                : []
       }
     },
 
     methods: {
         initData() {
-            console.log('initData - trades')
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
         },
@@ -65,10 +62,10 @@ export default {
         },
         
         rowsCreator(data) {
-            let clsKey = 'research.patternLab.backtestPatterns.performanceResults.trades.columns'
+            let clsKey = this.tradesKey + '.columns'
             let rows = []
 
-            data.forEach(d => d[1].forEach(datum => {
+            data.forEach(d => d.forEach(datum => {
                 let rowNr = 1
                 Object.keys(datum.trades.trades.pnl).forEach(trade => {
                     let row = {}

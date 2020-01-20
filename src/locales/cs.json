@@ -303,15 +303,13 @@
               "# obchodů", 
               "Počáteční kapitál", 
               "Koncový kapitál", 
-              "Čistý zisk", 
-              "Výkon", 
+              "Kumulativní finální zisk", 
               "CAGR", 
               "Sharpe ratio", 
               "PT", 
               "SL", 
-              "BE", 
               "Průměrný obchod", 
-              "Max DD"
+              "Max drawdown strategie"
             ]
           },
           "chart": {
