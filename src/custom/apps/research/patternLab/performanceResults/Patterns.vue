@@ -29,7 +29,7 @@ export default {
             this.tableData = []            
             let columnsKey = 'research.patternLab.backtestPatterns.performanceResults.patterns.columns'
             let apData = helper.getAssetsPatternsPickerData(this.$store)
-            let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)  // entry/exit rules
             let stratData = null
             let eventName = null
             if (bpData) {
@@ -81,7 +81,6 @@ export default {
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.stopLoss.value ? `${stratData.stopLoss.value} ${stratData.stopLoss.unit}` : null    // Stop Loss
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.trendFilter.entryRules && stratData.movingAverage.entryRules ? `${stratData.movingAverage.entryRules} ${constants.defaultUnit}` : null    // Entry moving average
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.trendFilter.exitRules && stratData.movingAverage.exitRules ? `${stratData.movingAverage.exitRules} ${constants.defaultUnit}` : null     // Exit moving average
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.entryType    // Entry type
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.direction    // Direction
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.price.offset ? `${stratData.price.ohlc} ${stratData.price.offset} ${stratData.price.unit}` : null    // Price 
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.expiration ? `${stratData.expiration} ${this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.days')}` : null    // Expiration

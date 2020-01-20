@@ -234,14 +234,6 @@
         "trendFilter": "Trend filter",
         "export": "Export",
         "entryRules": {
-          "entryType": "Entry type",
-          "entryTypes": [
-            "Market",
-            "Stop",
-            "Limit",
-            "Pending STOP",
-            "Pending LIMIT"
-          ],
           "direction": "Direction",
           "directions": [
             "BUY",

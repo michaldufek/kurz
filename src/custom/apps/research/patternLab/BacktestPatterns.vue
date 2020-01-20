@@ -1,7 +1,7 @@
 <template>
   <div class="row">
 
-    <div class="col-lg-2 col-md-12 container">
+    <div class="col-lg-2 col-md-12 container" style="max-width: 15%">
       <assets-patterns-picker :title="$t('research.patternLab.backtestPatterns.title')"
                               :btnText="$t('research.patternLab.backtestPatterns.addPattern')" 
                               @btnClicked="addPattern" />
@@ -23,23 +23,6 @@
       <card>
         <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.entry') + ' ' + $t('research.patternLab.rules') }}</h4>
 
-        <!-- entry types -->
-        <p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.entryType') }}</p>
-        <base-dropdown class="input" 
-                       menu-classes="dropdown-black" 
-                       title-classes="btn btn-secondary"
-                       :title="strategy.entryType">
-          <ul style="list-style-type: none;">
-            <li v-for="eType in $t('research.patternLab.backtestPatterns.entryRules.entryTypes').filter(et => et !== strategy.entryType)">            
-              <a class="dropdown-item" 
-                 @click="strategy.entryType = eType" 
-                 href="#">
-                 {{ eType }}
-              </a>
-            </li>
-          </ul>
-        </base-dropdown>
-
         <!-- direction -->
         <p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.direction') }}</p>
         <base-dropdown class="input" 
@@ -57,8 +40,8 @@
           </ul>
         </base-dropdown>
 
-        <!-- price (show only if Entry type not MARKET) -->
-        <div v-if="strategy.entryType !== $t('research.patternLab.backtestPatterns.entryRules.entryTypes')[0]">
+        <!-- price -->
+        <div>
           <table>
             <tr>
               <td><p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.price') }}</p></td>
@@ -202,7 +185,7 @@
 
         <!-- trend filter check -->
         <div :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')">
-          <input type="checkbox" style="width: 60%; position: relative; top: 25px" v-model="strategy.trendFilter.exitRules">
+          <input type="checkbox" style="width: 60%; position: relative; top: 18px; left: 80px" v-model="strategy.trendFilter.exitRules">
           <p style="width: 60%">{{ $t('research.patternLab.backtestPatterns.trendFilter') }}</p>          
         </div>
 
@@ -211,7 +194,7 @@
           <p style="width: 46%; top: 10px; position: relative;">{{ $t('research.patternLab.movingAverage') }}</p>
           <base-input alternative
                       type="text"
-                      style="float: right; width: 52%; margin-top: -25px"
+                      style="float: right; width: 52%; margin-top: -15px"
                       v-model="strategy.movingAverage.exitRules"
                       :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
           </base-input>
@@ -250,7 +233,6 @@
     initialCapital: null,
 
     // entry rules
-    entryType: i18n.t('research.patternLab.backtestPatterns.entryRules.entryTypes')[0],
     direction: i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[0],
     price: {
       ohlc: i18n.t('research.patternLab.backtestPatterns.entryRules.ohlcs')[0],

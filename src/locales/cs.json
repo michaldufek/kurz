@@ -234,14 +234,6 @@
         "trendFilter": "Trend filter",
         "export": "Export",
         "entryRules": {
-          "entryType": "Typ vstupu",
-          "entryTypes": [
-            "Market",
-            "Stop",
-            "Limit",
-            "Pending STOP",
-            "Pending LIMIT"
-          ],
           "direction": "Směr",
           "directions": [
             "BUY",
