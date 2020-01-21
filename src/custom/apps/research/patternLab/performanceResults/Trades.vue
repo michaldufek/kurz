@@ -40,8 +40,8 @@ export default {
                 this.$notify({
                     type: 'warning', 
                     message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
-                              + ' - ' + this.$t('research.patternLab.backtestPatterns.title') 
-                              + ' - ' + this.$t(this.tradesKey + '.title') + ').'
+                              + ' / ' + this.$t('research.patternLab.backtestPatterns.title') 
+                              + ' / ' + this.$t(this.tradesKey + '.title') + ').'
                 })
                 
                 return  

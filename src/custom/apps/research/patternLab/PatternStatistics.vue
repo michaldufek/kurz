@@ -4,10 +4,10 @@
     <div class="row">
       <div class="col-lg-3 col-md-12 container">
         <!-- statistics -->
-        <fancy-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.statistics.title')"
-                    :fullTitle="$t('research.patternLab.patternStatistics.statistics.title')"
+        <fancy-card :title="$t(storeKey + '.title') + ' - ' + $t(storeKey + '.statistics.title')"
+                    :fullTitle="$t(storeKey + '.statistics.title')"
                     :showTitle="true"
-                    :items="$t('research.patternLab.patternStatistics.statistics.items')"                    
+                    :items="$t(storeKey + '.statistics.items')"                    
                     :values="[ patternsStats.total, patternsStats.bullish, patternsStats.bearish ]"
                     style="margin-bottom: 0px;"
                     :key="cardKey">
@@ -31,7 +31,7 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.patternsByStock')"
+        <pie-chart-card :title="$t(storeKey + '.title') + ' - ' + $t(storeKey + '.patternsByStock')"
                         :chartData="chartData.patternsByAsset" />
 
         <div style="position: relative; left: 10px; top: 50px; z-index: 1">
@@ -51,20 +51,20 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')"
+        <pie-chart-card :title="$t(storeKey + '.title') + ' - ' + $t(storeKey + '.stocksByPattern')"
                         :chartData="chartData.assetsByPattern" />
       </div>
 
       <!-- patterns table -->
       <div class="col-lg-9 col-md-12">
-        <fancy-table :title="$t('research.patternLab.patternStatistics.patternsTable.title')"
+        <fancy-table :title="$t(storeKey + '.patternsTable.title')"
                      :showTitle="false"
                      :apiUrls="patternsUrl"
-                     :columns="$t('research.patternLab.patternStatistics.patternsTable.columns')"
+                     :columns="$t(storeKey + '.patternsTable.columns')"
                      :rowsCreator="rowsCreator"
                      :sortable="true"
                      :filterable="true"
-                     :headerTitle="$t('research.patternLab.patternStatistics.patternsTitle')"
+                     :headerTitle="$t(storeKey + '.patternsTitle')"
                      :key="tableKey">
         </fancy-table>
       </div>
@@ -91,6 +91,8 @@
 
     data() {
       return {
+        storeKey: 'research.patternLab.patternStatistics',
+
         // statistics card
         patternsStats: {
           total: 0,
@@ -120,13 +122,18 @@
     },
 
     methods: {
-      initTable() {
+      initData() {
         let assets = []
         let patterns = []
 
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
           ({ selectedAssets:assets, selectedPatterns:patterns } = data)
+        }
+
+        data = this.$store.getItem(this.storeKey)
+        if (data) {
+            ({ selectedAsset:this.selectedAsset, selectedPattern:this.selectedPattern } = data)
         }
 
         this.patternsUrl = assets.length && patterns.length
@@ -272,8 +279,17 @@
       }
     },
 
+    watch: {
+      selectedAsset(val) {        
+        helper.updateStore(this.$store, 'selectedAsset', val, this.storeKey)
+      },
+      selectedPattern(val) {        
+        helper.updateStore(this.$store, 'selectedPattern', val, this.storeKey)
+      }
+    },
+
     mounted() {
-      this.initTable();
+      this.initData();
     }
   }  
 </script>
