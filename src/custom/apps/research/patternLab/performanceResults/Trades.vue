@@ -28,23 +28,21 @@ export default {
             rules: null,
             tradesKey: 'research.patternLab.backtestPatterns.performanceResults.trades',
 
+            url: null,
             tableKey: 0
         }
     },
     
-    computed: {
-      url() {
-        return this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
-                ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
-                     + "?" + helper.encodeQueryData(this.getQueryData()) ] 
-                : []
-      }
-    },
-
     methods: {
         initData() {
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
+
+            this.url = this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
+                        ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
+                            + "?" + helper.encodeQueryData(this.getQueryData()) ] 
+                        : []
+            this.tableKey++
         },
 
         getRouteParams() {
@@ -64,7 +62,7 @@ export default {
         rowsCreator(data) {
             let clsKey = this.tradesKey + '.columns'
             let rows = []
-
+            
             data.forEach(d => d.forEach(datum => {
                 let rowNr = 1
                 Object.keys(datum.trades.trades.pnl).forEach(trade => {
