@@ -15,6 +15,7 @@
 <script>
 import FancyTable from '@/custom/components/Tables/FancyTable'; 
 import constants from '@/custom/assets/js/constants'; 
+import helper from '@/custom/assets/js/helper';
 
 export default {
     components: {
@@ -27,23 +28,21 @@ export default {
             rules: null,
             perfMetricsKey: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
 
+            url: null,
             tableKey: 0
         }
-    },
-    
-    computed: {
-      url() {
-          return this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
-                  ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
-                       + "?" + helper.encodeQueryData(this.getQueryData()) ] 
-                  : []
-      }
     },
 
     methods: {
         initData() {
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
+
+            this.url = this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
+                        ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
+                            + "?" + helper.encodeQueryData(this.getQueryData()) ] 
+                        : []
+            this.tableKey++
         },
 
         getRouteParams() {
@@ -61,38 +60,37 @@ export default {
         },
 
         rowsCreator(data) {
-            let clsKey = this.perfMetricsKey + '.columns'
             let rows = []
 
-            data.forEach(d => d.forEach(datum => {
-                let row = {}
-
-                let clNr = 0
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = datum.symbol   // Asset
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = this.assetsPatterns.checkedPatterns.find(cp => cp.id === datum.pattern_id).name    // Pattern
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = Object.keys(datum.trades.trades.pnl).length   // # of trades
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = this.rules.strategy.initialCapital ? `${this.rules.strategy.initialCapital} ${constants.defaultUnit}` : null   // Initial capital
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = `${ (this.rules.strategy.initialCapital
-                                                                  ? this.rules.strategy.initialCapital + datum["Cummulative pnl final"]
-                                                                  : datum["Cummulative pnl final"])
-                                                                } ${constants.defaultUnit}`   // End capital
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = datum["Cummulative pnl final"] ? `${datum["Cummulative pnl final"]} ${constants.defaultUnit}` : null    // Cummulative PnL final
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = 'CAGR'    // CAGR
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = datum["Sharpe ratio"]  // Sharpe ratio
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = this.rules.strategy.profitTarget.value 
-                                                              ? `${this.rules.strategy.profitTarget.value} ${this.rules.strategy.profitTarget.unit}` 
-                                                              : null   // PT
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = this.rules.strategy.stopLoss.value 
-                                                              ? `${this.rules.strategy.stopLoss.value} ${stratData.stopLoss.unit}` 
-                                                              : null   // SL
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = datum["Avg. trade net profit per trade"]  // Average trade
-                row[this.$t(clsKey)[clNr++].toLowerCase()] = datum["Max drawdown strategy"]  // Max drawdown strategy
-
-                rows.push(row)
-           }))
+            data.forEach(d => d.forEach(datum => 
+                rows.push([
+                    datum.symbol,   // Asset
+                    this.assetsPatterns.checkedPatterns.find(cp => cp.id === datum.pattern_id).name,    // Pattern
+                    Object.keys(datum.trades.trades.pnl).length,   // # of trades
+                    this.rules.strategy.initialCapital ? `${this.rules.strategy.initialCapital} ${constants.defaultUnit}` : null,   // Initial capital
+                    this.rules.strategy.initialCapital 
+                     ? `${Number(this.rules.strategy.initialCapital) + Number(datum.trades.stats["Cummulative pnl final"]
+                                                                              ? datum.trades.stats["Cummulative pnl final"]
+                                                                              : 0)} ${constants.defaultUnit}`
+                     : (datum.trades.stats["Cummulative pnl final"] 
+                        ? `${datum.trades.stats["Cummulative pnl final"]} ${constants.defaultUnit}`
+                        : null), // End capital
+                    datum.trades.stats["Cummulative pnl final"] ? `${datum.trades.stats["Cummulative pnl final"]} ${constants.defaultUnit}` : null,    // Cummulative PnL final
+                    'CAGR',    // CAGR
+                    datum.trades.stats["Sharpe ratio"],  // Sharpe ratio
+                    this.rules.strategy.profitTarget.value ? `${this.rules.strategy.profitTarget.value} ${this.rules.strategy.profitTarget.unit}` : null,   // PT
+                    this.rules.strategy.stopLoss.value ? `${this.rules.strategy.stopLoss.value} ${stratData.stopLoss.unit}` : null,   // SL
+                    datum.trades.stats["Avg. trade net profit per trade"],  // Average trade
+                    datum.trades.stats["Max drawdown strategy"]  // Max drawdown strategy
+                ])
+           ))
 
            return rows
-        }
+        }        
+    },
+
+    mounted() {
+        this.initData()
     }
 }
 </script>
