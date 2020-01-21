@@ -36,6 +36,17 @@ export default {
     methods: {
         initData() {
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+            if (!this.assetsPatterns.checkedPatterns.length) {
+                this.$notify({
+                    type: 'warning', 
+                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
+                              + ' - ' + this.$t('research.patternLab.backtestPatterns.title') 
+                              + ' - ' + this.$t(this.tradesKey + '.title') + ').'
+                })
+                
+                return  
+            }
+
             this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
 
             this.url = this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
@@ -46,11 +57,11 @@ export default {
         },
 
         getRouteParams() {
-            return [ helper.convertTimeframe(this.assetsPatterns.timeframe), 
-                     helper.formatDate(this.assetsPatterns.from ? this.assetsPatterns.from : Number.MIN_VALUE, ''), 
-                     helper.formatDate(this.assetsPatterns.to ? this.assetsPatterns.to : new Date(), ''), 
-                     this.assetsPatterns.checkedAssets.map(ca => ca.symbol).join(';'), 
-                     this.assetsPatterns.checkedPatterns.map(cp => cp.id).join(',')         // mandatory ? if yes, notify when no no patterns
+            return [ helper.convertTimeframe(this.assetsPatterns.timeframe),    // timeframe
+                     helper.formatDate(this.assetsPatterns.from ? this.assetsPatterns.from : Number.MIN_VALUE, ''),     // start_date
+                     helper.formatDate(this.assetsPatterns.to ? this.assetsPatterns.to : new Date(), ''),   // finish_date
+                     this.assetsPatterns.checkedAssets.map(ca => ca.symbol).join(';'),  // assets
+                     this.assetsPatterns.checkedPatterns.map(cp => cp.id).join(',')     // pattern_ids
                     ]            
         },
         getQueryData() {

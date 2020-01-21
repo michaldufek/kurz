@@ -36,6 +36,17 @@ export default {
     methods: {
         initData() {
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+            if (!this.assetsPatterns.checkedPatterns.length) {
+                this.$notify({
+                    type: 'warning', 
+                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
+                              + ' - ' + this.$t('research.patternLab.backtestPatterns.title') 
+                              + ' - ' + this.$t(this.perfMetricsKey + '.title') + ').'
+                })
+                
+                return  
+            }
+
             this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
 
             this.url = this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
