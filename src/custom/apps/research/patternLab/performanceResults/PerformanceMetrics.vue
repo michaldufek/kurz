@@ -1,13 +1,13 @@
 <template>
 
-    <fancy-table :title="$t(perfMetricsKey + '.title')"
+    <fancy-table :title="$t(storeKey + '.title')"
                 :showTitle="false"
                 :apiUrls="url"
-                :columns="$t(perfMetricsKey + '.columns')"
+                :columns="$t(storeKey + '.columns')"
                 :rowsCreator="rowsCreator"
                 :sortable="true"
                 :filterable="true"
-                :headerTitle="$t(perfMetricsKey + '.title')"
+                :headerTitle="$t(storeKey + '.title')"
                 :key="tableKey">
     </fancy-table>
     
@@ -24,9 +24,10 @@ export default {
 
     data() {
         return {
+            storeKey: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
+
             assetsPatterns: null,
-            rules: null,
-            perfMetricsKey: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
+            rules: null,            
 
             url: null,
             tableKey: 0
@@ -41,7 +42,7 @@ export default {
                     type: 'warning', 
                     message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
                               + ' / ' + this.$t('research.patternLab.backtestPatterns.title') 
-                              + ' / ' + this.$t(this.perfMetricsKey + '.title') + ').'
+                              + ' / ' + this.$t(this.storeKey + '.title') + ').'
                 })
                 
                 return  

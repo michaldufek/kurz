@@ -58,7 +58,7 @@ export default {
     },
     rowsCreator: {
       type: Function,
-      default: (responseData) => {
+      default: responseData => {
         return responseData
       },
       description: "How to create rows values (of shape [#rows, #columns]) from response data"

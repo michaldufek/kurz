@@ -71,7 +71,7 @@ export default {
     },
     valuesCreator: {
       type: Function,
-      default: (responseData) => {
+      default: responseData => {
         return new Array(this.items.length)
       },
       description: "How to create items values (of shape [#items]) from response data if no values"
