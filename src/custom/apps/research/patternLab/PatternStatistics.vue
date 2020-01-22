@@ -4,10 +4,10 @@
     <div class="row">
       <div class="col-lg-3 col-md-12 container">
         <!-- statistics -->
-        <fancy-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.statistics.title')"
-                    :fullTitle="$t('research.patternLab.patternStatistics.statistics.title')"
+        <fancy-card :title="$t(storeKey + '.title') + ' - ' + $t(storeKey + '.statistics.title')"
+                    :fullTitle="$t(storeKey + '.statistics.title')"
                     :showTitle="true"
-                    :items="$t('research.patternLab.patternStatistics.statistics.items')"                    
+                    :items="$t(storeKey + '.statistics.items')"                    
                     :values="[ patternsStats.total, patternsStats.bullish, patternsStats.bearish ]"
                     style="margin-bottom: 0px;"
                     :key="cardKey">
@@ -21,7 +21,7 @@
                          :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in assets">            
+              <li v-for="asset in assets.filter(p => p.id !== selectedAsset.id)">            
                 <a class="dropdown-item" 
                    @click="selectAsset(asset)" 
                    href="#">
@@ -31,7 +31,7 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.patternsByStock')"
+        <pie-chart-card :title="$t(storeKey + '.title') + ' - ' + $t(storeKey + '.patternsByStock')"
                         :chartData="chartData.patternsByAsset" />
 
         <div style="position: relative; left: 10px; top: 50px; z-index: 1">
@@ -41,7 +41,7 @@
                          :title="selectedPattern ? selectedPattern.name : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="pattern in patterns">            
+              <li v-for="pattern in patterns.filter(p => p.id !== selectedPattern.id)">            
                 <a class="dropdown-item" 
                    @click="selectPattern(pattern)" 
                    href="#">
@@ -51,20 +51,20 @@
             </ul>
           </base-dropdown>
         </div>
-        <pie-chart-card :title="$t('research.patternLab.patternStatistics.title') + ' - ' + $t('research.patternLab.patternStatistics.stocksByPattern')"
+        <pie-chart-card :title="$t(storeKey + '.title') + ' - ' + $t(storeKey + '.stocksByPattern')"
                         :chartData="chartData.assetsByPattern" />
       </div>
 
       <!-- patterns table -->
       <div class="col-lg-9 col-md-12">
-        <fancy-table :title="$t('research.patternLab.patternStatistics.patternsTable.title')"
+        <fancy-table :title="$t(storeKey + '.patternsTable.title')"
                      :showTitle="false"
                      :apiUrls="patternsUrl"
-                     :columns="$t('research.patternLab.patternStatistics.patternsTable.columns')"
+                     :columns="$t(storeKey + '.patternsTable.columns')"
                      :rowsCreator="rowsCreator"
                      :sortable="true"
                      :filterable="true"
-                     :headerTitle="$t('research.patternLab.patternStatistics.patternsTitle')"
+                     :headerTitle="$t(storeKey + '.patternsTitle')"
                      :key="tableKey">
         </fancy-table>
       </div>
@@ -91,6 +91,8 @@
 
     data() {
       return {
+        storeKey: 'research.patternLab.patternStatistics',
+
         // statistics card
         patternsStats: {
           total: 0,
@@ -120,19 +122,23 @@
     },
 
     methods: {
-      initTable() {
+      initData() {
         let assets = []
         let patterns = []
+        let timeframe = null
 
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
-          ({ selectedAssets:assets, selectedPatterns:patterns } = data)
+          ({ timeframe:timeframe, selectedAssets:assets, selectedPatterns:patterns } = data)
         }
 
-        this.patternsUrl = assets.length && patterns.length
-                            ? [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData(assets, patterns)) ]
-                            : []
-        this.tableKey += 1 // force reload of fancy-table component
+        data = this.$store.getItem(this.storeKey)
+        if (data) {
+            ({ selectedAsset:this.selectedAsset, selectedPattern:this.selectedPattern } = data)
+        }
+
+        this.patternsUrl = helper.getPatternLabHistoryUrl(assets, patterns, timeframe)
+        this.tableKey++ // force reload of fancy-table component
       },
 
       rowsCreator(responseData) {
@@ -183,7 +189,7 @@
         this.createChartDatas()
 
          // force reload of fancy-card component
-        this.cardKey += 1
+        this.cardKey++
         
         return rows
       },
@@ -259,21 +265,20 @@
       selectPattern(pattern) {
         this.selectedPattern = pattern
         this.createChartDatas()
+      }      
+    },
+
+    watch: {
+      selectedAsset(val) {        
+        helper.updateStore(this.$store, 'selectedAsset', val, this.storeKey)
       },
-
-      getQueryData(assets, patterns) {
-        let data = {}
-
-        data['patterns'] = patterns.map(sp => sp.id)
-        data['symbols'] = assets.map(sa => sa.symbol)
-        data['timeframe'] = 1
-        
-        return data
+      selectedPattern(val) {        
+        helper.updateStore(this.$store, 'selectedPattern', val, this.storeKey)
       }
     },
 
     mounted() {
-      this.initTable();
+      this.initData();
     }
   }  
 </script>
