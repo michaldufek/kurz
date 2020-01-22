@@ -40,52 +40,10 @@
           </ul>
         </base-dropdown>
 
-        <!-- price -->
-        <div>
-          <table>
-            <tr>
-              <td><p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.price') }}</p></td>
-              <td><base-dropdown class="input" 
-                            menu-classes="dropdown-black" 
-                            title-classes="btn btn-secondary"
-                            :title="strategy.price.ohlc">
-                <ul style="list-style-type: none;">
-                  <li v-for="ohlc in $t('research.patternLab.backtestPatterns.entryRules.ohlcs').filter(po => po !== strategy.price.ohlc)">
-                    <a class="dropdown-item" 
-                      @click="strategy.price.ohlc = ohlc" 
-                      href="#">
-                      {{ ohlc }}
-                    </a>
-                  </li>
-                </ul>
-              </base-dropdown></td>
-              <td><base-input alternative
-                          type="text"
-                          class="input"
-                          v-model="strategy.price.offset"
-                          :placeholder="$t('research.patternLab.backtestPatterns.entryRules.offset')">
-              </base-input></td>
-              <td><base-dropdown menu-classes="dropdown-black" 
-                            title-classes="btn btn-secondary"
-                            :title="strategy.price.unit">
-                <ul style="list-style-type: none;">
-                  <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.price.unit)">
-                    <a class="dropdown-item" 
-                      @click="strategy.price.unit = unit" 
-                      href="#">
-                      {{ unit }}
-                    </a>
-                  </li>
-                </ul>
-              </base-dropdown></td>
-            </tr>
-          </table>
-        </div>
-
         <!-- trend filter -->
         <p :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')" class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.trendFilter') }}</p>
         <!-- to-do: tip not visible because of position:relative of moving average -->
-        <input type="checkbox" v-model="strategy.trendFilter" class="input" style="margin-top: 5px">
+        <input type="checkbox" v-model="strategy.trendFilter" class="input" style="margin-top: 15px">
         <!-- moving average -->
         <div v-if="strategy.trendFilter" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
           <p style="width: 46%; position: relative; top: 10px">{{ $t('research.patternLab.backtestPatterns.entryRules.movingAverage') }}</p>
@@ -97,20 +55,9 @@
           </base-input>
         </div>
 
-        <!-- expiration -->
-        <div :title="$t('research.patternLab.backtestPatterns.entryRules.expirationTip')">
-          <p style="width: 40%; position: relative; top: 30px">{{ $t('research.patternLab.backtestPatterns.entryRules.expiration') }}</p>
-          <base-input alternative
-                      type="text"
-                      style="float: right; width: 60%"
-                      v-model="strategy.expiration"
-                      :placeholder="$t('research.patternLab.backtestPatterns.entryRules.numberDays')">
-          </base-input>
-        </div>
-
         <!-- risk (fix-amount) -->
         <div>
-          <p style="width: 40%; position: relative; top: 45px">{{ $t('research.patternLab.backtestPatterns.entryRules.risk') }}</p>
+          <p style="width: 40%; position: relative; top: 25px">{{ $t('research.patternLab.backtestPatterns.entryRules.risk') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 60%"
@@ -217,14 +164,8 @@
 
     // entry rules
     direction: i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[0],
-    price: {
-      ohlc: i18n.t('research.patternLab.backtestPatterns.entryRules.ohlcs')[0],
-      offset: null,
-      unit: constants.defaultUnit
-    },
     trendFilter: false,
     movingAverage: null,
-    expiration: null,
     risk: null,
     
     // exit rules

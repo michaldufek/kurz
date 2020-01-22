@@ -81,8 +81,6 @@ export default {
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.stopLoss.value ? `${stratData.stopLoss.value} ${stratData.stopLoss.unit}` : null    // Stop Loss
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.trendFilter && stratData.movingAverage ? `${stratData.movingAverage} ${constants.defaultUnit}` : null    // Trend filter (moving average)
             row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.direction    // Direction
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.price.offset ? `${stratData.price.ohlc} ${stratData.price.offset} ${stratData.price.unit}` : null    // Price 
-            row[this.$t(columnsKey)[nr++].toLowerCase()] = stratData.expiration ? `${stratData.expiration} ${helper.pluralize(stratData.expiration, 'research.patternLab.backtestPatterns.performanceResults.patterns.day')}` : null    // Expiration
         },
 
         addDeleteColumn(allowed, clName) {

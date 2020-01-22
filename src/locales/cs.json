@@ -228,22 +228,13 @@
           "direction": "Směr",
           "directions": [
             "BUY",
-            "SELL"
-          ],
-          "price": "Cena",
-          "offset": "Posun",
-          "ohlcs": [
-            "Open",
-            "High",
-            "Low",
-            "Close"
+            "SELL",
+            "BOTH"
           ],
           "trendFilter": "Trend filter",
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
           "movingAverage": "Klouzavý průměr",
           "movingAverageTip": "Perioda klouzavého průměru",
-          "expirationTip": "Expirace pro čekající typ vstupu",
-          "expiration": "Expirace",
           "risk": "Risk",
           "numberDays": "Číslo v dnech"
         },
@@ -275,9 +266,7 @@
               "Profit Target", 
               "Stop Loss",              
               "Trend filter (Klouzavý průměr)", 
-              "Směr", 
-              "Cena", 
-              "Expirace"
+              "Směr"
             ]
           },
           "trades": {
