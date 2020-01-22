@@ -49,26 +49,9 @@ export default {
 
             this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
 
-            this.url = this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
-                        ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
-                            + "?" + helper.encodeQueryData(this.getQueryData()) ] 
-                        : []
+            this.url = helper.getBacktestPatternsUrl(this.assetsPatterns, this.rules)
             this.tableKey++
-        },
-
-        getRouteParams() {
-            return [ helper.convertTimeframe(this.assetsPatterns.timeframe),    // timeframe
-                     helper.formatDate(this.assetsPatterns.from ? this.assetsPatterns.from : Number.MIN_VALUE, ''),     // start_date
-                     helper.formatDate(this.assetsPatterns.to ? this.assetsPatterns.to : new Date(), ''),   // finish_date
-                     this.assetsPatterns.checkedAssets.map(ca => ca.symbol).join(';'),  // assets
-                     this.assetsPatterns.checkedPatterns.map(cp => cp.id).join(',')     // pattern_ids
-                    ]            
-        },
-        getQueryData() {
-            let query = {}
-            query['params'] = JSON.stringify(this.rules.strategy)            
-            return query
-        },
+        },        
         
         rowsCreator(data) {
             let rows = []

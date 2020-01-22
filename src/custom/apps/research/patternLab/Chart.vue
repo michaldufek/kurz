@@ -141,16 +141,16 @@
         this.patternsHistoryUrl = null
         if (this.patterns.length) {
           // load patterns history table
-          this.patternsHistoryUrl = [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]          
+          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl([ this.asset ], this.patterns, this.timeframe)     
         }
-        this.tableKey += 1 // force reload of fancy-table component
+        this.tableKey++ // force reload of fancy-table component
       },
       loadChart() {
         this.chartUrl = null
         if (this.asset) {
-          this.chartUrl = constants.urls.patternLab.chart + helper.encodeRouteParams([ this.asset.id, helper.convertTimeframe(this.timeframe) ])
+          this.chartUrl = helper.getPatternLabChartUrl(this.asset, this.timeframe) 
         }
-        this.chartKey += 1 // force reload of fancy-chart component
+        this.chartKey++ // force reload of fancy-chart component
       },      
 
       timeframeChanged() {
@@ -186,16 +186,6 @@
           });
 
         return rows
-      },
-
-      getQueryData() {
-        let query = {}
-
-        query['patterns'] = this.patterns.map(chp => chp.id).join(',')
-        query['symbols'] = this.asset.symbol // or can be more selected ?
-        query['timeframe'] = helper.convertTimeframe(this.timeframe)
-        
-        return query
       }
     },
 

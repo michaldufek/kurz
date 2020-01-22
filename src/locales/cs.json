@@ -313,7 +313,9 @@
             ]
           },
           "chart": {
-            "title": "Graf"
+            "title": "Graf",
+            "cumulatedProfit": "Kumulovaný profit",
+            "drawdown": "Drawdown"
           }
         }
       },

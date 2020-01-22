@@ -21,7 +21,7 @@
                          :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in assets">            
+              <li v-for="asset in assets.filter(p => p.id !== selectedAsset.id)">            
                 <a class="dropdown-item" 
                    @click="selectAsset(asset)" 
                    href="#">
@@ -41,7 +41,7 @@
                          :title="selectedPattern ? selectedPattern.name : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="pattern in patterns">            
+              <li v-for="pattern in patterns.filter(p => p.id !== selectedPattern.id)">            
                 <a class="dropdown-item" 
                    @click="selectPattern(pattern)" 
                    href="#">
@@ -125,10 +125,11 @@
       initData() {
         let assets = []
         let patterns = []
+        let timeframe = null
 
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
-          ({ selectedAssets:assets, selectedPatterns:patterns } = data)
+          ({ timeframe:timeframe, selectedAssets:assets, selectedPatterns:patterns } = data)
         }
 
         data = this.$store.getItem(this.storeKey)
@@ -136,10 +137,8 @@
             ({ selectedAsset:this.selectedAsset, selectedPattern:this.selectedPattern } = data)
         }
 
-        this.patternsUrl = assets.length && patterns.length
-                            ? [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData(assets, patterns)) ]
-                            : []
-        this.tableKey += 1 // force reload of fancy-table component
+        this.patternsUrl = helper.getPatternLabHistoryUrl(assets, patterns, timeframe)
+        this.tableKey++ // force reload of fancy-table component
       },
 
       rowsCreator(responseData) {
@@ -190,7 +189,7 @@
         this.createChartDatas()
 
          // force reload of fancy-card component
-        this.cardKey += 1
+        this.cardKey++
         
         return rows
       },
@@ -266,17 +265,7 @@
       selectPattern(pattern) {
         this.selectedPattern = pattern
         this.createChartDatas()
-      },
-
-      getQueryData(assets, patterns) {
-        let data = {}
-
-        data['patterns'] = patterns.map(sp => sp.id)
-        data['symbols'] = assets.map(sa => sa.symbol)
-        data['timeframe'] = 1
-        
-        return data
-      }
+      }      
     },
 
     watch: {

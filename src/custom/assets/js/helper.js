@@ -149,7 +149,21 @@ export default {
         return !nr ? nr : (nr > 0 ? constants.strings.bullish : constants.strings.bearish)
     },
 
-    // data helpers
+    // query & urls methods
+    getBacktestPatternsQueryData(data) {
+        let query = {}
+        query['params'] = JSON.stringify(data)            
+        return query
+    },
+    getPatternLabQueryData(assets, patterns, timeframe) {
+        let data = {}
+
+        data['symbols'] = assets.map(sa => sa.symbol)
+        data['patterns'] = patterns.map(sp => sp.id)        
+        data['timeframe'] = this.convertTimeframe(timeframe)
+        
+        return data
+    },
     encodeQueryData(data) {
         const ret = [];
         for (let d in data) {
@@ -159,10 +173,33 @@ export default {
         }
         return ret.join('&');
     },
+    getBacktestPatternsUrl(assetsPatterns, rules) {
+        return assetsPatterns && rules && rules.event === constants.events.runStrategy 
+                ? [ constants.urls.patternLab.backtestPatterns + this.encodeRouteParams(this.getBacktestPatternsRouteParams(assetsPatterns)) 
+                + "?" + this.encodeQueryData(this.getBacktestPatternsQueryData(rules.strategy)) ] 
+               : [] 
+    },
+    getPatternLabChartUrl(asset, timeframe) {
+        return constants.urls.patternLab.chart + this.encodeRouteParams([ asset.id, this.convertTimeframe(timeframe) ])
+    },
+    getPatternLabHistoryUrl(assets, patterns, timeframe) {
+        return assets.length && patterns.length
+                ? [ constants.urls.patternLab.patternsHistory + "?" + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe)) ]
+                : []
+    },
+    getBacktestPatternsRouteParams(assetsPatterns) {
+        return [ this.convertTimeframe(assetsPatterns.timeframe),    // timeframe
+                 this.formatDate(assetsPatterns.from ? assetsPatterns.from : Number.MIN_VALUE, ''),     // start_date
+                 this.formatDate(assetsPatterns.to ? assetsPatterns.to : new Date(), ''),   // finish_date
+                 assetsPatterns.checkedAssets.map(ca => ca.symbol).join(';'),  // assets
+                 assetsPatterns.checkedPatterns.map(cp => cp.id).join(',')     // pattern_ids
+                ]            
+    },
     encodeRouteParams(data) {
         return data.join('/');
     },
 
+    // store methods
     getAssetsPatternsPickerData(store) {
         let data = store.getItem(constants.storeKeys.assetsPatternsPicker)
         if (data) {

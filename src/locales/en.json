@@ -314,7 +314,9 @@
             ]
           },
           "chart": {
-            "title": "Chart"
+            "title": "Chart",
+            "cumulatedProfit": "Cumulated profit",
+            "drawdown": "Drawdown"
           }
         }
       },

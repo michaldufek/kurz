@@ -6,7 +6,7 @@
       <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{ updateTs | chartUpdateTsText(loading) }}</h5>
     </div>
     <br/>
-    <div class="chart-area" style="height: 425px">
+    <div class="chart-area">
       <section v-if="noData" style="text-align: center">
         <p style="padding-top: 50px">{{ $t('noData') }}</p>
       </section>
