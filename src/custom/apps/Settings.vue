@@ -33,7 +33,7 @@
                         title-classes="btn btn-secondary" 
                         :title="$root.$i18n.locale">
             <ul style="list-style-type: none;">
-              <li v-for="lang in langs">            
+              <li v-for="lang in langs.filter(l => l !== $root.$i18n.locale)">            
                 <a class="dropdown-item" 
                   @click="selectLocale(lang)" 
                   href="#">

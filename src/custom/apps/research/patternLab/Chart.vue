@@ -33,19 +33,19 @@
 
         <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
                      :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
-                     :apiUrls="lineChartUrl ? [ lineChartUrl ] : []"
+                     :apiUrls="chartUrl ? [ chartUrl ] : []"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :range="{ from: from, to: to }"
                      :responsive="true"
                      style="top: -45px; height: 100%"
-                     :key="lineChartKey" />
+                     :key="chartKey" />
         <ohlc-chart v-else 
                     :title="ohlcChartTitle"
-                    :apiUrl="lineChartUrl" 
+                    :apiUrl="chartUrl" 
                     :type="chartType"
                     :range="{ from: from, to: to }"
                     style="top: -45px; height: 830px" 
-                    :key="lineChartKey" />
+                    :key="chartKey" />
       </div>
 
       <!-- patterns history -->
@@ -97,8 +97,8 @@
 
         // chart
         chartType: this.$t('research.patternLab.chart.chartTypes')[0],
-        lineChartUrl: null,
-        lineChartKey: 0,        
+        chartUrl: null,
+        chartKey: 0,        
 
         // patterns history
         patternsHistoryUrl: [],
@@ -122,6 +122,13 @@
     },
 
     methods: {
+      initData() {
+        let data = this.$store.getItem(this.storeKey)
+        if (data) {
+          this.chartType = data.chartType
+        }
+      },
+
       // chart methods
       addChart() {
         let data = helper.getAssetsPatternsPickerData(this.$store)
@@ -134,16 +141,16 @@
         this.patternsHistoryUrl = null
         if (this.patterns.length) {
           // load patterns history table
-          this.patternsHistoryUrl = [ constants.urls.patternLab.patternsHistory + "?" + helper.encodeQueryData(this.getQueryData()) ]          
+          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl([ this.asset ], this.patterns, this.timeframe)     
         }
-        this.tableKey += 1 // force reload of fancy-table component
+        this.tableKey++ // force reload of fancy-table component
       },
       loadChart() {
-        this.lineChartUrl = null
+        this.chartUrl = null
         if (this.asset) {
-          this.lineChartUrl = constants.urls.patternLab.chart + helper.encodeRouteParams([ this.asset.id, helper.convertTimeframe(this.timeframe) ])
+          this.chartUrl = helper.getPatternLabChartUrl(this.asset, this.timeframe) 
         }
-        this.lineChartKey += 1 // force reload of fancy-chart component
+        this.chartKey++ // force reload of fancy-chart component
       },      
 
       timeframeChanged() {
@@ -157,7 +164,6 @@
       
       selectChartType(chartType) {
         this.chartType = chartType
-        helper.updateStore(this.$store, 'chartType', chartType, this.storeKey)
         this.loadChart()
       },
 
@@ -180,24 +186,17 @@
           });
 
         return rows
-      },
+      }
+    },
 
-      getQueryData() {
-        let query = {}
-
-        query['patterns'] = this.patterns.map(chp => chp.id).join(',')
-        query['symbols'] = this.asset.symbol // or can be more selected ?
-        query['timeframe'] = helper.convertTimeframe(this.timeframe)
-        
-        return query
+    watch: {
+      chartType(val) {        
+        helper.updateStore(this.$store, 'chartType', val, this.storeKey)
       }
     },
 
     mounted() {
-      let data = this.$store.getItem(this.storeKey)
-      if (data) {
-        this.chartType = data.chartType
-      }
+      this.initData()      
     }
   }  
 </script>

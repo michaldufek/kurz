@@ -28,62 +28,50 @@ export default {
             rules: null,
             tradesKey: 'research.patternLab.backtestPatterns.performanceResults.trades',
 
+            url: null,
             tableKey: 0
         }
     },
     
-    computed: {
-      url() {
-        return this.assetsPatterns && this.rules && this.rules.event === constants.events.runStrategy 
-                ? [ constants.urls.patternLab.backtestPatterns + helper.encodeRouteParams(this.getRouteParams()) 
-                     + "?" + helper.encodeQueryData(this.getQueryData()) ] 
-                : []
-      }
-    },
-
     methods: {
         initData() {
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
-            this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
-        },
+            if (!this.assetsPatterns.checkedPatterns.length) {
+                this.$notify({
+                    type: 'warning', 
+                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
+                              + ' / ' + this.$t('research.patternLab.backtestPatterns.title') 
+                              + ' / ' + this.$t(this.tradesKey + '.title') + ').'
+                })
+                
+                return  
+            }
 
-        getRouteParams() {
-            return [ helper.convertTimeframe(this.assetsPatterns.timeframe), 
-                     helper.formatDate(this.assetsPatterns.from ? this.assetsPatterns.from : Number.MIN_VALUE, ''), 
-                     helper.formatDate(this.assetsPatterns.to ? this.assetsPatterns.to : new Date(), ''), 
-                     this.assetsPatterns.checkedAssets.map(ca => ca.symbol).join(';'), 
-                     this.assetsPatterns.checkedPatterns.map(cp => cp.id).join(',')         // mandatory ? if yes, notify when no no patterns
-                    ]            
-        },
-        getQueryData() {
-            let query = {}
-            query['params'] = JSON.stringify(this.rules.strategy)            
-            return query
-        },
+            this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
+
+            this.url = helper.getBacktestPatternsUrl(this.assetsPatterns, this.rules)
+            this.tableKey++
+        },        
         
         rowsCreator(data) {
-            let clsKey = this.tradesKey + '.columns'
             let rows = []
-
+            
             data.forEach(d => d.forEach(datum => {
-                let rowNr = 1
-                Object.keys(datum.trades.trades.pnl).forEach(trade => {
-                    let row = {}
+                let rowNr = 0
 
-                    let clNr = 0
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = rowNr++    // #
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = datum.symbol   // Asset
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = this.assetsPatterns.checkedPatterns.find(cp => cp.id === datum.pattern_id).name    // Pattern
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = 'Direction'   // Direction
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = 'Entry price'   // Entry price
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = 'Exit price'   // Exit price
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = helper.formatDateTime(datum.trades.trades.start[rowNr])   // Entry time
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = helper.formatDateTime(datum.trades.trades.finish[rowNr])   // Exit time
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = 'Amount'   // Amount
-                    row[this.$t(clsKey)[clNr++].toLowerCase()] = datum.trades.trades.pnl   // PnL
-
-                    rows.push(row)
-                })
+                Object.keys(datum.trades.trades.pnl).forEach(_ => 
+                    rows.push([
+                        rowNr + 1,    // #
+                        datum.symbol,   // Asset
+                        this.assetsPatterns.checkedPatterns.find(cp => cp.id === datum.pattern_id).name,    // Pattern
+                        'Direction',   // Direction
+                        'Entry price',   // Entry price
+                        'Exit price',   // Exit price
+                        helper.formatDateTime(datum.trades.trades.start[rowNr]),   // Entry time
+                        helper.formatDateTime(datum.trades.trades.finish[rowNr]),   // Exit time
+                        'Amount',   // Amount
+                        datum.trades.trades.pnl[rowNr++]   // PnL
+                    ]))
            }))
 
            return rows

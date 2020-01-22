@@ -228,22 +228,13 @@
           "direction": "Direction",
           "directions": [
             "BUY",
-            "SELL"
-          ],
-          "price": "Price",
-          "offset": "Offset",
-          "ohlcs": [
-            "Open",
-            "High",
-            "Low",
-            "Close"
+            "SELL",
+            "BOTH"
           ],
           "trendFilter": "Trend filter",
           "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
           "movingAverage": "Moving average",
           "movingAverageTip": "Moving average period",
-          "expirationTip": "Expiration for pending entry type",
-          "expiration": "Expiration",
           "risk": "Risk",
           "numberDays": "Number in days"
         },
@@ -276,9 +267,7 @@
               "Profit Target", 
               "Stop Loss", 
               "Trend filter (Moving average)",
-              "Direction", 
-              "Price", 
-              "Expiration"
+              "Direction"
             ]
           },
           "trades": {
@@ -314,7 +303,9 @@
             ]
           },
           "chart": {
-            "title": "Chart"
+            "title": "Chart",
+            "cumulatedProfit": "Cumulated profit",
+            "drawdown": "Drawdown"
           }
         }
       },

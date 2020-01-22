@@ -390,14 +390,13 @@ export default {
             }
         },
 
-        btnClick(notify=true) {
+        btnClick() {
             if ((!this.oneAssetLimit && !this.checkedAssets.length) || (this.oneAssetLimit && !this.checkedAsset)) {
-                if (notify) {
-                    this.$notify({
-                        type: 'warning', 
-                        message: this.$t('notifications.addNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
-                    })    
-                }
+                this.$notify({
+                    type: 'warning', 
+                    message: this.$t('notifications.addNoAsset') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'
+                })    
+
                 return
             }
             
@@ -414,7 +413,6 @@ export default {
 
     mounted() {
       this.initData()
-      this.btnClick(false)
     },
 
     watch: {
