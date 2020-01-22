@@ -208,20 +208,18 @@
         this.storeAndReloadCard(constants.events.addPattern)
       },
 
-      runStrategyClick(notify=true) {
+      runStrategyClick() {
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {   
           if (!data.checkedAssets.length) {
-            if (notify) {
-              this.$notify({
-                              type: 'warning', 
-                              message: this.$t('notifications.addNoAsset') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
-                          })
-            }    
+            this.$notify({
+                            type: 'warning', 
+                            message: this.$t('notifications.addNoAsset') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
+                        })
             return
           }
 
-          if (!data.checkedPatterns.length && notify) {
+          if (!data.checkedPatterns.length) {
             this.$notify({
                 type: 'warning', 
                 message: this.$t('notifications.addNoPattern') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
@@ -250,7 +248,7 @@
 
     mounted() {
       this.initStrategyData()     
-      this.runStrategyClick(false) 
+      this.cardKey++
     }
   }  
 </script>
