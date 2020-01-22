@@ -19,6 +19,7 @@ export default {
     data() {
         return {
             storeKey: 'research.patternLab.backtestPatterns.performanceResults.patterns',
+            
             tableData: null,
             columns: this.$t('research.patternLab.backtestPatterns.performanceResults.patterns.columns')
         }

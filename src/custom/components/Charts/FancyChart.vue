@@ -86,6 +86,13 @@ export default {
       default: () => [],
       description: "URLs to API data sources"
     },
+    dataCreator: {
+      type: Function,
+      default: response => {
+        return response.data
+      },
+      description: "Creator of data from response"
+    },
     dataFields: {
       type: Array,
       default: () => {
@@ -207,6 +214,8 @@ export default {
         this.$http
         .get(apiUrl)
         .then(response => {
+          let responseData = this.dataCreator(response)
+
           if (!finishedLoadings) {
             let datasets = []
             this.dataFields.forEach(_ => datasets.push({
@@ -220,7 +229,7 @@ export default {
             } 
           }
 
-          if (!response.data.time) {
+          if (!responseData.time) {
             // data in ticker symbol format
             let times = []
             let equities = []
@@ -229,8 +238,8 @@ export default {
             this.dataFields.forEach(field => {
               let fieldEquities = []
 
-              if (field in response.data) {
-                for (const [key, value] of Object.entries(response.data[field])) {
+              if (field in responseData) {
+                for (const [key, value] of Object.entries(responseData[field])) {
                   if (firstTime) {
                     // times are same for all price fields
                     times.push(Number(key))
@@ -251,11 +260,11 @@ export default {
             }
           } else {
             data = {
-              time: response.data.time,
-              equity: [ response.data.equity ],
-              WARNING: response.data.WARNING,
-              report_timestamp: response.data.report_timestamp
-            }            
+              time: responseData.time,
+              equity: [ responseData.equity ],
+              WARNING: responseData.WARNING,
+              report_timestamp: responseData.report_timestamp || helper.formatDateTime(responseData.time[responseData.time.length - 1])
+            }
           }
 
           this.createChartData(data)
@@ -337,7 +346,7 @@ export default {
           dataset.label = this.dataFields[datasetNr++]
         } 
 
-        datasets.push(dataset)  
+        datasets.push(dataset)
       })    
       
       this.chartData = {
