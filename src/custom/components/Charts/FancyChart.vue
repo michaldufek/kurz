@@ -44,7 +44,6 @@ import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
 
 const defaultDatasets = {
-  fill: true,
   borderColor: config.colors.primary,
   borderWidth: 2,
   borderDash: [],
@@ -73,7 +72,6 @@ export default {
     },
     showTitle: {
       type: Boolean,
-      default: false,
       description: "Whether to show chart title"
     },
     axesLabels: {
@@ -106,6 +104,10 @@ export default {
         return {}
       },
       description: "Date range of values displayed"
+    },
+    fill: {
+      type: Boolean,
+      description: "Whether to fill area above/below line"
     },
     responsive: {
       type: Boolean,
@@ -340,7 +342,10 @@ export default {
         
         let dataset = {
           ...datasetSetting,
-          data: allData,
+          data: allData
+        }
+        if (this.fill) {
+          dataset['backgroundColor'] = config.colors.primary
         }
         if (allData.length > 0 && this.dataFields.length > 1) {
           dataset.label = this.dataFields[datasetNr++]

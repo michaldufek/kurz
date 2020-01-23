@@ -304,6 +304,7 @@
           "chart": {
             "title": "Graf",
             "cumulatedProfit": "Kumulovaný profit",
+            "xLabel": "Time",
             "drawdown": "Drawdown"
           }
         }

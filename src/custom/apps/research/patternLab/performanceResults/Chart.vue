@@ -75,6 +75,7 @@
                      :apiUrls="pnlChartUrl ? [ pnlChartUrl ] : []"
                      :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                      :dataCreator="profitDataCreator"
+                     :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.cumulatedProfit') ]"
                      :responsive="true"                     
                      :key="statsChartKey" />
 
@@ -83,6 +84,8 @@
                      :apiUrls="ddChartUrl ? [ ddChartUrl ] : []"
                      :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                      :dataCreator="drawdownDataCreator"
+                     :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.drawdown') ]"
+                     :fill="true"
                      :responsive="true"                    
                      :key="statsChartKey" />
     </div>    
@@ -175,7 +178,13 @@ export default {
             if (this.selectedAsset) {
                 this.chartUrl = helper.getPatternLabChartUrl(this.selectedAsset, this.assetsPatterns.timeframe)
             }
-            this.pnlChartUrl = helper.getBacktestPatternsUrl(this.assetsPatterns, this.rules)
+            this.pnlChartUrl = helper.getBacktestPatternsUrl({
+              timeframe: this.assetsPatterns.timeframe,
+              from: this.assetsPatterns.from,
+              to: this.assetsPatterns.to,
+              checkedAssets: [ this.selectedAsset ],
+              checkedPatterns: [ this.selectedPattern ]
+            }, this.rules)
             this.ddChartUrl = this.pnlChartUrl
 
             // force reload of chart components 
