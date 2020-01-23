@@ -233,17 +233,17 @@
           ],
           "trendFilter": "Trend filter",
           "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
-          "movingAverage": "Moving average",
+          "ma_filter_period": "Moving average",
           "movingAverageTip": "Moving average period",
-          "risk": "Risk",
+          "fixed_amount": "Risk",
           "numberDays": "Number in days"
         },
         "exitRules": {
           "analyze": "Analyze",
           "analyzeTip": "Number of next bars after pattern/s occurrence that should be analyzed.",
           "numberBars": "Nr. in next bars",          
-          "profitTarget": "ProfitTarget",
-          "stopLoss": "StopLoss"
+          "profit_take": "ProfitTarget",
+          "stoploss": "StopLoss"
         },
         "runStrategy": "Run strategy",
         "performanceResults": {

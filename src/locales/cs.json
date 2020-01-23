@@ -233,17 +233,17 @@
           ],
           "trendFilter": "Trend filter",
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
-          "movingAverage": "Klouzavý průměr",
+          "ma_filter_period": "Klouzavý průměr",
           "movingAverageTip": "Perioda klouzavého průměru",
-          "risk": "Risk",
+          "fixed_amount": "Risk",
           "numberDays": "Číslo v dnech"
         },
         "exitRules": {
           "analyze": "Analýza",
           "analyzeTip": "Počet nasledujících barů po vyskytnutí vzoru/ů, ktere se mají analyzovat.",
           "numberBars": "Č. v nasl.barech",
-          "profitTarget": "ProfitTarget",
-          "stopLoss": "StopLoss"
+          "profit_take": "ProfitTarget",
+          "stoploss": "StopLoss"
         },
         "runStrategy": "Spustit strategii",
         "performanceResults": {

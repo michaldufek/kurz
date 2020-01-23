@@ -127,6 +127,8 @@
         if (data) {
           this.chartType = data.chartType
         }
+        
+        this.addChart()
       },
 
       // chart methods
