@@ -352,7 +352,7 @@ export default {
         let datasetSetting = defaultDatasets  
         let defColor = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
         datasetSetting.borderColor = defColor
-        datasetSetting.pointBackgroundColor = context => {
+        datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
             var index = context.dataIndex;
             var value = context.dataset.data[index];
             return this.tradesEntries.includes(value) ? constants.colors.transEntry :  // highlight transaction entry
