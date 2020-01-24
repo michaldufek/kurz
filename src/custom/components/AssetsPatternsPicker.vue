@@ -280,10 +280,19 @@ export default {
             // remove also checked asset
             if (this.oneAssetLimit) {
                 if (this.checkedAsset && this.checkedAsset.id === asset.id) {
-                    this.checkedAsset = null                    
+                    if (this.selectedAssets.length) {
+                        this.checkedAsset = this.selectedAssets[0]
+                    } else {
+                        this.checkedAsset = null                    
+                    }
                 }
             } else if (this.checkedAssets.map(a => a.symbol).includes(asset.symbol)) {                
                 this.checkedAssets.splice(this.checkedAssets.map(a => a.symbol).indexOf(asset.symbol), 1)                
+            }
+
+            // if only checked asset was removed
+            if (!this.checkedAssets.length && this.selectedAssets.length) {
+                this.checkedAssets.push(this.selectedAssets[0])                
             }
         },
         updateDisabledDatesAsset() {
@@ -400,7 +409,7 @@ export default {
                 return
             }
             
-            if (!this.checkedPatterns.length && notify) {
+            if (!this.checkedPatterns.length) {
                 this.$notify({
                     type: 'warning', 
                     message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab') + ' ' + this.title + ').'

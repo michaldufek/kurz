@@ -46,22 +46,22 @@
         <input type="checkbox" v-model="strategy.trendFilter" class="input" style="margin-top: 15px">
         <!-- moving average -->
         <div v-if="strategy.trendFilter" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
-          <p style="width: 46%; position: relative; top: 10px">{{ $t('research.patternLab.backtestPatterns.entryRules.movingAverage') }}</p>
+          <p style="width: 46%; position: relative; top: 10px">{{ $t('research.patternLab.backtestPatterns.entryRules.ma_filter_period') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 52%; margin-top: -25px"
-                      v-model="strategy.movingAverage"
+                      v-model="strategy.ma_filter_period"
                       :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
           </base-input>
         </div>
 
         <!-- risk (fix-amount) -->
         <div>
-          <p style="width: 40%; position: relative; top: 25px">{{ $t('research.patternLab.backtestPatterns.entryRules.risk') }}</p>
+          <p style="width: 40%; position: relative; top: 25px">{{ $t('research.patternLab.backtestPatterns.entryRules.fixed_amount') }}</p>
           <base-input alternative
                       type="text"
                       style="float: right; width: 60%"
-                      v-model="strategy.risk"
+                      v-model="strategy.fixed_amount"
                       :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
           </base-input>
         </div>
@@ -85,19 +85,19 @@
         <table>
           <!-- profit target -->
           <tr>
-            <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.profitTarget') }}</p></td>
+            <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.profit_take') }}</p></td>
             <td><base-input alternative
                         type="text"                        
-                        v-model="strategy.profitTarget.value"
+                        v-model="strategy.profit_take.value"
                         :placeholder="$t('number')">
             </base-input></td>
             <td><base-dropdown menu-classes="dropdown-black" 
                           title-classes="btn btn-secondary"
-                          :title="strategy.profitTarget.unit">
+                          :title="strategy.profit_take.unit">
               <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.profitTarget.unit)">
+                <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.profit_take.unit)">
                   <a class="dropdown-item" 
-                    @click="strategy.profitTarget.unit = unit" 
+                    @click="strategy.profit_take.unit = unit" 
                     href="#">
                     {{ unit }}
                   </a>
@@ -107,19 +107,19 @@
 
           <!-- stop loss -->
           <tr>
-            <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.stopLoss') }}</p></td>
+            <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.stoploss') }}</p></td>
             <td><base-input alternative
                         type="text"
-                        v-model="strategy.stopLoss.value"
+                        v-model="strategy.stoploss.value"
                         :placeholder="$t('number')">
             </base-input></td>
             <td><base-dropdown menu-classes="dropdown-black" 
                           title-classes="btn btn-secondary"
-                          :title="strategy.stopLoss.unit">
+                          :title="strategy.stoploss.unit">
               <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.stopLoss.unit)">
+                <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.stoploss.unit)">
                   <a class="dropdown-item" 
-                    @click="strategy.stopLoss.unit = unit" 
+                    @click="strategy.stoploss.unit = unit" 
                     href="#">
                     {{ unit }}
                   </a>
@@ -165,16 +165,16 @@
     // entry rules
     direction: i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[0],
     trendFilter: false,
-    movingAverage: null,
-    risk: null,
+    ma_filter_period: null,
+    fixed_amount: null,
     
     // exit rules
     analyze: null,
-    profitTarget: {
+    profit_take: {
       value: null,
       unit: constants.defaultUnit
     },
-    stopLoss: {
+    stoploss: {
       value: null,
       unit: constants.defaultUnit
     }

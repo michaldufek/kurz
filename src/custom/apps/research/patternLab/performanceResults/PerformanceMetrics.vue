@@ -73,8 +73,8 @@ export default {
                     datum.trades.stats["Cummulative pnl final"] ? `${datum.trades.stats["Cummulative pnl final"]} ${constants.defaultUnit}` : null,    // Cummulative PnL final
                     'CAGR',    // CAGR
                     datum.trades.stats["Sharpe ratio"],  // Sharpe ratio
-                    this.rules.strategy.profitTarget.value ? `${this.rules.strategy.profitTarget.value} ${this.rules.strategy.profitTarget.unit}` : null,   // PT
-                    this.rules.strategy.stopLoss.value ? `${this.rules.strategy.stopLoss.value} ${this.rules.strategy.stopLoss.unit}` : null,   // SL
+                    this.rules.strategy.profit_take.value ? `${this.rules.strategy.profit_take.value} ${this.rules.strategy.profit_take.unit}` : null,   // PT
+                    this.rules.strategy.stoploss.value ? `${this.rules.strategy.stoploss.value} ${this.rules.strategy.stoploss.unit}` : null,   // SL
                     datum.trades.stats["Avg. trade net profit per trade"],  // Average trade
                     datum.trades.stats["Max drawdown strategy"]  // Max drawdown strategy
                 ])
