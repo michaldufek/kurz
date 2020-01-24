@@ -98,14 +98,19 @@
                                       && String(item[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase()) 
                                       || !(column in this.filtering) || !this.filterText)
         }
-        if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) { // object not empty    
-          let column = Object.keys(this.sorting)[0].toLowerCase()          
-          let order = Object.values(this.sorting)[0]        
-
-          data = data.sort((item1,item2) => order === 'asc' 
-                                            ? String(item1[column]).localeCompare(String(item2[column])) 
-                                            : String(item2[column]).localeCompare(String(item1[column]))
-                          )
+        if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) { // object not empty
+          data = data.sort((item1,item2) => {        
+            let column = Object.keys(this.sorting)[0].toLowerCase()          
+            let order = Object.values(this.sorting)[0]
+            let item1nr = Number(String(item1[column]).split(' ')[0])
+            return isNaN(item1nr)   // ie.is String
+                    ? (order === 'asc' 
+                        ? String(item1[column]).localeCompare(String(item2[column])) 
+                        : String(item2[column]).localeCompare(String(item1[column])))
+                    : (order === 'asc' 
+                        ? item1nr - Number(String(item2[column]).split(' ')[0])
+                        : Number(String(item2[column]).split(' ')[0]) - item1nr)
+           })
         }
 
         return data
