@@ -109,6 +109,21 @@ export default {
       type: Boolean,
       description: "Whether to fill area above/below line"
     },
+    tradesEntries: {
+      type: Array,
+      default: () => [],
+      description: "Points where points should be highlighted with transaction entry color"
+    },
+    tradesStopLosses: {
+      type: Array,
+      default: () => [],
+      description: "Points where points should be highlighted with transaction stopLoss color"
+    },
+    tradesExits: {
+      type: Array,
+      default: () => [],
+      description: "Points where points should be highlighted with transaction exit color"
+    },
     responsive: {
       type: Boolean,
       description: "Whether chart height should scale by parent height"
@@ -176,7 +191,7 @@ export default {
         
       setInterval(() => { 
         this.loadData();
-      }, constants.dataReloadInterval );
+      }, constants.intervals.dataReload );
     },
 
     nearestValue(label, labels, data) {
@@ -335,10 +350,16 @@ export default {
         // to-do: fix extraOptions recomputation
 
         let datasetSetting = defaultDatasets  
-        let color = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
-        datasetSetting.borderColor = color
-        datasetSetting.pointBackgroundColor = color
-        datasetSetting.pointHoverBackgroundColor = color
+        let defColor = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
+        datasetSetting.borderColor = defColor
+        datasetSetting.pointBackgroundColor = context => {
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+            return this.tradesEntries.includes(value) ? constants.colors.transEntry :  // highlight transaction entry
+                   this.tradesStopLosses.includes(value) ? constants.colors.transStopLoss :     // else, check for stopLoss/exit
+                   this.tradesExits.includes(value) ? constants.colors.transExit : defColor
+        }
+        datasetSetting.pointHoverBackgroundColor = defColor
         
         let dataset = {
           ...datasetSetting,

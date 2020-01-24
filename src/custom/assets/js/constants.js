@@ -14,23 +14,31 @@ const chartPartUrl = reportPartUrl + "/compute"
 const mfPartUrl = "/mf"
 const uvxyPartUrl = "/uvxy"
 
-export default { 
-    // interval for realoading charts and tables data from sources
-    dataReloadInterval: 1000 * 60 * 10, // 10 minutes 
-
-    // interval for checking whether we should play some orderStatus change sound
-    soundSignalInterval: 1000 * 60, // minute
-
-    // time of shaking of login forms if unsuccessful
-    shakeInterval: 500, // half minute
-
-    // time of effect of login forms showing
-    loginShowInterval: 230,   
-    
+export default {
     // maximum number of rows shown in fancy tables
     maxRows: 20, // to-do: use some pagination or More... button for all rows
 
     defaultUnit: i18n.t('research.patternLab.units')[0],
+
+    colors: {
+        transEntry: 'darkgreen',
+        transStopLoss: 'yellow',
+        transExit: 'darkred'
+    },
+    
+    intervals: { 
+        // interval for realoading charts and tables data from sources
+        dataReload: 1000 * 60 * 10, // 10 minutes 
+
+        // interval for checking whether we should play some orderStatus change sound
+        soundSignal: 1000 * 60, // minute
+
+        // time of shaking of login forms if unsuccessful
+        shake: 500, // half minute
+
+        // time of effect of login forms showing
+        loginShow: 230
+    },    
 
     urls: {
         tickerSP: {

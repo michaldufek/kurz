@@ -241,7 +241,7 @@ export default {
             this.isShaking = true
             setTimeout(() => { 
                 this.isShaking = false
-            }, constants.shakeInterval );
+            }, constants.intervals.shake );
             this.pass = ''
         },
         openLoginModal(){
@@ -283,7 +283,7 @@ export default {
 
             setTimeout(() => {
                 card.value = true  
-            }, constants.loginShowInterval );
+            }, constants.intervals.loginShow );
         }
     },
     mounted() {

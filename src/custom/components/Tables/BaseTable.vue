@@ -98,6 +98,7 @@
                                       && String(item[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase()) 
                                       || !(column in this.filtering) || !this.filterText)
         }
+        
         if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) { // object not empty
           data = data.sort((item1,item2) => {        
             let column = Object.keys(this.sorting)[0].toLowerCase()          

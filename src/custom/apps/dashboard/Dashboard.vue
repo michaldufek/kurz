@@ -77,7 +77,7 @@
       initSoundSignals() {
         setInterval(() => { 
           // this.checkOrdersStatusChange();
-        }, constants.soundSignalInterval );
+        }, constants.intervals.soundSignal );
       },
 
       notify(audioEl, type, msg) {
