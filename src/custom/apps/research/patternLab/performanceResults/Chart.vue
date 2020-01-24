@@ -6,7 +6,7 @@
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
                          :title="selectedAsset ? selectedAsset.symbol : null"
-                         style="width: 15%">
+                         style="width: 17%">
             <ul style="list-style-type: none;">
               <li v-for="asset in assetsPatterns.checkedAssets.filter(a => a.id !== selectedAsset.id)">            
                 <a class="dropdown-item" 
@@ -24,7 +24,7 @@
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
                          :title="selectedPattern ? selectedPattern.name : null"
-                         style="width: 27%">
+                         style="width: 30%">
             <ul style="list-style-type: none;">
               <li v-for="pattern in assetsPatterns.checkedPatterns.filter(p => p.id !== selectedPattern.id)">            
                 <a class="dropdown-item" 
@@ -61,30 +61,33 @@
                     :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                     style="height: 100%"
                     :responsive="true"                     
-                    :key="chartKey" />
+                    :key="historyChartKey" />
         <ohlc-chart v-else 
                     :title="ohlcChartTitle"
                     :apiUrl="chartUrl" 
                     :type="chartType"
                     :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                     style="height: 830px" 
-                    :key="chartKey" />
+                    :key="historyChartKey" />
 
         <!-- cumulated profit chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.cumulatedProfit')"
                      :apiUrls="pnlChartUrl ? [ pnlChartUrl ] : []"
                      :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                      :dataCreator="profitDataCreator"
+                     :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.cumulatedProfit') ]"
                      :responsive="true"                     
-                     :key="pnlChartKey" />
+                     :key="statsChartKey" />
 
         <!-- drawdown chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.drawdown')"
                      :apiUrls="ddChartUrl ? [ ddChartUrl ] : []"
                      :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                      :dataCreator="drawdownDataCreator"
+                     :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.drawdown') ]"
+                     :fill="true"
                      :responsive="true"                    
-                     :key="ddChartKey" />
+                     :key="statsChartKey" />
     </div>    
 </template>
 <script>
@@ -125,9 +128,8 @@ export default {
             chartUrl: null,
             pnlChartUrl: null,
             ddChartUrl: null,
-            chartKey: 0,
-            pnlChartKey: 0,
-            ddChartKey: 0
+            historyChartKey: 0,
+            statsChartKey: 0
         }
     },
 
@@ -171,18 +173,25 @@ export default {
             }
         },
 
-        loadCharts() {
+        loadCharts(reloadHistory=true) {
             this.chartUrl = null
             if (this.selectedAsset) {
                 this.chartUrl = helper.getPatternLabChartUrl(this.selectedAsset, this.assetsPatterns.timeframe)
             }
-            this.pnlChartUrl = helper.getBacktestPatternsUrl(this.assetsPatterns, this.rules)
+            this.pnlChartUrl = helper.getBacktestPatternsUrl({
+              timeframe: this.assetsPatterns.timeframe,
+              from: this.assetsPatterns.from,
+              to: this.assetsPatterns.to,
+              checkedAssets: [ this.selectedAsset ],
+              checkedPatterns: [ this.selectedPattern ]
+            }, this.rules)
             this.ddChartUrl = this.pnlChartUrl
 
-            // force reload of chart components          
-            this.chartKey++
-            this.pnlChartKey++
-            this.ddChartKey++
+            // force reload of chart components 
+            if (reloadHistory) {
+              this.historyChartKey++
+            }
+            this.statsChartKey++
         },
 
         selectAsset(asset) {
@@ -191,7 +200,7 @@ export default {
         },
         selectPattern(pattern) {
             this.selectedPattern = pattern
-            this.loadCharts()
+            this.loadCharts(false)
         },
         selectChartType(chartType) {
             this.chartType = chartType
@@ -199,19 +208,19 @@ export default {
         },
 
         profitDataCreator(response) {
-          let datum = response.data.filter(d => d[0].symbol === this.selectedAsset.symbol && d[0].pattern_id === this.selectedPattern.id)
+          let datum = response.data.filter(d => d[0] && d[0].symbol === this.selectedAsset.symbol && d[0].pattern_id === this.selectedPattern.id)
 
           return {
-            time: Object.values(datum[0][0].trades.trades.finish),
-            equity: Object.values(JSON.parse(datum[0][0].trades.stats.pnl_cum))
+            time: datum[0] ? Object.values(datum[0][0].trades.trades.finish) : [],
+            equity: datum[0] ? Object.values(JSON.parse(datum[0][0].trades.stats.pnl_cum)) : []
           }
         },
         drawdownDataCreator(response) {
-          let datum = response.data.filter(d => d[0].symbol === this.selectedAsset.symbol && d[0].pattern_id === this.selectedPattern.id)
+          let datum = response.data.filter(d => d[0] && d[0].symbol === this.selectedAsset.symbol && d[0].pattern_id === this.selectedPattern.id)
 
           return {
-            time: Object.values(datum[0][0].trades.trades.finish),
-            equity: Object.values(JSON.parse(datum[0][0].trades.stats["Drawdown Underwater plot"]))
+            time: datum[0] ? Object.values(datum[0][0].trades.trades.finish) : [],
+            equity: datum[0] ? Object.values(JSON.parse(datum[0][0].trades.stats["Drawdown Underwater plot"])) : []
           }
         }
     },

@@ -21,7 +21,7 @@
                          :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in assets.filter(p => p.id !== selectedAsset.id)">            
+              <li v-for="asset in (selectedAsset ? assets.filter(p => p.id !== selectedAsset.id) : assets)">            
                 <a class="dropdown-item" 
                    @click="selectAsset(asset)" 
                    href="#">
@@ -41,7 +41,7 @@
                          :title="selectedPattern ? selectedPattern.name : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="pattern in patterns.filter(p => p.id !== selectedPattern.id)">            
+              <li v-for="pattern in (selectedPattern ? patterns.filter(p => p.id !== selectedPattern.id) : patterns)">            
                 <a class="dropdown-item" 
                    @click="selectPattern(pattern)" 
                    href="#">
@@ -106,6 +106,7 @@
         assets: [],
         selectedPattern: null,
         patterns: [],
+        timeframe: this.$t('research.patternLab.timeframes')[0],
         chartData: {
           // only chosen asset and pattern
           patternsByAsset: null,
@@ -122,75 +123,80 @@
     },
 
     methods: {
+      // initialization
       initData() {
-        let assets = []
-        let patterns = []
-        let timeframe = null
+        let checkedAsset = []
+        let checkedPatterns = []
 
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
-          ({ timeframe:timeframe, selectedAssets:assets, selectedPatterns:patterns } = data)
+          ({ timeframe:this.timeframe, selectedAssets:this.assets, checkedAsset:checkedAsset, selectedPatterns:this.patterns, checkedPatterns:checkedPatterns } = data)
         }
 
         data = this.$store.getItem(this.storeKey)
         if (data) {
-            ({ selectedAsset:this.selectedAsset, selectedPattern:this.selectedPattern } = data)
+          ({ selectedAsset:this.selectedAsset, selectedPattern:this.selectedPattern } = data)
         }
 
-        this.patternsUrl = helper.getPatternLabHistoryUrl(assets, patterns, timeframe)
-        this.tableKey++ // force reload of fancy-table component
-      },
+        // setting valid value of selected asset and pattern
+        if (!this.selectedAsset && this.assets.length) {
+          this.selectedAsset = this.assets[0]
+        }
+        if (!this.selectedPattern && this.patterns.length) {
+          this.selectedPattern = this.patterns[0]
+        }
 
-      rowsCreator(responseData) {
+        this.patternsUrl = helper.getPatternLabHistoryUrl([ checkedAsset ], checkedPatterns, this.timeframe)
+        this.tableKey++ // force reload of fancy-table component
+
+        this.initPieCharts()
+      },
+      initPieCharts() {
         this.patternsStats = {
           total: 0,
           bullish: 0,
           bearish: 0
         }
-        this.assets = []
-        this.patterns = []        
         this.patternsByAsset = {} 
-        this.assetsByPattern = {}   
+        this.assetsByPattern = {} 
+ 
+        if (this.assets && this.assets.length) {
+          this.$http
+          .get(helper.getPatternLabHistoryUrl(this.assets, this.patterns, this.timeframe))
+          .then(response => response.data.forEach(data => {
+              if (data.count) {
+                this.updatePatternsStats(this.getDirection(data.signal_set), data.count)
+                this.updateChartDatas(data)            
+              }
+          }))
+          .catch(error => {
+            console.log(error)
+
+            if (error.message === constants.strings.networkError) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ' ' + this.$t(this.storeKey + '.title') + ')')
+            }
+          })
+          .finally(() => {
+            // creating pie charts data
+            this.createChartDatas()
+            // force reload of fancy-card component
+            this.cardKey++
+          })
+        }
+      },
+
+      // table rows creator
+      rowsCreator(responseData) { 
         let rows = []     
 
         responseData.forEach(data => {
           if (data.count) {
             let row = []
-            let direction = this.createRow(data, row)
-            rows.push(row);
-
-            if (!this.assets.map(a => a.id).includes(data.history.ticker.id)) {
-              this.assets.push({
-                id: data.history.ticker.id,
-                symbol: data.history.ticker.symbol
-              }) 
-            }            
-            if (!this.patterns.map(p => p.id).includes(data.pattern.id)) {
-              this.patterns.push({
-                id: data.pattern.id,
-                name: data.pattern.name
-              })
-            }
-
-            this.updatePatternsStats(direction, data.count)
-            this.updateChartDatas(data)            
+            this.createRow(data, row)
+            rows.push(row)          
           }
-        });
+        })
 
-        // setting valid value of selected asset and pattern
-        if (!this.selectedAsset || !this.assets.map(a => a.id).includes(this.selectedAsset.id)) {
-          this.selectedAsset = this.assets[0]
-        }
-        if (!this.selectedPattern || !this.patterns.map(p => p.id).includes(this.selectedPattern.id)) {
-          this.selectedPattern = this.patterns[0]
-        }
-
-        // creating pie charts data
-        this.createChartDatas()
-
-         // force reload of fancy-card component
-        this.cardKey++
-        
         return rows
       },
       createRow(data, row) {
@@ -199,9 +205,7 @@
         row.push(data.count) // # of occurence          
         row.push(data.signal_set.length) // Pattern length
 
-        let directionNr = 0
-        data.signal_set.forEach(signal => directionNr += signal.direction) // to-do: how to calculate overall direction?
-        let direction = helper.convertDirection(directionNr)
+        let direction = this.getDirection(data.signal_set)       
         row.push(direction) // Direction
 
         row.push(data.count_mean ? 1 / data.count_mean : null) // Average frequency
@@ -215,9 +219,15 @@
           row.push(data.d5_bear_down + ' %')
           row.push(data.d10_bear_down + ' %')
         }
-
-        return direction
       },
+      getDirection(signal_set) {
+        let directionNr = 0
+        signal_set.forEach(signal => directionNr += signal.direction) // to-do: how to calculate overall direction?
+
+        return helper.convertDirection(directionNr)
+      },
+
+      // chart & stats methods
       updatePatternsStats(direction, count) {
         this.patternsStats.total += count
 
@@ -245,19 +255,23 @@
         this.assetsByPattern[data.pattern.name][data.history.ticker.symbol] += data.count
       },
       createChartDatas() {
-        this.chartData.patternsByAsset = this.createChartData(this.patternsByAsset[this.selectedAsset.symbol])
-        this.chartData.assetsByPattern = this.createChartData(this.assetsByPattern[this.selectedPattern.name])
+        this.chartData.patternsByAsset = this.selectedAsset ? this.createChartData(this.patternsByAsset[this.selectedAsset.symbol]) : null
+        this.chartData.assetsByPattern = this.selectedPattern ? this.createChartData(this.assetsByPattern[this.selectedPattern.name]) : null
       },
       createChartData(items) {
-        return {
-          datasets: [{
-            data: Object.values(items),
-            backgroundColor: Object.keys(items).map(_ => "#"+((1<<24)*Math.random()|0).toString(16)) // random colors
-          }],
-          labels: Object.keys(items)
+        if (items) {
+          return {
+            datasets: [{
+              data: Object.values(items),
+              backgroundColor: Object.keys(items).map(_ => "#"+((1<<24)*Math.random()|0).toString(16))  // random colors
+            }],
+            labels: Object.keys(items)
+          }
         }
+        return null
       },      
 
+      // dropdowns selections methods
       selectAsset(asset) {
         this.selectedAsset = asset
         this.createChartDatas()

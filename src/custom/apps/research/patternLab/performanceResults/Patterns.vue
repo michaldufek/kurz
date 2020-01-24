@@ -79,9 +79,9 @@ export default {
         updateRow(row, columnsKey, clNr, stratData) {
             row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.initialCapital ? `${stratData.initialCapital} ${constants.defaultUnit}` : null    // Initial capital
             row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.analyze ? `${stratData.analyze} ${helper.pluralize(stratData.analyze, 'research.patternLab.backtestPatterns.performanceResults.patterns.bar')}` : null    // Analyze
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.profitTarget.value ? `${stratData.profitTarget.value} ${stratData.profitTarget.unit}` : null    // Profit Target
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.stopLoss.value ? `${stratData.stopLoss.value} ${stratData.stopLoss.unit}` : null    // Stop Loss
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.trendFilter && stratData.movingAverage ? `${stratData.movingAverage} ${constants.defaultUnit}` : null    // Trend filter (moving average)
+            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.profit_take.value ? `${stratData.profit_take.value} ${stratData.profit_take.unit}` : null    // Profit Target
+            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.stoploss.value ? `${stratData.stoploss.value} ${stratData.stoploss.unit}` : null    // Stop Loss
+            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.trendFilter && stratData.ma_filter_period ? `${stratData.ma_filter_period} ${constants.defaultUnit}` : null    // Trend filter (moving average)
             row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.direction    // Direction
         },
 
