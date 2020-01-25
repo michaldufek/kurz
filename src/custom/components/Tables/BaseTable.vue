@@ -24,7 +24,7 @@
             v-if="hasValue(item, column)"
             :title="valueTitle(item, column)"
             @dblclick="edit(rowIndex, item, column)"
-            @keyup.enter="finishEdit" 
+            @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
             :class="{ 'interactive': editable }"           
             style="text-align: right; white-space: pre-wrap;">
@@ -174,7 +174,7 @@
       },
 
       edit(index, item, column) {        
-        this.editText = this.itemValue(item, column)
+        this.editText = this.itemValue(item, column).split(' ')[0]
         this.editing = [index, column]
       },
       finishEdit(index, column) {

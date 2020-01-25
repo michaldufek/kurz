@@ -143,7 +143,7 @@ export default {
     // convertors
     convertTimeframe(timeframe) {
         let index = i18n.t('research.patternLab.timeframes').indexOf(timeframe)
-        return index > -1 ? index + 1 : 1
+        return index > -1 ? index + 1 : -1
     },
 
     convertDirection(nr) {
