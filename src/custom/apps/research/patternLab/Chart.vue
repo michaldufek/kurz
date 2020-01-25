@@ -6,7 +6,6 @@
                                 :oneAssetLimit="true"
                                 :btnText="$t('research.patternLab.chart.addChart')" 
                                 :tfLeftPos="475"
-                                :dpTexts="{ from: $t('research.patternLab.from'), to: $t('research.patternLab.to') }"
                                 @btnClicked="addChart" 
                                 @timeframeChanged="timeframeChanged" />      
       </div>

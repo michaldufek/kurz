@@ -11,12 +11,14 @@
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[finishedLoadings ? dataClass : noDataClass, loaderClass]"/>
-        <base-table :data="tableData"
+        <base-table :data="data.length ? data : tableData"
                     :titles="titles"
                     :columns="columns"
                     thead-classes="text-primary"
                     :sortable="sortable"
                     :filterable="filterable"
+                    :editable="editable"
+                    @edited="edited"
                     :headerTitle="headerTitle">
         </base-table>
       </section>
@@ -50,6 +52,11 @@ export default {
       type: Boolean,
       default: true,
       description: "Whether to show table title"
+    },
+    data: {
+      type: Array,
+      default: () => [],
+      description: "Table data"
     },
     apiUrls: {
       type: Array,
@@ -92,6 +99,10 @@ export default {
       type: Boolean,
       description: "Whether columns can be filtered by header double-click"
     },
+    editable: {
+      type: Boolean,
+      description: "Whether values can be directly edited by double-click"
+    }
   },
 
   data() {
@@ -110,7 +121,7 @@ export default {
 
   computed: {
     noData() {
-      return !this.loading && !this.tableData.length
+      return !this.loading && (!this.data || !this.data.length) && !this.tableData.length
     },
     isError() {
       return this.error
@@ -119,11 +130,15 @@ export default {
 
   methods: {
     initData() {
+      if (this.data && this.data.length) {
+        return 
+      }
+
       this.loadData();
         
       setInterval(() => { 
         this.loadData();
-      }, constants.dataReloadInterval );
+      }, constants.intervals.dataReload );
     },
 
     loadData() {
@@ -197,11 +212,16 @@ export default {
           this.tableData = this.aggregator(this.tableData, newTableData, weight).slice(0, constants.maxRows)
         })
       })
+    },
+
+    // BaseTable emited event
+    edited(data) {
+      this.$emit('edited', data)
     }
   },
 
   mounted() {
-    this.initData();
+    this.initData()
   }
 };
 </script>

@@ -29,7 +29,7 @@
                             <tr>
                                 <!-- <slot :row="item"> -->
                                 <td style="border-top: 0px; text-align: right">
-                                    {{ dpTexts.from ? dpTexts.from : '' }}
+                                    {{ $t('research.patternLab.from') }}
                                 </td>
                                 <td style="border-top: 0px;">
                                     <datepicker v-model="from" 
@@ -43,7 +43,7 @@
                             <tr>
                                 <!-- <slot :row="item"> -->
                                 <td style="border-top: 0px; text-align: right">
-                                    {{ dpTexts.to ? dpTexts.to : '' }}
+                                    {{ $t('research.patternLab.to') }}
                                 </td>
                                 <td style="border-top: 0px;">
                                     <datepicker v-model="to" 
@@ -152,16 +152,6 @@ export default {
             type: Boolean,
             default: true,
             description: "Whether datepickers (and timeFrame dropdown) section should be showed"
-        },
-        dpTexts: {
-            type: Object,
-            default: () => {
-                return {
-                    from: null,
-                    to: null
-                }
-            },
-            description: "Texts before datepickers"
         },
         tfLeftPos: {
             type: Number,

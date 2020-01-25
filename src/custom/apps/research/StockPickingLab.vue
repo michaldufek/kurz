@@ -262,7 +262,7 @@
         
         this.loadStocksDataTimer = setInterval(() => { 
           this.loadStocksData();
-        }, constants.dataReloadInterval );
+        }, constants.intervals.dataReload );
       },
 
       // data loading

@@ -99,7 +99,7 @@ export default {
         
       setInterval(() => { 
         this.loadData();
-      }, constants.dataReloadInterval );
+      }, constants.intervals.dataReload );
     },
 
     loadData() {

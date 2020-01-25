@@ -200,7 +200,7 @@
     methods: {
       initStrategyData() {
         let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
-        this.strategy = data ? data.strategy : defaultStrategy
+        this.strategy = data && data.strategy ? data.strategy : defaultStrategy
       },
 
       // methods from AssetsPatternsPicker emits

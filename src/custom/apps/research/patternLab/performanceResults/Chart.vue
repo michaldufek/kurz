@@ -60,6 +60,9 @@
                     :apiUrls="chartUrl ? [ chartUrl ] : []"
                     :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                     style="height: 100%"
+                    :tradesEntries="tradesEntries"
+                    :tradesStopLosses="tradesStopLosses"
+                    :tradesExits="tradesExits"
                     :responsive="true"                     
                     :key="historyChartKey" />
         <ohlc-chart v-else 
@@ -117,7 +120,7 @@ export default {
               checkedAssets: [],
               checkedPatterns: []
             },
-            rules: null,     // entry/exit rules
+            strategy: null,     // entry/exit rules
 
             // dropdowns
             selectedAsset: null,            
@@ -125,6 +128,9 @@ export default {
             chartType: null,
 
             // charts
+            tradesEntries: [],
+            tradesStopLosses: [],
+            tradesExits: [],
             chartUrl: null,
             pnlChartUrl: null,
             ddChartUrl: null,
@@ -153,7 +159,7 @@ export default {
                 return  
             }
 
-            this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            this.strategy = this.$store.getItem(constants.storeKeys.backtestPatterns)
 
             this.initDropDowns()
             this.loadCharts()
@@ -184,7 +190,7 @@ export default {
               to: this.assetsPatterns.to,
               checkedAssets: [ this.selectedAsset ],
               checkedPatterns: [ this.selectedPattern ]
-            }, this.rules)
+            }, this.strategy)
             this.ddChartUrl = this.pnlChartUrl
 
             // force reload of chart components 
@@ -209,6 +215,10 @@ export default {
 
         profitDataCreator(response) {
           let datum = response.data.filter(d => d[0] && d[0].symbol === this.selectedAsset.symbol && d[0].pattern_id === this.selectedPattern.id)
+
+          this.tradesEntries = datum[0] ? Object.values(datum[0][0].trades.trades.start) : []       
+          this.tradesStopLosses = this.strategy.stopLoss.value && this.strategy.stopLoss.unit === constants.defaultUnit ? [ this.strategy.stopLoss.value ] : []   
+          this.tradesExits = datum[0] ? Object.values(datum[0][0].trades.trades.finish) : []
 
           return {
             time: datum[0] ? Object.values(datum[0][0].trades.trades.finish) : [],

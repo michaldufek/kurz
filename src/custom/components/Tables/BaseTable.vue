@@ -5,32 +5,39 @@
       <slot name="columns">
         <th v-for="column in columns" 
             :key="column"
+            :title="headerTitle"
             @dblclick="filter(column)"
             @keyup.esc="filtering = {}"
-            style="text-align: right;"
-            :class="{ 'sortable': sortable || filterable }"            
-            :title="headerTitle">
+            :class="{ 'interactive': sortable || filterable }"
+            style="text-align: right;" >
             <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
-            <base-input v-if="column in filtering && filterable" placeholder="Filter" v-model="filterText" style="min-width: 75px"/>
+            <base-input v-show="filterable && column in filtering" placeholder="Filter" v-model="filterText" style="min-width: 75px" />
         </th>
       </slot>
     </tr>
     </thead>
     <tbody :class="tbodyClasses">
-    <tr v-for="(item, index) in sortedFilteredData" :key="index">
+    <tr v-for="(item, rowIndex) in sortedFilteredData" :key="rowIndex">
       <slot :row="item">
-        <td v-for="(column, index) in columns"
-            :key="index" 
+        <td v-for="(column, clIndex) in columns"
+            :key="clIndex"
+            v-if="hasValue(item, column)"
             :title="valueTitle(item, column)"
-            v-if="hasValue(item, column)" 
-            style="text-align: right; white-space: pre-wrap;">{{ itemValue(item, column) | toFixed2 }}</td>
+            @dblclick="edit(rowIndex, item, column)"
+            @keyup.enter="finishEdit(rowIndex, column)" 
+            @keyup.esc="editing = null"            
+            :class="{ 'interactive': editable }"           
+            style="text-align: right; white-space: pre-wrap;">
+              <base-input v-show="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />
+              <p v-show="!isEditing(rowIndex, column)">{{ itemValue(item, column) | toFixed2 }}</p>
+            </td>
       </slot>
     </tr>
     </tbody>
   </table>
 </template>
 <script>
-  import helper from '@/custom/assets/js/helper';
+  import helper from '@/custom/assets/js/helper'
   
   export default {
     name: 'base-table',
@@ -68,6 +75,10 @@
         type: Boolean,
         description: "Whether columns can be filtered by header double-click"
       },
+      editable: {
+        type: Boolean,
+        description: "Whether values can be directly edited by double-click"
+      },
       theadClasses: {
         type: String,
         default: '',
@@ -83,8 +94,12 @@
     data() {
       return {
         sorting: {},
+
         filtering: {},
-        filterText: null
+        filterText: null,
+
+        editing: null,
+        editText: null
       }
     },
 
@@ -98,6 +113,7 @@
                                       && String(item[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase()) 
                                       || !(column in this.filtering) || !this.filterText)
         }
+        
         if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) { // object not empty
           data = data.sort((item1,item2) => {        
             let column = Object.keys(this.sorting)[0].toLowerCase()          
@@ -157,6 +173,20 @@
         this.filtering[column] = true
       },
 
+      edit(index, item, column) {        
+        this.editText = this.itemValue(item, column).split(' ')[0]
+        this.editing = [index, column]
+      },
+      finishEdit(index, column) {
+        this.$emit('edited', {
+          position: [index, column],
+          value: this.editText})
+        this.editing = null
+      },
+      isEditing(rowIndex, column) {
+        return this.editable && this.editing && this.editing[0] === rowIndex && this.editing[1] === column
+      },      
+
       hasValue(item, column) {
         return item[column.toLowerCase()] !== "undefined";
       },
@@ -179,7 +209,7 @@
   }
 </script>
 <style>
-.sortable {
+.interactive {
   cursor: pointer
 }
 </style>
