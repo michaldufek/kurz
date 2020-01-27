@@ -272,7 +272,7 @@
         this.error = false
 
         this.$http
-        .get(constants.urls.tickerSP.base + "?" + helper.encodeQueryData(this.getQueryData()))
+        .get(constants.urls.tickerSP.base + helper.encodeQueryData(this.getQueryData()))
         .then(response => {
           this.nrOfPages = Math.ceil(response.data.count / constants.maxRows)
 

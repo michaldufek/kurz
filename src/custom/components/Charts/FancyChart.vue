@@ -98,13 +98,6 @@ export default {
       },
       description: "Response data fields to use for distinctive lines in chart"      
     },
-    range: {
-      type: Object,
-      default: () => {
-        return {}
-      },
-      description: "Date range of values displayed"
-    },
     fill: {
       type: Boolean,
       description: "Whether to fill area above/below line"
@@ -321,12 +314,7 @@ export default {
       let datasets = []
       let datasetNr = 0
 
-      let dataTimes = helper.formatDateTimes(
-        data.time.filter(
-          t => (('from' in this.range && t >= this.range.from) || (!('from' in this.range)))
-               && (('to' in this.range && this.range.to && t <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
-        )
-      )
+      let dataTimes = helper.formatDateTimes(data.time)
       let allLabels = this.chartData.labels.concat(dataTimes)
       
       data.equity.forEach(equity => {

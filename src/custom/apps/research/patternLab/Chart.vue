@@ -34,7 +34,6 @@
                      :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl ? [ chartUrl ] : []"
                      :dataFields="[ 'Close', 'Volume' ]"
-                     :range="{ from: from, to: to }"
                      :responsive="true"
                      style="top: -45px; height: 100%"
                      :key="chartKey" />
@@ -42,7 +41,6 @@
                     :title="ohlcChartTitle"
                     :apiUrl="chartUrl" 
                     :type="chartType"
-                    :range="{ from: from, to: to }"
                     style="top: -45px; height: 830px" 
                     :key="chartKey" />
       </div>
@@ -88,8 +86,10 @@
         storeKey: 'research.patternLab.chart',
 
         // assets-patterns-picker
-        from: null,
-        to: null,
+        range: {
+          from: null,
+          to: null
+        },
         timeframe: null,
         asset: null,
         patterns: [],
@@ -134,7 +134,7 @@
       addChart() {
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
-          ({ from:this.from, to:this.to, timeframe:this.timeframe, checkedAsset:this.asset, checkedPatterns:this.patterns } = data)
+          ({ range:this.range, timeframe:this.timeframe, checkedAsset:this.asset, checkedPatterns:this.patterns } = data)
         }
         
         this.loadChart()
@@ -149,7 +149,7 @@
       loadChart() {
         this.chartUrl = null
         if (this.asset) {
-          this.chartUrl = helper.getPatternLabChartUrl(this.asset, this.timeframe) 
+          this.chartUrl = helper.getPatternLabChartUrl(this.asset, this.timeframe, this.range) 
         }
         this.chartKey++ // force reload of fancy-chart component
       },      
