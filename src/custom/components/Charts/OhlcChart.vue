@@ -53,13 +53,6 @@ export default {
     type: {
       type: String,
       description: "Type of chart - OHLC or Candlestick"
-    },
-    range: {
-      type: Object,
-      default: () => {
-        return {}
-      },
-      description: "Date range of values displayed"
     }
   },
 
@@ -132,11 +125,7 @@ export default {
     fillChartData(data) {
       let newData = [];
 
-      let filteredData = Object.entries(data.Open).filter(
-                          t => (('from' in this.range && new Date(Number(t[0])) >= this.range.from) || (!('from' in this.range)))
-                               && (('to' in this.range && this.range.to && new Date(Number(t[0])) <= this.range.to) || (!('to' in this.range) || (!(this.range.to))))
-                         )
-      for (const [_, [key, val]] of Object.entries(filteredData)) {
+      for (const [_, [key, val]] of Object.entries(data.Open)) {
         newData.push({
           t: new Date(Number(key)),
           o: val,

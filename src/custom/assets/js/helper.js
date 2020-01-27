@@ -99,7 +99,7 @@ export default {
     },
 
     formatDate(dt, delimiter="-") {
-        // returns RRRR-MM-DD format
+        // returns RRRR<delimiter>MM<delimiter>DD format
         if (dt) {
             let newDt = new Date(dt)
             return newDt.getFullYear() + delimiter + this.pad(Number(newDt.getMonth() + 1)) + delimiter + this.pad(newDt.getDate())
@@ -153,7 +153,22 @@ export default {
     // query & urls methods
     getBacktestPatternsQueryData(data) {
         let query = {}
-        query['params'] = JSON.stringify(data)            
+
+        query['params'] = JSON.stringify({
+            start_date: data.range.from,
+            finish_date: data.range.to,
+            ma_filter_period: data.ma_filter_period,
+            // "ma_price": "string",
+            direction: data.direction,
+            profit_take_value: data.profit_take.value,
+            profit_take_unit: data.profit_take.unit,
+            stop_loss_value: data.stoploss.value,
+            stop_loss_unit: data.stoploss.unit,
+            // "entry_type": "string",
+            initial_capital: data.initialCapital,
+            fixed_amount: data.fixed_amount
+        })  
+
         return query
     },
     getPatternLabQueryData(assets, patterns, timeframe) {
@@ -172,20 +187,20 @@ export default {
                 ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
             }
         }
-        return ret.join('&');
+        return "?" + ret.join('&');
     },
     getBacktestPatternsUrl(assetsPatterns, rules) {
         return assetsPatterns && rules && rules.event === constants.events.runStrategy 
                 ? [ constants.urls.patternLab.backtestPatterns + this.encodeRouteParams(this.getBacktestPatternsRouteParams(assetsPatterns)) 
-                + "?" + this.encodeQueryData(this.getBacktestPatternsQueryData(rules.strategy)) ] 
-               : [] 
+                     + this.encodeQueryData(this.getBacktestPatternsQueryData(rules.strategy)) ] 
+                : [] 
     },
-    getPatternLabChartUrl(asset, timeframe) {
-        return constants.urls.patternLab.chart + this.encodeRouteParams([ asset.id, this.convertTimeframe(timeframe) ])
+    getPatternLabChartUrl(asset, timeframe, range=null) {
+        return constants.urls.patternLab.chart + this.encodeRouteParams([ asset.id, this.convertTimeframe(timeframe) ]) + this.encodeQueryData(range)
     },
     getPatternLabHistoryUrl(assets, patterns, timeframe) {
         return assets.length && patterns.length
-                ? [ constants.urls.patternLab.patternsHistory + "?" + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe)) ]
+                ? [ constants.urls.patternLab.patternsHistory + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe)) ]
                 : []
     },
     getBacktestPatternsRouteParams(assetsPatterns) {
@@ -206,8 +221,10 @@ export default {
         if (data) {
             return {
                 timeframe: data.timeframe ? data.timeframe : i18n.t('research.patternLab.timeframes')[0],
-                from: data.from ? new Date(data.from) : null,
-                to: data.to ? new Date(data.to) : null,
+                range: {
+                    from: data.range && data.range.from ? data.range.from : null,
+                    to: data.range && data.range.to ? data.range.to : null
+                },
                 
                 // assets
                 selectedAssets: data.selectedAssets ? data.selectedAssets : [],
