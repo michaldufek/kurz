@@ -55,8 +55,8 @@ export default {
                         let row = {}
                         let clNr = 0
 
-                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = helper.formatDate(this.assetsPatterns.from)    // From
-                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = helper.formatDate(this.assetsPatterns.to)    // To
+                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = helper.formatDate(this.assetsPatterns.range.from)    // From
+                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = helper.formatDate(this.assetsPatterns.range.to)    // To
                         row[this.$t(columnsKey)[clNr++].toLowerCase()] = this.assetsPatterns.timeframe    // Time frame
                         row[this.$t(columnsKey)[clNr++].toLowerCase()] = asset.symbol    // Asset
                         row[this.$t(columnsKey)[clNr++].toLowerCase()] = pattern.name    // Pattern

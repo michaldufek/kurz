@@ -32,7 +32,7 @@
                                     {{ $t('research.patternLab.from') }}
                                 </td>
                                 <td style="border-top: 0px;">
-                                    <datepicker v-model="from" 
+                                    <datepicker v-model="range.from" 
                                                 :disabled-dates="disabledDatesFrom" 
                                                 :clear-button="true" 
                                                 :format="dateFormat" 
@@ -46,7 +46,7 @@
                                     {{ $t('research.patternLab.to') }}
                                 </td>
                                 <td style="border-top: 0px;">
-                                    <datepicker v-model="to" 
+                                    <datepicker v-model="range.to" 
                                                 :disabled-dates="disabledDatesTo" 
                                                 :clear-button="true" 
                                                 :format="dateFormat" 
@@ -170,8 +170,10 @@ export default {
             timeframe: this.$t('research.patternLab.timeframes')[0],
 
             // datepickers
-            from: null,
-            to: null,
+            range: {
+                from: null,
+                to: null
+            },
 
             // assets
             disabledDatesAsset: null,            
@@ -195,8 +197,8 @@ export default {
         disabledDatesFrom() {
             return {
                 from: this.disabledDatesAsset 
-                      ? (this.to ? new Date(Math.min(this.to, this.disabledDatesAsset.from)) 
-                      : this.disabledDatesAsset.from) : this.to,
+                      ? (this.range.to ? new Date(Math.min(this.range.to, this.disabledDatesAsset.from)) 
+                      : this.disabledDatesAsset.from) : this.range.to,
                 to: this.disabledDatesAsset ? this.disabledDatesAsset.to : null
             }
         },
@@ -204,8 +206,8 @@ export default {
             return {
                 from: this.disabledDatesAsset ? this.disabledDatesAsset.from : null,
                 to: this.disabledDatesAsset 
-                    ? (this.from ? new Date(Math.max(this.from, this.disabledDatesAsset.to)) 
-                    : this.disabledDatesAsset.to) : this.from
+                    ? (this.range.from ? new Date(Math.max(this.range.from, this.disabledDatesAsset.to)) 
+                    : this.disabledDatesAsset.to) : this.range.from
             }
         },
         maxItems() {
@@ -217,7 +219,7 @@ export default {
         initData() {
             let data = helper.getAssetsPatternsPickerData(this.$store)
             if (data) {
-                ({ timeframe:this.timeframe, from:this.from, to:this.to, selectedAssets:this.selectedAssets, checkedAssets:this.checkedAssets, 
+                ({ timeframe:this.timeframe, from:this.range.from, to:this.range.to, selectedAssets:this.selectedAssets, checkedAssets:this.checkedAssets, 
                    checkedAsset:this.checkedAsset, selectedPatterns:this.selectedPatterns, checkedPatterns:this.checkedPatterns, 
                    checkedAllPatterns:this.checkedAllPatterns } 
                 = data)
@@ -293,7 +295,7 @@ export default {
 
             checkedAssets.forEach(asset => {
                 this.$http
-                .get(constants.urls.patternLab.chart + asset.id + '/' + helper.convertTimeframe(this.timeframe)) // to-do: cache this result !
+                .get(helper.getPatternLabChartUrl(asset, this.timeframe)) // to-do: cache this result !
                 .then(response => {
                     let newFrom = new Date(Math.max(...Object.keys(response.data.Close)))    // maximum asset date !                    
                     let newTo = new Date(Math.min(...Object.keys(response.data.Close)))       // minimum asset date !
@@ -311,8 +313,8 @@ export default {
                     }
                 })
                 .finally(() => {
-                    if (this.from && (this.from < this.disabledDatesAsset.to || this.from > this.disabledDatesAsset.from)) {
-                        this.from = this.disabledDatesAsset.to
+                    if (this.range.from && (this.range.from < this.disabledDatesAsset.to || this.range.from > this.disabledDatesAsset.from)) {
+                        this.range.from = this.disabledDatesAsset.to
 
                         if (!fromChanged) {
                             this.$notify({
@@ -322,8 +324,8 @@ export default {
                             fromChanged = true
                         }
                     }
-                    if (this.to && (this.to > this.disabledDatesAsset.from || this.to < this.disabledDatesAsset.to)) {
-                        this.to = this.disabledDatesAsset.from
+                    if (this.range.to && (this.range.to > this.disabledDatesAsset.from || this.range.to < this.disabledDatesAsset.to)) {
+                        this.range.to = this.disabledDatesAsset.from
 
                         if (!toChanged) {
                             this.$notify({
@@ -415,11 +417,11 @@ export default {
     },
 
     watch: {
-        from(value) {
-            helper.updateStore(this.$store, 'from', value)            
-        },
-        to(value) {
-            helper.updateStore(this.$store, 'to', value)            
+        range: {
+            handler(val){
+                helper.updateStore(this.$store, 'range', { from: helper.formatDate(val.from, ''), to: helper.formatDate(val.to, '') }) 
+            },
+            deep: true
         },
 
         // assets

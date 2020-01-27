@@ -58,7 +58,6 @@
         <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
                     :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title')"
                     :apiUrls="chartUrl ? [ chartUrl ] : []"
-                    :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                     style="height: 100%"
                     :tradesEntries="tradesEntries"
                     :tradesStopLosses="tradesStopLosses"
@@ -69,14 +68,12 @@
                     :title="ohlcChartTitle"
                     :apiUrl="chartUrl" 
                     :type="chartType"
-                    :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                     style="height: 830px" 
                     :key="historyChartKey" />
 
         <!-- cumulated profit chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.cumulatedProfit')"
                      :apiUrls="pnlChartUrl ? [ pnlChartUrl ] : []"
-                     :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                      :dataCreator="profitDataCreator"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.cumulatedProfit') ]"
                      :responsive="true"                     
@@ -85,7 +82,6 @@
         <!-- drawdown chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.drawdown')"
                      :apiUrls="ddChartUrl ? [ ddChartUrl ] : []"
-                     :range="{ from: assetsPatterns.from, to: assetsPatterns.to }"
                      :dataCreator="drawdownDataCreator"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.drawdown') ]"
                      :fill="true"
@@ -115,8 +111,10 @@ export default {
 
             // assets-patterns-picker
             assetsPatterns: {
-              from: null,
-              to: null,
+              range:{
+                from: null,
+                to: null
+              },
               checkedAssets: [],
               checkedPatterns: []
             },
@@ -182,12 +180,11 @@ export default {
         loadCharts(reloadHistory=true) {
             this.chartUrl = null
             if (this.selectedAsset) {
-                this.chartUrl = helper.getPatternLabChartUrl(this.selectedAsset, this.assetsPatterns.timeframe)
+                this.chartUrl = helper.getPatternLabChartUrl(this.selectedAsset, this.assetsPatterns.timeframe, this.assetsPatterns.range)
             }
             this.pnlChartUrl = helper.getBacktestPatternsUrl({
               timeframe: this.assetsPatterns.timeframe,
-              from: this.assetsPatterns.from,
-              to: this.assetsPatterns.to,
+              range: this.assetsPatterns.range,
               checkedAssets: [ this.selectedAsset ],
               checkedPatterns: [ this.selectedPattern ]
             }, this.strategy)
