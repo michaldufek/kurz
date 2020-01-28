@@ -1,21 +1,18 @@
 <template>
 
-    <fancy-table :title="$t(storeKey + '.title')"
-                :showTitle="false"
-                :data="tableData"
-                :columns="columns"
-                :editable="true"
+        <fancy-table :title="$t(patternsKey + '.title')"
+                     :showTitle="false"
+                     :data="tableData"
+                     :columns="columns"
+                     :editable="true"
                      @edited="edited" />
 
-    </div>
 </template>
 <script>
 import FancyTable from '@/custom/components/Tables/FancyTable';  
 import constants from '@/custom/assets/js/constants'
 import helper from '@/custom/assets/js/helper';
 
-const storeKey = 'research.patternLab.backtestPatterns.performanceResults.patterns'
-const columnsKey = storeKey + '.columns'
 
 export default {
     components: {
@@ -24,135 +21,78 @@ export default {
 
     data() {
         return {
-            storeKey: storeKey,
-
+            patternsKey: constants.patternsKey,
             assetsPatterns: null,
-            strategy: null,
-
             tableData: null,
-            columns: this.$t(columnsKey)
+            columns: this.$t(constants.patternsKey + '.columns')
         }
     },
 
     methods: {
-        initData() {              
+        initData() { 
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
-            let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)  // entry/exit rules
-            let eventName = null
-            if (bpData) {
-                ({ strategy:this.strategy, event:eventName } = bpData)
+            let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            if (data) {
+                this.tableData = data.backtests          
             }
-            let oldTableData = this.$store.getItem(storeKey)
-            let newTableData = oldTableData
-
-            if (eventName === constants.events.addPattern && this.assetsPatterns) {
-                // create new rows
-                newTableData = []
-
-                this.assetsPatterns.checkedAssets.forEach(asset => {
-                    this.assetsPatterns.checkedPatterns.forEach(pattern => {
-                        let row = {}
-                        let clNr = 0
-
-                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = helper.formatDate(this.assetsPatterns.range.from)    // From
-                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = helper.formatDate(this.assetsPatterns.range.to)    // To
-                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = this.assetsPatterns.timeframe    // Time frame
-                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = asset.symbol    // Asset
-                        row[this.$t(columnsKey)[clNr++].toLowerCase()] = pattern.name    // Pattern
-
-                        if (this.strategy) {   
-                            this.updateRow(row, clNr, this.strategy)                            
-                        }                                            
-
-                        newTableData.push(row)
-                    })
-                })
-            } else if (eventName === constants.events.runStrategy && this.strategy) {
-                // update rows with new strategy data
-
-                newTableData = []
-
-                oldTableData.forEach(row => {
-                    let clNr = 3    // starting from asset column (for the if)
-
-                    if (this.assetsPatterns.checkedAssets.map(ca => ca.symbol).includes(row[this.$t(columnsKey)[clNr++].toLowerCase()]) 
-                        && this.assetsPatterns.checkedPatterns.map(cp => cp.name).includes(row[this.$t(columnsKey)[clNr++].toLowerCase()])) {
-                            this.updateRow(row, clNr, this.strategy) 
-                        }
-
-                    newTableData.push(row)
-                })
-            }
-
-            this.tableData = newTableData
-            this.$store.setItem(storeKey, this.tableData)
-            this.$store.setItem(constants.storeKeys.backtestPatterns, { strategy: this.strategy })      // eliminate event
-        },
-        updateRow(row, clNr, stratData) {
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.initialCapital ? `${stratData.initialCapital} ${constants.defaultUnit}` : null    // Initial capital
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.analyze ? `${stratData.analyze} ${helper.pluralize(stratData.analyze, storeKey + '.bar')}` : null    // Analyze
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.profit_take.value ? `${stratData.profit_take.value} ${stratData.profit_take.unit}` : null    // Profit Target
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.stoploss.value ? `${stratData.stoploss.value} ${stratData.stoploss.unit}` : null    // Stop Loss
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.trendFilter && stratData.ma_filter_period ? `${stratData.ma_filter_period} ${constants.defaultUnit}` : null    // Trend filter (moving average)
-            row[this.$t(columnsKey)[clNr++].toLowerCase()] = stratData.direction    // Direction
-        },
+        },        
 
         // FancyTable emited event
         edited(data) {
             // check if new value is valid
             switch(data.position[1]) {
-                case this.$t(columnsKey)[0]:   // From
-                case this.$t(columnsKey)[1]:   // To
+                case this.columns[0]:   // From
+                case this.columns[1]:   // To
                     if (isNaN(new Date(data.value).getMonth())) {
                         return
                     }
                     break;
-                case this.$t(columnsKey)[2]:   // Time frame
+                case this.columns[2]:   // Time frame
                     if (helper.convertTimeframe(data.value) === -1) {
                         return
                     }
                     break
-                case this.$t(columnsKey)[3]:   // Asset
+                case this.columns[3]:   // Asset
                     if (!this.assetsPatterns.selectedAssets.map(sa => sa.symbol).includes(data.value)) {
                         return
                     }
                     break
-                case this.$t(columnsKey)[4]:   // Pattern
+                case this.columns[4]:   // Pattern
                     if (!this.assetsPatterns.selectedPatterns.map(sa => sa.name).includes(data.value)) {
                         return
                     }
                     break
-                case this.$t(columnsKey)[5]:   // Initial capital
+                case this.columns[5]:   // Initial capital
                     if (isNaN(Number(data.value))) {
                         return
                     }
                     data.value = `${data.value} ${constants.defaultUnit}`
                     break
-                case this.$t(columnsKey)[6]:   // Analyze
+                case this.columns[6]:   // Analyze
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${helper.pluralize(data.value, storeKey + '.bar')}`
+                    data.value = `${data.value} ${helper.pluralize(data.value, constants.patternsKey + '.bar')}`
                     break
-                case this.$t(columnsKey)[7]:   // Profit Target
+                case this.columns[7]:   // Profit Target
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.strategy.profit_take.unit}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[7].toLowerCase()].split(' ')[1]}`
                     break
-                case this.$t(columnsKey)[8]:   // Stop Loss
+                case this.columns[8]:   // Stop Loss
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.strategy.stoploss.unit}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[8].toLowerCase()].split(' ')[1]}`
                     break
-                case this.$t(columnsKey)[9]:   // Trend filter (moving average)
+                case this.columns[9]:   // Trend filter (moving average)
                     if (isNaN(Number(data.value))) {
                         return
                     }
                     data.value = `${data.value} ${constants.defaultUnit}`
                     break
-                case this.$t(columnsKey)[10]:   // Direction
+                case this.columns[10]:   // Direction
                     if (!this.$t('research.patternLab.backtestPatterns.entryRules.directions').includes(data.value)) {
                         return
                     }
@@ -162,7 +102,7 @@ export default {
             }
 
             this.tableData[data.position[0]][data.position[1].toLowerCase()] = data.value
-            this.$store.setItem(storeKey, this.tableData)
+            helper.updateStore(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)
         }
     },
 
@@ -172,5 +112,4 @@ export default {
 }
 </script>
 <style scoped>
-
 </style>

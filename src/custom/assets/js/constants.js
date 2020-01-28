@@ -6,6 +6,7 @@ const SPPartUrl = "/api/sp"
 const PLPartUrl = "/api/pl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
+const backtestPartUrl = "/Backtest"
 const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
 const reportPartUrl = "/api/xreport"
@@ -34,10 +35,13 @@ export default {
         soundSignal: 1000 * 60, // minute
 
         // time of shaking of login forms if unsuccessful
-        shake: 500, // half minute
+        shake: 500, // half second
 
         // time of effect of login forms showing
-        loginShow: 230
+        loginShow: 230,
+
+        // time of checking whether Backtest patterns backtests are done
+        backtestsDone: 1000 * 3 // 3 seconds
     },    
 
     urls: {
@@ -49,8 +53,11 @@ export default {
             asset: baseUrl + PLPartUrl + tickerPartUrl + searchPartUrl,
             pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl,
             chart: baseUrl + PLPartUrl + "/HistoryData/",
-            patternsHistory: baseUrl + PLPartUrl + "/Backtests",
-            backtestPatterns: baseUrl + PLPartUrl + "/ComplexBacktest/",
+            patternsHistory: baseUrl + PLPartUrl + patternPartUrl + "Tests",
+            backtestPatterns: {
+                checkRun: baseUrl + PLPartUrl + backtestPartUrl,
+                results: baseUrl + PLPartUrl + backtestPartUrl + 'Full/'
+            },
             alerts: baseUrl + PLPartUrl + alertPartUrl + "s"
         },
 
@@ -69,13 +76,10 @@ export default {
 
     storeKeys: {
         assetsPatternsPicker: 'research.patternLab.AssetsPatternsPicker',
-        backtestPatterns: 'research.patternLab.backtestPatterns',
+        backtestPatterns: 'research.patternLab.backtestPatterns'
     },
 
-    events: {
-        addPattern: 'addPattern',
-        runStrategy: 'runStrategyClick'        
-    },
+    patternsKey: 'research.patternLab.backtestPatterns.performanceResults.patterns',
 
     strings: {
         networkError: "Network Error",

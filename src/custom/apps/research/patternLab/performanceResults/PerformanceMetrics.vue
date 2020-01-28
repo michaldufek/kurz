@@ -1,9 +1,9 @@
 <template>
 
-    <fancy-table :title="$t(storeKey + '.title')"
+    <fancy-table :title="$t(perfMetricsKey + '.title')"
                 :showTitle="false"
-                :apiUrls="url"
-                :columns="$t(storeKey + '.columns')"
+                :data="tableData"
+                :columns="$t(perfMetricsKey + '.columns')"
                 :rowsCreator="rowsCreator"
                 :sortable="true"
                 :filterable="true"
@@ -23,61 +23,44 @@ export default {
 
     data() {
         return {
-            storeKey: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
-
-            assetsPatterns: null,
-            rules: null,            
-
-            url: null,
+            perfMetricsKey: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
+            tableData: [],
             tableKey: 0
         }
     },
 
     methods: {
         initData() {
-            this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
-            if (!this.assetsPatterns.checkedPatterns.length) {
-                this.$notify({
-                    type: 'warning', 
-                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
-                              + ' / ' + this.$t('research.patternLab.backtestPatterns.title') 
-                              + ' / ' + this.$t(this.storeKey + '.title') + ').'
-                })
-                
-                return  
+            let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            if (data && !data.loading) {
+                this.tableData = this.rowsCreator(data.backtestsResults)
+                this.tableKey++
             }
+        }, 
 
-            this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
-
-            this.url = helper.getBacktestPatternsUrl(this.assetsPatterns, this.rules)
-            this.tableKey++
-        },
-
-        rowsCreator(data) {
+        rowsCreator(datum/*a*/) {
+            let columns = this.$t(this.perfMetricsKey + '.columns')
             let rows = []
 
-            data.forEach(d => d.forEach(datum => 
-                rows.push([
-                    datum.symbol,   // Asset
-                    this.assetsPatterns.checkedPatterns.find(cp => cp.id === datum.pattern_id).name,    // Pattern
-                    Object.keys(datum.trades.trades.pnl).length,   // # of trades
-                    this.rules.strategy.initialCapital ? `${this.rules.strategy.initialCapital} ${constants.defaultUnit}` : null,   // Initial capital
-                    this.rules.strategy.initialCapital 
-                     ? `${Number(this.rules.strategy.initialCapital) + Number(datum.trades.stats["Cummulative pnl final"]
-                                                                              ? datum.trades.stats["Cummulative pnl final"]
-                                                                              : 0)} ${constants.defaultUnit}`
-                     : (datum.trades.stats["Cummulative pnl final"] 
-                        ? `${datum.trades.stats["Cummulative pnl final"]} ${constants.defaultUnit}`
-                        : null), // End capital
-                    datum.trades.stats["Cummulative pnl final"] ? `${datum.trades.stats["Cummulative pnl final"]} ${constants.defaultUnit}` : null,    // Cummulative PnL final
-                    'CAGR',    // CAGR
-                    datum.trades.stats["Sharpe ratio"],  // Sharpe ratio
-                    this.rules.strategy.profit_take.value ? `${this.rules.strategy.profit_take.value} ${this.rules.strategy.profit_take.unit}` : null,   // PT
-                    this.rules.strategy.stoploss.value ? `${this.rules.strategy.stoploss.value} ${this.rules.strategy.stoploss.unit}` : null,   // SL
-                    datum.trades.stats["Avg. trade net profit per trade"],  // Average trade
-                    datum.trades.stats["Max drawdown strategy"]  // Max drawdown strategy
-                ])
-           ))
+            // data.forEach(datum => {
+                let row = {}
+                let clNr = 0
+
+                row[columns[clNr++].toLowerCase()] = datum.tickers[0].symbol   // Asset
+                row[columns[clNr++].toLowerCase()] = datum.patterns[0].name    // Pattern
+                row[columns[clNr++].toLowerCase()] = Object.keys(datum.backtestbit_set[0].output.trades.pnl).length   // # of trades
+                row[columns[clNr++].toLowerCase()] = `${datum.initial_capital} ${constants.defaultUnit}`   // Initial capital
+                row[columns[clNr++].toLowerCase()] = `${datum.initial_capital + datum.backtestbit_set[0].output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`   // End capital
+                row[columns[clNr++].toLowerCase()] = `${datum.backtestbit_set[0].output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`    // Cummulative PnL final
+                row[columns[clNr++].toLowerCase()] = 'CAGR',    // CAGR
+                row[columns[clNr++].toLowerCase()] = datum.backtestbit_set[0].output.stats["Sharpe ratio"],  // Sharpe ratio
+                row[columns[clNr++].toLowerCase()] = `${datum.profit_take_value} ${datum.profit_unit}`   // PT
+                row[columns[clNr++].toLowerCase()] = `${datum.stop_loss_value} ${datum.stop_loss_unit}`   // SL
+                row[columns[clNr++].toLowerCase()] = datum.backtestbit_set[0].output.stats["Avg. trade net profit per trade"]  // Average trade
+                row[columns[clNr++].toLowerCase()] = datum.backtestbit_set[0].output.stats["Max drawdown strategy"]  // Max drawdown strategy
+
+                rows.push(row)
+        //    })
 
            return rows
         }        

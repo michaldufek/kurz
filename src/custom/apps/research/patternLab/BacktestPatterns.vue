@@ -142,7 +142,7 @@
       <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.backtestPatterns.performanceResults.title') }}</h4>
 
       <top-navbar />
-
+      <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[loading ? dataClass : noDataClass, loaderClass]"/>
       <dashboard-content @click.native="toggleSidebar" style="margin-top: 15px" />
     </card>
 
@@ -157,6 +157,7 @@
   import TopNavbar from "@/custom/layout/application/patternLab/performanceResults/TopNavbar.vue";
   import DashboardContent from "@/custom/layout/application/patternLab/Content.vue";
   import MobileMenu from "@/layout/dashboard/MobileMenu";
+  import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
   
   const defaultStrategy = {
@@ -186,72 +187,254 @@
       AssetsPatternsPicker,
       TopNavbar,
       DashboardContent,
-      MobileMenu
+      MobileMenu,
+      DualRingLoader
     },
 
     data() {
       return {
-        // strategy settings
         strategy: defaultStrategy,
-        
-        cardKey: 0
+        backtests2check: [],
+        loading: false,
+        cardKey: 0,
+
+        // css classes
+        dataClass: 'data',      
+        noDataClass: 'noData',
+        loaderClass: 'loader',
       }
     },
     
     methods: {
-      initStrategyData() {
+      initData() {
+        console.log('bp init')
         let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
-        this.strategy = data && data.strategy ? data.strategy : defaultStrategy
+        if (data) {
+          this.loading = data.loading ? data.loading : false
+          this.strategy = data.strategy ? data.strategy : defaultStrategy
+          this.backtests2check = data.backtests2check ? data.backtests2check : []
+        }
+
+        setInterval(() => { 
+          this.checkBacktests()
+        }, constants.intervals.backtestsDone )        
+      },
+      checkBacktests() {
+        if (!this.backtests2check.length) {
+          console.log('bt length 0')
+          console.log(this.backtests2check)
+          this.loading = false
+          return
+        }
+
+        let backtestsDone = []
+
+        this.$http
+        .get(constants.urls.patternLab.backtestPatterns.checkRun)  // temporary only first !!!
+        .then(response => {
+          response.data.forEach(bt => {
+            if (bt.done) {
+              backtestsDone.push(bt.id)
+            }
+          })
+        })
+        .catch(error => {
+          console.log(error);
+
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
+          }
+        })
+        .finally(() => {
+          console.log('BTs check:')
+          console.log(this.backtests2check)
+          // console.log(backtestsDone)
+          let backtestsDiff = this.backtests2check.filter(bt => !backtestsDone.includes(bt))  // difference of backtests run and done
+          // console.log('BTs after diff:')
+          // console.log(backtestsDiff)
+          if (!backtestsDiff.length) {
+            console.log('BTs done:')
+            // console.log(backtestsDone)
+            // console.log('other BTs running:')
+            // console.log(this.backtests2check)
+            this.$http
+            .get(constants.urls.patternLab.backtestPatterns.results + this.backtests2check[0])  // temporary only first !!!
+            .then(response => {
+              helper.updateStore(this.$store, 'backtestsResults', response.data/*.filter(bt => this.backtests2check.includes(bt.id))*/, constants.storeKeys.backtestPatterns) 
+            })
+            .catch(error => {
+              console.log(error);
+
+              if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
+              }
+            })
+            .finally(() => {
+              console.log('bts all ok')
+              this.backtests2check = []
+              this.loading = false
+            })
+          }         
+        })
       },
 
       // methods from AssetsPatternsPicker emits
       addPattern() {
-        this.storeAndReloadCard(constants.events.addPattern)
+        if (!this.strategy.initialCapital) {
+          this.$notify({
+                          type: 'warning', 
+                          message: this.$t('notifications.noInitialCapital') + errorTitle
+                      })
+          return 
+        }
+
+        if (this.loading) {
+          this.$notify({
+                          type: 'warning', 
+                          message: this.$t('notifications.loading') + errorTitle
+                      })
+          return 
+        }
+
+        this.setBacktestsTable(true)
+        this.cardKey++
       },
 
       runStrategyClick() {
         let data = helper.getAssetsPatternsPickerData(this.$store)
-        if (data) {   
-          if (!data.checkedAssets.length) {
-            this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.addNoAsset') + errorTitle
-                        })
-            return
-          }
-          if (!this.strategy.initialCapital) {
-            this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.noInitialCapital') + errorTitle
-                        })
-            return
-          }
+        if (!data || !data.checkedAssets.length) {   
+          this.$notify({
+                          type: 'warning', 
+                          message: this.$t('notifications.addNoAsset') + errorTitle
+                      })
+
+        } else {
           if (this.loading) {
             this.$notify({
                             type: 'warning', 
                             message: this.$t('notifications.loading') + errorTitle
                         })
-            return
+            return 
           }
 
-          if (!data.checkedPatterns.length) {
+          if (data && !data.checkedPatterns.length) {
             this.$notify({
                 type: 'warning', 
                 message: this.$t('notifications.addNoPattern') + errorTitle
             })  
-          } else {
-            this.storeAndReloadCard(constants.events.runStrategy)            
+          } else if (data) {
+            this.setBacktestsTable()
+            this.cardKey++
+            this.runBacktests()     
           }
         }
       },
 
-      storeAndReloadCard(event) {
-        this.$store.setItem(constants.storeKeys.backtestPatterns, {
-          strategy: this.strategy,
-          event: event
+      setBacktestsTable(createNew=false) {
+        let columns = this.$t(constants.patternsKey + '.columns')
+        let assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+        let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)  // entry/exit rules
+        let oldTableData = []
+        if (bpData) {
+            oldTableData = bpData.backtests
+        }
+        let newTableData = oldTableData
+
+        if (createNew && assetsPatterns) {
+            // create new rows
+            newTableData = []
+
+            assetsPatterns.checkedAssets.forEach(asset => {
+                assetsPatterns.checkedPatterns.forEach(pattern => {
+                    let row = {}
+                    let clNr = 0
+
+                    row[columns[clNr++].toLowerCase()] = assetsPatterns.range && assetsPatterns.range.from 
+                                                          ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.from))
+                                                          : null    // From
+                    row[columns[clNr++].toLowerCase()] = assetsPatterns.range && assetsPatterns.range.to
+                                                          ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.to))
+                                                          : null    // To
+                    row[columns[clNr++].toLowerCase()] = assetsPatterns.timeframe    // Time frame
+                    row['assetId'] = asset.id
+                    row[columns[clNr++].toLowerCase()] = asset.symbol    // Asset
+                    row['patternId'] = pattern.id
+                    row[columns[clNr++].toLowerCase()] = pattern.name    // Pattern
+
+                    if (this.strategy) {   
+                        this.updateRow(row, columns, clNr)                            
+                    }                                            
+
+                    newTableData.push(row)
+                })
+            })
+        } else if (this.strategy) {
+            // update rows (with checked assets/patterns) with new strategy data
+            newTableData = []
+
+            oldTableData.forEach(row => {
+                let clNr = 3    // starting from Asset column (for the if)
+
+                if (assetsPatterns.range && !assetsPatterns.range.to) {
+                    // for null To dates set it to today
+                    row[columns[1].toLowerCase()] = helper.formatDate(new Date()) // To
+                }
+
+                if (assetsPatterns.checkedAssets.map(ca => ca.symbol).includes(row[columns[clNr++].toLowerCase()]) 
+                    && assetsPatterns.checkedPatterns.map(cp => cp.name).includes(row[columns[clNr++].toLowerCase()])) {
+                        this.updateRow(row, columns, clNr) 
+                    }
+
+                newTableData.push(row)
+            })
+        }
+
+        helper.updateStore(this.$store, 'backtests', newTableData, constants.storeKeys.backtestPatterns) 
+      },
+      updateRow(row, columns, clNr) {
+            row[columns[clNr++].toLowerCase()] = this.strategy.initialCapital ? `${this.strategy.initialCapital} ${constants.defaultUnit}` : null    // Initial capital
+            row[columns[clNr++].toLowerCase()] = this.strategy.analyze ? `${this.strategy.analyze} ${helper.pluralize(this.strategy.analyze, constants.patternsKey + '.bar')}` : null    // Analyze
+            row[columns[clNr++].toLowerCase()] = this.strategy.profit_take.value ? `${this.strategy.profit_take.value} ${this.strategy.profit_take.unit}` : null    // Profit Target
+            row[columns[clNr++].toLowerCase()] = this.strategy.stoploss.value ? `${this.strategy.stoploss.value} ${this.strategy.stoploss.unit}` : null    // Stop Loss
+            row[columns[clNr++].toLowerCase()] = this.strategy.trendFilter && this.strategy.ma_filter_period ? `${this.strategy.ma_filter_period} ${constants.defaultUnit}` : null    // Trend filter (moving average)
+            row[columns[clNr++].toLowerCase()] = this.strategy.direction    // Direction
+            row['fixed_amount'] = this.strategy.fixed_amount    // Risk
+        },
+
+      runBacktests() { 
+        this.loading = true       
+        let backtestsAll = this.$store.getItem(constants.storeKeys.backtestPatterns).backtests
+
+        // run all backtests showed in Patterns table
+        let backtests2Run = []
+        backtestsAll.forEach(bt => {
+          let data = helper.mapStrategyFromRow(bt)
+          data['patterns'] = [ bt.patternId ]
+          data['tickers'] = [ bt.assetId ]
+
+          backtests2Run.push(data)
         })
 
-        this.cardKey++
+        this.$http
+        .post(constants.urls.patternLab.backtestPatterns.checkRun, backtests2Run[0])  // temporary only first !!!
+        .then(response => {
+            this.backtests2check = []
+          // response.data.forEach(bt => 
+            this.backtests2check.push(response.data.id)//bt.id //eg.1506
+            // console.log('BTs running')
+            // console.log(this.backtests2check)
+          // )
+        })
+        .catch(error => {
+          console.log(error);
+
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
+          }
+        })
+        .finally(() => {
+          helper.updateStore(this.$store, 'backtests2check', this.backtests2check, constants.storeKeys.backtestPatterns)          
+        })
       },
 
       toggleSidebar() {
@@ -262,8 +445,16 @@
     },
 
     mounted() {
-      this.initStrategyData()     
+      this.initData()     
       this.cardKey++
+    },
+
+    watch: {
+      loading(val) {
+        console.log('loading')
+        console.log(val)
+        helper.updateStore(this.$store, 'loading', val, constants.storeKeys.backtestPatterns) 
+      }
     }
   }  
 </script>
@@ -277,5 +468,21 @@
 .input {
   float: left;
   width: 60%;
+}
+
+.loader {
+  width: 80px; 
+  height: 80px;  
+  position: absolute; 
+}
+
+.loader.noData {
+  top: 20%; 
+  left: 40%;    
+}
+
+.loader.data {
+  top: 40%; 
+  left: 42.5%;
 }
 </style>
