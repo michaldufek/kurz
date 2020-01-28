@@ -58,10 +58,6 @@
         default: () => {},
         description: "Table data values descriptions"
       },
-      headerTitle: {
-        type: String,
-        description: "Table header description"
-      },
       type: {
         type: String, // striped | hover
         default: "",
@@ -134,6 +130,19 @@
 
       tableClass() {
         return this.type && `table-${this.type}`;
+      },
+
+      headerTitle() {
+        let title = ''
+
+        if (this.sortable) {
+          title += this.$t('titles.sort')
+        }
+        if (this.filterable) {
+          title += ' ' + this.$t('titles.filter')
+        }
+
+        return title
       }
     },
 
@@ -196,14 +205,15 @@
       },
       
       valueTitle(item, column) {
+        let suffix = this.editable ? ' ' + this.$t('titles.edit') : ''
         let value = this.itemValue(item, column)
 
         if (!value || !(typeof value === 'string' || value instanceof String) || !this.titles) {
-          return null
+          return suffix
         }
 
         // split because in portfolio card it is in '<statisticName>: <number>' format
-        return this.titles[value.split(': ')[0].toLowerCase()];
+        return this.titles[value.split(': ')[0].toLowerCase()] + suffix
       }
     }
   }

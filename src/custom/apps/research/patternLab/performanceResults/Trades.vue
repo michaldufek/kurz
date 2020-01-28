@@ -1,13 +1,12 @@
 <template>
 
-    <fancy-table :title="$t(storeKey + '.title')"
+    <fancy-table :title="$t(tradesKey + '.title')"
                  :showTitle="false"
-                 :apiUrls="url"
-                 :columns="$t(storeKey + '.columns')"
+                 :data="tableData"
+                 :columns="$t(tradesKey + '.columns')"
                  :rowsCreator="rowsCreator"
                  :sortable="true"
                  :filterable="true"
-                 :headerTitle="$t(storeKey + '.title')"
                  :key="tableKey">
     </fancy-table>
     
@@ -24,56 +23,51 @@ export default {
 
     data() {
         return {
-            storeKey: 'research.patternLab.backtestPatterns.performanceResults.trades',
-
-            assetsPatterns: null,
-            rules: null,            
-
-            url: null,
+            tradesKey: 'research.patternLab.backtestPatterns.performanceResults.trades',
+            tableData: [],
             tableKey: 0
         }
     },
     
     methods: {
         initData() {
-            this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
-            if (!this.assetsPatterns.checkedPatterns.length) {
-                this.$notify({
-                    type: 'warning', 
-                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
-                              + ' / ' + this.$t('research.patternLab.backtestPatterns.title') 
-                              + ' / ' + this.$t(this.storeKey + '.title') + ').'
-                })
-                
-                return  
+            setInterval(() => { 
+                this.checkBacktests()   
+            }, constants.intervals.backtestsDone )             
+        },   
+        checkBacktests() {
+            let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            if (data && !data.loading) {
+                this.tableData = this.rowsCreator(data.backtestsResults)
+                this.tableKey++
             }
-
-            this.rules = this.$store.getItem(constants.storeKeys.backtestPatterns)   // entry/exit rules
-
-            this.url = helper.getBacktestPatternsUrl(this.assetsPatterns, this.rules)
-            this.tableKey++
-        },        
+        },  
         
-        rowsCreator(data) {
+        rowsCreator(datum/*a*/) {
+            let columns = this.$t(this.tradesKey + '.columns')
             let rows = []
             
-            data.forEach(d => d.forEach(datum => {
+            // data.forEach(datum => {
                 let rowNr = 0
 
-                Object.keys(datum.trades.trades.pnl).forEach(_ => 
-                    rows.push([
-                        rowNr + 1,    // #
-                        datum.symbol,   // Asset
-                        this.assetsPatterns.checkedPatterns.find(cp => cp.id === datum.pattern_id).name,    // Pattern
-                        'Direction',   // Direction
-                        'Entry price',   // Entry price
-                        'Exit price',   // Exit price
-                        helper.formatDateTime(datum.trades.trades.start[rowNr]),   // Entry time
-                        helper.formatDateTime(datum.trades.trades.finish[rowNr]),   // Exit time
-                        'Amount',   // Amount
-                        datum.trades.trades.pnl[rowNr++]   // PnL
-                    ]))
-           }))
+                Object.keys(datum.backtestbit_set[0].output.trades.pnl).forEach(_ => {
+                    let row = {}
+                    let clNr = 0
+
+                    row[columns[clNr++].toLowerCase()] = rowNr + 1    // #
+                    row[columns[clNr++].toLowerCase()] = datum.tickers[0].symbol   // Asset
+                    row[columns[clNr++].toLowerCase()] = datum.patterns[0].name    // Pattern
+                    row[columns[clNr++].toLowerCase()] = datum.direction,   // Direction
+                    row[columns[clNr++].toLowerCase()] = 'Entry price'   // Entry price
+                    row[columns[clNr++].toLowerCase()] = 'Exit price'   // Exit price
+                    row[columns[clNr++].toLowerCase()] = helper.formatDateTime(datum.backtestbit_set[0].output.trades.start[rowNr])   // Entry time
+                    row[columns[clNr++].toLowerCase()] = helper.formatDateTime(datum.backtestbit_set[0].output.trades.finish[rowNr])   // Exit time
+                    row[columns[clNr++].toLowerCase()] = 'Amount'   // Amount
+                    row[columns[clNr++].toLowerCase()] = datum.backtestbit_set[0].output.trades.pnl[rowNr++]   // PnL
+                    
+                    rows.push(row)
+                })
+        //    })
 
            return rows
         }

@@ -73,16 +73,14 @@
 
         <!-- cumulated profit chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.cumulatedProfit')"
-                     :apiUrls="pnlChartUrl ? [ pnlChartUrl ] : []"
-                     :dataCreator="profitDataCreator"
+                     :responsesData="[ pnlChartData ]"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.cumulatedProfit') ]"
                      :responsive="true"                     
                      :key="statsChartKey" />
 
         <!-- drawdown chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.drawdown')"
-                     :apiUrls="ddChartUrl ? [ ddChartUrl ] : []"
-                     :dataCreator="drawdownDataCreator"
+                     :responsesData="[ ddChartData ]"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.drawdown') ]"
                      :fill="true"
                      :responsive="true"                    
@@ -118,7 +116,6 @@ export default {
               checkedAssets: [],
               checkedPatterns: []
             },
-            strategy: null,     // entry/exit rules
 
             // dropdowns
             selectedAsset: null,            
@@ -130,8 +127,8 @@ export default {
             tradesStopLosses: [],
             tradesExits: [],
             chartUrl: null,
-            pnlChartUrl: null,
-            ddChartUrl: null,
+            pnlChartData: null,
+            ddChartData: null,
             historyChartKey: 0,
             statsChartKey: 0
         }
@@ -145,23 +142,28 @@ export default {
     
     methods: {
         initData() {
-            this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
-            if (!this.assetsPatterns.checkedPatterns.length) {
-                this.$notify({
-                    type: 'warning', 
-                    message: this.$t('notifications.addNoPattern') + ' (' + this.$t('sidebar.patternLab')
-                              + ' / ' + this.$t('research.patternLab.backtestPatterns.title') 
-                              + ' / ' + this.$t(this.storeKey + '.title') + ').'
-                })
-                
-                return  
+            let data = helper.getAssetsPatternsPickerData(this.$store)
+            if (data) {
+              this.assetsPatterns = data
             }
 
-            this.strategy = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            setInterval(() => { 
+                this.checkBacktests()   
+            }, constants.intervals.backtestsDone )
 
             this.initDropDowns()
-            this.loadCharts()
+            this.loadChart()
         },
+        checkBacktests() {             
+            let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            if (data && !data.loading) {
+              this.pnlChartData = this.profitDataCreator(data.backtestsResults)
+              this.ddChartData = this.drawdownDataCreator(data.backtestsResults)
+
+              this.statsChartKey++
+            }
+        },
+
         initDropDowns() {
             let data = this.$store.getItem(this.storeKey)
             if (data) {
@@ -177,57 +179,49 @@ export default {
             }
         },
 
-        loadCharts(reloadHistory=true) {
+        loadChart(reloadHistory=true) {
             this.chartUrl = null
             if (this.selectedAsset) {
                 this.chartUrl = helper.getPatternLabChartUrl(this.selectedAsset, this.assetsPatterns.timeframe, this.assetsPatterns.range)
             }
-            this.pnlChartUrl = helper.getBacktestPatternsUrl({
-              timeframe: this.assetsPatterns.timeframe,
-              range: this.assetsPatterns.range,
-              checkedAssets: [ this.selectedAsset ],
-              checkedPatterns: [ this.selectedPattern ]
-            }, this.strategy)
-            this.ddChartUrl = this.pnlChartUrl
 
             // force reload of chart components 
             if (reloadHistory) {
               this.historyChartKey++
             }
-            this.statsChartKey++
         },
 
         selectAsset(asset) {
             this.selectedAsset = asset
-            this.loadCharts()
+            this.loadChart()
         },
         selectPattern(pattern) {
             this.selectedPattern = pattern
-            this.loadCharts(false)
+            this.loadChart(false)
         },
         selectChartType(chartType) {
             this.chartType = chartType
-            this.loadCharts()
+            this.loadChart()
         },
 
-        profitDataCreator(response) {
-          let datum = response.data.filter(d => d[0] && d[0].symbol === this.selectedAsset.symbol && d[0].pattern_id === this.selectedPattern.id)
+        profitDataCreator(responseData) {
+          let datum = responseData//.filter(d => d.tickers[0].id === this.selectedAsset.id && d.patterns[0].id === this.selectedPattern.id)
 
-          this.tradesEntries = datum[0] ? Object.values(datum[0][0].trades.trades.start) : []       
-          this.tradesStopLosses = this.strategy.stopLoss.value && this.strategy.stopLoss.unit === constants.defaultUnit ? [ this.strategy.stopLoss.value ] : []   
-          this.tradesExits = datum[0] ? Object.values(datum[0][0].trades.trades.finish) : []
+          this.tradesEntries = Object.values(datum.backtestbit_set[0].output.trades.start)
+          this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temp until BE doesn't return stop_loss_value for %
+          this.tradesExits = Object.values(datum.backtestbit_set[0].output.trades.finish)
 
           return {
-            time: datum[0] ? Object.values(datum[0][0].trades.trades.finish) : [],
-            equity: datum[0] ? Object.values(JSON.parse(datum[0][0].trades.stats.pnl_cum)) : []
+            time: Object.values(datum.backtestbit_set[0].output.trades.finish),
+            equity: Object.values(datum.backtestbit_set[0].output.stats.pnl_cum)
           }
         },
-        drawdownDataCreator(response) {
-          let datum = response.data.filter(d => d[0] && d[0].symbol === this.selectedAsset.symbol && d[0].pattern_id === this.selectedPattern.id)
+        drawdownDataCreator(responseData) {
+          let datum = responseData//.filter(d => d.tickers[0].id === this.selectedAsset.id && d.patterns[0].id === this.selectedPattern.id)
 
           return {
-            time: datum[0] ? Object.values(datum[0][0].trades.trades.finish) : [],
-            equity: datum[0] ? Object.values(JSON.parse(datum[0][0].trades.stats["Drawdown Underwater plot"])) : []
+            time: Object.values(datum.backtestbit_set[0].output.trades.finish),
+            equity: Object.values(datum.backtestbit_set[0].output.stats["Drawdown Underwater plot"])
           }
         }
     },

@@ -20,6 +20,11 @@
   "chart": "graf",
   "table": "tabulka",
   "number": "Číslo",
+  "titles": {
+    "sort": "Klikni pro třídení.",
+    "filter": "Dvoj-klik pro filtrování.",
+    "edit": "Dvoj-klik pro úpravu."
+  },
   "paging": {
     "previous": "Předchozí",
     "next": "Další"
@@ -215,8 +220,7 @@
             "5 denní up_down", 
             "10 denní up_down"
           ]
-        },
-        "patternsTitle": "Klikni pro třídení, dvoj-klik pro filtrování."
+        }
       },
       "backtestPatterns": {
         "title": "Backtest - patterny",
@@ -360,7 +364,9 @@
     "fromChanged" : "Datum 'Od' byl upraven podle rozsahu aktiva",
     "toChanged" : "Datum 'Do' byl upraven podle rozsahu aktiva",
     "addNoAsset": "Musíte označit alespoň jedno aktivum",
-    "addNoPattern": "Musíte zaškrtnout alespoň jeden pattern"
+    "addNoPattern": "Musíte zaškrtnout alespoň jeden pattern",
+    "noInitialCapital": "Počáteční kapitál musí být nastavený",
+    "loading": "Strategie již běží"
   },
   "userMenu": {
     "title": "Uživatelské akce",

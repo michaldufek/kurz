@@ -18,8 +18,7 @@
                     :sortable="sortable"
                     :filterable="filterable"
                     :editable="editable"
-                    @edited="edited"
-                    :headerTitle="headerTitle">
+                    @edited="edited">
         </base-table>
       </section>
     </div>
@@ -81,10 +80,6 @@ export default {
       type: Object,
       default: () => {},
       description: "Table data values descriptions"
-    },
-    headerTitle: {
-      type: String,
-      description: "Table header description"
     },
     columns: {
       type: Array,

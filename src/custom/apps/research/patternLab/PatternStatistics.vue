@@ -64,7 +64,6 @@
                      :rowsCreator="rowsCreator"
                      :sortable="true"
                      :filterable="true"
-                     :headerTitle="$t(storeKey + '.patternsTitle')"
                      :key="tableKey">
         </fancy-table>
       </div>

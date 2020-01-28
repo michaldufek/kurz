@@ -151,25 +151,39 @@ export default {
     },
 
     // query & urls methods
-    getBacktestPatternsQueryData(data) {
-        let query = {}
+    mapStrategyFromRow(row) {
+        // map Patterns table row to API structure
+        let data = {}
+        let columns = i18n.t(constants.patternsKey + '.columns')
 
-        query['params'] = JSON.stringify({
-            start_date: data.range.from,
-            finish_date: data.range.to,
-            ma_filter_period: data.ma_filter_period,
-            // "ma_price": "string",
-            direction: data.direction,
-            profit_take_value: data.profit_take.value,
-            profit_take_unit: data.profit_take.unit,
-            stop_loss_value: data.stoploss.value,
-            stop_loss_unit: data.stoploss.unit,
-            // "entry_type": "string",
-            initial_capital: data.initialCapital,
-            fixed_amount: data.fixed_amount
-        })  
+        if (row[columns[0].toLowerCase()]) {
+            data['start_date'] = row[columns[0].toLowerCase()]+'T00:00Z' // From
+        }
+        if (row[columns[1].toLowerCase()]) {
+            data['finish_date'] = row[columns[1].toLowerCase()]+'T00:00Z'    // To
+        }
+        if (row[columns[5].toLowerCase()]) {
+            data['initial_capital'] = row[columns[5].toLowerCase()].split(' ')[0]
+        }
+        if (row[columns[7].toLowerCase()]) {
+            let profit_take = row[columns[7].toLowerCase()].split(' ')
+            data['profit_take_value'] = profit_take[0]
+            data['profit_take_unit'] = profit_take[1]
+        }
+        if (row[columns[8].toLowerCase()]) {
+            let stop_loss = row[columns[8].toLowerCase()].split(' ')
+            data['stop_loss_value'] =  stop_loss[0]
+            data['stop_loss_unit'] =  stop_loss[1]
+        }
+        if (row[columns[9].toLowerCase()]) {
+            data['ma_filter_period'] = row[columns[9].toLowerCase()].split(' ')[0]
+        }
+        data['direction'] = row[columns[10].toLowerCase()]
+        if (row['fixed_amount']) {
+            data['fixed_amount'] = row['fixed_amount']  // Risk
+        }
 
-        return query
+        return data
     },
     getPatternLabQueryData(assets, patterns, timeframe) {
         let data = {}
@@ -189,12 +203,6 @@ export default {
         }
         return "?" + ret.join('&');
     },
-    getBacktestPatternsUrl(assetsPatterns, rules) {
-        return assetsPatterns && rules && rules.event === constants.events.runStrategy 
-                ? [ constants.urls.patternLab.backtestPatterns + this.encodeRouteParams(this.getBacktestPatternsRouteParams(assetsPatterns)) 
-                     + this.encodeQueryData(this.getBacktestPatternsQueryData(rules.strategy)) ] 
-                : [] 
-    },
     getPatternLabChartUrl(asset, timeframe, range=null) {
         return constants.urls.patternLab.chart + this.encodeRouteParams([ asset.id, this.convertTimeframe(timeframe) ]) + this.encodeQueryData(range)
     },
@@ -202,14 +210,6 @@ export default {
         return assets.length && patterns.length
                 ? [ constants.urls.patternLab.patternsHistory + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe)) ]
                 : []
-    },
-    getBacktestPatternsRouteParams(assetsPatterns) {
-        return [ this.convertTimeframe(assetsPatterns.timeframe),    // timeframe
-                 this.formatDate(assetsPatterns.from ? assetsPatterns.from : Number.MIN_VALUE, ''),     // start_date
-                 this.formatDate(assetsPatterns.to ? assetsPatterns.to : new Date(), ''),   // finish_date
-                 assetsPatterns.checkedAssets.map(ca => ca.symbol).join(';'),  // assets
-                 assetsPatterns.checkedPatterns.map(cp => cp.id).join(',')     // pattern_ids
-                ]            
     },
     encodeRouteParams(data) {
         return data.join('/');
