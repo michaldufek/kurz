@@ -84,12 +84,10 @@ export default {
       default: () => [],
       description: "URLs to API data sources"
     },
-    dataCreator: {
-      type: Function,
-      default: response => {
-        return response.data
-      },
-      description: "Creator of data from response"
+    responsesData: {
+      type: Array,
+      default: () => [],
+      description: "Responses data for the case API call was made before"
     },
     dataFields: {
       type: Array,
@@ -212,102 +210,107 @@ export default {
       return val
     },
 
-    loadData() {      
-      let finishedLoadings = 0
-      let errorLoadings = 0
+    loadData() {  
+      let loadings = {    
+        finished: 0,
+        error: 0
+      }
       if (this.apiUrls.length > 0) {
         this.loading = true
         this.error = false
       }
 
-      this.apiUrls.forEach(apiUrl => {
-        this.$http
-        .get(apiUrl)
-        .then(response => {
-          let responseData = this.dataCreator(response)
+      if (this.responsesData.length) {
+        this.responsesData.forEach(respData => this.responseDataTransformer(respData))
+      } else {
+        this.apiUrls.forEach(apiUrl => {
+          this.$http
+          .get(apiUrl)
+          .then(response => this.responseDataTransformer(response.data, loadings))
+          .catch(error => {
+            console.log(error);
+            if (++loadings.error === this.apiUrls.length) {
+              this.error = true
+            }
 
-          if (!finishedLoadings) {
-            let datasets = []
-            this.dataFields.forEach(_ => datasets.push({
-              ...defaultDatasets,
-              data: []
-            }))
+            if (error.message === constants.strings.networkError) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+            }
+          })
+          .finally(() => {
+            if (++loadings.finished === this.apiUrls.length) {
+              this.loading = false
 
-            this.chartData = {
-              datasets: datasets,
-              labels: []
-            } 
-          }
-
-          if (!responseData.time) {
-            // data in ticker symbol format
-            let times = []
-            let equities = []
-            let firstTime = true
-
-            this.dataFields.forEach(field => {
-              let fieldEquities = []
-
-              if (field in responseData) {
-                for (const [key, value] of Object.entries(responseData[field])) {
-                  if (firstTime) {
-                    // times are same for all price fields
-                    times.push(Number(key))
-                  }
-                  fieldEquities.push(value)
-                }
+              if (!this.live && !this.error) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
               }
-
-              equities.push(fieldEquities)
-              firstTime = false
-            })            
-
-            var data = {
-              time: times,
-              equity: equities,
-              WARNING: null,
-              report_timestamp: helper.formatDateTime(times[times.length - 1])
             }
-          } else {
-            data = {
-              time: responseData.time,
-              equity: [ responseData.equity ],
-              WARNING: responseData.WARNING,
-              report_timestamp: responseData.report_timestamp || helper.formatDateTime(responseData.time[responseData.time.length - 1])
-            }
-          }
-
-          this.createChartData(data)
-
-          // if at least one source is live we are live
-          this.live = this.live || !data.WARNING
-
-          if (!this.updateTs) {
-            this.updateTs = data.report_timestamp
-          }
-          // get last report's TimeStamp
-          this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
+          });
         })
-        .catch(error => {
-          console.log(error);
-          if (++errorLoadings === this.apiUrls.length) {
-            this.error = true
-          }
+      }
+    },
+    responseDataTransformer(responseData, loadings=null) {
+      if (!loadings || !loadings.finished) {
+        let datasets = []
+        this.dataFields.forEach(_ => datasets.push({
+          ...defaultDatasets,
+          data: []
+        }))
 
-          if (error.message === constants.strings.networkError) {
-            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
-          }
-        })
-        .finally(() => {
-          if (++finishedLoadings === this.apiUrls.length) {
-            this.loading = false
+        this.chartData = {
+          datasets: datasets,
+          labels: []
+        } 
+      }
 
-            if (!this.live && !this.error) {
-              helper.notifyAudio(this, document.getElementById('connectionLost'), 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+      if (!responseData.time) {
+        // data in ticker symbol format
+        let times = []
+        let equities = []
+        let firstTime = true
+
+        this.dataFields.forEach(field => {
+          let fieldEquities = []
+
+          if (field in responseData) {
+            for (const [key, value] of Object.entries(responseData[field])) {
+              if (firstTime) {
+                // times are same for all price fields
+                times.push(Number(key))
+              }
+              fieldEquities.push(value)
             }
           }
-        });
-      })
+
+          equities.push(fieldEquities)
+          firstTime = false
+        })            
+
+        var data = {
+          time: times,
+          equity: equities,
+          WARNING: null,
+          report_timestamp: helper.formatDateTime(times[times.length - 1])
+        }
+      } else {
+        data = {
+          time: responseData.time,
+          equity: [ responseData.equity ],
+          WARNING: responseData.WARNING,
+          report_timestamp: responseData.report_timestamp || helper.formatDateTime(responseData.time[responseData.time.length - 1])
+        }
+      }
+
+      this.createChartData(data)
+
+      // if at least one source is live we are live
+      this.live = this.live || !data.WARNING
+
+      if (!this.updateTs) {
+        this.updateTs = data.report_timestamp
+      }
+      // get last report's TimeStamp
+      this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
     },
 
     createChartData(data) {

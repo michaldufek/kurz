@@ -207,7 +207,6 @@
     
     methods: {
       initData() {
-        console.log('bp init')
         let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
         if (data) {
           this.loading = data.loading ? data.loading : false
@@ -221,8 +220,6 @@
       },
       checkBacktests() {
         if (!this.backtests2check.length) {
-          console.log('bt length 0')
-          console.log(this.backtests2check)
           this.loading = false
           return
         }
@@ -246,17 +243,8 @@
           }
         })
         .finally(() => {
-          console.log('BTs check:')
-          console.log(this.backtests2check)
-          // console.log(backtestsDone)
           let backtestsDiff = this.backtests2check.filter(bt => !backtestsDone.includes(bt))  // difference of backtests run and done
-          // console.log('BTs after diff:')
-          // console.log(backtestsDiff)
           if (!backtestsDiff.length) {
-            console.log('BTs done:')
-            // console.log(backtestsDone)
-            // console.log('other BTs running:')
-            // console.log(this.backtests2check)
             this.$http
             .get(constants.urls.patternLab.backtestPatterns.results + this.backtests2check[0])  // temporary only first !!!
             .then(response => {
@@ -420,9 +408,7 @@
         .then(response => {
             this.backtests2check = []
           // response.data.forEach(bt => 
-            this.backtests2check.push(response.data.id)//bt.id //eg.1506
-            // console.log('BTs running')
-            // console.log(this.backtests2check)
+            this.backtests2check.push(1506)//bt.id //response.data.id // 1506 temporary !!! unitl BE not finishing BTs
           // )
         })
         .catch(error => {
@@ -451,8 +437,6 @@
 
     watch: {
       loading(val) {
-        console.log('loading')
-        console.log(val)
         helper.updateStore(this.$store, 'loading', val, constants.storeKeys.backtestPatterns) 
       }
     }

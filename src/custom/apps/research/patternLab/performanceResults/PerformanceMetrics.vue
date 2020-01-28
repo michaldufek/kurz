@@ -31,12 +31,17 @@ export default {
 
     methods: {
         initData() {
+            setInterval(() => { 
+                this.checkBacktests()   
+            }, constants.intervals.backtestsDone )            
+        }, 
+        checkBacktests() {
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data && !data.loading) {
                 this.tableData = this.rowsCreator(data.backtestsResults)
                 this.tableKey++
             }
-        }, 
+        },
 
         rowsCreator(datum/*a*/) {
             let columns = this.$t(this.perfMetricsKey + '.columns')
