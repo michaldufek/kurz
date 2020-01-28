@@ -7,7 +7,6 @@
                 :rowsCreator="rowsCreator"
                 :sortable="true"
                 :filterable="true"
-                :headerTitle="$t(storeKey + '.title')"
                 :key="tableKey">
     </fancy-table>
     

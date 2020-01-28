@@ -179,6 +179,7 @@
       unit: constants.defaultUnit
     }
   }
+  const errorTitle = ' (' + i18n.t('research.patternLab.backtestPatterns.title') + ').'
 
   export default {
     components: {
@@ -214,7 +215,21 @@
           if (!data.checkedAssets.length) {
             this.$notify({
                             type: 'warning', 
-                            message: this.$t('notifications.addNoAsset') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
+                            message: this.$t('notifications.addNoAsset') + errorTitle
+                        })
+            return
+          }
+          if (!this.strategy.initialCapital) {
+            this.$notify({
+                            type: 'warning', 
+                            message: this.$t('notifications.noInitialCapital') + errorTitle
+                        })
+            return
+          }
+          if (this.loading) {
+            this.$notify({
+                            type: 'warning', 
+                            message: this.$t('notifications.loading') + errorTitle
                         })
             return
           }
@@ -222,7 +237,7 @@
           if (!data.checkedPatterns.length) {
             this.$notify({
                 type: 'warning', 
-                message: this.$t('notifications.addNoPattern') + ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').'
+                message: this.$t('notifications.addNoPattern') + errorTitle
             })  
           } else {
             this.storeAndReloadCard(constants.events.runStrategy)            

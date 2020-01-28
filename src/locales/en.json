@@ -20,6 +20,11 @@
   "chart": "chart",
   "table": "table",
   "number": "Number",
+  "titles": {
+    "sort": "Click for sort.",
+    "filter": "Double-click for filter.",
+    "edit": "Double-click for edit."
+  },
   "paging": {
     "previous": "Previous",
     "next": "Next"
@@ -215,8 +220,7 @@
             "5 days up_down", 
             "10 days up_down"
           ]
-        },
-        "patternsTitle": "Click for sort, double-click for filter."
+        }
       },
       "backtestPatterns": {
         "title": "Backtest - patterns",
@@ -361,7 +365,9 @@
     "fromChanged" : "The 'From' date was adjusted to asset range",
     "toChanged" : "The 'To' date was adjusted to asset range",
     "addNoAsset": "You must select at least one asset",
-    "addNoPattern": "You must check at least one pattern"
+    "addNoPattern": "You must check at least one pattern",
+    "noInitialCapital": "Initial capital must be set",
+    "loading": "Strategies already running"
   },
   "userMenu": {
     "title": "User actions",

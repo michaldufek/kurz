@@ -5,10 +5,9 @@
                 :data="tableData"
                 :columns="columns"
                 :editable="true"
-                @edited="edited"
-                :headerTitle="$t(storeKey + '.title')" >
-    </fancy-table>
+                     @edited="edited" />
 
+    </div>
 </template>
 <script>
 import FancyTable from '@/custom/components/Tables/FancyTable';  
