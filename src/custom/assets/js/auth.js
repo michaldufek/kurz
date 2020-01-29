@@ -112,8 +112,9 @@ export default {
       };
     },
   
-    login (email, pass, cb) {
-      cb = arguments[arguments.length - 1]
+    login (email, pass, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       if (localStorage.token) {
         if (cb) cb(true)
         this.onChange(true)
@@ -141,6 +142,7 @@ export default {
           if (cb) cb(false, this.parseError(err))
           this.onChange(false)        
         })
+        .finally(() => cbf())
       }
     },
 
@@ -207,7 +209,7 @@ export default {
       return !!localStorage.token
     },
 
-    resetPass (email, cb) {
+    resetPass (email, cb, cbf) {
       resetPassRoutine(email)
       .then(res => {
         if (cb) cb(true, res.data.detail)
@@ -217,10 +219,12 @@ export default {
         if (cb) cb(false, this.parseError(err, false))
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
-    verifyReset (uid, token, pass1, pass2, cb) {
-      cb = arguments[arguments.length - 1]
+    verifyReset (uid, token, pass1, pass2, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       verifyResetRoutine(uid, token, pass1, pass2)
       .then(res => {
         if (cb) cb(true, res.data.detail)
@@ -230,10 +234,12 @@ export default {
         if (cb) cb(false, this.parseError(err, false))
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
-    register (email, pass1, pass2, cb) {
-      cb = arguments[arguments.length - 1]
+    register (email, pass1, pass2, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       registerRoutine(email, pass1, pass2)
       .then(res => {
         if (cb) cb(true, i18n.t('login.registrationSent'))
@@ -243,10 +249,12 @@ export default {
         if (cb) cb(false, this.parseError(err))
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
-    verifyRegister (key, cb) {
-      cb = arguments[arguments.length - 1]
+    verifyRegister (key, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       verifyRegisterRoutine(key)
       .then(res => {
         if (cb) cb(true)
@@ -256,6 +264,7 @@ export default {
         if (cb) cb(false)
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
     parseError(err, verbose=true) {

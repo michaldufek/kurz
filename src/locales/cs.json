@@ -178,14 +178,14 @@
         "USD",
         "%"
       ],
+      "chartTypes": [
+        "Čárový",
+        "OHLC sloupcový",
+        "Svíčkový"
+      ], 
       "chart": {
         "title": "Graf",        
-        "addChart": "Přidat graf",
-        "chartTypes": [
-          "Čárový",
-          "OHLC sloupcový",
-          "Svíčkový"
-        ],        
+        "addChart": "Přidat graf",               
         "patternsHistory": {
           "title": "Historie patternů",
           "columns": [
@@ -260,6 +260,7 @@
             "daysTo4": "dny",
             "days": "dnů",
             "columns": [
+              "Název",
               "Od",
               "Do", 
               "Čas. rámec", 

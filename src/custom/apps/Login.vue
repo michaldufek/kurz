@@ -3,12 +3,15 @@
     <img src="../assets/img/logogf.png" class="logo" :alt="$t('siteTitle')" style="height: 25%;width: 25%;margin-top: 80px;margin-right: -300px;margin-left: 150px;"/>
 
     <SlideYUpTransition>
+        
+        <!-- login -->
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
                 class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
                 v-if="cards.showLogin.value">
+            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 150px" />
             <template>
                 <div class="text-muted text-center mb-3">
                     {{$t('login.signIn') + " " + $t('login.with')}}
@@ -56,12 +59,14 @@
             </template>
         </card>
 
+        <!-- register -->
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
                 class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
                 v-if="cards.showRegister.value">
+            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 75px" />
             <template>
                 <div class="text-center text-muted mb-4">
                     {{$t('login.register') + " " + $t('login.with')}}
@@ -97,12 +102,14 @@
             </template>
         </card>
 
+        <!-- resetPass -->
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
                 class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
                 v-if="cards.showResetPass.value">
+            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 50px" />
             <template>
                 <div class="text-center text-muted mb-4">
                     {{$t('login.resetPass') + " " + $t('login.with')}}
@@ -134,12 +141,14 @@
             </template>
         </card>
 
+        <!-- Verify Register -->
         <card type="secondary"
                 header-classes="bg-white pb-5"
                 body-classes="p-0 px-lg-5 py-lg-5"
                 class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
                 v-if="cards.showVerifyRegister.value">
+            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" />
             <template>
                 <form role="form">                    
                     <div class="text-center">
@@ -155,13 +164,15 @@
 </template>
 <script>
 import { SlideYUpTransition } from "vue2-transitions";
+import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 import auth from '@/custom/assets/js/auth'
 import '../assets/css/shake.css'
 import constants from '@/custom/assets/js/constants'
 
 export default {
     components: {
-        SlideYUpTransition
+        SlideYUpTransition,
+        DualRingLoader
     },
     data() {
       return {
@@ -171,6 +182,8 @@ export default {
             showResetPass: { value: false },
             showVerifyRegister: { value: false }
         },
+        loading: false,
+
         email: '',
         pass: '',
         pass1: '',
@@ -179,6 +192,7 @@ export default {
         error: false,
         message: '',
         isShaking: false,
+
         // css classes
         msgClass: 'message',
         noErrorClass: 'noError',
@@ -200,6 +214,7 @@ export default {
         },
 
         logIn () {
+            this.loading = true
             auth.login(this.email, this.pass, (loggedIn, err) => {
                 this.error = !loggedIn
                 if (!loggedIn) {                    
@@ -208,35 +223,39 @@ export default {
                 } else {
                     this.$router.replace(this.$route.query.redirect || '/')
                 }
-            })
+            }, () => this.loading = false)
         },
         resetPass () {
+            this.loading = true
             auth.resetPass(this.email, (resetted, msg) => {
                 this.error = !resetted
                 if (!resetted) {
                     this.shakeModal()
                 }
                 this.message = msg
-            })
+            }, () => this.loading = false)
         },
         resetPassComplete() {
+            this.loading = true
             auth.verifyReset(this.$route.params.uid, this.$route.params.token, this.pass1, this.pass2, (success, msg) => {
                 this.error = !success
                 if (!success) {
                     this.shakeModal()
                 }
                 this.message = msg
-            })
+            }, () => this.loading = false)
         },
         register () {
+            this.loading = true
             auth.register(this.email, this.pass1, this.pass2, (registered, msg) => {
                 this.error = !registered
                 if (!registered) {
                     this.shakeModal()                    
                 }
                 this.message = msg
-            })
+            }, () => this.loading = false)
         },
+
         shakeModal(){
             this.isShaking = true
             setTimeout(() => { 
@@ -244,6 +263,7 @@ export default {
             }, constants.intervals.shake );
             this.pass = ''
         },
+        
         openLoginModal(){
             this.openModal(this.cards.showLogin)
         },
@@ -290,9 +310,10 @@ export default {
         this.init()
 
         if ("key" in this.$route.params) {
+            this.loading = true
             auth.verifyRegister(this.$route.params.key, (success) => {  
                 this.openVerifyRegisterModal(success)
-            })
+            }, () => this.loading = false)
         } else if ("uid" in this.$route.params && "token" in this.$route.params) {
             this.openResetPassModal()
         } else {
@@ -325,5 +346,12 @@ export default {
 
 .error {
   color: red !important;
+}
+
+.loader {
+  width: 80px; 
+  height: 80px;  
+  position: absolute;
+  left: 150px;
 }
 </style>

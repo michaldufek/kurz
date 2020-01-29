@@ -181,6 +181,7 @@
     }
   }
   const errorTitle = ' (' + i18n.t('research.patternLab.backtestPatterns.title') + ').'
+  const columns = i18n.t(constants.patternsKey + '.columns')
 
   export default {
     components: {
@@ -249,6 +250,18 @@
             .get(constants.urls.patternLab.backtestPatterns.results + this.backtests2check[0])  // temporary only first !!!
             .then(response => {
               helper.updateStore(this.$store, 'backtestsResults', response.data/*.filter(bt => this.backtests2check.includes(bt.id))*/, constants.storeKeys.backtestPatterns) 
+
+              let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)
+              if (bpData) {
+                // set bt id and name (if not changed)
+                let bts = bpData.backtests
+                bts.forEach(bt => {
+                  bt['btId'] = response.data./*filter(datum => datum.tickers[0].symbol === bt[columns[4].toLowerCase()] 
+                                                     && datum.patterns[0].name === bt[columns[5].toLowerCase()])[0].*/id
+                  bt[columns[0].toLowerCase()] = bt['defaultName'] ? bt['btId'] : `${bt[columns[0].toLowerCase()].split(' ')[0]} (${bt['btId']})`    // Name
+                })
+                helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
+              }
             })
             .catch(error => {
               console.log(error);
@@ -258,9 +271,10 @@
               }
             })
             .finally(() => {
-              console.log('bts all ok')
+              // console.log('bts all done')
               this.backtests2check = []
               this.loading = false
+              this.cardKey++
             })
           }         
         })
@@ -319,9 +333,8 @@
       },
 
       setBacktestsTable(createNew=false) {
-        let columns = this.$t(constants.patternsKey + '.columns')
         let assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
-        let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)  // entry/exit rules
+        let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)
         let oldTableData = []
         if (bpData) {
             oldTableData = bpData.backtests
@@ -331,12 +344,16 @@
         if (createNew && assetsPatterns) {
             // create new rows
             newTableData = []
+            let rowNr = 1
 
             assetsPatterns.checkedAssets.forEach(asset => {
                 assetsPatterns.checkedPatterns.forEach(pattern => {
                     let row = {}
                     let clNr = 0
 
+                    row['btId'] = rowNr++
+                    row['defaultName'] = true
+                    row[columns[clNr++].toLowerCase()] = '     ' + row['btId']    // Name
                     row[columns[clNr++].toLowerCase()] = assetsPatterns.range && assetsPatterns.range.from 
                                                           ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.from))
                                                           : null    // From
@@ -350,28 +367,28 @@
                     row[columns[clNr++].toLowerCase()] = pattern.name    // Pattern
 
                     if (this.strategy) {   
-                        this.updateRow(row, columns, clNr)                            
+                        this.updateRow(row, clNr)                            
                     }                                            
 
                     newTableData.push(row)
                 })
             })
-        } else if (this.strategy) {
+        } else if (assetsPatterns && this.strategy) {
             // update rows (with checked assets/patterns) with new strategy data
             newTableData = []
 
             oldTableData.forEach(row => {
-                let clNr = 3    // starting from Asset column (for the if)
+                let clNr = 4    // starting from Asset column (for the if)
 
                 if (assetsPatterns.range && !assetsPatterns.range.to) {
-                    // for null To dates set it to today
-                    row[columns[1].toLowerCase()] = helper.formatDate(new Date()) // To
+                    // set null To dates to today
+                    row[columns[clNr-2].toLowerCase()] = helper.formatDate(new Date()) // To
                 }
 
                 if (assetsPatterns.checkedAssets.map(ca => ca.symbol).includes(row[columns[clNr++].toLowerCase()]) 
                     && assetsPatterns.checkedPatterns.map(cp => cp.name).includes(row[columns[clNr++].toLowerCase()])) {
-                        this.updateRow(row, columns, clNr) 
-                    }
+                        this.updateRow(row, clNr) 
+                }
 
                 newTableData.push(row)
             })
@@ -379,15 +396,15 @@
 
         helper.updateStore(this.$store, 'backtests', newTableData, constants.storeKeys.backtestPatterns) 
       },
-      updateRow(row, columns, clNr) {
-            row[columns[clNr++].toLowerCase()] = this.strategy.initialCapital ? `${this.strategy.initialCapital} ${constants.defaultUnit}` : null    // Initial capital
-            row[columns[clNr++].toLowerCase()] = this.strategy.analyze ? `${this.strategy.analyze} ${helper.pluralize(this.strategy.analyze, constants.patternsKey + '.bar')}` : null    // Analyze
-            row[columns[clNr++].toLowerCase()] = this.strategy.profit_take.value ? `${this.strategy.profit_take.value} ${this.strategy.profit_take.unit}` : null    // Profit Target
-            row[columns[clNr++].toLowerCase()] = this.strategy.stoploss.value ? `${this.strategy.stoploss.value} ${this.strategy.stoploss.unit}` : null    // Stop Loss
-            row[columns[clNr++].toLowerCase()] = this.strategy.trendFilter && this.strategy.ma_filter_period ? `${this.strategy.ma_filter_period} ${constants.defaultUnit}` : null    // Trend filter (moving average)
-            row[columns[clNr++].toLowerCase()] = this.strategy.direction    // Direction
-            row['fixed_amount'] = this.strategy.fixed_amount    // Risk
-        },
+      updateRow(row, clNr) {
+        row[columns[clNr++].toLowerCase()] = this.strategy.initialCapital ? `${this.strategy.initialCapital} ${constants.defaultUnit}` : null    // Initial capital
+        row[columns[clNr++].toLowerCase()] = this.strategy.analyze ? `${this.strategy.analyze} ${helper.pluralize(this.strategy.analyze, constants.patternsKey + '.bar')}` : null    // Analyze
+        row[columns[clNr++].toLowerCase()] = this.strategy.profit_take.value ? `${this.strategy.profit_take.value} ${this.strategy.profit_take.unit}` : null    // Profit Target
+        row[columns[clNr++].toLowerCase()] = this.strategy.stoploss.value ? `${this.strategy.stoploss.value} ${this.strategy.stoploss.unit}` : null    // Stop Loss
+        row[columns[clNr++].toLowerCase()] = this.strategy.trendFilter && this.strategy.ma_filter_period ? `${this.strategy.ma_filter_period} ${constants.defaultUnit}` : null    // Trend filter (moving average)
+        row[columns[clNr++].toLowerCase()] = this.strategy.direction    // Direction
+        row['fixed_amount'] = this.strategy.fixed_amount    // Risk
+      },
 
       runBacktests() { 
         this.loading = true       
@@ -404,12 +421,10 @@
         })
 
         this.$http
-        .post(constants.urls.patternLab.backtestPatterns.checkRun, backtests2Run[0])  // temporary only first !!!
+        .post(constants.urls.patternLab.backtestPatterns.checkRun, backtests2Run)
         .then(response => {
             this.backtests2check = []
-          // response.data.forEach(bt => 
-            this.backtests2check.push(1506)//bt.id //response.data.id // 1506 temporary !!! unitl BE not finishing BTs
-          // )
+          response.data.forEach(bt => this.backtests2check.push(bt.id))
         })
         .catch(error => {
           console.log(error);
@@ -438,7 +453,13 @@
     watch: {
       loading(val) {
         helper.updateStore(this.$store, 'loading', val, constants.storeKeys.backtestPatterns) 
-      }
+      },
+      strategy: {
+            handler(val){
+                helper.updateStore(this.$store, 'strategy', val, constants.storeKeys.backtestPatterns) 
+            },
+            deep: true
+        },
     }
   }  
 </script>

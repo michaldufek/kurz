@@ -154,31 +154,38 @@ export default {
     mapStrategyFromRow(row) {
         // map Patterns table row to API structure
         let data = {}
+        let clNr = 1    // 0th is Name - no need to map
         let columns = i18n.t(constants.patternsKey + '.columns')
 
-        if (row[columns[0].toLowerCase()]) {
-            data['start_date'] = row[columns[0].toLowerCase()]+'T00:00Z' // From
+        if (row[columns[clNr].toLowerCase()]) {
+            data['start_date'] = row[columns[clNr].toLowerCase()] // From
         }
-        if (row[columns[1].toLowerCase()]) {
-            data['finish_date'] = row[columns[1].toLowerCase()]+'T00:00Z'    // To
+        clNr++
+        if (row[columns[clNr].toLowerCase()]) {
+            data['finish_date'] = row[columns[clNr].toLowerCase()]    // To
         }
-        if (row[columns[5].toLowerCase()]) {
-            data['initial_capital'] = row[columns[5].toLowerCase()].split(' ')[0]
+        clNr += 4
+        if (row[columns[clNr].toLowerCase()]) {
+            data['initial_capital'] = row[columns[clNr].toLowerCase()].split(' ')[0]
         }
-        if (row[columns[7].toLowerCase()]) {
-            let profit_take = row[columns[7].toLowerCase()].split(' ')
+        clNr += 2
+        if (row[columns[clNr].toLowerCase()]) {
+            let profit_take = row[columns[clNr].toLowerCase()].split(' ')
             data['profit_take_value'] = profit_take[0]
             data['profit_take_unit'] = profit_take[1]
         }
-        if (row[columns[8].toLowerCase()]) {
-            let stop_loss = row[columns[8].toLowerCase()].split(' ')
+        clNr++
+        if (row[columns[clNr].toLowerCase()]) {
+            let stop_loss = row[columns[clNr].toLowerCase()].split(' ')
             data['stop_loss_value'] =  stop_loss[0]
             data['stop_loss_unit'] =  stop_loss[1]
         }
-        if (row[columns[9].toLowerCase()]) {
-            data['ma_filter_period'] = row[columns[9].toLowerCase()].split(' ')[0]
+        clNr++
+        if (row[columns[clNr].toLowerCase()]) {
+            data['ma_filter_period'] = row[columns[clNr].toLowerCase()].split(' ')[0]
         }
-        data['direction'] = row[columns[10].toLowerCase()]
+        clNr++
+        data['direction'] = row[columns[clNr].toLowerCase()]
         if (row['fixed_amount']) {
             data['fixed_amount'] = row['fixed_amount']  // Risk
         }
