@@ -158,11 +158,11 @@ export default {
         let columns = i18n.t(constants.patternsKey + '.columns')
 
         if (row[columns[clNr].toLowerCase()]) {
-            data['start_date'] = row[columns[clNr].toLowerCase()]+'T00:00Z' // From
+            data['start_date'] = row[columns[clNr].toLowerCase()] // From
         }
         clNr++
         if (row[columns[clNr].toLowerCase()]) {
-            data['finish_date'] = row[columns[clNr].toLowerCase()]+'T00:00Z'    // To
+            data['finish_date'] = row[columns[clNr].toLowerCase()]    // To
         }
         clNr += 4
         if (row[columns[clNr].toLowerCase()]) {

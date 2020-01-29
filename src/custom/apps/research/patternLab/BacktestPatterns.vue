@@ -421,12 +421,10 @@
         })
 
         this.$http
-        .post(constants.urls.patternLab.backtestPatterns.checkRun, backtests2Run[0])  // temporary only first !!!
+        .post(constants.urls.patternLab.backtestPatterns.checkRun, backtests2Run)
         .then(response => {
             this.backtests2check = []
-          // response.data.forEach(bt => 
-            this.backtests2check.push(1506)//bt.id //response.data.id // 1506 temporary !!! unitl BE not finishing BTs
-          // )
+          response.data.forEach(bt => this.backtests2check.push(bt.id))
         })
         .catch(error => {
           console.log(error);
