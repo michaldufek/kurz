@@ -228,7 +228,7 @@
         let backtestsDone = []
 
         this.$http
-        .get(constants.urls.patternLab.backtestPatterns.checkRun)  // temporary only first !!!
+        .get(constants.urls.patternLab.backtestPatterns.checkRun)
         .then(response => {
           response.data.forEach(bt => {
             if (bt.done) {
@@ -412,13 +412,7 @@
 
         // run all backtests showed in Patterns table
         let backtests2Run = []
-        backtestsAll.forEach(bt => {
-          let data = helper.mapStrategyFromRow(bt)
-          data['patterns'] = [ bt.patternId ]
-          data['tickers'] = [ bt.assetId ]
-
-          backtests2Run.push(data)
-        })
+        backtestsAll.forEach(bt => backtests2Run.push(helper.mapStrategyFromRow(bt)))
 
         this.$http
         .post(constants.urls.patternLab.backtestPatterns.checkRun, backtests2Run)
