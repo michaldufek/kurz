@@ -255,7 +255,7 @@ export default {
           }
         },
         drawdownDataCreator(responseData) {
-          let datum = responseData//.filter(d => d.id === this.selectedBacktest)
+          let datum = responseData//.filter(d => d.id === this.selectedBacktest.id)
 
           return {
             time: Object.values(datum.backtestbit_set[0].output.trades.finish),

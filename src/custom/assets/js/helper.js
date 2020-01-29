@@ -164,6 +164,8 @@ export default {
         if (row[columns[clNr].toLowerCase()]) {
             data['finish_date'] = row[columns[clNr].toLowerCase()]    // To
         }
+        data['ticker'] = row['assetId']   // Asset
+        data['pattern'] = row['patternId']  // Pattern
         clNr += 4
         if (row[columns[clNr].toLowerCase()]) {
             data['initial_capital'] = row[columns[clNr].toLowerCase()].split(' ')[0]
