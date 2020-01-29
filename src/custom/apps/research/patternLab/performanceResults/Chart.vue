@@ -169,10 +169,7 @@ export default {
               this.assetsPatterns = data
             }
 
-            setInterval(() => { 
-                this.checkBacktests()   
-            }, constants.intervals.backtestsDone )
-
+            this.checkBacktests()
             this.initDropDowns()
             this.loadChart()
         },
@@ -186,7 +183,7 @@ export default {
               data.backtests.forEach(bt => this.backtestsNames.push({ id: bt.btId, name: bt[this.$t(constants.patternsKey + '.columns')[0].toLowerCase()] }))
 
               data = this.$store.getItem(this.storeKey)
-              if (data) {
+              if (data && 'selectedBacktest' in data && this.backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {
                 this.selectedBacktest = data.selectedBacktest 
               }
               if (!this.selectedBacktest && this.backtestsNames.length) {

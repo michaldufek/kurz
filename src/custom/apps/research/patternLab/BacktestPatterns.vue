@@ -260,8 +260,7 @@
                                                      && datum.patterns[0].name === bt[columns[5].toLowerCase()])[0].*/id
                   bt[columns[0].toLowerCase()] = bt['defaultName'] ? bt['btId'] : `${bt[columns[0].toLowerCase()].split(' ')[0]} (${bt['btId']})`    // Name
                 })
-                helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns) 
-                this.cardKey++
+                helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
               }
             })
             .catch(error => {
@@ -272,9 +271,10 @@
               }
             })
             .finally(() => {
-              console.log('bts all ok')
+              // console.log('bts all done')
               this.backtests2check = []
               this.loading = false
+              this.cardKey++
             })
           }         
         })

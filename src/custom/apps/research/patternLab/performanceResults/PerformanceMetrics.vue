@@ -30,12 +30,7 @@ export default {
     },
 
     methods: {
-        initData() {
-            setInterval(() => { 
-                this.checkBacktests()   
-            }, constants.intervals.backtestsDone )            
-        }, 
-        checkBacktests() {
+        initData() {            
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data && !data.loading) {
                 this.tableData = this.rowsCreator(data.backtestsResults)
@@ -59,7 +54,7 @@ export default {
                 row[columns[clNr++].toLowerCase()] = `${datum.backtestbit_set[0].output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`    // Cummulative PnL final
                 row[columns[clNr++].toLowerCase()] = 'CAGR',    // CAGR
                 row[columns[clNr++].toLowerCase()] = datum.backtestbit_set[0].output.stats["Sharpe ratio"],  // Sharpe ratio
-                row[columns[clNr++].toLowerCase()] = `${datum.profit_take_value} ${datum.profit_unit}`   // PT
+                row[columns[clNr++].toLowerCase()] = `${datum.profit_take_value} ${datum.profit_take_unit}`   // PT
                 row[columns[clNr++].toLowerCase()] = `${datum.stop_loss_value} ${datum.stop_loss_unit}`   // SL
                 row[columns[clNr++].toLowerCase()] = datum.backtestbit_set[0].output.stats["Avg. trade net profit per trade"]  // Average trade
                 row[columns[clNr++].toLowerCase()] = datum.backtestbit_set[0].output.stats["Max drawdown strategy"]  // Max drawdown strategy
