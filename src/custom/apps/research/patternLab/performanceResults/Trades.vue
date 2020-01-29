@@ -37,7 +37,7 @@ export default {
         },   
         checkBacktests() {
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
-            if (data && !data.loading) {
+            if (data && !data.loading) {    // to-do: add loader here so there's no 'No data' text until it shows data
                 this.tableData = this.rowsCreator(data.backtestsResults)
                 this.tableKey++
             }

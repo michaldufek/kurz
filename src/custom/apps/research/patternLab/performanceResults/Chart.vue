@@ -43,7 +43,7 @@
                          title-classes="btn btn-secondary"
                          :title="chartType">
             <ul style="list-style-type: none;">
-              <li v-for="chartType in $t('research.patternLab.chart.chartTypes').filter(el => el !== chartType)">            
+              <li v-for="chartType in $t('research.patternLab.chartTypes').filter(el => el !== chartType)">            
                 <a class="dropdown-item" 
                    @click="selectChartType(chartType)" 
                    href="#">
@@ -55,7 +55,7 @@
         </div>
 
         <!-- trades chart -->
-        <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
+        <fancy-chart v-if="chartType === $t('research.patternLab.chartTypes')[0]"
                     :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title')"
                     :apiUrls="chartUrl ? [ chartUrl ] : []"
                     style="height: 100%"
@@ -71,16 +71,33 @@
                     style="height: 830px" 
                     :key="historyChartKey" />
 
+        <div style="position: relative; z-index: 1">
+          <base-dropdown class="dd" 
+                         menu-classes="dropdown-black" 
+                         title-classes="btn btn-secondary"
+                         :title="selectedBacktest ? selectedBacktest.name : null">
+            <ul style="list-style-type: none;">
+              <li v-for="bt in btNamesFiltered">            
+                <a class="dropdown-item" 
+                   @click="selectBacktest(bt)" 
+                   href="#">
+                  {{ bt.name }}
+                </a>
+              </li>
+            </ul>
+          </base-dropdown>          
+        </div>
+
         <!-- cumulated profit chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.cumulatedProfit')"
-                     :responsesData="[ pnlChartData ]"
+                     :responsesData="pnlChartData ? [ pnlChartData ] : []"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.cumulatedProfit') ]"
                      :responsive="true"                     
                      :key="statsChartKey" />
 
         <!-- drawdown chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.drawdown')"
-                     :responsesData="[ ddChartData ]"
+                     :responsesData="ddChartData ? [ ddChartData ] : []"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.drawdown') ]"
                      :fill="true"
                      :responsive="true"                    
@@ -118,6 +135,8 @@ export default {
             },
 
             // dropdowns
+            backtestsNames: [],
+            selectedBacktest: null,
             selectedAsset: null,            
             selectedPattern: null,
             chartType: null,
@@ -137,6 +156,9 @@ export default {
     computed: {
       ohlcChartTitle() {
           return this.selectedAsset && this.selectedPattern ? this.selectedAsset.symbol + ' (' + this.selectedPattern.name + ')' : ''
+      },
+      btNamesFiltered() {
+        return this.selectedBacktest ? this.backtestsNames.filter(bt => bt.id !== this.selectedBacktest.id) : this.backtestsNames
       }
     },
     
@@ -160,6 +182,17 @@ export default {
               this.pnlChartData = this.profitDataCreator(data.backtestsResults)
               this.ddChartData = this.drawdownDataCreator(data.backtestsResults)
 
+              this.backtestsNames = []
+              data.backtests.forEach(bt => this.backtestsNames.push({ id: bt.btId, name: bt[this.$t(constants.patternsKey + '.columns')[0].toLowerCase()] }))
+
+              data = this.$store.getItem(this.storeKey)
+              if (data) {
+                this.selectedBacktest = data.selectedBacktest 
+              }
+              if (!this.selectedBacktest && this.backtestsNames.length) {
+                  this.selectedBacktest = this.backtestsNames[0]
+              }
+
               this.statsChartKey++
             }
         },
@@ -169,7 +202,7 @@ export default {
             if (data) {
                 ({ selectedAsset:this.selectedAsset, selectedPattern:this.selectedPattern, chartType:this.chartType } = data)
             } else {
-                this.chartType = this.$t('research.patternLab.chart.chartTypes')[0]
+                this.chartType = this.$t('research.patternLab.chartTypes')[0]
             }
             if (!this.selectedAsset && this.assetsPatterns.checkedAssets.length) {
                 this.selectedAsset = this.assetsPatterns.checkedAssets[0]
@@ -191,6 +224,10 @@ export default {
             }
         },
 
+        getBacktestName(bt) {
+          return bt.name + ' (' + bt.id + ')'
+        },
+
         selectAsset(asset) {
             this.selectedAsset = asset
             this.loadChart()
@@ -199,13 +236,17 @@ export default {
             this.selectedPattern = pattern
             this.loadChart(false)
         },
+        selectBacktest(bt) {
+            this.selectedBacktest = bt
+            this.checkBacktests()
+        },
         selectChartType(chartType) {
             this.chartType = chartType
             this.loadChart()
         },
 
         profitDataCreator(responseData) {
-          let datum = responseData//.filter(d => d.tickers[0].id === this.selectedAsset.id && d.patterns[0].id === this.selectedPattern.id)
+          let datum = responseData//.filter(d => d.id === this.selectedBacktest.id)
 
           this.tradesEntries = Object.values(datum.backtestbit_set[0].output.trades.start)
           this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temp until BE doesn't return stop_loss_value for %
@@ -217,7 +258,7 @@ export default {
           }
         },
         drawdownDataCreator(responseData) {
-          let datum = responseData//.filter(d => d.tickers[0].id === this.selectedAsset.id && d.patterns[0].id === this.selectedPattern.id)
+          let datum = responseData//.filter(d => d.id === this.selectedBacktest)
 
           return {
             time: Object.values(datum.backtestbit_set[0].output.trades.finish),
@@ -232,6 +273,9 @@ export default {
       },
       selectedPattern(val) {        
         helper.updateStore(this.$store, 'selectedPattern', val, this.storeKey)
+      },
+      selectedBacktest(val) {        
+        helper.updateStore(this.$store, 'selectedBacktest', val, this.storeKey)
       },
       chartType(val) {        
         helper.updateStore(this.$store, 'chartType', val, this.storeKey)

@@ -8,7 +8,6 @@ fs.writeFile("./public/version.txt", version, function(err) {
   }
 }); 
 
-
 module.exports = {
   lintOnSave: false,
   configureWebpack: {

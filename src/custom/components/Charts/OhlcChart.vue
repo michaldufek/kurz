@@ -14,7 +14,7 @@
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
-        <Ohlc v-if="type === $t('research.patternLab.chart.chartTypes')[1]"
+        <Ohlc v-if="type === $t('research.patternLab.chartTypes')[1]"
               :chart-data="datacollection" 
               :options="options"/>
         <Candlestick v-else
