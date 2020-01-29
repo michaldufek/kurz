@@ -386,6 +386,9 @@
           this.selectedExchange = exchange
           localStorage.setItem('exchange', exchange)
         }
+        if (this.selectedExchangeNot !== exchange) {
+          this.selectedExchangeNot = null
+        }
 
         this.initData()
       },
@@ -415,6 +418,9 @@
         } else {
           this.selectedSector = sector
           localStorage.setItem('sector', sector)
+        }
+        if (this.selectedSectorNot !== sector) {
+          this.selectedSectorNot = null
         }
 
         this.initData()
@@ -525,6 +531,12 @@
       },
       exchangesTitle() {
         return this.selectedExchange ? this.selectedExchange : this.$t('research.stockPickingLab.filters.exchange')                
+      },
+      riskProfileTitle() {
+        return this.selectedRiskProfile 
+                ? (this.selectedRiskProfileNot ? '!= ' : '') + this.selectedRiskProfile
+                : this.$t('research.stockPickingLab.filters.riskProfile') 
+               
       },
       sectors() {
         let sectors = []

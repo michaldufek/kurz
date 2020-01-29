@@ -178,14 +178,14 @@
         "USD",
         "%"
       ],
+      "chartTypes": [
+        "Line",
+        "OHLC bar",
+        "Candlestick"          
+      ],
       "chart": {
         "title": "Chart",        
-        "addChart": "Add chart",
-        "chartTypes": [
-          "Line",
-          "OHLC bar",
-          "Candlestick"          
-        ],        
+        "addChart": "Add chart",                
         "patternsHistory": {
           "title": "Patterns history",
           "columns": [
@@ -261,6 +261,7 @@
             "daysTo4": "days",
             "days": "days",
             "columns": [
+              "Name",
               "From",
               "To", 
               "Time frame", 

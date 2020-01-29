@@ -182,8 +182,9 @@
         this.filtering[column] = true
       },
 
-      edit(index, item, column) {        
-        this.editText = this.itemValue(item, column).split(' ')[0]
+      edit(index, item, column) { 
+        let val = this.itemValue(item, column)   
+        this.editText = (!isNaN(Number(val)) ? String(val) : val).split(' ')[0]
         this.editing = [index, column]
       },
       finishEdit(index, column) {

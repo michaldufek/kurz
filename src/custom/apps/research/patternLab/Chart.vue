@@ -19,7 +19,7 @@
                          title-classes="btn btn-secondary"
                          :title="chartType">
             <ul style="list-style-type: none;">
-              <li v-for="chartType in $t('research.patternLab.chart.chartTypes').filter(el => el !== chartType)">            
+              <li v-for="chartType in $t('research.patternLab.chartTypes').filter(el => el !== chartType)">            
                 <a class="dropdown-item" 
                    @click="selectChartType(chartType)" 
                    href="#">
@@ -30,7 +30,7 @@
           </base-dropdown>          
         </div>
 
-        <fancy-chart v-if="chartType === $t('research.patternLab.chart.chartTypes')[0]"
+        <fancy-chart v-if="chartType === $t('research.patternLab.chartTypes')[0]"
                      :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl ? [ chartUrl ] : []"
                      :dataFields="[ 'Close', 'Volume' ]"
@@ -95,7 +95,7 @@
         patterns: [],
 
         // chart
-        chartType: this.$t('research.patternLab.chart.chartTypes')[0],
+        chartType: this.$t('research.patternLab.chartTypes')[0],
         chartUrl: null,
         chartKey: 0,        
 

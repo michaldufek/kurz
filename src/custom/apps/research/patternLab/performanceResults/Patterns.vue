@@ -40,59 +40,65 @@ export default {
         // FancyTable emited event
         edited(data) {
             // check if new value is valid
+            let clNr = 0
+
             switch(data.position[1]) {
-                case this.columns[0]:   // From
-                case this.columns[1]:   // To
+                case this.columns[clNr++]:  // Name - no need to check, just note that it was changed (because it should be in 'bt_name (bt_id)' format)
+                    this.tableData[data.position[0]]['defaultName'] = false
+                    data.value = `${data.value} (${this.tableData[data.position[0]]['btId']})`
+                    break
+                case this.columns[clNr++]:   // From
+                case this.columns[clNr++]:   // To
                     if (isNaN(new Date(data.value).getMonth())) {
                         return
                     }
                     break;
-                case this.columns[2]:   // Time frame
+                case this.columns[clNr++]:   // Time frame
                     if (helper.convertTimeframe(data.value) === -1) {
                         return
                     }
                     break
-                case this.columns[3]:   // Asset
+                case this.columns[clNr++]:   // Asset
                     if (!this.assetsPatterns.selectedAssets.map(sa => sa.symbol).includes(data.value)) {
                         return
                     }
                     break
-                case this.columns[4]:   // Pattern
+                case this.columns[clNr++]:   // Pattern
                     if (!this.assetsPatterns.selectedPatterns.map(sa => sa.name).includes(data.value)) {
                         return
                     }
                     break
-                case this.columns[5]:   // Initial capital
+                case this.columns[clNr++]:   // Initial capital
                     if (isNaN(Number(data.value))) {
                         return
                     }
                     data.value = `${data.value} ${constants.defaultUnit}`
                     break
-                case this.columns[6]:   // Analyze
+                case this.columns[clNr++]:   // Analyze
                     if (isNaN(Number(data.value))) {
                         return
                     }
                     data.value = `${data.value} ${helper.pluralize(data.value, constants.patternsKey + '.bar')}`
                     break
-                case this.columns[7]:   // Profit Target
+                case this.columns[clNr++]:   // Profit Target
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[7].toLowerCase()].split(' ')[1]}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[clNr-1].toLowerCase()].split(' ')[1]}`
                     break
-                case this.columns[8]:   // Stop Loss
+                case this.columns[clNr++]:   // Stop Loss
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[8].toLowerCase()].split(' ')[1]}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[clNr-1].toLowerCase()].split(' ')[1]}`
                     break
-                case this.columns[9]:   // Trend filter (moving average)
+                case this.columns[clNr++]:   // Trend filter (moving average)
                     if (isNaN(Number(data.value))) {
                         return
                     }
                     data.value = `${data.value} ${constants.defaultUnit}`
                     break
-                case this.columns[10]:   // Direction
+                case this.columns[clNr++]:   // Direction
                     if (!this.$t('research.patternLab.backtestPatterns.entryRules.directions').includes(data.value)) {
                         return
                     }
