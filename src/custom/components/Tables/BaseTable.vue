@@ -184,7 +184,7 @@
 
       edit(index, item, column) { 
         let val = this.itemValue(item, column)   
-        this.editText = (!isNaN(Number(val)) ? String(val) : val).split(' ')[0]
+        this.editText = val ? ((!isNaN(Number(val)) ? String(val) : val).split(' (')[0]) : ''
         this.editing = [index, column]
       },
       finishEdit(index, column) {
@@ -202,6 +202,9 @@
       },
 
       itemValue(item, column) {
+        if (column === 'Name') {
+          console.log(item[column.toLowerCase()])
+        }
         return item[column.toLowerCase()];
       },
       

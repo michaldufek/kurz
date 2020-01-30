@@ -258,7 +258,7 @@
                 bts.forEach(bt => {
                   bt['btId'] = response.data./*filter(datum => datum.tickers[0].symbol === bt[columns[4].toLowerCase()] 
                                                      && datum.patterns[0].name === bt[columns[5].toLowerCase()])[0].*/id
-                  bt[columns[0].toLowerCase()] = bt['defaultName'] ? bt['btId'] : `${bt[columns[0].toLowerCase()].split(' ')[0]} (${bt['btId']})`    // Name
+                  bt[columns[0].toLowerCase()] = bt[columns[0].toLowerCase()] && !(bt[columns[0].toLowerCase()] instanceof Number) ? `${bt[columns[0].toLowerCase()].split(' (')[0]} (${bt['btId']})` : bt['btId']    // Name
                 })
                 helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
               }
@@ -344,16 +344,13 @@
         if (createNew && assetsPatterns) {
             // create new rows
             newTableData = []
-            let rowNr = 1
 
             assetsPatterns.checkedAssets.forEach(asset => {
                 assetsPatterns.checkedPatterns.forEach(pattern => {
                     let row = {}
                     let clNr = 0
 
-                    row['btId'] = rowNr++
-                    row['defaultName'] = true
-                    row[columns[clNr++].toLowerCase()] = '     ' + row['btId']    // Name
+                    row[columns[clNr++].toLowerCase()] = null    // Name
                     row[columns[clNr++].toLowerCase()] = assetsPatterns.range && assetsPatterns.range.from 
                                                           ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.from))
                                                           : null    // From
