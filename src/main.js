@@ -25,6 +25,9 @@ import './registerServiceWorker'
 import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
 import Axios from 'axios'
+// workaround for strange axios TypeError: ..get(...).then(...).catch(...).finally is not a function
+const promiseFinally = require('promise.prototype.finally');
+promiseFinally.shim();
 
 Vue.use(BlackDashboard);
 Vue.use(VueRouter);
