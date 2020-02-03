@@ -34,7 +34,7 @@ export default {
 
     computed: {
         patternResults() {
-            return !this.loading ? [ constants.urls.patternLab.backtestPatterns ] : []
+            return !this.loading ? [ constants.urls.patternLab.backtestPatterns.results ] : []
         }
     },
 

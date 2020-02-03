@@ -3,11 +3,12 @@
     <fancy-table :title="$t(tradesKey + '.title')"
                  :showTitle="false"
                  :apiUrls="patternResults"
+                 :noDataText="noDataText"
                  :columns="$t(tradesKey + '.columns')"
                  :rowsCreator="rowsCreator"
                  :sortable="true"
-                 :filterable="true">
-                 <!-- :key="tableKey"> -->
+                 :filterable="true"
+                 :key="tableKey">
     </fancy-table>
     
 </template>
@@ -28,13 +29,14 @@ export default {
         return {
             tradesKey: 'research.patternLab.backtestPatterns.performanceResults.trades',
             loading: true,
-            // tableKey: 0
+            noDataText: null,
+            tableKey: 0
         }
     },
     
     computed: {
         patternResults() {
-            return !this.loading ? [ constants.urls.patternLab.backtestPatterns ] : []
+            return !this.loading ? [ constants.urls.patternLab.backtestPatterns.results ] : []
         }
     },
     
@@ -43,13 +45,18 @@ export default {
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data) {    // to-do: add loader here so there's no 'No data' text until it shows data
                 this.loading = data.loading
-                // this.tableKey++
+                this.tableKey++
             } else {
                 this.loading = false
             }
         },  
         
         rowsCreator(data) {
+            if (data.error) {
+                this.noDataText = data.msg
+                return 
+            }
+
             let columns = this.$t(this.tradesKey + '.columns')
             let rows = []
             
