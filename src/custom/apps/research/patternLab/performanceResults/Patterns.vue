@@ -43,9 +43,8 @@ export default {
             let clNr = 0
 
             switch(data.position[1]) {
-                case this.columns[clNr++]:  // Name - no need to check, just note that it was changed (because it should be in 'bt_name (bt_id)' format)
-                    this.tableData[data.position[0]]['defaultName'] = false
-                    data.value = `${data.value} (${this.tableData[data.position[0]]['btId']})`
+                case this.columns[clNr++]:  // Name
+                    data.value = data.value + (this.tableData[data.position[0]]['btId'] !== undefined ? ` (${this.tableData[data.position[0]]['btId']})` : '')
                     break
                 case this.columns[clNr++]:   // From
                 case this.columns[clNr++]:   // To

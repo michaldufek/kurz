@@ -6,7 +6,7 @@ const SPPartUrl = "/api/sp"
 const PLPartUrl = "/api/pl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
-const backtestPartUrl = "/Backtest"
+const patternResultsPartUrl = "/PatternResults"
 const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
 const reportPartUrl = "/api/xreport"
@@ -54,10 +54,7 @@ export default {
             pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl,
             chart: baseUrl + PLPartUrl + "/HistoryData/",
             patternsHistory: baseUrl + PLPartUrl + patternPartUrl + "Tests",
-            backtestPatterns: {
-                checkRun: baseUrl + PLPartUrl + backtestPartUrl,
-                results: baseUrl + PLPartUrl + backtestPartUrl + 'Full/'
-            },
+            backtestPatterns: baseUrl + PLPartUrl + patternResultsPartUrl,
             alerts: baseUrl + PLPartUrl + alertPartUrl + "s"
         },
 
