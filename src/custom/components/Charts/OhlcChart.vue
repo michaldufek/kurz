@@ -123,9 +123,9 @@ export default {
     },
 
     fillChartData(data) {
-      let newData = [];
+      let newData = []
 
-      for (const [_, [key, val]] of Object.entries(data.Open)) {
+      for (const [key, val] of Object.entries(data.Open)) {
         newData.push({
           t: new Date(Number(key)),
           o: val,
