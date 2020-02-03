@@ -44,7 +44,7 @@ export default {
 
             switch(data.position[1]) {
                 case this.columns[clNr++]:  // Name
-                    data.value = data.value + (this.tableData[data.position[0]]['btId'] !== undefined ? ` (${this.tableData[data.position[0]]['btId']})` : '')
+                    data.value = data.value + (this.tableData[data.position[0]]['btId'] ? ` (${this.tableData[data.position[0]]['btId']})` : '')
                     break
                 case this.columns[clNr++]:   // From
                 case this.columns[clNr++]:   // To
@@ -106,7 +106,7 @@ export default {
                     return
             }
 
-            this.tableData[data.position[0]][data.position[1].toLowerCase()] = data.value
+            this.tableData[data.position[0]][data.position[1].toLowerCase()] = data.value   // write edited/changed value to the table
             helper.updateStore(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)
         }
     },

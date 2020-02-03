@@ -54,7 +54,10 @@ export default {
             pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl,
             chart: baseUrl + PLPartUrl + "/HistoryData/",
             patternsHistory: baseUrl + PLPartUrl + patternPartUrl + "Tests",
-            backtestPatterns: baseUrl + PLPartUrl + patternResultsPartUrl,
+            backtestPatterns: {
+                results: baseUrl + PLPartUrl + patternResultsPartUrl,
+                status: baseUrl + PLPartUrl + patternResultsPartUrl + "Status"
+            },
             alerts: baseUrl + PLPartUrl + alertPartUrl + "s"
         },
 

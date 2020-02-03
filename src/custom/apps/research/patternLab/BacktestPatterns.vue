@@ -223,16 +223,15 @@
         }
 
         let backtestsDone = true
-        let backtestsResults = []
+        let noResp = true
 
         this.$http
-        .get(constants.urls.patternLab.backtestPatterns)
+        .get(constants.urls.patternLab.backtestPatterns.status)
         .then(response => {
           response.data.forEach(bt => {
+            noResp = false
             if (!bt.done) {
               backtestsDone = false
-            } else {
-              backtestsResults.push(bt)
             }
           })
         })
@@ -244,21 +243,33 @@
           }
         })
         .finally(() => {
-          if (backtestsDone) {
+          if (backtestsDone && !noResp) {
               let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)
               if (bpData) {
-                // set bt id and name (if not changed)
+                // set bt id and name
                 let bts = bpData.backtests
-                bts.forEach(bt => {
-                  bt['btId'] = backtestsResults.filter(datum => datum.ticker === bt['assetId'] && datum.pattern === bt['patternId'])[0].id
-                  bt[columns[0].toLowerCase()] = bt[columns[0].toLowerCase()] && !(bt[columns[0].toLowerCase()] instanceof Number) ? `${bt[columns[0].toLowerCase()].split(' (')[0]} (${bt['btId']})` : bt['btId']    // Name
-                })
-                helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
-              }
 
-              // console.log('bts all done')
-              this.loading = false
-              this.cardKey++
+                this.$http
+                .get(constants.urls.patternLab.backtestPatterns.results)
+                .then(response => {
+                  bts.forEach(bt => {
+                    bt['btId'] = response.data.filter(datum => datum.ticker === bt['assetId'] && datum.pattern === bt['patternId'])[0].id
+                    bt[columns[0].toLowerCase()] = `${bt[columns[0].toLowerCase()] ? bt[columns[0].toLowerCase()].split(' (')[0] : helper.getDefaultBtName(bt['btId'])} (${bt['btId']})`    // Name
+                  })
+                  helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
+                })
+                .catch(error => {
+                  console.log(error);
+
+                  if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
+                  }
+                })
+                .finally(() => {
+                  this.loading = false
+                  this.cardKey++
+                })
+              }
           }
         })
       },
@@ -387,7 +398,7 @@
       },
 
       runBacktests() { 
-        this.loading = true       
+        this.loading = true
         let backtestsAll = this.$store.getItem(constants.storeKeys.backtestPatterns).backtests
 
         // run all backtests showed in Patterns table
@@ -395,8 +406,9 @@
         backtestsAll.forEach(bt => backtests2Run.push(helper.mapStrategyFromRow(bt)))
 
         this.$http
-        .post(constants.urls.patternLab.backtestPatterns, backtests2Run)
+        .post(constants.urls.patternLab.backtestPatterns.results, backtests2Run)
         .catch(error => {
+          this.loading = false
           console.log(error);
 
           if (error.message === constants.strings.networkError) {
