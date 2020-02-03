@@ -202,9 +202,6 @@
       },
 
       itemValue(item, column) {
-        if (column === 'Name') {
-          console.log(item[column.toLowerCase()])
-        }
         return item[column.toLowerCase()];
       },
       

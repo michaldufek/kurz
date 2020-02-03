@@ -273,6 +273,34 @@ export default {
         }
     },
 
+    getDefaultBtName(btId) {
+        return 'bt_' + btId
+    },
+
+    getBacktestPatternsTableBase(datum, store, btsColumns) {
+        let name = this.getDefaultBtName(datum.id)
+        let symbol = datum.ticker
+        let pattern = datum.pattern
+
+        let data = store.getItem(constants.storeKeys.backtestPatterns)
+        if (data && data.backtests) {
+            let names = data.backtests.filter(bt => bt['btId'] === datum.id)
+            if (names.length) {
+                name = names[0][btsColumns[0].toLowerCase()]
+            }
+            let symbols = data.backtests.filter(bt => bt['assetId'] === datum.ticker)
+            if (symbols.length) {
+                symbol = symbols[0][btsColumns[4].toLowerCase()]
+            }                
+            let patterns = data.backtests.filter(bt => bt['patternId'] === datum.pattern)
+            if (patterns.length) {
+                pattern = patterns[0][btsColumns[5].toLowerCase()]
+            }                    
+        }
+
+        return { name:name, symbol:symbol, pattern:pattern }
+    },
+
     // global filters
     roundToFixed(value) {
         if (!value || Number.isInteger(value)) {
@@ -285,7 +313,7 @@ export default {
                         : [
                             isNaN(Number(value.split(' ')[0])) ? value.split(' ')[0] : Number(value.split(' ')[0]).toFixed(2),
                             value.split(' ')[1].replace(new RegExp('&nbsp;', "g"), ' ')
-                          ].join(' '))
+                          ].concat(value.split(' ').slice(2, value.split(' ').lenght)).join(' '))
                     : value
     },
     

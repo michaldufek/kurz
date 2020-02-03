@@ -254,7 +254,7 @@
                 .then(response => {
                   bts.forEach(bt => {
                     bt['btId'] = response.data.filter(datum => datum.ticker === bt['assetId'] && datum.pattern === bt['patternId'])[0].id
-                    // bt[columns[0].toLowerCase()] = bt[columns[0].toLowerCase()] && !(bt[columns[0].toLowerCase()] instanceof Number) ? `${bt[columns[0].toLowerCase()].split(' (')[0]} (${bt['btId']})` : bt['btId']    // Name
+                    bt[columns[0].toLowerCase()] = `${bt[columns[0].toLowerCase()] ? bt[columns[0].toLowerCase()].split(' (')[0] : helper.getDefaultBtName(bt['btId'])} (${bt['btId']})`    // Name
                   })
                   helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
                 })
@@ -265,10 +265,11 @@
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
                   }
                 })
+                .finally(() => {
+                  this.loading = false
+                  this.cardKey++
+                })
               }
-
-              this.loading = false
-              this.cardKey++
           }
         })
       },
