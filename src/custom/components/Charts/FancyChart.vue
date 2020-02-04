@@ -347,12 +347,14 @@ export default {
         let datasetSetting = defaultDatasets  
         let defColor = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
         datasetSetting.borderColor = defColor
-        datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
-            var index = context.dataIndex;
-            var value = context.dataset.data[index];
-            return this.tradesEntries.includes(value) ? constants.colors.transEntry   // highlight transaction entry
-                   : this.tradesStopLosses.includes(value) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
-                   : this.tradesExits.includes(value) ? constants.colors.transExit : defColor
+
+        if (this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length) {
+          datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
+            let label = new Date(allLabels[context.dataIndex]).getTime()
+            return this.tradesEntries.includes(label) ? constants.colors.transEntry   // highlight transaction entry
+                   : this.tradesStopLosses.includes(label) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
+                   : this.tradesExits.includes(label) ? constants.colors.transExit : defColor
+          }
         }
         datasetSetting.pointHoverBackgroundColor = defColor
         
