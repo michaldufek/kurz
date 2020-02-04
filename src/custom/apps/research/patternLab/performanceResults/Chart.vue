@@ -90,14 +90,16 @@
 
         <!-- cumulated profit chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.cumulatedProfit')"
-                     :responsesData="pnlChartData ? [ pnlChartData ] : []"
+                     :apiUrls="statsChartUrl"
+                     :dataCreator="profitDataCreator"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.cumulatedProfit') ]"
                      :responsive="true"                     
                      :key="statsChartKey" />
 
         <!-- drawdown chart -->
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.drawdown')"
-                     :responsesData="ddChartData ? [ ddChartData ] : []"
+                     :apiUrls="statsChartUrl"    
+                     :dataCreator="drawdownDataCreator"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.drawdown') ]"
                      :fill="true"
                      :responsive="true"                    
@@ -134,6 +136,9 @@ export default {
               checkedPatterns: []
             },
 
+            loading: true,
+            noDataText: '',
+
             // dropdowns
             backtestsNames: [],
             selectedBacktest: null,
@@ -159,6 +164,10 @@ export default {
       },
       btNamesFiltered() {
         return this.selectedBacktest ? this.backtestsNames.filter(bt => bt.id !== this.selectedBacktest.id) : this.backtestsNames
+      },
+
+      statsChartUrl() {
+        return !this.loading ? [ constants.urls.patternLab.backtestPatterns.results ] : []
       }
     },
     
@@ -169,15 +178,14 @@ export default {
               this.assetsPatterns = data
             }
 
-            this.checkBacktests()
+            this.setBacktestsNames()
             this.initDropDowns()
             this.loadChart()
         },
-        checkBacktests() {             
+        setBacktestsNames() {             
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
-            if (data && !data.loading) {
-              this.pnlChartData = this.profitDataCreator(data.backtestsResults)
-              this.ddChartData = this.drawdownDataCreator(data.backtestsResults)
+            if (data) {
+              this.loading = data.loading
 
               this.backtestsNames = []
               data.backtests.forEach(bt => this.backtestsNames.push({ id: bt.btId, name: bt[this.$t(constants.patternsKey + '.columns')[0].toLowerCase()] }))
@@ -187,10 +195,12 @@ export default {
                 this.selectedBacktest = data.selectedBacktest 
               }
               if (!this.selectedBacktest && this.backtestsNames.length) {
-                  this.selectedBacktest = this.backtestsNames[0]
+                this.selectedBacktest = this.backtestsNames[0]
               }
 
               this.statsChartKey++
+            } else {
+              this.loading = false
             }
         },
 
@@ -221,10 +231,6 @@ export default {
             }
         },
 
-        getBacktestName(bt) {
-          return bt.name + ' (' + bt.id + ')'
-        },
-
         selectAsset(asset) {
             this.selectedAsset = asset
             this.loadChart()
@@ -235,7 +241,7 @@ export default {
         },
         selectBacktest(bt) {
             this.selectedBacktest = bt
-            this.checkBacktests()
+            this.statsChartKey++
         },
         selectChartType(chartType) {
             this.chartType = chartType
@@ -243,24 +249,42 @@ export default {
         },
 
         profitDataCreator(responseData) {
-          let datum = responseData//.filter(d => d.id === this.selectedBacktest.id)
+          let datums = responseData.filter(d => d.id === this.selectedBacktest.id)
+          if (datums.length) {
+            let datum = datums[0]
 
-          this.tradesEntries = Object.values(datum.backtestbit_set[0].output.trades.start)
-          this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temp until BE doesn't return stop_loss_value for %
-          this.tradesExits = Object.values(datum.backtestbit_set[0].output.trades.finish)
+            if (datum.error) {
+              let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns')).name
+              this.noDataText = `Pattern results of '${btName}' has some problems: ${datum.msg}`  // to-do: test if it really shows the text
+            } else {
+              this.tradesEntries = Object.values(datum.output.trades.start)
+              this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
+              this.tradesExits = Object.values(datum.output.trades.finish)
 
-          return {
-            time: Object.values(datum.backtestbit_set[0].output.trades.finish),
-            equity: Object.values(datum.backtestbit_set[0].output.stats.pnl_cum)
+              return {
+                time: Object.values(datum.output.trades.finish),
+                equity: Object.values(datum.output.stats.pnl_cum)
+              }
+            }
           }
+          // otherwise let exception happen, ie. it's server error
         },
         drawdownDataCreator(responseData) {
-          let datum = responseData//.filter(d => d.id === this.selectedBacktest.id)
+          let datums = responseData.filter(d => d.id === this.selectedBacktest.id)
+          if (datums.length) {
+            let datum = datums[0]
 
-          return {
-            time: Object.values(datum.backtestbit_set[0].output.trades.finish),
-            equity: Object.values(datum.backtestbit_set[0].output.stats["Drawdown Underwater plot"])
+            if (datum.error) {
+              let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns')).name
+              this.noDataText = `Pattern results of '${btName}' has some problems: ${datum.msg}`
+            } else {
+              return {
+                time: Object.values(datum.output.trades.finish),
+                equity: Object.values(datum.output.stats["Drawdown Underwater plot"])
+              }
+            }
           }
+          // otherwise let exception happen, ie. it's server error
         }
     },
 
