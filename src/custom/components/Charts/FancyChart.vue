@@ -3,12 +3,12 @@
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div class="card-header">
       <h4 v-if="showTitle" slot="header" class="card-title" style="float: left; margin-bottom: 20px">{{title}}</h4>
-      <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{ updateTs | chartUpdateTsText(loading) }}</h5>
+      <h5 v-if="!noData" class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{ updateTs | chartUpdateTsText(loading) }}</h5>
     </div>
     <br/>
     <div class="chart-area" style="height: 425px">
       <section v-if="noData" style="text-align: center">
-        <p style="padding-top: 50px">{{ $t('noData') }}</p>
+        <p style="padding-top: 50px">{{ noDataText ? noDataText : $t('noData') }}</p>
       </section>
       <section v-else-if="isError" style="text-align: center">
         <p style="padding-top: 50px">{{ $t('dataError') }}</p>
@@ -84,17 +84,23 @@ export default {
       default: () => [],
       description: "URLs to API data sources"
     },
-    responsesData: {
-      type: Array,
-      default: () => [],
-      description: "Responses data for the case API call was made before"
-    },
     dataFields: {
       type: Array,
       default: () => {
         return [ 'Close' ]
       },
       description: "Response data fields to use for distinctive lines in chart"      
+    },
+    dataCreator: {
+      type: Function,
+      default: responseData => {
+        return responseData
+      },
+      description: "How to create data (object of type { time: [Array], equity: [Array], WARNING: [String], report_timestamp: [Date] }) from response data"
+    },
+    noDataText: {
+      type: String,
+      description: "Text to show when no data"
     },
     fill: {
       type: Boolean,
@@ -147,7 +153,7 @@ export default {
 
   computed: {
     noData() {
-      return !this.loading && !this.chartData.datasets[0].data.length
+      return !this.loading && (!this.chartData.datasets.length || !this.chartData.datasets[0].data.length)
     },
     isError() {
       return this.error
@@ -220,34 +226,30 @@ export default {
         this.error = false
       }
 
-      if (this.responsesData.length) {
-        this.responsesData.forEach(respData => this.responseDataTransformer(respData))
-      } else {
-        this.apiUrls.forEach(apiUrl => {
-          this.$http
-          .get(apiUrl)
-          .then(response => this.responseDataTransformer(response.data, loadings))
-          .catch(error => {
-            console.log(error);
-            if (++loadings.error === this.apiUrls.length) {
-              this.error = true
-            }
+      this.apiUrls.forEach(apiUrl => {
+        this.$http
+        .get(apiUrl)
+        .then(response => this.responseDataTransformer(response.data, loadings))
+        .catch(error => {
+          console.log(error);
+          if (++loadings.error === this.apiUrls.length) {
+            this.error = true
+          }
 
-            if (error.message === constants.strings.networkError) {
-              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
-            }
-          })
-          .finally(() => {
-            if (++loadings.finished === this.apiUrls.length) {
-              this.loading = false
-
-              if (!this.live && !this.error) {
-                helper.notifyAudio(this, document.getElementById('connectionLost'), 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
-              }
-            }
-          });
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+          }
         })
-      }
+        .finally(() => {
+          if (++loadings.finished === this.apiUrls.length) {
+            this.loading = false
+
+            if (!this.live && !this.error) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'warning', this.$t('notifications.brokerConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
+            }
+          }
+        });
+      })
     },
     responseDataTransformer(responseData, loadings=null) {
       if (!loadings || !loadings.finished) {
@@ -263,7 +265,9 @@ export default {
         } 
       }
 
-      if (!responseData.time) {
+      responseData = this.dataCreator(responseData)
+
+      if (responseData && !responseData.time) {
         // data in ticker symbol format
         let times = []
         let equities = []
@@ -294,10 +298,10 @@ export default {
         }
       } else {
         data = {
-          time: responseData.time,
-          equity: [ responseData.equity ],
-          WARNING: responseData.WARNING,
-          report_timestamp: responseData.report_timestamp || helper.formatDateTime(responseData.time[responseData.time.length - 1])
+          time: responseData ? responseData.time : [],
+          equity: responseData ? [ responseData.equity ] : [],
+          WARNING: responseData ? responseData.WARNING : null,
+          report_timestamp: responseData ? responseData.report_timestamp || helper.formatDateTime(responseData.time[responseData.time.length - 1]) : null
         }
       }
 
@@ -312,7 +316,7 @@ export default {
       // get last report's TimeStamp
       this.updateTs = [this.updateTs, data.report_timestamp].sort()[1] 
     },
-
+    
     createChartData(data) {
       let datasets = []
       let datasetNr = 0
@@ -346,9 +350,9 @@ export default {
         datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
             var index = context.dataIndex;
             var value = context.dataset.data[index];
-            return this.tradesEntries.includes(value) ? constants.colors.transEntry :  // highlight transaction entry
-                   this.tradesStopLosses.includes(value) ? constants.colors.transStopLoss :     // else, check for stopLoss/exit
-                   this.tradesExits.includes(value) ? constants.colors.transExit : defColor
+            return this.tradesEntries.includes(value) ? constants.colors.transEntry   // highlight transaction entry
+                   : this.tradesStopLosses.includes(value) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
+                   : this.tradesExits.includes(value) ? constants.colors.transExit : defColor
         }
         datasetSetting.pointHoverBackgroundColor = defColor
         

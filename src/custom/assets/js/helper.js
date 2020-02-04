@@ -273,12 +273,12 @@ export default {
         }
     },
 
-    getDefaultBtName(btId) {
-        return 'bt_' + btId
+    getDefaultPrName(btId) {
+        return 'pr_' + btId
     },
 
     getBacktestPatternsTableBase(datum, store, btsColumns) {
-        let name = this.getDefaultBtName(datum.id)
+        let name = this.getDefaultPrName(datum.id)
         let symbol = datum.ticker
         let pattern = datum.pattern
 

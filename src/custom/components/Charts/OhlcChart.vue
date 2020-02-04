@@ -104,6 +104,7 @@ export default {
       .then(response => {
         this.fillChartData(response.data)
         this.updateTs = new Date(Number(Math.max(...Object.keys(response.data.Open))))
+        this.live = !response.data.WARNING
       })
       .catch(error => {
         console.log(error);
