@@ -238,9 +238,9 @@ export default {
               let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns')).name
               this.noDataText = `Pattern results of '${btName}' has some problems: ${datum.msg}`  // to-do: test if it really shows the text
             } else {
-              this.tradesEntries = Object.values(datum.output.trades.start) // [ new Date(1984,0,21,1).getTime() ]
-              this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!! [ new Date(2024,0,21,1).getTime() ]
-              this.tradesExits = Object.values(datum.output.trades.finish) // [ new Date(2064,0,21,1).getTime() ]
+              this.tradesEntries = Object.values(datum.output.trades.start)
+              this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
+              this.tradesExits = Object.values(datum.output.trades.finish)
 
               return {
                 time: Object.values(datum.output.trades.finish),

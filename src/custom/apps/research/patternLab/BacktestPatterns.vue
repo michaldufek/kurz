@@ -254,7 +254,7 @@
                 .then(response => {
                   bts.forEach(bt => {
                     bt['btId'] = response.data.filter(datum => datum.ticker === bt['assetId'] && datum.pattern === bt['patternId'])[0].id
-                    bt[columns[0].toLowerCase()] = `${bt[columns[0].toLowerCase()] ? bt[columns[0].toLowerCase()].split(' (')[0] : helper.getDefaultPrName(bt['btId'])} (${bt['btId']})`    // Name
+                    bt[columns[0].toLowerCase()] = `${bt[columns[0].toLowerCase()] && !this.isDefaultPrName(bt[columns[0].toLowerCase()]) ? bt[columns[0].toLowerCase()].split(' (')[0] : helper.getDefaultPrName(bt['btId'])} (${bt['btId']})`    // Name
                   })
                   helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
                 })
@@ -272,6 +272,17 @@
               }
           }
         })
+      },
+      isDefaultPrName(name) {
+        let nameSplitted = name.split('_')
+        if (nameSplitted.length < 2) {
+          return false
+        }
+        let splitted = nameSplitted[1].split(' (')
+        if (splitted.length < 2) {
+          return false
+        }
+        return splitted[0] === splitted[1].split(')')[0]
       },
 
       // methods from AssetsPatternsPicker emits

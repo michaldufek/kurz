@@ -358,27 +358,27 @@ export default {
         let defColor = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
         datasetSetting.borderColor = defColor
 
-        // allLabels = [ '1980-01-05', '1984-01-21', '2002-01-01', '2024-01-21', '2064-01-21' ] // temporary!!!
-
+        if (this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length) {
           datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
             let label = new Date(allLabels[context.dataIndex]).getTime()
             return this.tradesEntries.includes(label) ? constants.colors.transEntry   // highlight transaction entry
-                   : this.tradesStopLosses.includes(label) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
-                   : this.tradesExits.includes(label) ? constants.colors.transExit : defColor
+                    : this.tradesStopLosses.includes(label) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
+                    : this.tradesExits.includes(label) ? constants.colors.transExit : defColor
           }
-        datasetSetting.pointRadius = context => {
-          let label = new Date(allLabels[context.dataIndex]).getTime()
-          return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointRadius : defaultPointRadius
-        }
-        datasetSetting.pointStyle = context => {
-          let label = new Date(allLabels[context.dataIndex]).getTime()
-          return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointStyle : defaultPointStyle
+          datasetSetting.pointRadius = context => {
+            let label = new Date(allLabels[context.dataIndex]).getTime()
+            return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointRadius : defaultPointRadius
+          }
+          datasetSetting.pointStyle = context => {
+            let label = new Date(allLabels[context.dataIndex]).getTime()
+            return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointStyle : defaultPointStyle
+          }
         }
         datasetSetting.pointHoverBackgroundColor = defColor
         
         let dataset = {
           ...datasetSetting,
-          data: allData // [ 10, 100, 25, 150, 17 ]
+          data: allData
         }
         if (this.fill) {
           dataset['backgroundColor'] = config.colors.primary
