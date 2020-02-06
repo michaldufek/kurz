@@ -328,15 +328,15 @@ export default {
             if (backtests) {
                 let names = backtests.filter(bt => bt.get('btId') === datum.id)
                 if (names.length) {
-                    name = names[0][btsColumns[0].toLowerCase()]
+                    name = names[0].get(btsColumns[0].toLowerCase())
                 }
                 let symbols = backtests.filter(bt => bt.get('assetId') === datum.ticker)
                 if (symbols.length) {
-                    symbol = symbols[0][btsColumns[4].toLowerCase()]
+                    symbol = symbols[0].get(btsColumns[4].toLowerCase())
                 }                
                 let patterns = backtests.filter(bt => bt.get('patternId') === datum.pattern)
                 if (patterns.length) {
-                    pattern = patterns[0][btsColumns[5].toLowerCase()]
+                    pattern = patterns[0].get(btsColumns[5].toLowerCase())
                 }                    
             }
         }
