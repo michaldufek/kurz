@@ -210,7 +210,12 @@
         let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
         if (data) {
           this.loading = data.loading ? data.loading : false
-          this.strategy = data.strategy ? data.strategy : defaultStrategy
+          if (data.strategy) {
+            this.strategy = data.strategy
+            this.strategy.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions')[data.strategy.direction]
+          } else {
+            this.strategy = defaultStrategy            
+        }
         }
 
         setInterval(() => { 
@@ -254,7 +259,7 @@
                 .then(response => {
                   bts.forEach(bt => {
                     bt['btId'] = response.data.filter(datum => datum.ticker === bt['assetId'] && datum.pattern === bt['patternId'])[0].id
-                    bt[columns[0].toLowerCase()] = `${bt[columns[0].toLowerCase()] ? bt[columns[0].toLowerCase()].split(' (')[0] : helper.getDefaultPrName(bt['btId'])} (${bt['btId']})`    // Name
+                    bt[columns[0].toLowerCase()] = `${bt[columns[0].toLowerCase()] && !this.isDefaultPrName(bt[columns[0].toLowerCase()]) ? bt[columns[0].toLowerCase()].split(' (')[0] : helper.getDefaultPrName(bt['btId'])} (${bt['btId']})`    // Name
                   })
                   helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
                 })
@@ -272,6 +277,17 @@
               }
           }
         })
+      },
+      isDefaultPrName(name) {
+        let nameSplitted = name.split('_')
+        if (nameSplitted.length < 2) {
+          return false
+        }
+        let splitted = nameSplitted[1].split(' (')
+        if (splitted.length < 2) {
+          return false
+        }
+        return splitted[0] === splitted[1].split(')')[0]
       },
 
       // methods from AssetsPatternsPicker emits
@@ -435,7 +451,9 @@
       },
       strategy: {
             handler(val){
-                helper.updateStore(this.$store, 'strategy', val, constants.storeKeys.backtestPatterns) 
+          let val2store = JSON.parse(JSON.stringify(val))
+          val2store.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(val.direction)
+          helper.updateStore(this.$store, 'strategy', val2store, constants.storeKeys.backtestPatterns) 
             },
             deep: true
         },

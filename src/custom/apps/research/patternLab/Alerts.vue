@@ -10,20 +10,20 @@
     <!-- alerts table -->
     <card class="col-lg-9 col-md-12">
       <base-table :data="patternsAssets" 
-                  :columns="$t('research.patternLab.alerts.alertsTable')"
+                  :columns="$t(tableKey)"
                   :sortable="true"
                   :filterable="true">
         <template slot="columns">
-          <th>{{ $t('research.patternLab.alerts.alertsTable')[0] }}</th>
-          <th>{{ $t('research.patternLab.alerts.alertsTable')[1] }}</th>
-          <th style="text-align: center">{{ $t('research.patternLab.alerts.alertsTable')[2] }}</th>
-          <th style="text-align: center">{{ $t('research.patternLab.alerts.alertsTable')[3] }}</th>
+          <th>{{ $t()[0] }}</th>
+          <th>{{ $t(tableKey)[1] }}</th>
+          <th style="text-align: center">{{ $t(tableKey)[2] }}</th>
+          <th style="text-align: center">{{ $t(tableKey)[3] }}</th>
         </template>  
         <template slot-scope="{row}">
-          <td>{{ row[$t('research.patternLab.alerts.alertsTable')[0].toLowerCase()] }}</td>
-          <td>{{ row[$t('research.patternLab.alerts.alertsTable')[1].toLowerCase()] }}</td>
-          <td style="text-align: center"><input type="checkbox" :value="row[$t('research.patternLab.alerts.alertsTable')[2].toLowerCase()]" v-model="checkedEmailNotifications"></td>
-          <td style="text-align: center"><input type="checkbox" :value="row[$t('research.patternLab.alerts.alertsTable')[3].toLowerCase()]" v-model="checkedAppNotifications"></td>
+          <td>{{ row[$t(tableKey)[0].toLowerCase()] }}</td>
+          <td>{{ row[$t(tableKey)[1].toLowerCase()] }}</td>
+          <td style="text-align: center"><input type="checkbox" :value="row[$t(tableKey)[2].toLowerCase()]" v-model="checkedEmailNotifications"></td>
+          <td style="text-align: center"><input type="checkbox" :value="row[$t(tableKey)[3].toLowerCase()]" v-model="checkedAppNotifications"></td>
         </template>    
       </base-table>
     </card>
@@ -36,7 +36,7 @@
   import constants from '@/custom/assets/js/constants';
   import helper from '@/custom/assets/js/helper';
   
-
+  
   export default {
     components: {
       AssetsPatternsPicker,
@@ -45,6 +45,8 @@
 
     data() {
       return {
+        tableKey: 'research.patternLab.alerts.table',
+
         assets: [],
         patterns: [],
         patternsAssets: [],
@@ -75,10 +77,10 @@
         this.assets.forEach(asset => this.patterns.forEach(pattern => {
           let row = {}
 
-          row[this.$t('research.patternLab.alerts.alertsTable')[0].toLowerCase()] = pattern.name
-          row[this.$t('research.patternLab.alerts.alertsTable')[1].toLowerCase()] = asset.symbol
-          row[this.$t('research.patternLab.alerts.alertsTable')[2].toLowerCase()] = pattern.name + '|' + asset.symbol
-          row[this.$t('research.patternLab.alerts.alertsTable')[3].toLowerCase()] = pattern.name + '|' + asset.symbol
+          row[this.$t(this.tableKey)[0].toLowerCase()] = pattern.name
+          row[this.$t(this.tableKey)[1].toLowerCase()] = asset.symbol
+          row[this.$t(this.tableKey)[2].toLowerCase()] = pattern.name + '|' + asset.symbol
+          row[this.$t(this.tableKey)[3].toLowerCase()] = pattern.name + '|' + asset.symbol
 
           rows.push(row)
         }))

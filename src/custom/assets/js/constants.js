@@ -22,7 +22,7 @@ export default {
     defaultUnit: i18n.t('research.patternLab.units')[0],
 
     colors: {
-        transEntry: 'darkgreen',
+        transEntry: 'blue',
         transStopLoss: 'yellow',
         transExit: 'darkred'
     },

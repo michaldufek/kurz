@@ -229,7 +229,7 @@ export default {
         let data = store.getItem(constants.storeKeys.assetsPatternsPicker)
         if (data) {
             return {
-                timeframe: data.timeframe ? data.timeframe : i18n.t('research.patternLab.timeframes')[0],
+                timeframe: i18n.t('research.patternLab.timeframes')[data.timeframe ? data.timeframe : [0]],
                 range: {
                     from: data.range && data.range.from ? data.range.from : null,
                     to: data.range && data.range.to ? data.range.to : null

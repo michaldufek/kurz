@@ -3,6 +3,7 @@
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
     <div class="card-header">
       <h4 v-if="showTitle" slot="header" class="card-title" style="float: left; margin-bottom: 20px">{{title}}</h4>
+      <span v-if="legend" v-html="legend" />
       <h5 v-if="!noData" class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{ updateTs | chartUpdateTsText(loading) }}</h5>
     </div>
     <br/>
@@ -43,6 +44,10 @@ import config from '@/config';
 import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
 
+const defaultPointRadius = 4
+const highlightPointRadius = 10
+const defaultPointStyle = 'circle'
+const highlightPointStyle = 'triangle'
 const defaultDatasets = {
   borderColor: config.colors.primary,
   borderWidth: 2,
@@ -54,7 +59,8 @@ const defaultDatasets = {
   pointBorderWidth: 20,
   pointHoverRadius: 4,
   pointHoverBorderWidth: 15,
-  pointRadius: 4
+  pointRadius: [],
+  pointStyle: []
 }
 
 
@@ -70,6 +76,10 @@ export default {
       type: String,
       description: "Chart title"
     },
+    legend: {
+      type: String,
+      description: "Chart legend"
+    },  // workaround because trades legend cannot be done correctly in chart.js
     showTitle: {
       type: Boolean,
       description: "Whether to show chart title"
@@ -159,7 +169,7 @@ export default {
       return this.error
     },
     extraOptions() {
-      let eOp = chartConfigs.purpleChartOptions
+      let eOp = JSON.parse(JSON.stringify(chartConfigs.purpleChartOptions))   // deep clone
 
       let dfNr = 0
       this.dataFields.forEach(field => {        
@@ -344,7 +354,7 @@ export default {
         }
         // to-do: fix extraOptions recomputation
 
-        let datasetSetting = defaultDatasets  
+        let datasetSetting = JSON.parse(JSON.stringify(defaultDatasets))    // deep clone
         let defColor = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
         datasetSetting.borderColor = defColor
 
@@ -352,10 +362,19 @@ export default {
           datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
             let label = new Date(allLabels[context.dataIndex]).getTime()
             return this.tradesEntries.includes(label) ? constants.colors.transEntry   // highlight transaction entry
-                   : this.tradesStopLosses.includes(label) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
-                   : this.tradesExits.includes(label) ? constants.colors.transExit : defColor
+                    : this.tradesStopLosses.includes(label) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
+                    : this.tradesExits.includes(label) ? constants.colors.transExit : defColor
+          }
+          datasetSetting.pointRadius = context => {
+            let label = new Date(allLabels[context.dataIndex]).getTime()
+            return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointRadius : defaultPointRadius
+          }
+          datasetSetting.pointStyle = context => {
+            let label = new Date(allLabels[context.dataIndex]).getTime()
+            return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointStyle : defaultPointStyle
           }
         }
+        
         datasetSetting.pointHoverBackgroundColor = defColor
         
         let dataset = {

@@ -251,6 +251,7 @@
         },
         "runStrategy": "Spustit strategii",
         "performanceResults": {
+          "title": "Výkonostní výsledky",
           "patterns": {
             "title": "Patterny",
             "bar": "bar",
@@ -290,7 +291,7 @@
             ]
           },
           "performanceMetrics": {
-            "title": "Výkonnostní metriky",
+            "title": "Výkonostní metriky",
             "columns": [
               "Akce", 
               "Pattern", 
@@ -310,14 +311,16 @@
             "title": "Graf",
             "cumulatedProfit": "Kumulovaný profit",
             "xLabel": "Time",
-            "drawdown": "Drawdown"
+            "drawdown": "Drawdown",
+            "problemsPrefix": "Výsledky patternů",
+            "problemsSuffix": "mají nějaké problémy:"
           }
         }
       },
       "alerts": {
         "title": "Upozornění",
         "addAlert": "Přidat upozornění",
-        "alertsTable": [
+        "table": [
           "Pattern",
           "Akce",
           "Email notifikace",

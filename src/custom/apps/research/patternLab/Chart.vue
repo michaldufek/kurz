@@ -124,7 +124,7 @@
       initData() {
         let data = this.$store.getItem(this.storeKey)
         if (data) {
-          this.chartType = data.chartType
+          this.chartType = this.$t('research.patternLab.chartTypes')[data.chartType]
         }
         
         this.addChart()
@@ -191,8 +191,8 @@
     },
 
     watch: {
-      chartType(val) {        
-        helper.updateStore(this.$store, 'chartType', val, this.storeKey)
+      chartType(val) {   
+        helper.updateStore(this.$store, 'chartType', this.$t('research.patternLab.chartTypes').indexOf(val), this.storeKey)
       }
     },
 

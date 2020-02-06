@@ -228,7 +228,7 @@ export default {
 
         selectTimeframe(timeframe) {
             this.timeframe = timeframe
-            helper.updateStore(this.$store, 'timeframe', this.timeframe)            
+            helper.updateStore(this.$store, 'timeframe', this.$t('research.patternLab.timeframes').indexOf(this.timeframe))
             this.$emit('timeframeChanged')
         },
 
