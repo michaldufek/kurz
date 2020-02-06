@@ -8,7 +8,7 @@
                          :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 17%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in assetsPatterns.checkedAssets.filter(a => a.id !== selectedAsset.id)">            
+              <li v-for="asset in assetsPatterns.checkedAssets.filter(a => a.id !== selectedAsset.id)" :key="asset.id">            
                 <a class="dropdown-item" 
                    @click="selectAsset(asset)" 
                    href="#">
@@ -26,7 +26,7 @@
                          :title="selectedBacktest ? selectedBacktest.name : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="bt in btNamesFiltered">            
+              <li v-for="bt in btNamesFiltered" :key="bt.id">            
                 <a class="dropdown-item" 
                    @click="selectBacktest(bt)" 
                    href="#">
@@ -43,7 +43,7 @@
                          title-classes="btn btn-secondary"
                          :title="chartType">
             <ul style="list-style-type: none;">
-              <li v-for="chartType in $t('research.patternLab.chartTypes').filter(el => el !== chartType)">            
+              <li v-for="(chartType, key) in $t('research.patternLab.chartTypes').filter(el => el !== chartType)" :key="key">            
                 <a class="dropdown-item" 
                    @click="selectChartType(chartType)" 
                    href="#">
@@ -76,6 +76,7 @@
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.cumulatedProfit')"
                      :apiUrls="statsChartUrl"
                      :dataCreator="profitDataCreator"
+                     :noDataText="noDataText"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.cumulatedProfit') ]"
                      :responsive="true"                     
                      :key="statsChartKey" />
@@ -84,6 +85,7 @@
         <fancy-chart :title="$t('sidebar.patternLab') + ' ' + this.$t('research.patternLab.backtestPatterns.title') + ' ' + $t(storeKey + '.title') + ' ' + $t(storeKey + '.drawdown')"
                      :apiUrls="statsChartUrl"    
                      :dataCreator="drawdownDataCreator"
+                     :noDataText="noDataText"
                      :axesLabels="[ $t(storeKey + '.xLabel'), $t(storeKey + '.drawdown') ]"
                      :fill="true"
                      :responsive="true"                    
@@ -194,10 +196,10 @@ export default {
         initDropDowns() {
             let data = this.$store.getItem(this.storeKey)
             if (data) {
-                ({ selectedAsset:this.selectedAsset, chartType:this.chartType } = data)
-            } else {
-                this.chartType = this.$t('research.patternLab.chartTypes')[0]
+              ({ selectedAsset:this.selectedAsset } = data)
             }
+            this.chartType = this.$t('research.patternLab.chartTypes')[data ? data.chartType : 0]
+
             if (!this.selectedAsset && this.assetsPatterns.checkedAssets.length) {
                 this.selectedAsset = this.assetsPatterns.checkedAssets[0]
             }
@@ -234,9 +236,10 @@ export default {
           if (data.length) {
             let datum = data[0]
 
+            this.noDataText = null
             if (datum.error) {
               let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns')).name
-              this.noDataText = `Pattern results of '${btName}' has some problems: ${datum.msg}`  // to-do: test if it really shows the text
+              this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${btName}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
             } else {
               this.tradesEntries = Object.values(datum.output.trades.start)
               this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
@@ -255,9 +258,10 @@ export default {
           if (data.length) {
             let datum = data[0]
 
+            this.noDataText = null
             if (datum.error) {
               let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns')).name
-              this.noDataText = `Pattern results of '${btName}' has some problems: ${datum.msg}`
+              this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${btName}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
             } else {
               return {
                 time: Object.values(datum.output.trades.finish),
@@ -277,7 +281,7 @@ export default {
         helper.updateStore(this.$store, 'selectedBacktest', val, this.storeKey)
       },
       chartType(val) {        
-        helper.updateStore(this.$store, 'chartType', val, this.storeKey)
+        helper.updateStore(this.$store, 'chartType', this.$t('research.patternLab.chartTypes').indexOf(val), this.storeKey)
       }
     },
 

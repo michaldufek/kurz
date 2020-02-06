@@ -311,14 +311,16 @@
             "title": "Chart",
             "xLabel": "Time",
             "cumulatedProfit": "Cumulated profit",            
-            "drawdown": "Drawdown"
+            "drawdown": "Drawdown",
+            "problemsPrefix": "Pattern results of",
+            "problemsSuffix": "have some problems:"
           }
         }
       },
       "alerts": {
         "title": "Alerts",
         "addAlert": "Add alert",
-        "alertsTable": [
+        "table": [
           "Pattern",
           "Asset",
           "Email notification",

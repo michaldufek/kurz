@@ -354,7 +354,7 @@ export default {
         }
         // to-do: fix extraOptions recomputation
 
-        let datasetSetting = defaultDatasets  
+        let datasetSetting = JSON.parse(JSON.stringify(defaultDatasets))    // deep clone
         let defColor = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
         datasetSetting.borderColor = defColor
 
@@ -374,6 +374,7 @@ export default {
             return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointStyle : defaultPointStyle
           }
         }
+        
         datasetSetting.pointHoverBackgroundColor = defColor
         
         let dataset = {

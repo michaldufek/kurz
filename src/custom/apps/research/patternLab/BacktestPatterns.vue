@@ -210,7 +210,12 @@
         let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
         if (data) {
           this.loading = data.loading ? data.loading : false
-          this.strategy = data.strategy ? data.strategy : defaultStrategy
+          if (data.strategy) {
+            this.strategy = data.strategy
+            this.strategy.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions')[data.strategy.direction]
+          } else {
+            this.strategy = defaultStrategy            
+        }
         }
 
         setInterval(() => { 
@@ -446,7 +451,9 @@
       },
       strategy: {
             handler(val){
-                helper.updateStore(this.$store, 'strategy', val, constants.storeKeys.backtestPatterns) 
+          let val2store = JSON.parse(JSON.stringify(val))
+          val2store.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(val.direction)
+          helper.updateStore(this.$store, 'strategy', val2store, constants.storeKeys.backtestPatterns) 
             },
             deep: true
         },
