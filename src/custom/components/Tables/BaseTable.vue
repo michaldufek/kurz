@@ -184,12 +184,17 @@
 
       edit(index, item, column) { 
         let val = this.itemValue(item, column)   
-        this.editText = val ? ((!isNaN(Number(val)) ? String(val) : val).split(' (')[0]) : ''
+        
+        let del = ' '
+        if (column === 'Name') {  // special case for Backtest - patterns table
+          del += '('
+        }
+        this.editText = val ? ((!isNaN(Number(val)) ? String(val) : val).split(del)[0]) : ''
         this.editing = [index, column]
       },
       finishEdit(index, column) {
         this.$emit('edited', {
-          position: [index, column],
+          position: [index, column],    // to-do: probably bug - after sort  this returns sorted (new) index, store has unsorted (different) index
           value: this.editText})
         this.editing = null
       },

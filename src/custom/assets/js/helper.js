@@ -166,7 +166,7 @@ export default {
         }
         clNr++
         if (row.get(columns[clNr].toLowerCase())) {
-            data['time_frame'] = i18n.t('research.patternLab.timeframes').indexOf(row.get(columns[clNr].toLowerCase()))    // Time frame
+            data['time_frame'] = i18n.t('research.patternLab.timeframes').indexOf(row.get(columns[clNr].toLowerCase())) + 1    // Time frame    // it's a big mystery why BE indexes from 1
         }
         data['ticker'] = row.get('assetId')   // Asset
         data['pattern'] = row.get('patternId')  // Pattern
@@ -261,12 +261,14 @@ export default {
     },
     updateStoreBacktests(store, key, value, storeKey=constants.storeKeys.assetsPatternsPicker) {
         this.updateStore(store, key, value.map(row => {
+            let newRow = new Map(row)
+
             let timeframeKey = i18n.t(constants.patternsKey + '.columns')[3].toLowerCase()
             let directionKey = i18n.t(constants.patternsKey + '.columns')[11].toLowerCase()
-            row.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(row.get(directionKey)))
-            row.set(timeframeKey, i18n.t('research.patternLab.timeframes').indexOf(row.get(timeframeKey)))
+            newRow.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(row.get(directionKey)))
+            newRow.set(timeframeKey, i18n.t('research.patternLab.timeframes').indexOf(row.get(timeframeKey)))
 
-            return Array.from(row.values())
+            return Array.from(newRow.values())
         }), storeKey)    // cannot store language dependent keys
     },
     getStoredBacktests(data) {

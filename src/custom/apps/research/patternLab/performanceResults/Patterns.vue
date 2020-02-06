@@ -5,7 +5,8 @@
                      :data="tableData"
                      :columns="columns"
                      :editable="true"
-                     @edited="edited" />
+                     @edited="edited" 
+                     :key="tableKey" />
 
 </template>
 <script>
@@ -22,15 +23,14 @@ export default {
     data() {
         return {
             patternsKey: constants.patternsKey,
-            assetsPatterns: null,
             tableData: null,
-            columns: this.$t(constants.patternsKey + '.columns')
+            columns: this.$t(constants.patternsKey + '.columns'),
+            tableKey: 0
         }
     },
 
     methods: {
         initData() { 
-            this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data) {
                 this.tableData = helper.getStoredBacktests(data)
@@ -40,6 +40,7 @@ export default {
         // FancyTable emited event
         edited(data) {
             // check if new value is valid
+            let assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             let clNr = 0
 
             switch(data.position[1]) {
@@ -58,12 +59,12 @@ export default {
                     }
                     break
                 case this.columns[clNr++]:   // Asset
-                    if (!this.assetsPatterns.selectedAssets.map(sa => sa.symbol).includes(data.value)) {
+                    if (!assetsPatterns.selectedAssets.map(sa => sa.symbol).includes(data.value)) {
                         return
                     }
                     break
                 case this.columns[clNr++]:   // Pattern
-                    if (!this.assetsPatterns.selectedPatterns.map(sa => sa.name).includes(data.value)) {
+                    if (!assetsPatterns.selectedPatterns.map(sa => sa.name).includes(data.value)) {
                         return
                     }
                     break
@@ -107,7 +108,8 @@ export default {
             }
 
             this.tableData[data.position[0]].set(data.position[1].toLowerCase(), data.value)   // write edited/changed value to the table
-            helper.updateStoreBacktests(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)
+            helper.updateStoreBacktests(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)            
+            this.tableKey++
         }
     },
 
