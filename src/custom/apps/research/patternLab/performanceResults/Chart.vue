@@ -135,9 +135,9 @@ export default {
             tradesEntries: [],
             tradesStopLosses: [],
             tradesExits: [],
+
+            // chart
             chartUrl: null,
-            pnlChartData: null,
-            ddChartData: null,
             historyChartKey: 0,
             statsChartKey: 0
         }
@@ -177,7 +177,7 @@ export default {
               this.loading = data.loading
 
               this.backtestsNames = []
-              data.backtests.forEach(bt => this.backtestsNames.push({ id: bt.btId, name: bt[this.$t(constants.patternsKey + '.columns')[0].toLowerCase()] }))
+              helper.getStoredBacktests(data).forEach(bt => this.backtestsNames.push({ id: bt.btId, name: bt[this.$t(constants.patternsKey + '.columns')[0].toLowerCase()] }))
 
               data = this.$store.getItem(this.storeKey)
               if (data && 'selectedBacktest' in data && this.backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {

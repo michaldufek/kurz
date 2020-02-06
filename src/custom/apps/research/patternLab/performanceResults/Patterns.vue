@@ -33,7 +33,7 @@ export default {
             this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data) {
-                this.tableData = data.backtests          
+                this.tableData = helper.getStoredBacktests(data)
             }
         },        
 
@@ -44,7 +44,7 @@ export default {
 
             switch(data.position[1]) {
                 case this.columns[clNr++]:  // Name
-                    data.value = data.value + (this.tableData[data.position[0]]['btId'] ? ` (${this.tableData[data.position[0]]['btId']})` : '')
+                    data.value = data.value + (this.tableData[data.position[0]].get('btId') ? ` (${this.tableData[data.position[0]].get('btId')})` : '')
                     break
                 case this.columns[clNr++]:   // From
                 case this.columns[clNr++]:   // To
@@ -83,13 +83,13 @@ export default {
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[clNr-1].toLowerCase()].split(' ')[1]}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase()).split(' ')[1]}`
                     break
                 case this.columns[clNr++]:   // Stop Loss
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[clNr-1].toLowerCase()].split(' ')[1]}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase()).split(' ')[1]}`
                     break
                 case this.columns[clNr++]:   // Trend filter (moving average)
                     if (isNaN(Number(data.value))) {
@@ -106,8 +106,8 @@ export default {
                     return
             }
 
-            this.tableData[data.position[0]][data.position[1].toLowerCase()] = data.value   // write edited/changed value to the table
-            helper.updateStore(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)
+            this.tableData[data.position[0]].set(data.position[1].toLowerCase(), data.value)   // write edited/changed value to the table
+            helper.updateStoreBacktests(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)
         }
     },
 

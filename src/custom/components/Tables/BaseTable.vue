@@ -101,7 +101,7 @@
 
     computed: {
       sortedFilteredData() {
-        let data = this.data
+        let data = this.data.map(row => row instanceof Map ? Object.fromEntries(row) : row)
 
         if (!(Object.keys(this.filtering).length === 0 && this.filtering.constructor === Object)) { // object not empty 
           let column = Object.keys(this.filtering)[0]

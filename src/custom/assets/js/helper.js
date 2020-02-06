@@ -157,39 +157,43 @@ export default {
         let clNr = 1    // 0th is Name - no need to map
         let columns = i18n.t(constants.patternsKey + '.columns')
 
-        if (row[columns[clNr].toLowerCase()]) {
-            data['start_date'] = row[columns[clNr].toLowerCase()] // From
+        if (row.get(columns[clNr].toLowerCase())) {
+            data['start_date'] = row.get(columns[clNr].toLowerCase()) // From
         }
         clNr++
-        if (row[columns[clNr].toLowerCase()]) {
-            data['finish_date'] = row[columns[clNr].toLowerCase()]    // To
+        if (row.get(columns[clNr].toLowerCase())) {
+            data['finish_date'] = row.get(columns[clNr].toLowerCase())    // To
         }
-        data['ticker'] = row['assetId']   // Asset
-        data['pattern'] = row['patternId']  // Pattern
-        clNr += 4
-        if (row[columns[clNr].toLowerCase()]) {
-            data['initial_capital'] = row[columns[clNr].toLowerCase()].split(' ')[0]
+        clNr++
+        if (row.get(columns[clNr].toLowerCase())) {
+            data['time_frame'] = i18n.t('research.patternLab.timeframes').indexOf(row.get(columns[clNr].toLowerCase()))    // Time frame
+        }
+        data['ticker'] = row.get('assetId')   // Asset
+        data['pattern'] = row.get('patternId')  // Pattern
+        clNr += 3
+        if (row.get(columns[clNr].toLowerCase())) {
+            data['initial_capital'] = row.get(columns[clNr].toLowerCase()).split(' ')[0]
         }
         clNr += 2
-        if (row[columns[clNr].toLowerCase()]) {
-            let profit_take = row[columns[clNr].toLowerCase()].split(' ')
+        if (row.get(columns[clNr].toLowerCase())) {
+            let profit_take = row.get(columns[clNr].toLowerCase()).split(' ')
             data['profit_take_value'] = profit_take[0]
             data['profit_take_unit'] = profit_take[1]
         }
         clNr++
-        if (row[columns[clNr].toLowerCase()]) {
-            let stop_loss = row[columns[clNr].toLowerCase()].split(' ')
+        if (row.get(columns[clNr].toLowerCase())) {
+            let stop_loss = row.get(columns[clNr].toLowerCase()).split(' ')
             data['stop_loss_value'] =  stop_loss[0]
             data['stop_loss_unit'] =  stop_loss[1]
         }
         clNr++
-        if (row[columns[clNr].toLowerCase()]) {
-            data['ma_filter_period'] = row[columns[clNr].toLowerCase()].split(' ')[0]
+        if (row.get(columns[clNr].toLowerCase())) {
+            data['ma_filter_period'] = row.get(columns[clNr].toLowerCase()).split(' ')[0]
         }
         clNr++
-        data['direction'] = row[columns[clNr].toLowerCase()]
-        if (row['fixed_amount']) {
-            data['fixed_amount'] = row['fixed_amount']  // Risk
+        data['direction'] = row.get(columns[clNr].toLowerCase())
+        if (row.get('fixed_amount')) {
+            data['fixed_amount'] = row.get('fixed_amount')  // Risk
         }
 
         return data
@@ -255,6 +259,40 @@ export default {
         storeData[key] = value
         store.setItem(storeKey, storeData)
     },
+    updateStoreBacktests(store, key, value, storeKey=constants.storeKeys.assetsPatternsPicker) {
+        this.updateStore(store, key, value.map(row => {
+            let timeframeKey = i18n.t(constants.patternsKey + '.columns')[3].toLowerCase()
+            let directionKey = i18n.t(constants.patternsKey + '.columns')[11].toLowerCase()
+            row.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(row.get(directionKey)))
+            row.set(timeframeKey, i18n.t('research.patternLab.timeframes').indexOf(row.get(timeframeKey)))
+
+            return Array.from(row.values())
+        }), storeKey)    // cannot store language dependent keys
+    },
+    getStoredBacktests(data) {
+        let bts = []
+
+        if (data.backtests) {
+            data.backtests.forEach(bt => {
+                let row = new Map()
+                let clNr = 0                
+
+                row.set('btId', bt[clNr++])
+                row.set('assetId', bt[clNr++])
+                row.set('patternId', bt[clNr++])
+                i18n.t(constants.patternsKey + '.columns').forEach(column => row.set(column.toLowerCase(), bt[clNr++]))
+                
+                let timeframeKey = i18n.t(constants.patternsKey + '.columns')[3].toLowerCase()
+                let directionKey = i18n.t(constants.patternsKey + '.columns')[11].toLowerCase()
+                row.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[row.get(directionKey)])
+                row.set(timeframeKey, i18n.t('research.patternLab.timeframes')[row.get(timeframeKey)])
+
+                bts.push(row)
+            })
+        }
+
+        return bts
+    },
 
     // plurazlizer
     pluralize(nr, translationKey) {
@@ -283,19 +321,22 @@ export default {
         let pattern = datum.pattern
 
         let data = store.getItem(constants.storeKeys.backtestPatterns)
-        if (data && data.backtests) {
-            let names = data.backtests.filter(bt => bt['btId'] === datum.id)
-            if (names.length) {
-                name = names[0][btsColumns[0].toLowerCase()]
+        if (data) {
+            let backtests = this.getStoredBacktests(data)
+            if (backtests) {
+                let names = backtests.filter(bt => bt.get('btId') === datum.id)
+                if (names.length) {
+                    name = names[0][btsColumns[0].toLowerCase()]
+                }
+                let symbols = backtests.filter(bt => bt.get('assetId') === datum.ticker)
+                if (symbols.length) {
+                    symbol = symbols[0][btsColumns[4].toLowerCase()]
+                }                
+                let patterns = backtests.filter(bt => bt.get('patternId') === datum.pattern)
+                if (patterns.length) {
+                    pattern = patterns[0][btsColumns[5].toLowerCase()]
+                }                    
             }
-            let symbols = data.backtests.filter(bt => bt['assetId'] === datum.ticker)
-            if (symbols.length) {
-                symbol = symbols[0][btsColumns[4].toLowerCase()]
-            }                
-            let patterns = data.backtests.filter(bt => bt['patternId'] === datum.pattern)
-            if (patterns.length) {
-                pattern = patterns[0][btsColumns[5].toLowerCase()]
-            }                    
         }
 
         return { name:name, symbol:symbol, pattern:pattern }
