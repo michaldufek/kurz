@@ -22,9 +22,9 @@ export default {
     defaultUnit: i18n.t('research.patternLab.units')[0],        // will not translate during runtime !!!
 
     colors: {
-        transEntry: 'blue',
-        transStopLoss: 'yellow',
-        transExit: 'darkred'
+        tradeEntry: 'blue',
+        tradeStopLoss: 'yellow',
+        tradeExit: 'darkred'
     },
     
     intervals: { 
