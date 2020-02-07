@@ -191,7 +191,7 @@ export default {
             data['ma_filter_period'] = row.get(columns[clNr].toLowerCase()).split(' ')[0]
         }
         clNr++
-        data['direction'] = row.get(columns[clNr].toLowerCase())
+        data['direction'] = i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(row.get(columns[clNr].toLowerCase()))
         if (row.get('fixed_amount')) {
             data['fixed_amount'] = row.get('fixed_amount')  // Risk
         }
@@ -294,6 +294,31 @@ export default {
         }
 
         return bts
+    },
+    getBacktestsNames(store, storeKey, updateKey) {             
+        let data = store.getItem(constants.storeKeys.backtestPatterns)
+        let backtestsNames = []
+        let selectedBacktest = null
+
+        if (data) {
+          var loading = data.loading
+          
+          this.getStoredBacktests(data).forEach(bt => backtestsNames.push({ id: bt.get('btId'), name: bt.get(i18n.t(constants.patternsKey + '.columns')[0].toLowerCase()) }))
+
+          data = store.getItem(storeKey)
+          if (data && 'selectedBacktest' in data && backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {
+            selectedBacktest = data.selectedBacktest 
+          }
+          if (!selectedBacktest && backtestsNames.length) {
+            selectedBacktest = backtestsNames[0]
+          }
+
+          updateKey++
+        } else {
+          loading = false
+        }
+
+        return { backtestsNames, loading, selectedBacktest, updateKey }
     },
 
     // plurazlizer

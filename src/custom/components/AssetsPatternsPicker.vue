@@ -29,28 +29,28 @@
                             <tr>
                                 <!-- <slot :row="item"> -->
                                 <td style="border-top: 0px; text-align: right">
-                                    {{ $t('research.patternLab.from') }}
+                                    {{ $t('research.from') }}
                                 </td>
                                 <td style="border-top: 0px;">
                                     <datepicker v-model="range.from" 
                                                 :disabled-dates="disabledDatesFrom" 
                                                 :clear-button="true" 
                                                 :format="dateFormat" 
-                                                :placeholder="$t('research.patternLab.pickDate')" />
+                                                :placeholder="$t('research.pickDate')" />
                                 </td>
                                 <!-- </slot> -->
                             </tr>
                             <tr>
                                 <!-- <slot :row="item"> -->
                                 <td style="border-top: 0px; text-align: right">
-                                    {{ $t('research.patternLab.to') }}
+                                    {{ $t('research.to') }}
                                 </td>
                                 <td style="border-top: 0px;">
                                     <datepicker v-model="range.to" 
                                                 :disabled-dates="disabledDatesTo" 
                                                 :clear-button="true" 
                                                 :format="dateFormat" 
-                                                :placeholder="$t('research.patternLab.pickDate')" />
+                                                :placeholder="$t('research.pickDate')" />
                                 </td>
                                 <!-- </slot> -->
                             </tr>
@@ -80,8 +80,6 @@
                     <div>
                         <td style="border: none">
                             <input v-if="oneAssetLimit" type="radio" :id="row.id" :value="row" v-model="checkedAsset">
-                            <!-- <label for="one">One</label> -->
-                            <!-- <input v-if="oneAssetLimit" type="checkbox" :id="row.id" :value="row" v-model="checkedAsset"> -->
                             <input v-else type="checkbox" :id="row.id" :value="row" v-model="checkedAssets">
                         </td>
                         <td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
@@ -118,7 +116,7 @@
             </ul> 
         </card>
 
-        <!-- Add chart button -->
+        <!-- Add button -->
         <base-button native-type="submit" type="secondary" @click="btnClick" style="width: 100%">{{ btnText }}</base-button>
 
     </div>

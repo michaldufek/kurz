@@ -45,7 +45,8 @@ export default {
 
             switch(data.position[1]) {
                 case this.columns[clNr++]:  // Name
-                    data.value = data.value + (this.tableData[data.position[0]].get('btId') ? ` (${this.tableData[data.position[0]].get('btId')})` : '')
+                    let btId = this.tableData[data.position[0]].get('btId')
+                    data.value = data.value + (btId && btId !== -1 ? ` (${btId})` : '')
                     break
                 case this.columns[clNr++]:   // From
                 case this.columns[clNr++]:   // To
@@ -84,13 +85,17 @@ export default {
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase()).split(' ')[1]}`
+                    let unit = this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase())
+                    let unitSplitted = unit ? unit.split(' ') : []
+                    data.value = `${data.value} ${unitSplitted.length ? unitSplitted[1] : constants.defaultUnit}`
                     break
                 case this.columns[clNr++]:   // Stop Loss
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase()).split(' ')[1]}`
+                    unit = this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase())
+                    unitSplitted = unit ? unit.split(' ') : []
+                    data.value = `${data.value} ${unitSplitted.length ? unitSplitted[1] : constants.defaultUnit}`
                     break
                 case this.columns[clNr++]:   // Trend filter (moving average)
                     if (isNaN(Number(data.value))) {

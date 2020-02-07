@@ -3,6 +3,7 @@ import LandingLayout from "@/custom/layout/landing/LandingLayout.vue";
 import DashboardLayout from "@/custom/layout/application/DashboardLayout.vue";
 import ResearchLayout from "@/custom/layout/application/ResearchLayout.vue";
 import PatternLabLayout from "@/custom/layout/application/patternLab/Layout.vue";
+import FeaturesEngineeringLayout from "@/custom/layout/application/featuresEngineering/Layout.vue";
 import SettingsLayout from "@/custom/layout/application/SettingsLayout.vue";
 
 // GeneralViews
@@ -24,6 +25,9 @@ const PatternLabChart = () => import(/* webpackChunkName: "patternLabchart" */"@
 const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
 const BacktestPatterns = () => import(/* webpackChunkName: "backtestPatterns" */"@/custom/apps/research/patternLab/BacktestPatterns.vue");
 const Alerts = () => import(/* webpackChunkName: "patternLabAlerts" */"@/custom/apps/research/patternLab/Alerts.vue"); // app doesn't work with webpackChunkName: "alerts" !
+// FeaturesEngineering SubViews
+const FeaturesEngineeringParameterSweep = () => import(/* webpackChunkName: "featuresEngineeringParameterSweep" */"@/custom/apps/research/featuresEngineering/ParameterSweep.vue");
+const FeaturesEngineeringGenetics = () => import(/* webpackChunkName: "featuresEngineeringGenetics" */"@/custom/apps/research/featuresEngineering/Genetics.vue");
 // BacktestPatterns SubViews
 const Patterns = () => import(/* webpackChunkName: "patterns" */"@/custom/apps/research/patternLab/performanceResults/Patterns.vue");
 const Trades = () => import(/* webpackChunkName: "trades" */"@/custom/apps/research/patternLab/performanceResults/Trades.vue");
@@ -162,6 +166,24 @@ const routes = [
             component: Alerts
           }  
         ],
+      },
+      {
+        path: "/research/featuresEngineering",
+        name: "featuresEngineering",
+        component: FeaturesEngineeringLayout,
+        redirect: "/research/featuresEngineering/parameterSweep",
+        children: [
+          {
+            path: "/research/featuresEngineering/parameterSweep",
+            name: "featuresEngineeringParameterSweep",
+            component: FeaturesEngineeringParameterSweep
+          },
+          {
+            path: "/research/featuresEngineering/genetics",
+            name: "featuresEngineeringGenetics",
+            component: FeaturesEngineeringGenetics
+          }
+        ]
       },
       // {
       //   path: "/research/relativeValuesLab",

@@ -67,6 +67,7 @@
                     :title="ohlcChartTitle"
                     :apiUrl="chartUrl" 
                     :type="chartType"
+                    :highlights="highlights"
                     style="height: 830px" 
                     :key="historyChartKey" />
 
@@ -91,7 +92,6 @@
     </div>    
 </template>
 <script>
-import Dropdown from 'vue-simple-search-dropdown';
 import FancyChart from '@/custom/components/Charts/FancyChart';
 import OhlcChart from '@/custom/components/Charts/OhlcChart';
 
@@ -101,7 +101,6 @@ import helper from '@/custom/assets/js/helper';
 
 export default {
     components: {
-        Dropdown,
         FancyChart,
         OhlcChart
     },
@@ -154,7 +153,7 @@ export default {
       },
 
       legend() {
-        return this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length ? `<span style="color:${constants.colors.transEntry}">&#9650;</span> Trade entry<br/><span style="color:${constants.colors.transStopLoss}">&#9650;</span> Trade Stop loss<br/><span style="color:${constants.colors.transExit}">&#9650;</span> Trade exit` : null
+        return this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length ? `<span style="color:${constants.colors.tradeEntry}">&#9650;</span> ${this.$t(this.storeKey + '.tradeEntry')}<br/><span style="color:${constants.colors.tradeStopLoss}">&#9650;</span> ${this.$t(this.storeKey + '.tradeStopLoss')}<br/><span style="color:${constants.colors.tradeExit}">&#9650;</span> ${this.$t(this.storeKey + '.tradeExit')}` : null
       },
 
       highlights() {
@@ -180,31 +179,10 @@ export default {
               this.assetsPatterns = data
             }
 
-            this.setBacktestsNames()
+            ({ backtestsNames:this.backtestsNames, loading:this.loading, selectedBacktest:this.selectedBacktest, updateKey:this.statsChartKey } = helper.getBacktestsNames(this.$store, this.storeKey, this.statsChartKey))
             this.initDropDowns()
             this.loadChart()
-        },
-        setBacktestsNames() {             
-            let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
-            if (data) {
-              this.loading = data.loading
-
-              this.backtestsNames = []
-              helper.getStoredBacktests(data).forEach(bt => this.backtestsNames.push({ id: bt.get('btId'), name: bt.get(this.$t(constants.patternsKey + '.columns')[0].toLowerCase()) }))
-
-              data = this.$store.getItem(this.storeKey)
-              if (data && 'selectedBacktest' in data && this.backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {
-                this.selectedBacktest = data.selectedBacktest 
-              }
-              if (!this.selectedBacktest && this.backtestsNames.length) {
-                this.selectedBacktest = this.backtestsNames[0]
-              }
-
-              this.statsChartKey++
-            } else {
-              this.loading = false
-            }
-        },
+        },        
 
         initDropDowns() {
             let data = this.$store.getItem(this.storeKey)
@@ -254,13 +232,13 @@ export default {
             this.tradesStopLosses = []
             this.tradesExits = []
             let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns'))
-            if (datum.error) {
+            if (datum.error) {              
               this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${base.name}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
             } else {
               if (base.symbol === this.selectedAsset.symbol) {
-              this.tradesEntries = Object.values(datum.output.trades.start)
-              this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
-              this.tradesExits = Object.values(datum.output.trades.finish)
+                this.tradesEntries = Object.values(datum.output.trades.start)
+                this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
+                this.tradesExits = Object.values(datum.output.trades.finish)
               }
 
               return {

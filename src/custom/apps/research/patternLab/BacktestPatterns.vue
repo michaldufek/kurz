@@ -21,50 +21,70 @@
 
       <!-- entry rules -->
       <card>
-        <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.entry') + ' ' + $t('research.patternLab.rules') }}</h4>
+        <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.entry') + ' ' + $t('research.patternLab.rules') }}</h4>        
 
-        <!-- direction -->
-        <p class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.direction') }}</p>
-        <base-dropdown class="input" 
-                       menu-classes="dropdown-black" 
-                       title-classes="btn btn-secondary"
-                       :title="strategy.direction">
-          <ul style="list-style-type: none;">
-            <li v-for="dir in $t('research.patternLab.backtestPatterns.entryRules.directions').filter(d => d !== strategy.direction)">            
-              <a class="dropdown-item" 
-                 @click="strategy.direction = dir" 
-                 href="#">
-                 {{ dir }}
-              </a>
-            </li>
-          </ul>
-        </base-dropdown>
+        <table>
+          <!-- direction -->
+          <tr>
+            <td>
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.direction') }}</p>
+            </td>
+            <td>
+              <base-dropdown menu-classes="dropdown-black" 
+                            title-classes="btn btn-secondary"
+                            :title="strategy.direction">
+                <ul style="list-style-type: none;">
+                  <li v-for="dir in $t('research.patternLab.backtestPatterns.entryRules.directions').filter(d => d !== strategy.direction)">            
+                    <a class="dropdown-item" 
+                      @click="strategy.direction = dir" 
+                      href="#">
+                      {{ dir }}
+                    </a>
+                  </li>
+                </ul>
+              </base-dropdown>
+            </td>
+          </tr>
 
-        <!-- trend filter -->
-        <p :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')" class="label">{{ $t('research.patternLab.backtestPatterns.entryRules.trendFilter') }}</p>
-        <!-- to-do: tip not visible because of position:relative of moving average -->
-        <input type="checkbox" v-model="strategy.trendFilter" class="input" style="margin-top: 15px">
-        <!-- moving average -->
-        <div v-if="strategy.trendFilter" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
-          <p style="width: 46%; position: relative; top: 10px">{{ $t('research.patternLab.backtestPatterns.entryRules.ma_filter_period') }}</p>
-          <base-input alternative
+          <!-- trend filter -->
+          <tr :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')">
+            <td style="width: 46%">
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.trendFilter') }}</p>
+            </td>
+            <td>
+              <base-checkbox v-model="strategy.trendFilter" style="margin-top: -20px; margin-bottom: 10px; text-align: center;" />
+            </td>
+          </tr>
+
+          <!-- moving average -->
+          <tr v-if="strategy.trendFilter" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
+            <td>
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.ma_filter_period') }}</p>
+            </td>
+            <td>
+              <base-input alternative
+                          type="text"
+                          v-model="strategy.ma_filter_period"
+                          :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
+              </base-input>
+            </td>
+          </tr>
+          
+          <!-- risk (fix-amount) -->
+          <tr>
+            <td>
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.fixed_amount') }}</p>
+            </td>
+            <td>
+              <base-input alternative
                       type="text"
-                      style="float: right; width: 52%; margin-top: -25px"
-                      v-model="strategy.ma_filter_period"
-                      :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
-          </base-input>
-        </div>
-
-        <!-- risk (fix-amount) -->
-        <div>
-          <p style="width: 40%; position: relative; top: 25px">{{ $t('research.patternLab.backtestPatterns.entryRules.fixed_amount') }}</p>
-          <base-input alternative
-                      type="text"
-                      style="float: right; width: 60%"
                       v-model="strategy.fixed_amount"
                       :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
-          </base-input>
-        </div>
+              </base-input>
+            </td>
+          </tr>
+        </table>
+        
       </card>
 
       <!-- exit rules -->
@@ -73,10 +93,11 @@
 
         <!-- analyze -->
         <div :title="$t('research.patternLab.backtestPatterns.exitRules.analyzeTip')">
-          <p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.analyze') }}</p>
+          <p class="label" style="width: 34%">{{ $t('research.patternLab.backtestPatterns.exitRules.analyze') }}</p>
           <base-input alternative
                       type="text"
                       class="input"
+                      style="width: 40%"
                       v-model="strategy.analyze"
                       :placeholder="$t('research.patternLab.backtestPatterns.exitRules.numberBars')">
           </base-input>
@@ -85,49 +106,61 @@
         <table>
           <!-- profit target -->
           <tr>
-            <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.profit_take') }}</p></td>
-            <td><base-input alternative
+            <td>
+              <p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.profit_take') }}</p>
+            </td>
+            <td>
+              <base-input alternative
                         type="text"                        
                         v-model="strategy.profit_take.value"
                         :placeholder="$t('number')">
-            </base-input></td>
-            <td><base-dropdown menu-classes="dropdown-black" 
+              </base-input>
+            </td>
+            <td>
+              <base-dropdown menu-classes="dropdown-black" 
                           title-classes="btn btn-secondary"
                           :title="strategy.profit_take.unit">
-              <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.profit_take.unit)">
-                  <a class="dropdown-item" 
-                    @click="strategy.profit_take.unit = unit" 
-                    href="#">
-                    {{ unit }}
-                  </a>
-                </li>
-              </ul>
-            </base-dropdown></td>
+                <ul style="list-style-type: none;">
+                  <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.profit_take.unit)">
+                    <a class="dropdown-item" 
+                      @click="strategy.profit_take.unit = unit" 
+                      href="#">
+                      {{ unit }}
+                    </a>
+                  </li>
+                </ul>
+              </base-dropdown>
+            </td>
+          </tr>
 
           <!-- stop loss -->
           <tr>
-            <td><p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.stoploss') }}</p></td>
-            <td><base-input alternative
+            <td>
+              <p class="label">{{ $t('research.patternLab.backtestPatterns.exitRules.stoploss') }}</p>
+            </td>
+            <td>
+              <base-input alternative
                         type="text"
                         v-model="strategy.stoploss.value"
                         :placeholder="$t('number')">
-            </base-input></td>
-            <td><base-dropdown menu-classes="dropdown-black" 
+              </base-input>
+            </td>
+            <td>
+              <base-dropdown menu-classes="dropdown-black" 
                           title-classes="btn btn-secondary"
                           :title="strategy.stoploss.unit">
-              <ul style="list-style-type: none;">
-                <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.stoploss.unit)">
-                  <a class="dropdown-item" 
-                    @click="strategy.stoploss.unit = unit" 
-                    href="#">
-                    {{ unit }}
-                  </a>
-                </li>
-              </ul>
-            </base-dropdown></td>
+                <ul style="list-style-type: none;">
+                  <li v-for="unit in $t('research.patternLab.units').filter(u => u !== strategy.stoploss.unit)">
+                    <a class="dropdown-item" 
+                      @click="strategy.stoploss.unit = unit" 
+                      href="#">
+                      {{ unit }}
+                    </a>
+                  </li>
+                </ul>
+              </base-dropdown>
+            </td>
           </tr>
-
         </table>
 
       </card>
@@ -316,6 +349,11 @@
           return 
         }
 
+        let data = helper.getAssetsPatternsPickerData(this.$store)
+        if (!data || !data.checkedPatterns.length) {   
+          return
+        }
+
         this.setBacktestsTable(true)
         this.cardKey++
       },
@@ -359,7 +397,8 @@
         }
         let newTableData = oldTableData
 
-        if (createNew && assetsPatterns) {
+        if (createNew) {
+          if (assetsPatterns) {
             // create new rows
             newTableData = []
 
@@ -389,24 +428,15 @@
                     newTableData.push(row)
                 })
             })
-        } else if (assetsPatterns && this.strategy) {
-            // update rows (with checked assets/patterns) with new strategy data
-            newTableData = []
-
-            oldTableData.forEach(row => {
+          }
+        } else {
+            newTableData.forEach(row => {
                 let clNr = 4    // starting from Asset column (for the if)
 
                 if (assetsPatterns.range && !assetsPatterns.range.to) {
                     // set null To dates to today
                     row.set(this.columns[clNr-2].toLowerCase(), helper.formatDate(new Date())) // To
                 }
-
-                if (assetsPatterns.checkedAssets.map(ca => ca.symbol).includes(row.get(this.columns[clNr++].toLowerCase())) 
-                    && assetsPatterns.checkedPatterns.map(cp => cp.name).includes(row.get(this.columns[clNr++].toLowerCase()))) {
-                        this.updateRow(row, clNr) 
-                }
-
-                newTableData.push(row)
             })
         }
 
