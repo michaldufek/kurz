@@ -164,7 +164,7 @@
         </card>
 
         <!-- run button -->
-        <base-button native-type="submit" type="secondary" @click="runClick" style="height: 10%; margin-top: auto; margin-bottom: auto;">{{ $t(storeKey + '.run') }}</base-button>
+        <base-button native-type="submit" type="secondary" @click="runClick" style="height: 10%; margin-top: auto; margin-bottom: auto; margin-right: 15px;">{{ runText }}</base-button>
     </div>
 
     <div class="row">
@@ -217,7 +217,6 @@ export default {
                 to: null,
                 step: null
             },
-
             period: {
                 from: null,
                 to: null
@@ -225,6 +224,7 @@ export default {
 
             estimated: '5.5 hours',
             warnEstimated: false,
+            running: false,
 
             updateKey: 0
         }
@@ -237,6 +237,10 @@ export default {
 
         dateFormat() {
             return "yyyy-MM-dd"
+        },
+
+        runText() {
+            return this.running ? this.$t(this.storeKey + '.stop') : this.$t(this.storeKey + '.run')
         }
     },
 
@@ -249,22 +253,29 @@ export default {
         },
 
         runClick() {
-            if (this.warnEstimated) {
-                this.$confirm(this.$t(this.storeKey + '.estimatedTime') + ' ' + this.$t(this.storeKey + '.confirmEstimated'))
-                .then(() => {
-                    this.run()
-                })
-                .catch(() => {})
+            if (this.running) {
+                this.stop()
+            } else {
+                if (this.warnEstimated) {
+                    this.$confirm(this.$t(this.storeKey + '.estimatedTime') + ' ' + this.$t(this.storeKey + '.confirmEstimated'))
+                    .then(() => {
+                        this.run()
+                    })
+                    .catch(() => {})
 
-                return
+                    return
+                }
+                
+                this.run()
             }
-            
-            this.run()
         },
         saveClick() {},
 
         run() {
-            console.log('run!')
+            this.running = true
+        },
+        stop() {
+            this.running = false
         }
     },
 

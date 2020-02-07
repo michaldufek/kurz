@@ -339,6 +339,7 @@
         "stopLoss": "Stop Loss",
         "step": "Step",
         "run": "Run",
+        "stop": "Stop",
         "estimatedTime": "Estimated running time is",
         "confirmEstimated": "longer than 5 hours. Are you sure?",
         "results": {
