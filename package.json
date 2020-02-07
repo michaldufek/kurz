@@ -1,6 +1,6 @@
 {
   "name": "financial_research_software",
-  "version": "0.7.0-5",
+  "version": "0.7.0-6",
   "private": true,
   "description": "Financial Research Software",
   "author": "CYRRUS ADVISORY, a.s. <brno@cyrrusadvisory.cz>",
@@ -25,6 +25,7 @@
     "vue-i18n": "^8.8.1",
     "vue-router": "^3.0.2",
     "vue-router-prefetch": "^1.4.0",
+    "vue-simple-alert": "^1.1.1",
     "vue-simple-search-dropdown": "^1.0.1",
     "vue2-transitions": "^0.2.3",
     "vuejs-datepicker": "^1.6.2"

@@ -91,7 +91,6 @@
     </div>    
 </template>
 <script>
-import Dropdown from 'vue-simple-search-dropdown';
 import FancyChart from '@/custom/components/Charts/FancyChart';
 import OhlcChart from '@/custom/components/Charts/OhlcChart';
 
@@ -101,7 +100,6 @@ import helper from '@/custom/assets/js/helper';
 
 export default {
     components: {
-        Dropdown,
         FancyChart,
         OhlcChart
     },
@@ -180,30 +178,9 @@ export default {
               this.assetsPatterns = data
             }
 
-            this.setBacktestsNames()
+            ({ backtestsNames:this.backtestsNames, loading:this.loading, selectedBacktest:this.selectedBacktest, updateKey:this.statsChartKey } = helper.getBacktestsNames(this.$store, this.storeKey, this.statsChartKey))
             this.initDropDowns()
             this.loadChart()
-        },
-        setBacktestsNames() {             
-            let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
-            if (data) {
-              this.loading = data.loading
-
-              this.backtestsNames = []
-              helper.getStoredBacktests(data).forEach(bt => this.backtestsNames.push({ id: bt.get('btId'), name: bt.get(this.$t(constants.patternsKey + '.columns')[0].toLowerCase()) }))
-
-              data = this.$store.getItem(this.storeKey)
-              if (data && 'selectedBacktest' in data && this.backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {
-                this.selectedBacktest = data.selectedBacktest 
-              }
-              if (!this.selectedBacktest && this.backtestsNames.length) {
-                this.selectedBacktest = this.backtestsNames[0]
-              }
-
-              this.statsChartKey++
-            } else {
-              this.loading = false
-            }
         },
 
         initDropDowns() {

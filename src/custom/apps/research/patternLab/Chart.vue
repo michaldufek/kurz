@@ -59,8 +59,6 @@
   </div>
 </template>
 <script>
-  import Dropdown from 'vue-simple-search-dropdown';
-
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
   import FancyChart from '@/custom/components/Charts/FancyChart';
   import OhlcChart from '@/custom/components/Charts/OhlcChart';
@@ -73,7 +71,6 @@
   export default {
     components: {  
       AssetsPatternsPicker,
-      Dropdown,
       FancyChart,
       OhlcChart,
       FancyTable

@@ -98,6 +98,9 @@
   },
   "research": { 
     "title": "Research",
+    "from": "From",
+    "to": "To",
+    "pickDate": "Pick a date",
     "portfolioManager": {
       "designedPortfolio": "Designed Portfolio",
       "livePortfolio": "Live Portfolio",
@@ -159,11 +162,8 @@
     },
     "patternLab": { 
       "assets": "Assets",
-      "patterns": "Patterns",
-      "from": "From",
-      "to": "To",
+      "patterns": "Patterns",      
       "type2search": "Type to search",
-      "pickDate": "Pick a date",
       "checkAll": "Check all",
       "uncheckAll": "Uncheck all",
       "entry": "Entry",
@@ -245,7 +245,7 @@
         "exitRules": {
           "analyze": "Analyze",
           "analyzeTip": "Number of next bars after pattern/s occurrence that should be analyzed.",
-          "numberBars": "Nr. in next bars",          
+          "numberBars": "Nr. in bars",          
           "profit_take": "ProfitTarget",
           "stoploss": "StopLoss"
         },
@@ -330,7 +330,37 @@
     },  
     "featuresEngineering": {
       "parameterSweep" : {
-        "title": "Parameter Sweep"
+        "title": "Parameter Sweep",
+        "parameters": "Parameters",
+        "period": "Period",
+        "range": "range",
+        "selectBacktest": "Select backtest",
+        "profitTarget": "Profit Target",
+        "stopLoss": "Stop Loss",
+        "step": "Step",
+        "run": "Run",
+        "estimatedTime": "Estimated running time is",
+        "confirmEstimated": "longer than 5 hours. Are you sure?",
+        "results": {
+          "title": "Results",
+          "columns": [
+            "Pnl",
+            "longs",
+            "longs_win",
+            "avg_long",
+            "shorts",
+            "shorts_win",
+            "avg_short",
+            "max_dd",
+            "dd_len",
+            "annual_return",
+            "ProfitTarget",
+            "StopLoss",
+            "RiskPerTrade"
+          ],
+          "chart": "Interactive 3D chart"
+        },
+        "save": "Save"
       },
       "genetics" : {
         "title": "Genetics"

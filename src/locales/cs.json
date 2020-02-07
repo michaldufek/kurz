@@ -98,6 +98,9 @@
   },
   "research": { 
     "title": "Výzkum",
+    "from": "Od",
+    "to": "Do",
+    "pickDate": "Vyberte datum",
     "portfolioManager": {
       "designedPortfolio": "Navržené Portfolio",
       "livePortfolio": "Živé Portfolio",
@@ -161,9 +164,6 @@
       "assets": "Aktiva",
       "patterns": "Patterny",
       "type2search": "Hledejte psaním",
-      "from": "Od",
-      "to": "Do",
-      "pickDate": "Vyberte datum",
       "checkAll": "Zaškrtnout vše",
       "uncheckAll": "Odškrtnout vše",
       "entry": "Vstupní",
@@ -245,7 +245,7 @@
         "exitRules": {
           "analyze": "Analýza",
           "analyzeTip": "Počet nasledujících barů po vyskytnutí vzoru/ů, ktere se mají analyzovat.",
-          "numberBars": "Č. v nasl.barech",
+          "numberBars": "Číslo v barech",
           "profit_take": "ProfitTarget",
           "stoploss": "StopLoss"
         },
@@ -330,7 +330,37 @@
     }, 
     "featuresEngineering": {
       "parameterSweep" : {
-        "title": "Hledání parametrů"
+        "title": "Hledání parametrů",
+        "selectBacktest": "Vyberte backtest",
+        "profitTarget": "Profit Target",
+        "stopLoss": "Stop Loss",
+        "parameters": "Parametry",
+        "period": "Perioda",
+        "range": "rozsah",
+        "step": "Krok",
+        "run": "Spustit",
+        "estimatedTime": "Odhadovaný čas běhu je",
+        "confirmEstimated": "větší než 5 hodin. Jste si jistí?",
+        "results": {
+          "title": "Výsledky",
+          "columns": [
+            "Pnl",
+            "longs",
+            "longs_win",
+            "avg_long",
+            "shorts",
+            "shorts_win",
+            "avg_short",
+            "max_dd",
+            "dd_len",
+            "annual_return",
+            "ProfitTarget",
+            "StopLoss",
+            "RiskPerTrade"
+          ],
+          "chart": "Interaktivní 3D graf"
+        },
+        "save": "Uložit"
       },
       "genetics" : {
         "title": "Genetika"
