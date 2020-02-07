@@ -191,7 +191,7 @@ export default {
             data['ma_filter_period'] = row.get(columns[clNr].toLowerCase()).split(' ')[0]
         }
         clNr++
-        data['direction'] = row.get(columns[clNr].toLowerCase())
+        data['direction'] = i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(row.get(columns[clNr].toLowerCase()))
         if (row.get('fixed_amount')) {
             data['fixed_amount'] = row.get('fixed_amount')  // Risk
         }

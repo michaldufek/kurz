@@ -359,7 +359,8 @@
         }
         let newTableData = oldTableData
 
-        if (createNew && assetsPatterns) {
+        if (createNew) {
+          if (assetsPatterns) {
             // create new rows
             newTableData = []
 
@@ -389,24 +390,15 @@
                     newTableData.push(row)
                 })
             })
-        } else if (assetsPatterns && this.strategy) {
-            // update rows (with checked assets/patterns) with new strategy data
-            newTableData = []
-
-            oldTableData.forEach(row => {
+          }
+        } else {
+            newTableData.forEach(row => {
                 let clNr = 4    // starting from Asset column (for the if)
 
                 if (assetsPatterns.range && !assetsPatterns.range.to) {
                     // set null To dates to today
                     row.set(this.columns[clNr-2].toLowerCase(), helper.formatDate(new Date())) // To
                 }
-
-                if (assetsPatterns.checkedAssets.map(ca => ca.symbol).includes(row.get(this.columns[clNr++].toLowerCase())) 
-                    && assetsPatterns.checkedPatterns.map(cp => cp.name).includes(row.get(this.columns[clNr++].toLowerCase()))) {
-                        this.updateRow(row, clNr) 
-                }
-
-                newTableData.push(row)
             })
         }
 
