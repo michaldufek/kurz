@@ -164,7 +164,6 @@
     initialCapital: null,
 
     // entry rules
-    direction: i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[0],
     trendFilter: false,
     ma_filter_period: null,
     fixed_amount: null,
@@ -180,9 +179,7 @@
       unit: constants.defaultUnit
     }
   }
-  const errorTitle = ' (' + i18n.t('research.patternLab.backtestPatterns.title') + ').'
-  const columns = i18n.t(constants.patternsKey + '.columns')
-
+  
   export default {
     components: {
       AssetsPatternsPicker,
@@ -194,7 +191,13 @@
 
     data() {
       return {
-        strategy: defaultStrategy,
+        errorTitle: ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').',
+        columns: this.$t(constants.patternsKey + '.columns'),
+
+        strategy: {
+          ...defaultStrategy,
+          direction: this.$t('research.patternLab.backtestPatterns.entryRules.directions')[0]
+        },
         loading: false,
         cardKey: 0,
 
@@ -214,8 +217,11 @@
             this.strategy = data.strategy
             this.strategy.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions')[data.strategy.direction]
           } else {
-            this.strategy = defaultStrategy            
-        }
+            this.strategy = {
+              ...defaultStrategy,
+              direction: this.$t('research.patternLab.backtestPatterns.entryRules.directions')[0]
+            }            
+          }
         }
 
         setInterval(() => { 
@@ -244,7 +250,7 @@
           console.log(error);
 
           if (error.message === constants.strings.networkError) {
-            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
           }
         })
         .finally(() => {
@@ -252,22 +258,24 @@
               let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)
               if (bpData) {
                 // set bt id and name
-                let bts = bpData.backtests
+                let bts = helper.getStoredBacktests(bpData)
 
                 this.$http
                 .get(constants.urls.patternLab.backtestPatterns.results)
                 .then(response => {
                   bts.forEach(bt => {
-                    bt['btId'] = response.data.filter(datum => datum.ticker === bt['assetId'] && datum.pattern === bt['patternId'])[0].id
-                    bt[columns[0].toLowerCase()] = `${bt[columns[0].toLowerCase()] && !this.isDefaultPrName(bt[columns[0].toLowerCase()]) ? bt[columns[0].toLowerCase()].split(' (')[0] : helper.getDefaultPrName(bt['btId'])} (${bt['btId']})`    // Name
+                    bt.set('btId', response.data.filter(datum => datum.ticker === bt.get('assetId') && datum.pattern === bt.get('patternId'))[0].id)
+                    bt.set(this.columns[0].toLowerCase(), `${bt.get(this.columns[0].toLowerCase()) && !this.isDefaultPrName(bt.get(this.columns[0].toLowerCase())) 
+                                                        ? bt.get(this.columns[0].toLowerCase()).split(' (')[0] 
+                                                        : helper.getDefaultPrName(bt.get('btId'))} (${bt.get('btId')})`)    // Name
                   })
-                  helper.updateStore(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
+                  helper.updateStoreBacktests(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
                 })
                 .catch(error => {
                   console.log(error);
 
                   if (error.message === constants.strings.networkError) {
-                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
                   }
                 })
                 .finally(() => {
@@ -295,7 +303,7 @@
         if (!this.strategy.initialCapital) {
           this.$notify({
                           type: 'warning', 
-                          message: this.$t('notifications.noInitialCapital') + errorTitle
+                          message: this.$t('notifications.noInitialCapital') + this.errorTitle
                       })
           return 
         }
@@ -303,7 +311,7 @@
         if (this.loading) {
           this.$notify({
                           type: 'warning', 
-                          message: this.$t('notifications.loading') + errorTitle
+                          message: this.$t('notifications.loading') + this.errorTitle
                       })
           return 
         }
@@ -317,14 +325,14 @@
         if (!data || !data.checkedAssets.length) {   
           this.$notify({
                           type: 'warning', 
-                          message: this.$t('notifications.addNoAsset') + errorTitle
+                          message: this.$t('notifications.addNoAsset') + this.errorTitle
                       })
 
         } else {
           if (this.loading) {
             this.$notify({
                             type: 'warning', 
-                            message: this.$t('notifications.loading') + errorTitle
+                            message: this.$t('notifications.loading') + this.errorTitle
                         })
             return 
           }
@@ -332,7 +340,7 @@
           if (data && !data.checkedPatterns.length) {
             this.$notify({
                 type: 'warning', 
-                message: this.$t('notifications.addNoPattern') + errorTitle
+                message: this.$t('notifications.addNoPattern') + this.errorTitle
             })  
           } else if (data) {
             this.setBacktestsTable()
@@ -347,7 +355,7 @@
         let bpData = this.$store.getItem(constants.storeKeys.backtestPatterns)
         let oldTableData = []
         if (bpData) {
-            oldTableData = bpData.backtests
+            oldTableData = helper.getStoredBacktests(bpData)
         }
         let newTableData = oldTableData
 
@@ -357,25 +365,26 @@
 
             assetsPatterns.checkedAssets.forEach(asset => {
                 assetsPatterns.checkedPatterns.forEach(pattern => {
-                    let row = {}
+                    let row = new Map()     // order of properties is guaranteed so we can store only (language independent) values
                     let clNr = 0
 
-                    row[columns[clNr++].toLowerCase()] = null    // Name
-                    row[columns[clNr++].toLowerCase()] = assetsPatterns.range && assetsPatterns.range.from 
-                                                          ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.from))
-                                                          : null    // From
-                    row[columns[clNr++].toLowerCase()] = assetsPatterns.range && assetsPatterns.range.to
-                                                          ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.to))
-                                                          : null    // To
-                    row[columns[clNr++].toLowerCase()] = assetsPatterns.timeframe    // Time frame
-                    row['assetId'] = asset.id
-                    row[columns[clNr++].toLowerCase()] = asset.symbol    // Asset
-                    row['patternId'] = pattern.id
-                    row[columns[clNr++].toLowerCase()] = pattern.name    // Pattern
+                    row.set('btId', -1)
+                    row.set('assetId', asset.id)
+                    row.set('patternId', pattern.id)
+                    row.set(this.columns[clNr++].toLowerCase(), null)    // Name
+                    row.set(this.columns[clNr++].toLowerCase(), assetsPatterns.range && assetsPatterns.range.from 
+                                                                ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.from))
+                                                                : null)    // From
+                    row.set(this.columns[clNr++].toLowerCase(), assetsPatterns.range && assetsPatterns.range.to
+                                                                ? helper.formatDate(helper.formatDateOnly(assetsPatterns.range.to))
+                                                                : null)    // To
+                    row.set(this.columns[clNr++].toLowerCase(), assetsPatterns.timeframe)    // Time frame                    
+                    row.set(this.columns[clNr++].toLowerCase(), asset.symbol)    // Asset                    
+                    row.set(this.columns[clNr++].toLowerCase(), pattern.name)    // Pattern
 
                     if (this.strategy) {   
                         this.updateRow(row, clNr)                            
-                    }                                            
+                    }                                 
 
                     newTableData.push(row)
                 })
@@ -389,11 +398,11 @@
 
                 if (assetsPatterns.range && !assetsPatterns.range.to) {
                     // set null To dates to today
-                    row[columns[clNr-2].toLowerCase()] = helper.formatDate(new Date()) // To
+                    row.set(this.columns[clNr-2].toLowerCase(), helper.formatDate(new Date())) // To
                 }
 
-                if (assetsPatterns.checkedAssets.map(ca => ca.symbol).includes(row[columns[clNr++].toLowerCase()]) 
-                    && assetsPatterns.checkedPatterns.map(cp => cp.name).includes(row[columns[clNr++].toLowerCase()])) {
+                if (assetsPatterns.checkedAssets.map(ca => ca.symbol).includes(row.get(this.columns[clNr++].toLowerCase())) 
+                    && assetsPatterns.checkedPatterns.map(cp => cp.name).includes(row.get(this.columns[clNr++].toLowerCase()))) {
                         this.updateRow(row, clNr) 
                 }
 
@@ -401,21 +410,21 @@
             })
         }
 
-        helper.updateStore(this.$store, 'backtests', newTableData, constants.storeKeys.backtestPatterns) 
+        helper.updateStoreBacktests(this.$store, 'backtests', newTableData, constants.storeKeys.backtestPatterns) 
       },
       updateRow(row, clNr) {
-        row[columns[clNr++].toLowerCase()] = this.strategy.initialCapital ? `${this.strategy.initialCapital} ${constants.defaultUnit}` : null    // Initial capital
-        row[columns[clNr++].toLowerCase()] = this.strategy.analyze ? `${this.strategy.analyze} ${helper.pluralize(this.strategy.analyze, constants.patternsKey + '.bar')}` : null    // Analyze
-        row[columns[clNr++].toLowerCase()] = this.strategy.profit_take.value ? `${this.strategy.profit_take.value} ${this.strategy.profit_take.unit}` : null    // Profit Target
-        row[columns[clNr++].toLowerCase()] = this.strategy.stoploss.value ? `${this.strategy.stoploss.value} ${this.strategy.stoploss.unit}` : null    // Stop Loss
-        row[columns[clNr++].toLowerCase()] = this.strategy.trendFilter && this.strategy.ma_filter_period ? `${this.strategy.ma_filter_period} ${constants.defaultUnit}` : null    // Trend filter (moving average)
-        row[columns[clNr++].toLowerCase()] = this.strategy.direction    // Direction
-        row['fixed_amount'] = this.strategy.fixed_amount    // Risk
+        row.set(this.columns[clNr++].toLowerCase(), this.strategy.initialCapital ? `${this.strategy.initialCapital} ${constants.defaultUnit}` : null)    // Initial capital
+        row.set(this.columns[clNr++].toLowerCase(), this.strategy.analyze ? `${this.strategy.analyze} ${helper.pluralize(this.strategy.analyze, constants.patternsKey + '.bar')}` : null)    // Analyze
+        row.set(this.columns[clNr++].toLowerCase(), this.strategy.profit_take.value ? `${this.strategy.profit_take.value} ${this.strategy.profit_take.unit}` : null)    // Profit Target
+        row.set(this.columns[clNr++].toLowerCase(), this.strategy.stoploss.value ? `${this.strategy.stoploss.value} ${this.strategy.stoploss.unit}` : null)    // Stop Loss
+        row.set(this.columns[clNr++].toLowerCase(), this.strategy.trendFilter && this.strategy.ma_filter_period ? `${this.strategy.ma_filter_period} ${constants.defaultUnit}` : null)    // Trend filter (moving average)
+        row.set(this.columns[clNr++].toLowerCase(), this.strategy.direction)    // Direction
+        row.set('fixed_amount', this.strategy.fixed_amount)    // Risk
       },
 
       runBacktests() { 
         this.loading = true
-        let backtestsAll = this.$store.getItem(constants.storeKeys.backtestPatterns).backtests
+        let backtestsAll = helper.getStoredBacktests(this.$store.getItem(constants.storeKeys.backtestPatterns))
 
         // run all backtests showed in Patterns table
         let backtests2Run = []
@@ -428,7 +437,7 @@
           console.log(error);
 
           if (error.message === constants.strings.networkError) {
-            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', errorTitle)
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
           }
         })
       },
@@ -450,13 +459,13 @@
         helper.updateStore(this.$store, 'loading', val, constants.storeKeys.backtestPatterns) 
       },
       strategy: {
-            handler(val){
+        handler(val){
           let val2store = JSON.parse(JSON.stringify(val))
           val2store.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(val.direction)
           helper.updateStore(this.$store, 'strategy', val2store, constants.storeKeys.backtestPatterns) 
-            },
-            deep: true
         },
+        deep: true
+      },
     }
   }  
 </script>

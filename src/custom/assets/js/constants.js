@@ -19,7 +19,7 @@ export default {
     // maximum number of rows shown in fancy tables
     maxRows: 20, // to-do: use some pagination or More... button for all rows
 
-    defaultUnit: i18n.t('research.patternLab.units')[0],
+    defaultUnit: i18n.t('research.patternLab.units')[0],        // will not translate during runtime !!!
 
     colors: {
         transEntry: 'blue',

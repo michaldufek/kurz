@@ -60,9 +60,7 @@
                     :legend="legend"
                     :apiUrls="chartUrl ? [ chartUrl ] : []"
                     style="height: 100%"
-                    :tradesEntries="tradesEntries"
-                    :tradesStopLosses="tradesStopLosses"
-                    :tradesExits="tradesExits"
+                    :highlights="highlights"
                     :responsive="true"                     
                     :key="historyChartKey" />
         <ohlc-chart v-else 
@@ -131,13 +129,13 @@ export default {
             selectedAsset: null,            
             chartType: null,
 
-            // charts
+            // chart highlights
             tradesEntries: [],
             tradesStopLosses: [],
             tradesExits: [],
+
+            // chart
             chartUrl: null,
-            pnlChartData: null,
-            ddChartData: null,
             historyChartKey: 0,
             statsChartKey: 0
         }
@@ -157,6 +155,21 @@ export default {
 
       legend() {
         return this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length ? `<span style="color:${constants.colors.transEntry}">&#9650;</span> Trade entry<br/><span style="color:${constants.colors.transStopLoss}">&#9650;</span> Trade Stop loss<br/><span style="color:${constants.colors.transExit}">&#9650;</span> Trade exit` : null
+      },
+
+      highlights() {
+        return [{
+          points: this.tradesEntries,
+          color: constants.colors.tradeEntry 
+        }, 
+        { 
+          points: this.tradesStopLosses, 
+          color: constants.colors.tradeStopLoss 
+        }, 
+        { 
+          points: this.tradesExits, 
+          color: constants.colors.tradeExit 
+        }]
       }
     },
     
@@ -177,7 +190,7 @@ export default {
               this.loading = data.loading
 
               this.backtestsNames = []
-              data.backtests.forEach(bt => this.backtestsNames.push({ id: bt.btId, name: bt[this.$t(constants.patternsKey + '.columns')[0].toLowerCase()] }))
+              helper.getStoredBacktests(data).forEach(bt => this.backtestsNames.push({ id: bt.get('btId'), name: bt.get(this.$t(constants.patternsKey + '.columns')[0].toLowerCase()) }))
 
               data = this.$store.getItem(this.storeKey)
               if (data && 'selectedBacktest' in data && this.backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {
@@ -237,13 +250,18 @@ export default {
             let datum = data[0]
 
             this.noDataText = null
+            this.tradesEntries = []
+            this.tradesStopLosses = []
+            this.tradesExits = []
+            let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns'))
             if (datum.error) {
-              let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns')).name
-              this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${btName}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
+              this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${base.name}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
             } else {
+              if (base.symbol === this.selectedAsset.symbol) {
               this.tradesEntries = Object.values(datum.output.trades.start)
               this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
               this.tradesExits = Object.values(datum.output.trades.finish)
+              }
 
               return {
                 time: Object.values(datum.output.trades.finish),
