@@ -152,7 +152,7 @@ export default {
       },
 
       legend() {
-        return this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length ? `<span style="color:${constants.colors.transEntry}">&#9650;</span> Trade entry<br/><span style="color:${constants.colors.transStopLoss}">&#9650;</span> Trade Stop loss<br/><span style="color:${constants.colors.transExit}">&#9650;</span> Trade exit` : null
+        return this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length ? `<span style="color:${constants.colors.tradeEntry}">&#9650;</span> Trade entry<br/><span style="color:${constants.colors.tradeStopLoss}">&#9650;</span> Trade Stop loss<br/><span style="color:${constants.colors.tradeExit}">&#9650;</span> Trade exit` : null
       },
 
       highlights() {
@@ -181,7 +181,7 @@ export default {
             ({ backtestsNames:this.backtestsNames, loading:this.loading, selectedBacktest:this.selectedBacktest, updateKey:this.statsChartKey } = helper.getBacktestsNames(this.$store, this.storeKey, this.statsChartKey))
             this.initDropDowns()
             this.loadChart()
-        },
+        },        
 
         initDropDowns() {
             let data = this.$store.getItem(this.storeKey)
@@ -231,13 +231,13 @@ export default {
             this.tradesStopLosses = []
             this.tradesExits = []
             let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns'))
-            if (datum.error) {
+            if (datum.error) {              
               this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${base.name}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
             } else {
               if (base.symbol === this.selectedAsset.symbol) {
-              this.tradesEntries = Object.values(datum.output.trades.start)
-              this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
-              this.tradesExits = Object.values(datum.output.trades.finish)
+                this.tradesEntries = Object.values(datum.output.trades.start)
+                this.tradesStopLosses = datum.stop_loss_unit === constants.defaultUnit ? [ datum.stop_loss_value ] : []   // temporary until BE doesn't return stop_loss_value for % !!!
+                this.tradesExits = Object.values(datum.output.trades.finish)
               }
 
               return {

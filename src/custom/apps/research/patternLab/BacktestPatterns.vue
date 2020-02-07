@@ -349,6 +349,11 @@
           return 
         }
 
+        let data = helper.getAssetsPatternsPickerData(this.$store)
+        if (!data || !data.checkedPatterns.length) {   
+          return
+        }
+
         this.setBacktestsTable(true)
         this.cardKey++
       },
