@@ -231,9 +231,9 @@
         "entryRules": {
           "direction": "Směr",
           "directions": [
-            "BUY",
-            "SELL",
-            "BOTH"
+            "NÁKUP",
+            "PRODEJ",
+            "OBĚ"
           ],
           "trendFilter": "Trend filter",
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         

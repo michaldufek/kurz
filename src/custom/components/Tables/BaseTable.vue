@@ -101,7 +101,7 @@
 
     computed: {
       sortedFilteredData() {
-        let data = this.data
+        let data = this.data.map(row => row instanceof Map ? Object.fromEntries(row) : row)
 
         if (!(Object.keys(this.filtering).length === 0 && this.filtering.constructor === Object)) { // object not empty 
           let column = Object.keys(this.filtering)[0]
@@ -184,12 +184,17 @@
 
       edit(index, item, column) { 
         let val = this.itemValue(item, column)   
-        this.editText = val ? ((!isNaN(Number(val)) ? String(val) : val).split(' (')[0]) : ''
+        
+        let del = ' '
+        if (column === 'Name') {  // special case for Backtest - patterns table
+          del += '('
+        }
+        this.editText = val ? ((!isNaN(Number(val)) ? String(val) : val).split(del)[0]) : ''
         this.editing = [index, column]
       },
       finishEdit(index, column) {
         this.$emit('edited', {
-          position: [index, column],
+          position: [index, column],    // to-do: probably bug - after sort  this returns sorted (new) index, store has unsorted (different) index
           value: this.editText})
         this.editing = null
       },

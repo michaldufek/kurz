@@ -5,7 +5,8 @@
                      :data="tableData"
                      :columns="columns"
                      :editable="true"
-                     @edited="edited" />
+                     @edited="edited" 
+                     :key="tableKey" />
 
 </template>
 <script>
@@ -22,29 +23,29 @@ export default {
     data() {
         return {
             patternsKey: constants.patternsKey,
-            assetsPatterns: null,
             tableData: null,
-            columns: this.$t(constants.patternsKey + '.columns')
+            columns: this.$t(constants.patternsKey + '.columns'),
+            tableKey: 0
         }
     },
 
     methods: {
         initData() { 
-            this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data) {
-                this.tableData = data.backtests          
+                this.tableData = helper.getStoredBacktests(data)
             }
         },        
 
         // FancyTable emited event
         edited(data) {
             // check if new value is valid
+            let assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             let clNr = 0
 
             switch(data.position[1]) {
                 case this.columns[clNr++]:  // Name
-                    data.value = data.value + (this.tableData[data.position[0]]['btId'] ? ` (${this.tableData[data.position[0]]['btId']})` : '')
+                    data.value = data.value + (this.tableData[data.position[0]].get('btId') ? ` (${this.tableData[data.position[0]].get('btId')})` : '')
                     break
                 case this.columns[clNr++]:   // From
                 case this.columns[clNr++]:   // To
@@ -58,12 +59,12 @@ export default {
                     }
                     break
                 case this.columns[clNr++]:   // Asset
-                    if (!this.assetsPatterns.selectedAssets.map(sa => sa.symbol).includes(data.value)) {
+                    if (!assetsPatterns.selectedAssets.map(sa => sa.symbol).includes(data.value)) {
                         return
                     }
                     break
                 case this.columns[clNr++]:   // Pattern
-                    if (!this.assetsPatterns.selectedPatterns.map(sa => sa.name).includes(data.value)) {
+                    if (!assetsPatterns.selectedPatterns.map(sa => sa.name).includes(data.value)) {
                         return
                     }
                     break
@@ -83,13 +84,13 @@ export default {
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[clNr-1].toLowerCase()].split(' ')[1]}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase()).split(' ')[1]}`
                     break
                 case this.columns[clNr++]:   // Stop Loss
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${this.tableData[data.position[0]][this.columns[clNr-1].toLowerCase()].split(' ')[1]}`
+                    data.value = `${data.value} ${this.tableData[data.position[0]].get(this.columns[clNr-1].toLowerCase()).split(' ')[1]}`
                     break
                 case this.columns[clNr++]:   // Trend filter (moving average)
                     if (isNaN(Number(data.value))) {
@@ -106,8 +107,9 @@ export default {
                     return
             }
 
-            this.tableData[data.position[0]][data.position[1].toLowerCase()] = data.value   // write edited/changed value to the table
-            helper.updateStore(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)
+            this.tableData[data.position[0]].set(data.position[1].toLowerCase(), data.value)   // write edited/changed value to the table
+            helper.updateStoreBacktests(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)            
+            this.tableKey++
         }
     },
 

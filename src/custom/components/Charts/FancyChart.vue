@@ -116,20 +116,15 @@ export default {
       type: Boolean,
       description: "Whether to fill area above/below line"
     },
-    tradesEntries: {
+    highlights: {
       type: Array,
-      default: () => [],
-      description: "Points where points should be highlighted with transaction entry color"
-    },
-    tradesStopLosses: {
-      type: Array,
-      default: () => [],
-      description: "Points where points should be highlighted with transaction stopLoss color"
-    },
-    tradesExits: {
-      type: Array,
-      default: () => [],
-      description: "Points where points should be highlighted with transaction exit color"
+      default: () => {
+        return [{ 
+          points: [], 
+          color: config.colors.primary 
+        }]
+      },
+      description: "Points that should be highlighted with big triangle of defined color"
     },
     responsive: {
       type: Boolean,
@@ -358,20 +353,41 @@ export default {
         let defColor = Object.values(config.colors)[datasetNr % Object.values(config.colors).length]      
         datasetSetting.borderColor = defColor
 
-        if (this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length) {
+        if (this.highlights[0].points.length) {   // probably not possible to be only stop losses or trade exits
           datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
-            let label = new Date(allLabels[context.dataIndex]).getTime()
-            return this.tradesEntries.includes(label) ? constants.colors.transEntry   // highlight transaction entry
-                    : this.tradesStopLosses.includes(label) ? constants.colors.transStopLoss      // else, check for stopLoss/exit
-                    : this.tradesExits.includes(label) ? constants.colors.transExit : defColor
+            let label = new Date(allLabels[context.dataIndex]).getTime()            
+            let color = defColor
+
+            this.highlights.forEach(highlight => {
+              if (highlight.points.includes(label)) {
+                color = highlight.color
+              }
+            })
+            return color
           }
+
           datasetSetting.pointRadius = context => {
             let label = new Date(allLabels[context.dataIndex]).getTime()
-            return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointRadius : defaultPointRadius
+            let radius = defaultPointRadius
+
+            this.highlights.forEach(highlight => {
+              if (highlight.points.includes(label)) {
+                radius = highlightPointRadius
+              }
+            })
+            return radius
           }
+
           datasetSetting.pointStyle = context => {
             let label = new Date(allLabels[context.dataIndex]).getTime()
-            return this.tradesEntries.includes(label) || this.tradesStopLosses.includes(label) || this.tradesExits.includes(label) ? highlightPointStyle : defaultPointStyle
+            let style = defaultPointStyle
+
+            this.highlights.forEach(highlight => {
+              if (highlight.points.includes(label)) {
+                style = highlightPointStyle
+              }
+            })
+            return style
           }
         }
         
