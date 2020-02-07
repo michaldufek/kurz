@@ -313,7 +313,10 @@
             "xLabel": "Time",
             "drawdown": "Drawdown",
             "problemsPrefix": "Výsledky patternů",
-            "problemsSuffix": "mají nějaké problémy:"
+            "problemsSuffix": "mají nějaké problémy:",
+            "tradeEntry": "Vstup do obchodu",
+            "tradeStopLoss": "Stop Loss obchodu",
+            "tradeExit": "Výstup z obchodu"
           }
         }
       },

@@ -67,6 +67,7 @@
                     :title="ohlcChartTitle"
                     :apiUrl="chartUrl" 
                     :type="chartType"
+                    :highlights="highlights"
                     style="height: 830px" 
                     :key="historyChartKey" />
 
@@ -152,7 +153,7 @@ export default {
       },
 
       legend() {
-        return this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length ? `<span style="color:${constants.colors.tradeEntry}">&#9650;</span> Trade entry<br/><span style="color:${constants.colors.tradeStopLoss}">&#9650;</span> Trade Stop loss<br/><span style="color:${constants.colors.tradeExit}">&#9650;</span> Trade exit` : null
+        return this.tradesEntries.length || this.tradesStopLosses.length || this.tradesExits.length ? `<span style="color:${constants.colors.tradeEntry}">&#9650;</span> ${this.$t(this.storeKey + '.tradeEntry')}<br/><span style="color:${constants.colors.tradeStopLoss}">&#9650;</span> ${this.$t(this.storeKey + '.tradeStopLoss')}<br/><span style="color:${constants.colors.tradeExit}">&#9650;</span> ${this.$t(this.storeKey + '.tradeExit')}` : null
       },
 
       highlights() {

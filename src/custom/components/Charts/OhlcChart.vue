@@ -53,6 +53,16 @@ export default {
     type: {
       type: String,
       description: "Type of chart - OHLC or Candlestick"
+    },
+    highlights: {
+      type: Array,
+      default: () => {
+        return [{ 
+          points: [], 
+          color: defColor 
+        }]
+      },
+      description: "Points that should be highlighted with big triangle of defined color"
     }
   },
 
@@ -136,8 +146,48 @@ export default {
         })
       }
 
+      let datasetSetting = {}
+      if (this.highlights.length) {
+        datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
+          let label = new Date(allLabels[context.dataIndex]).getTime()            
+          let color = defColor
+
+          this.highlights.forEach(highlight => {
+            if (highlight.points.includes(label)) {
+              color = highlight.color
+            }
+          })
+          return color
+        }
+
+        datasetSetting.pointRadius = context => {
+          let label = new Date(allLabels[context.dataIndex]).getTime()
+          let radius = defaultPointRadius
+
+          this.highlights.forEach(highlight => {
+            if (highlight.points.includes(label)) {
+              radius = highlightPointRadius
+            }
+          })
+          return radius
+        }
+        
+        datasetSetting.pointStyle = context => {
+          let label = new Date(allLabels[context.dataIndex]).getTime()
+          let style = defaultPointStyle
+
+          this.highlights.forEach(highlight => {
+            if (highlight.points.includes(label)) {
+              style = highlightPointStyle
+            }
+          })
+          return style
+        }
+      }
+
       this.datacollection = {
         datasets: [{
+          ...datasetSetting,
           label: this.title,
           data: newData         
         }],

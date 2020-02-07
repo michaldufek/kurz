@@ -313,7 +313,10 @@
             "cumulatedProfit": "Cumulated profit",            
             "drawdown": "Drawdown",
             "problemsPrefix": "Pattern results of",
-            "problemsSuffix": "have some problems:"
+            "problemsSuffix": "have some problems:",
+            "tradeEntry": "Trade entry",
+            "tradeStopLoss": "Trade Stop Loss",
+            "tradeExit": "Trade exit"
           }
         }
       },
