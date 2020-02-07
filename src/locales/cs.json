@@ -327,7 +327,15 @@
           "Aplikační notifikace"
         ]
       }
-    },  
+    }, 
+    "featuresEngineering": {
+      "parameterSweep" : {
+        "title": "Hledání parametrů"
+      },
+      "genetics" : {
+        "title": "Genetika"
+      }
+    }, 
     "wareHouse": {
       "premiumStrategies": "Prémiové Strategie",
       "myStrategies": "Moje Strategie",
@@ -384,6 +392,7 @@
     "portfolioManager": "Portfolio Manažer",
     "stockPickingLab": "StockPicking Lab",
     "patternLab": "Pattern Lab",
+    "featuresEngineering": "Features Engineering",
     "relativeValuesLab": "RelativeValues Lab",
     "wareHouse": "Sklad Strategií",
     "notifications": "Notifikace",

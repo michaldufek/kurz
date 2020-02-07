@@ -328,6 +328,14 @@
         ]
       }
     },  
+    "featuresEngineering": {
+      "parameterSweep" : {
+        "title": "Parameter Sweep"
+      },
+      "genetics" : {
+        "title": "Genetics"
+      }
+    },
     "wareHouse": {
       "premiumStrategies": "Premium Strategies",
       "myStrategies": "My Strategies",
@@ -384,6 +392,7 @@
     "portfolioManager": "Portfolio Manager",
     "stockPickingLab": "StockPicking Lab",
     "patternLab": "Pattern Lab",
+    "featuresEngineering": "Features Engineering",
     "relativeValuesLab": "RelativeValues Lab",
     "wareHouse": "Ware House",
     "notifications": "Notifications",
