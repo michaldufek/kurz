@@ -110,6 +110,8 @@ export default {
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRFToken': csrfToken
       };
+
+      console.log(axios.defaults.headers.common) // temp
     },
   
     login (email, pass, cb, cbf) {

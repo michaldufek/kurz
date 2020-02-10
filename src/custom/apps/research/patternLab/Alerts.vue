@@ -68,6 +68,16 @@
           ({ checkedAssets:this.assets, checkedPatterns:this.patterns } = data)
         }
 
+        this.$http
+        .post(constants.urls.patternLab.alerts, {
+          "pattern": this.patterns[0].id,
+          "ticker": this.assets[0].id,
+          "timeframe": 1,
+          "app": true,
+          "email": true
+        })
+        .catch(error => console.log(error))
+
         this.setTableData()
       },
       
