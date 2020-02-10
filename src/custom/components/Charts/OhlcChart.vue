@@ -29,6 +29,7 @@ import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 import Ohlc from '@/custom/components/Charts/Ohlc';
 import Candlestick from '@/custom/components/Charts/Candlestick';
 
+import config from '@/config';
 import constants from '@/custom/assets/js/constants';
 import helper from '@/custom/assets/js/helper';
 
@@ -59,7 +60,7 @@ export default {
       default: () => {
         return [{ 
           points: [], 
-          color: defColor 
+          color: config.colors.primary 
         }]
       },
       description: "Points that should be highlighted with big triangle of defined color"
@@ -146,48 +147,10 @@ export default {
         })
       }
 
-      let datasetSetting = {}
-      if (this.highlights.length) {
-        datasetSetting.pointBackgroundColor = context => {  // https://www.chartjs.org/docs/latest/general/options.html#scriptable-options
-          let label = new Date(allLabels[context.dataIndex]).getTime()            
-          let color = defColor
-
-          this.highlights.forEach(highlight => {
-            if (highlight.points.includes(label)) {
-              color = highlight.color
-            }
-          })
-          return color
-        }
-
-        datasetSetting.pointRadius = context => {
-          let label = new Date(allLabels[context.dataIndex]).getTime()
-          let radius = defaultPointRadius
-
-          this.highlights.forEach(highlight => {
-            if (highlight.points.includes(label)) {
-              radius = highlightPointRadius
-            }
-          })
-          return radius
-        }
-        
-        datasetSetting.pointStyle = context => {
-          let label = new Date(allLabels[context.dataIndex]).getTime()
-          let style = defaultPointStyle
-
-          this.highlights.forEach(highlight => {
-            if (highlight.points.includes(label)) {
-              style = highlightPointStyle
-            }
-          })
-          return style
-        }
-      }
+      // to-do: figure out how to use highlights with this type of chart (standard FancyChart way doesn't work - dataset highlights settings are ignored)
 
       this.datacollection = {
         datasets: [{
-          ...datasetSetting,
           label: this.title,
           data: newData         
         }],
