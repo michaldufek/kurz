@@ -92,6 +92,40 @@ export default {
 
         return rows
     },
+    createTradesRow(rows, datum, base) {
+        let rowNr = 0
+
+        Object.keys(datum.output.trades.pnl).forEach(_ => 
+            rows.push([
+                rowNr + 1,    // #                    
+                base.symbol,    // Asset                    
+                base.pattern,    // Pattern
+                datum.direction,   // Direction
+                'Entry price',   // Entry price
+                'Exit price',   // Exit price
+                this.formatDateTime(datum.output.trades.start[rowNr]),   // Entry time
+                this.formatDateTime(datum.output.trades.finish[rowNr]),   // Exit time
+                'Amount',   // Amount
+                datum.output.trades.pnl[rowNr++]   // PnL
+            ])
+        )
+    },
+    createPerfMetricsRow(rows, datum, base) {
+        rows.push([
+            base.symbol,    // Asset
+            base.pattern,    // Pattern
+            Object.keys(datum.output.trades.pnl).length,   // # of trades
+            `${datum.initial_capital} ${constants.defaultUnit}`,   // Initial capital
+            `${datum.initial_capital + datum.output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`,   // End capital
+            `${datum.output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`,    // Cummulative PnL final
+            'CAGR',    // CAGR
+            datum.output.stats["Sharpe ratio"],  // Sharpe ratio
+            `${datum.profit_take_value} ${datum.profit_take_unit}`,   // PT
+            `${datum.stop_loss_value} ${datum.stop_loss_unit}`,   // SL
+            datum.output.stats["Avg. trade net profit per trade"],  // Average trade
+            datum.output.stats["Max drawdown strategy"]  // Max drawdown strategy
+        ])
+    },
 
     // date-time types formatting    
     pad(nr) {
@@ -155,7 +189,7 @@ export default {
         // map Patterns table row to API structure
         let data = {}
         let clNr = 1    // 0th is Name - no need to map
-        let columns = i18n.t(constants.patternsKey + '.columns')
+        let columns = i18n.t(constants.translationKeys.patterns + '.columns')
 
         if (row.get(columns[clNr].toLowerCase())) {
             data['start_date'] = row.get(columns[clNr].toLowerCase()) // From
@@ -263,8 +297,8 @@ export default {
         this.updateStore(store, key, value.map(row => {
             let newRow = new Map(row)
 
-            let timeframeKey = i18n.t(constants.patternsKey + '.columns')[3].toLowerCase()
-            let directionKey = i18n.t(constants.patternsKey + '.columns')[11].toLowerCase()
+            let timeframeKey = i18n.t(constants.translationKeys.patterns + '.columns')[3].toLowerCase()
+            let directionKey = i18n.t(constants.translationKeys.patterns + '.columns')[11].toLowerCase()
             newRow.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(row.get(directionKey)))
             newRow.set(timeframeKey, i18n.t('research.patternLab.timeframes').indexOf(row.get(timeframeKey)))
 
@@ -282,10 +316,10 @@ export default {
                 row.set('btId', bt[clNr++])
                 row.set('assetId', bt[clNr++])
                 row.set('patternId', bt[clNr++])
-                i18n.t(constants.patternsKey + '.columns').forEach(column => row.set(column.toLowerCase(), bt[clNr++]))
+                i18n.t(constants.translationKeys.patterns + '.columns').forEach(column => row.set(column.toLowerCase(), bt[clNr++]))
                 
-                let timeframeKey = i18n.t(constants.patternsKey + '.columns')[3].toLowerCase()
-                let directionKey = i18n.t(constants.patternsKey + '.columns')[11].toLowerCase()
+                let timeframeKey = i18n.t(constants.translationKeys.patterns + '.columns')[3].toLowerCase()
+                let directionKey = i18n.t(constants.translationKeys.patterns + '.columns')[11].toLowerCase()
                 row.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[row.get(directionKey)])
                 row.set(timeframeKey, i18n.t('research.patternLab.timeframes')[row.get(timeframeKey)])
 
@@ -303,7 +337,7 @@ export default {
         if (data) {
           var loading = data.loading
           
-          this.getStoredBacktests(data).forEach(bt => backtestsNames.push({ id: bt.get('btId'), name: bt.get(i18n.t(constants.patternsKey + '.columns')[0].toLowerCase()) }))
+          this.getStoredBacktests(data).forEach(bt => backtestsNames.push({ id: bt.get('btId'), name: bt.get(i18n.t(constants.translationKeys.patterns + '.columns')[0].toLowerCase()) }))
 
           data = store.getItem(storeKey)
           if (data && 'selectedBacktest' in data && backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {

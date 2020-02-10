@@ -231,7 +231,7 @@ export default {
             this.tradesEntries = []
             this.tradesStopLosses = []
             this.tradesExits = []
-            let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns'))
+            let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns'))
             if (datum.error) {              
               this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${base.name}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
             } else {
@@ -256,7 +256,7 @@ export default {
 
             this.noDataText = null
             if (datum.error) {
-              let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns')).name
+              let btName = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns')).name
               this.noDataText = `${this.$t(this.storeKey + '.problemsPrefix')} '${btName}' ${this.$t(this.storeKey + '.problemsSuffix')} ${datum.msg}`
             } else {
               return {
