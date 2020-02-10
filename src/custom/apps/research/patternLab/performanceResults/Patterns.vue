@@ -22,9 +22,10 @@ export default {
 
     data() {
         return {
-            patternsKey: constants.patternsKey,
+            patternsKey: constants.translationKeys.patterns,
+
             tableData: null,
-            columns: this.$t(constants.patternsKey + '.columns'),
+            columns: this.$t(constants.translationKeys.patterns + '.columns'),
             tableKey: 0
         }
     },
@@ -79,7 +80,7 @@ export default {
                     if (isNaN(Number(data.value))) {
                         return
                     }
-                    data.value = `${data.value} ${helper.pluralize(data.value, constants.patternsKey + '.bar')}`
+                    data.value = `${data.value} ${helper.pluralize(data.value, constants.translationKeys.patterns + '.bar')}`
                     break
                 case this.columns[clNr++]:   // Profit Target
                     if (isNaN(Number(data.value))) {

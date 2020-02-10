@@ -27,7 +27,8 @@ export default {
 
     data() {
         return {
-            perfMetricsKey: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
+            perfMetricsKey: constants.translationKeys.performanceMetrics,
+
             loading: true,
             noDataText: '',
             warningText: '',
@@ -57,25 +58,12 @@ export default {
             let rows = []
 
             data.forEach(datum => {
-                let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns'))
+                let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns'))
 
                 if (datum.error) {
                     this.warningText += `Pattern results of '${base.name}' has some problems: ${datum.msg} `
                 } else {
-                    rows.push([
-                        base.symbol,    // Asset
-                        base.pattern,    // Pattern
-                        Object.keys(datum.output.trades.pnl).length,   // # of trades
-                        `${datum.initial_capital} ${constants.defaultUnit}`,   // Initial capital
-                        `${datum.initial_capital + datum.output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`,   // End capital
-                        `${datum.output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`,    // Cummulative PnL final
-                        'CAGR',    // CAGR
-                        datum.output.stats["Sharpe ratio"],  // Sharpe ratio
-                        `${datum.profit_take_value} ${datum.profit_take_unit}`,   // PT
-                        `${datum.stop_loss_value} ${datum.stop_loss_unit}`,   // SL
-                        datum.output.stats["Avg. trade net profit per trade"],  // Average trade
-                        datum.output.stats["Max drawdown strategy"]  // Max drawdown strategy
-                    ])
+                    helper.createPerfMetricsRow(rows, datum, base)
                 }
             })
 

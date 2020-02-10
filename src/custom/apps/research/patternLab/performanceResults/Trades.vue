@@ -27,7 +27,8 @@ export default {
 
     data() {
         return {
-            tradesKey: 'research.patternLab.backtestPatterns.performanceResults.trades',
+            tradesKey: constants.translationKeys.trades,
+
             loading: true,
             noDataText: '',
             warningText: '',
@@ -57,26 +58,12 @@ export default {
             let rows = []
             
             data.forEach(datum => {
-                let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.patternsKey + '.columns'))
+                let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns'))
 
                 if (datum.error) {
                     this.warningText += `Pattern results of '${base.name}' has some problems: ${datum.msg} `
                 } else {
-                    let rowNr = 0
-                    Object.keys(datum.output.trades.pnl).forEach(_ => 
-                        rows.push([
-                            rowNr + 1,    // #                    
-                            base.symbol,    // Asset                    
-                            base.pattern,    // Pattern
-                            datum.direction,   // Direction
-                            'Entry price',   // Entry price
-                            'Exit price',   // Exit price
-                            helper.formatDateTime(datum.output.trades.start[rowNr]),   // Entry time
-                            helper.formatDateTime(datum.output.trades.finish[rowNr]),   // Exit time
-                            'Amount',   // Amount
-                            datum.output.trades.pnl[rowNr++]   // PnL
-                        ])
-                    )
+                    helper.createTradesRow(rows, datum, base)
                 }
             })
 

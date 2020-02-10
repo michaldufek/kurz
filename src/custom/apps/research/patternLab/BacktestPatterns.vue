@@ -225,7 +225,7 @@
     data() {
       return {
         errorTitle: ' (' + this.$t('research.patternLab.backtestPatterns.title') + ').',
-        columns: this.$t(constants.patternsKey + '.columns'),
+        columns: this.$t(constants.translationKeys.patterns + '.columns'),
 
         strategy: {
           ...defaultStrategy,
@@ -444,7 +444,7 @@
       },
       updateRow(row, clNr) {
         row.set(this.columns[clNr++].toLowerCase(), this.strategy.initialCapital ? `${this.strategy.initialCapital} ${constants.defaultUnit}` : null)    // Initial capital
-        row.set(this.columns[clNr++].toLowerCase(), this.strategy.analyze ? `${this.strategy.analyze} ${helper.pluralize(this.strategy.analyze, constants.patternsKey + '.bar')}` : null)    // Analyze
+        row.set(this.columns[clNr++].toLowerCase(), this.strategy.analyze ? `${this.strategy.analyze} ${helper.pluralize(this.strategy.analyze, constants.translationKeys.patterns + '.bar')}` : null)    // Analyze
         row.set(this.columns[clNr++].toLowerCase(), this.strategy.profit_take.value ? `${this.strategy.profit_take.value} ${this.strategy.profit_take.unit}` : null)    // Profit Target
         row.set(this.columns[clNr++].toLowerCase(), this.strategy.stoploss.value ? `${this.strategy.stoploss.value} ${this.strategy.stoploss.unit}` : null)    // Stop Loss
         row.set(this.columns[clNr++].toLowerCase(), this.strategy.trendFilter && this.strategy.ma_filter_period ? `${this.strategy.ma_filter_period} ${constants.defaultUnit}` : null)    // Trend filter (moving average)
