@@ -15,9 +15,122 @@
   </nav>
 </template>
 <script>
+  import XLSX from 'xlsx/xlsx';
+  window.$ = window.jQuery = require('jquery');
+
+  import constants from '@/custom/assets/js/constants'
+  import helper from '@/custom/assets/js/helper';
+
+
   export default {
     methods: {
-      exportClick() {}
+      exportClick() {
+        let sheets = []
+        let sheetKeys = [ constants.translationKeys.patterns, constants.translationKeys.trades, constants.translationKeys.performanceMetrics ]
+
+        sheetKeys.forEach(sheetKey => {
+          let sheet = { name: this.$t(sheetKey + '.title'), columns: [], data: [] }
+
+          // create columns objects
+          let columns = this.$t(sheetKey + '.columns')
+          columns.forEach(column => sheet.columns.push({ label: column, field: column.toLowerCase() }))
+
+          // create data objects
+          if (sheetKey === constants.translationKeys.patterns) {
+            let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
+            if (data) {
+              this.createData(helper.getStoredBacktests(data), sheet, columns)             
+            }
+
+            sheets.push(sheet)
+          } else {
+            this.$http
+            .get(constants.urls.patternLab.backtestPatterns.results)
+            .then(response => {
+              let rows = []
+
+              response.data.forEach(datum => {
+                let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns'))
+
+                if (datum.error) {
+                    console.log(`Pattern results of '${base.name}' has some problems: ${datum.msg}`)
+                } else {
+                  if (sheetKey === constants.translationKeys.trades) {
+                    helper.createTradesRow(rows, datum, base)
+                  } else if (sheetKey === constants.translationKeys.performanceMetrics) {    
+                    helper.createPerfMetricsRow(rows, datum, base)
+                  }
+                }
+              })
+
+              this.createData(rows, sheet, columns)             
+            })
+            .catch(error => {
+              console.log(error);
+              if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
+              }
+            })
+            .finally(() => {
+              sheets.push(sheet)
+  
+              if (sheetKey === constants.translationKeys.performanceMetrics) {
+                this.exportExcel(sheets)
+              }
+            })            
+          }
+        })
+      },
+      createData(oldRows, sheet, columns) {
+        oldRows.forEach(oldRow => {
+          let row = {}
+          let clNr = 0
+          this.$t(columns).forEach(column => {
+            row[column.toLowerCase()] = oldRow instanceof Map ? oldRow.get(column.toLowerCase()) : oldRow[clNr]
+            clNr++
+          })
+          sheet.data.push(row)
+        })
+      },
+
+      exportExcel(sheets) {
+        // Inspired by https://github.com/t-chatoyan/vue-excel-xlsx - functionality of export to multiple sheets was added.
+
+        let wb = XLSX.utils.book_new()                
+        let filename = this.$t('research.patternLab.backtestPatterns.title') + ".xlsx";
+
+        sheets.forEach(sheet => {
+          if (sheet.columns.length === 0 || sheet.data.length === 0){
+            console.log(`Columns or data of sheet '${sheet.name}' missing! Sheet skipped.`);
+          } else {
+            let createXLSLFormatObj = [];
+            let newXlsHeader = [];
+            $.each(sheet.columns, function(index, value) {
+                newXlsHeader.push(value.label);
+            });
+
+            createXLSLFormatObj.push(newXlsHeader);
+            $.each(sheet.data, function(index, value) {
+                let innerRowData = [];
+                $.each(sheet.columns, function(index, val) {
+                    if (val.dataFormat && typeof val.dataFormat === 'function') {
+                        innerRowData.push(val.dataFormat(value[val.field]));
+                    }else {
+                        innerRowData.push(value[val.field]);
+                    }
+                });
+                createXLSLFormatObj.push(innerRowData);
+            });                    
+
+            let ws_name = sheet.name;
+            
+            let ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+            XLSX.utils.book_append_sheet(wb, ws, ws_name);
+          }
+        })
+
+        XLSX.writeFile(wb, filename);
+      }
     }
   };
 </script>

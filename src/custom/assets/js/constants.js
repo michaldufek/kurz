@@ -79,7 +79,11 @@ export default {
         backtestPatterns: 'research.patternLab.backtestPatterns'
     },
 
-    patternsKey: 'research.patternLab.backtestPatterns.performanceResults.patterns',
+    translationKeys: {
+        patterns: 'research.patternLab.backtestPatterns.performanceResults.patterns',
+        trades: 'research.patternLab.backtestPatterns.performanceResults.trades',
+        performanceMetrics: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics'
+    },
 
     strings: {
         networkError: "Network Error",
