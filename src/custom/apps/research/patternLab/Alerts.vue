@@ -1,5 +1,6 @@
 <template>
   <div class="row">
+
     <div class="col-lg-3 col-md-12 container">
       <assets-patterns-picker :title="$t('research.patternLab.alerts.title')"
                               :btnText="$t('research.patternLab.alerts.addAlert')" 
@@ -13,31 +14,14 @@
                   :apiUrls="alertsUrl"
                   :authorize="true"
                   :rowsCreator="rowsCreator"
-                  :columns="$t(alertsKey + '.columns')"
+                  :columns="$t(alertsKey + '.columns').concat($t(alertsKey + '.columns4check'))"
+                  :checked="checked"
+                  @checked="checkedEmit"
                   :sortable="true"
                   :filterable="true"
                   :key="tableKey" />
     </div>
-    <!-- alerts table -->
-    <!-- <card class="col-lg-9 col-md-12">
-      <base-table :data="patternsAssets" 
-                  :columns="$t(tableKey)"
-                  :sortable="true"
-                  :filterable="true">
-        <template slot="columns">
-          <th>{{ $t()[0] }}</th>
-          <th>{{ $t(tableKey)[1] }}</th>
-          <th style="text-align: center">{{ $t(tableKey)[2] }}</th>
-          <th style="text-align: center">{{ $t(tableKey)[3] }}</th>
-        </template>  
-        <template slot-scope="{row}">
-          <td>{{ row[$t(tableKey)[0].toLowerCase()] }}</td>
-          <td>{{ row[$t(tableKey)[1].toLowerCase()] }}</td>
-          <td style="text-align: center"><input type="checkbox" :value="row[$t(tableKey)[2].toLowerCase()]" v-model="checkedEmailNotifications"></td>
-          <td style="text-align: center"><input type="checkbox" :value="row[$t(tableKey)[3].toLowerCase()]" v-model="checkedAppNotifications"></td>
-        </template>    
-      </base-table>
-    </card> -->
+
   </div>
 </template>
 <script>
@@ -57,11 +41,8 @@
     data() {
       return {
         alertsKey: 'research.patternLab.alerts',
-
         assetsPatterns: null,
-        checkedEmailNotifications: [],
-        checkedAppNotifications: [],
-
+        checked: {},
         tableKey: 0
       }
     },
@@ -77,6 +58,7 @@
         this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
       },
 
+      // emited events
       addAlert() {
         this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
 
@@ -90,16 +72,31 @@
 
         this.tableKey++
       },
+      checkedEmit(data) {
+        helper.updateStore(this.$store, 'checked', data, this.alertsKey)
+      },
       
       rowsCreator(data) {
         let rows = []
+        let columns4checkKey = this.alertsKey + '.columns4check'
+        this.checked = {}
+        this.checked[this.$t(columns4checkKey)[0]] = []
+        this.checked[this.$t(columns4checkKey)[1]] = []
 
-        data.forEach(datum => rows.push([
-          this.getPatternName(datum.pattern),
-          this.getAssetSymbol(datum.ticker)
-          // datum.app,
-          // datum.email
-        ]))
+        data.forEach(datum => {
+          let pName = this.getPatternName(datum.pattern)
+          let symbol = this.getAssetSymbol(datum.ticker)
+
+          if (pName && symbol) {
+            rows.push([
+              pName,
+              symbol
+            ])
+
+            this.checked[this.$t(columns4checkKey)[0]].push(datum.email)  // Email notification
+            this.checked[this.$t(columns4checkKey)[1]].push(datum.app)  // App notification          
+          }
+        })
 
         return rows
       },

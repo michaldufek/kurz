@@ -325,7 +325,9 @@
         "addAlert": "Přidat upozornění",
         "columns": [
           "Pattern",
-          "Akce",
+          "Akce"
+        ],
+        "columns4check": [
           "Email notifikace",
           "Aplikační notifikace"
         ]

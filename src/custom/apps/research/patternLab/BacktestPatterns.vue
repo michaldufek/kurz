@@ -495,7 +495,7 @@
           helper.updateStore(this.$store, 'strategy', val2store, constants.storeKeys.backtestPatterns) 
         },
         deep: true
-      },
+      }
     }
   }  
 </script>

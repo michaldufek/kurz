@@ -14,6 +14,8 @@
         <base-table :data="data.length ? data : tableData"
                     :titles="titles"
                     :columns="columns"
+                    :checked="checked"
+                    @checked="checkedEmit"
                     thead-classes="text-primary"
                     :sortable="sortable"
                     :filterable="filterable"
@@ -89,6 +91,15 @@ export default {
       type: Array,
       default: () => [],
       description: "Table columns"
+    },
+    checked: {
+      type: Object,
+      default: () => {
+        return {
+          column: []
+        }
+      },
+      description: "Columns items that are checkboxes and whether they are checked"
     },
     sortable: {
       type: Boolean,
@@ -216,6 +227,9 @@ export default {
     // BaseTable emited event
     edited(data) {
       this.$emit('edited', data)
+    },
+    checkedEmit(data) {
+      this.$emit('checked', data)
     }
   },
 

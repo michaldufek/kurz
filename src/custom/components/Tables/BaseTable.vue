@@ -26,10 +26,10 @@
             @dblclick="edit(rowIndex, item, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
-            :class="{ 'interactive': editable }"           
-            style="text-align: right; white-space: pre-wrap;">
-              <base-input v-show="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />
-              <p v-show="!isEditing(rowIndex, column)">{{ itemValue(item, column) | toFixed2 }}</p>
+            :class="{ 'interactive': editable, 'checkbox': column in checked, 'notCheckbox': !(column in checked) }" >
+              <base-checkbox v-if="column in checked" v-model="checked[column]" />
+              <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />              
+              <p v-else>{{ itemValue(item, column) | toFixed2 }}</p>
             </td>
       </slot>
     </tr>
@@ -47,6 +47,15 @@
         type: Array,
         default: () => [],
         description: "Table columns"
+      },
+      checked: {
+        type: Object,
+        default: () => {
+          return {
+            column: []
+          }
+        },
+        description: "Columns items that are checkboxes and whether they are checked"
       },
       data: {
         type: Array,
@@ -221,11 +230,29 @@
         // split because in portfolio card it is in '<statisticName>: <number>' format
         return this.titles[value.split(': ')[0].toLowerCase()] + suffix
       }
+    },
+
+    watch: {
+      checked: {
+        handler(val){
+          this.$emit('checked', val)
+        },
+        deep: true
+      }
     }
   }
 </script>
 <style>
 .interactive {
   cursor: pointer
+}
+
+.notCheckbox {
+  text-align: right;
+  white-space: pre-wrap
+}
+
+.checkbox {
+  text-align: center
 }
 </style>
