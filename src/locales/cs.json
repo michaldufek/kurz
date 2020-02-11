@@ -323,9 +323,11 @@
       "alerts": {
         "title": "Upozornění",
         "addAlert": "Přidat upozornění",
-        "table": [
+        "columns": [
           "Pattern",
-          "Akce",
+          "Akce"
+        ],
+        "columns4check": [
           "Email notifikace",
           "Aplikační notifikace"
         ]

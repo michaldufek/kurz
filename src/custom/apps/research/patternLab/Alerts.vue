@@ -1,5 +1,6 @@
 <template>
   <div class="row">
+
     <div class="col-lg-3 col-md-12 container">
       <assets-patterns-picker :title="$t('research.patternLab.alerts.title')"
                               :btnText="$t('research.patternLab.alerts.addAlert')" 
@@ -7,30 +8,24 @@
                               @btnClicked="addAlert" />
     </div>
 
-    <!-- alerts table -->
-    <card class="col-lg-9 col-md-12">
-      <base-table :data="patternsAssets" 
-                  :columns="$t(tableKey)"
+    <div class="col-lg-9 col-md-12">
+      <fancy-table :title="$t(alertsKey + '.title')"
+                  :showTitle="false"
+                  :apiUrls="alertsUrl"
+                  :authorize="true"
+                  :rowsCreator="rowsCreator"
+                  :columns="$t(alertsKey + '.columns').concat($t(alertsKey + '.columns4check'))"
+                  :checked="checked"
+                  @checked="checkedEmit"
                   :sortable="true"
-                  :filterable="true">
-        <template slot="columns">
-          <th>{{ $t()[0] }}</th>
-          <th>{{ $t(tableKey)[1] }}</th>
-          <th style="text-align: center">{{ $t(tableKey)[2] }}</th>
-          <th style="text-align: center">{{ $t(tableKey)[3] }}</th>
-        </template>  
-        <template slot-scope="{row}">
-          <td>{{ row[$t(tableKey)[0].toLowerCase()] }}</td>
-          <td>{{ row[$t(tableKey)[1].toLowerCase()] }}</td>
-          <td style="text-align: center"><input type="checkbox" :value="row[$t(tableKey)[2].toLowerCase()]" v-model="checkedEmailNotifications"></td>
-          <td style="text-align: center"><input type="checkbox" :value="row[$t(tableKey)[3].toLowerCase()]" v-model="checkedAppNotifications"></td>
-        </template>    
-      </base-table>
-    </card>
+                  :filterable="true"
+                  :key="tableKey" />
+    </div>
+
   </div>
 </template>
 <script>
-  import { BaseTable } from '@/components'
+  import FancyTable from '@/custom/components/Tables/FancyTable';
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
 
   import constants from '@/custom/assets/js/constants';
@@ -40,63 +35,95 @@
   export default {
     components: {
       AssetsPatternsPicker,
-      BaseTable
+      FancyTable
     },
 
     data() {
       return {
-        tableKey: 'research.patternLab.alerts.table',
-
-        assets: [],
-        patterns: [],
-        patternsAssets: [],
-        checkedEmailNotifications: [],
-        checkedAppNotifications: []
+        alertsKey: 'research.patternLab.alerts',
+        assetsPatterns: null,
+        checked: {},
+        tableKey: 0
       }
     },
 
     computed: {        
-      // alertsUrl() {
-      //   return [ constants.urls.patternLab.alerts ]
-      // }
+      alertsUrl() {
+        return [ constants.urls.patternLab.alerts ]
+      }
     },
 
     methods: {
+      initData() {
+        this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+      },
+
+      // emited events
       addAlert() {
-        let data = helper.getAssetsPatternsPickerData(this.$store)
-        if (data) {
-          ({ checkedAssets:this.assets, checkedPatterns:this.patterns } = data)
+        this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+
+        if (this.assetsPatterns) {
+          this.assetsPatterns.checkedAssets.forEach(asset => 
+            this.assetsPatterns.checkedPatterns.forEach(pattern =>
+              this.$http
+              .post(constants.urls.patternLab.alerts, { pattern: pattern.id, ticker: asset.id, /*app: , email:*/ }, this.$store.getItem('headers'))
+              .catch(error => console.log(error))))
         }
 
-        this.$http
-        .post(constants.urls.patternLab.alerts, {
-          "pattern": this.patterns[0].id,
-          "ticker": this.assets[0].id,
-          "timeframe": 1,
-          "app": true,
-          "email": true
-        })
-        .catch(error => console.log(error))
-
-        this.setTableData()
+        this.tableKey++
+      },
+      checkedEmit(data) {
+        helper.updateStore(this.$store, 'checked', data, this.alertsKey)
       },
       
-      setTableData() {
+      rowsCreator(data) {
         let rows = []
+        let columns4checkKey = this.alertsKey + '.columns4check'
+        this.checked = {}
+        this.checked[this.$t(columns4checkKey)[0]] = []
+        this.checked[this.$t(columns4checkKey)[1]] = []
 
-        this.assets.forEach(asset => this.patterns.forEach(pattern => {
-          let row = {}
+        data.forEach(datum => {
+          let pName = this.getPatternName(datum.pattern)
+          let symbol = this.getAssetSymbol(datum.ticker)
 
-          row[this.$t(this.tableKey)[0].toLowerCase()] = pattern.name
-          row[this.$t(this.tableKey)[1].toLowerCase()] = asset.symbol
-          row[this.$t(this.tableKey)[2].toLowerCase()] = pattern.name + '|' + asset.symbol
-          row[this.$t(this.tableKey)[3].toLowerCase()] = pattern.name + '|' + asset.symbol
+          if (pName && symbol) {
+            rows.push([
+              pName,
+              symbol
+            ])
 
-          rows.push(row)
-        }))
+            this.checked[this.$t(columns4checkKey)[0]].push(datum.email)  // Email notification
+            this.checked[this.$t(columns4checkKey)[1]].push(datum.app)  // App notification          
+          }
+        })
 
-        this.patternsAssets = rows
+        return rows
+      },
+
+      getPatternName(patternId) {
+        if (this.assetsPatterns) {
+          let patterns = this.assetsPatterns.selectedPatterns.filter(pattern => pattern.id === patternId)
+          if (patterns.length) {
+            return patterns[0].name
+          }
+        }
+        return null
+      },
+      getAssetSymbol(assetId) {
+        if (this.assetsPatterns) {
+          let assets = this.assetsPatterns.selectedAssets.filter(asset => asset.id === assetId)
+          if (assets.length) {
+            return assets[0].symbol
+          }
+        }
+        return null
       }
+
+    },
+
+    mounted() {
+      this.initData()
     }
   }  
 </script>

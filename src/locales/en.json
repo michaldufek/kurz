@@ -323,9 +323,11 @@
       "alerts": {
         "title": "Alerts",
         "addAlert": "Add alert",
-        "table": [
+        "columns": [
           "Pattern",
-          "Asset",
+          "Asset"
+        ],
+        "columns4check": [
           "Email notification",
           "App notification"
         ]

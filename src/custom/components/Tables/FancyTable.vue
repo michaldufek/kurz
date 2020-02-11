@@ -14,6 +14,8 @@
         <base-table :data="data.length ? data : tableData"
                     :titles="titles"
                     :columns="columns"
+                    :checked="checked"
+                    @checked="checkedEmit"
                     thead-classes="text-primary"
                     :sortable="sortable"
                     :filterable="filterable"
@@ -62,6 +64,10 @@ export default {
       default: () => [],
       description: "URLs to API data sources"
     },
+    authorize: {
+      type: Boolean,
+      description: "Whether connection to apiUrls must be authorized"
+    },
     rowsCreator: {
       type: Function,
       default: responseData => {
@@ -85,6 +91,15 @@ export default {
       type: Array,
       default: () => [],
       description: "Table columns"
+    },
+    checked: {
+      type: Object,
+      default: () => {
+        return {
+          column: []
+        }
+      },
+      description: "Columns items that are checkboxes and whether they are checked"
     },
     sortable: {
       type: Boolean,
@@ -152,7 +167,7 @@ export default {
         } else {
           this.apiUrls.forEach(apiUrl => {
             this.$http
-            .get(apiUrl)
+            .get(apiUrl, this.authorize ? this.$store.getItem('headers') : null)
             .then(response => {
               if (!this.finishedLoadings) {
                 this.tableData = []
@@ -212,6 +227,9 @@ export default {
     // BaseTable emited event
     edited(data) {
       this.$emit('edited', data)
+    },
+    checkedEmit(data) {
+      this.$emit('checked', data)
     }
   },
 

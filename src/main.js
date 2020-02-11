@@ -90,25 +90,25 @@ const getOfflineRoutine = url => new Promise ((resolve, __) => {
     data: data
   })
 })
-const getOnlineRoutine = url => new Promise ((resolve, reject) => {
+const getOnlineRoutine = (url, config) => new Promise ((resolve, reject) => {
   let response = {}
   Axios
-  .get(url)
+  .get(url, config)
   .then(resp => response = resp)
   .catch(error => reject(error))
   .finally(() => resolve(response))
 })
-const postOnlineRoutine = (url, data) => new Promise ((resolve, reject) => {
+const postOnlineRoutine = (url, data, config) => new Promise ((resolve, reject) => {
   let response = {}
   Axios
-  .post(url, data)
+  .post(url, data, config)
   .then(resp => response = resp)
   .catch(error => reject(error))
   .finally(() => resolve(response))
 })
 const offline = false
 Vue.prototype.$http = {
-  get(url) {
+  get(url, config) {
     if (offline) {
       console.log('Offline. Fabricating data for ' + url + ' ...')
       var getRoutine = getOfflineRoutine
@@ -116,10 +116,10 @@ Vue.prototype.$http = {
       getRoutine = getOnlineRoutine
     }
 
-    return getRoutine(url)
+    return getRoutine(url, config)
   },
-  post(url, data) {
-    return postOnlineRoutine(url, data)
+  post(url, data, config) {
+    return postOnlineRoutine(url, data, config)
   }
 }
 

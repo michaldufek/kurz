@@ -8,7 +8,7 @@ import constants from '@/custom/assets/js/constants';
 const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
   axios({url: constants.urls.auth + '/login/', data: { "email": email, "password": pass }, method: 'POST' })
   .then(resp => {
-    const token = resp.data.token
+    const token = resp.data.key
     localStorage.setItem('token', token) // store the token in localstorage
     resolve(resp)
   })

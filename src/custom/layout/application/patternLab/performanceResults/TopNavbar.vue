@@ -16,8 +16,6 @@
 </template>
 <script>
   import XLSX from 'xlsx/xlsx';
-  window.$ = window.jQuery = require('jquery');
-
   import constants from '@/custom/assets/js/constants'
   import helper from '@/custom/assets/js/helper';
 
@@ -27,6 +25,7 @@
       exportClick() {
         let sheets = []
         let sheetKeys = [ constants.translationKeys.patterns, constants.translationKeys.trades, constants.translationKeys.performanceMetrics ]
+        let sheetKeysDone = []
 
         sheetKeys.forEach(sheetKey => {
           let sheet = { name: this.$t(sheetKey + '.title'), columns: [], data: [] }
@@ -43,6 +42,7 @@
             }
 
             sheets.push(sheet)
+            sheetKeysDone.push(sheetKey)
           } else {
             this.$http
             .get(constants.urls.patternLab.backtestPatterns.results)
@@ -73,8 +73,9 @@
             })
             .finally(() => {
               sheets.push(sheet)
+              sheetKeysDone.push(sheetKey)
   
-              if (sheetKey === constants.translationKeys.performanceMetrics) {
+              if (sheetKeys.sort().join(',') === sheetKeysDone.sort().join(',')) {  // arrays are same, ie.we are finished
                 this.exportExcel(sheets)
               }
             })            
@@ -85,7 +86,7 @@
         oldRows.forEach(oldRow => {
           let row = {}
           let clNr = 0
-          this.$t(columns).forEach(column => {
+          columns.forEach(column => {
             row[column.toLowerCase()] = oldRow instanceof Map ? oldRow.get(column.toLowerCase()) : oldRow[clNr]
             clNr++
           })
@@ -95,9 +96,7 @@
 
       exportExcel(sheets) {
         // Inspired by https://github.com/t-chatoyan/vue-excel-xlsx - functionality of export to multiple sheets was added.
-
         let wb = XLSX.utils.book_new()                
-        let filename = this.$t('research.patternLab.backtestPatterns.title') + ".xlsx";
 
         sheets.forEach(sheet => {
           if (sheet.columns.length === 0 || sheet.data.length === 0){
@@ -105,17 +104,17 @@
           } else {
             let createXLSLFormatObj = [];
             let newXlsHeader = [];
-            $.each(sheet.columns, function(index, value) {
+            sheet.columns.forEach(value => {
                 newXlsHeader.push(value.label);
             });
 
             createXLSLFormatObj.push(newXlsHeader);
-            $.each(sheet.data, function(index, value) {
+            sheet.data.forEach(value => {
                 let innerRowData = [];
-                $.each(sheet.columns, function(index, val) {
+                sheet.columns.forEach(val => {
                     if (val.dataFormat && typeof val.dataFormat === 'function') {
                         innerRowData.push(val.dataFormat(value[val.field]));
-                    }else {
+                    } else {
                         innerRowData.push(value[val.field]);
                     }
                 });
@@ -129,7 +128,7 @@
           }
         })
 
-        XLSX.writeFile(wb, filename);
+        XLSX.writeFile(wb, this.$t('research.patternLab.backtestPatterns.title') + ".xlsx");
       }
     }
   };
