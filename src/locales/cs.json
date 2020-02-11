@@ -323,7 +323,7 @@
       "alerts": {
         "title": "Upozornění",
         "addAlert": "Přidat upozornění",
-        "table": [
+        "columns": [
           "Pattern",
           "Akce",
           "Email notifikace",

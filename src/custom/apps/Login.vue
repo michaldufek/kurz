@@ -221,6 +221,11 @@ export default {
                     this.shakeModal()
                     this.message = err
                 } else {
+                    this.$store.setItem('headers', {
+                        headers: {
+                            "Authorization": `Basic ${window.btoa(`${this.email}:${this.pass}`)}`
+                        }
+                    })
                     this.$router.replace(this.$route.query.redirect || '/')
                 }
             }, () => this.loading = false)

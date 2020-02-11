@@ -169,19 +169,19 @@
 
     <div class="row">
         <!-- results table -->
-        <card class="col-lg-8 col-md-12 container">
+        <div class="col-lg-8 col-md-12 container">
             <fancy-table :title="$t(storeKey + '.results.title')"
                         :showTitle="true"
                         :columns="$t(storeKey + '.results.columns')">
             </fancy-table>
             <!-- save button -->
             <base-button native-type="submit" type="secondary" @click="saveClick">{{ $t(storeKey + '.save') }}</base-button>
-        </card>
+        </div>
 
         <!-- results chart -->
-        <card class="col-lg-3 col-md-12 container">
+        <div class="col-lg-3 col-md-12 container">
             <fancy-chart :title="$t(storeKey + '.results.chart')" />
-        </card>
+        </div>
     </div>
 
 </div>

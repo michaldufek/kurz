@@ -7,8 +7,19 @@
                               @btnClicked="addAlert" />
     </div>
 
+    <div class="col-lg-9 col-md-12">
+      <fancy-table :title="$t(alertsKey + '.title')"
+                  :showTitle="false"
+                  :apiUrls="alertsUrl"
+                  :authorize="true"
+                  :rowsCreator="rowsCreator"
+                  :columns="$t(alertsKey + '.columns')"
+                  :sortable="true"
+                  :filterable="true"
+                  :key="tableKey" />
+    </div>
     <!-- alerts table -->
-    <card class="col-lg-9 col-md-12">
+    <!-- <card class="col-lg-9 col-md-12">
       <base-table :data="patternsAssets" 
                   :columns="$t(tableKey)"
                   :sortable="true"
@@ -26,11 +37,11 @@
           <td style="text-align: center"><input type="checkbox" :value="row[$t(tableKey)[3].toLowerCase()]" v-model="checkedAppNotifications"></td>
         </template>    
       </base-table>
-    </card>
+    </card> -->
   </div>
 </template>
 <script>
-  import { BaseTable } from '@/components'
+  import FancyTable from '@/custom/components/Tables/FancyTable';
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
 
   import constants from '@/custom/assets/js/constants';
@@ -40,63 +51,82 @@
   export default {
     components: {
       AssetsPatternsPicker,
-      BaseTable
+      FancyTable
     },
 
     data() {
       return {
-        tableKey: 'research.patternLab.alerts.table',
+        alertsKey: 'research.patternLab.alerts',
 
-        assets: [],
-        patterns: [],
-        patternsAssets: [],
+        assetsPatterns: null,
         checkedEmailNotifications: [],
-        checkedAppNotifications: []
+        checkedAppNotifications: [],
+
+        tableKey: 0
       }
     },
 
     computed: {        
-      // alertsUrl() {
-      //   return [ constants.urls.patternLab.alerts ]
-      // }
+      alertsUrl() {
+        return [ constants.urls.patternLab.alerts ]
+      }
     },
 
     methods: {
+      initData() {
+        this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+      },
+
       addAlert() {
-        let data = helper.getAssetsPatternsPickerData(this.$store)
-        if (data) {
-          ({ checkedAssets:this.assets, checkedPatterns:this.patterns } = data)
+        this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+
+        if (this.assetsPatterns) {
+          this.assetsPatterns.checkedAssets.forEach(asset => 
+            this.assetsPatterns.checkedPatterns.forEach(pattern =>
+              this.$http
+              .post(constants.urls.patternLab.alerts, { pattern: pattern.id, ticker: asset.id, /*app: , email:*/ }, this.$store.getItem('headers'))
+              .catch(error => console.log(error))))
         }
 
-        this.$http
-        .post(constants.urls.patternLab.alerts, {
-          "pattern": this.patterns[0].id,
-          "ticker": this.assets[0].id,
-          "timeframe": 1,
-          "app": true,
-          "email": true
-        })
-        .catch(error => console.log(error))
-
-        this.setTableData()
+        this.tableKey++
       },
       
-      setTableData() {
+      rowsCreator(data) {
         let rows = []
 
-        this.assets.forEach(asset => this.patterns.forEach(pattern => {
-          let row = {}
+        data.forEach(datum => rows.push([
+          this.getPatternName(datum.pattern),
+          this.getAssetSymbol(datum.ticker)
+          // datum.app,
+          // datum.email
+        ]))
 
-          row[this.$t(this.tableKey)[0].toLowerCase()] = pattern.name
-          row[this.$t(this.tableKey)[1].toLowerCase()] = asset.symbol
-          row[this.$t(this.tableKey)[2].toLowerCase()] = pattern.name + '|' + asset.symbol
-          row[this.$t(this.tableKey)[3].toLowerCase()] = pattern.name + '|' + asset.symbol
+        return rows
+      },
 
-          rows.push(row)
-        }))
-
-        this.patternsAssets = rows
+      getPatternName(patternId) {
+        if (this.assetsPatterns) {
+          let patterns = this.assetsPatterns.selectedPatterns.filter(pattern => pattern.id === patternId)
+          if (patterns.length) {
+            return patterns[0].name
+          }
+        }
+        return null
+      },
+      getAssetSymbol(assetId) {
+        if (this.assetsPatterns) {
+          let assets = this.assetsPatterns.selectedAssets.filter(asset => asset.id === assetId)
+          if (assets.length) {
+            return assets[0].symbol
+          }
+        }
+        return null
       }
+
+    },
+
+    mounted() {
+      this.initData()
     }
   }  
 </script>

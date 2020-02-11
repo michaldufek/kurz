@@ -323,7 +323,7 @@
       "alerts": {
         "title": "Alerts",
         "addAlert": "Add alert",
-        "table": [
+        "columns": [
           "Pattern",
           "Asset",
           "Email notification",

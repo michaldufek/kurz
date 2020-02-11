@@ -62,6 +62,10 @@ export default {
       default: () => [],
       description: "URLs to API data sources"
     },
+    authorize: {
+      type: Boolean,
+      description: "Whether connection to apiUrls must be authorized"
+    },
     rowsCreator: {
       type: Function,
       default: responseData => {
@@ -152,7 +156,7 @@ export default {
         } else {
           this.apiUrls.forEach(apiUrl => {
             this.$http
-            .get(apiUrl)
+            .get(apiUrl, this.authorize ? this.$store.getItem('headers') : null)
             .then(response => {
               if (!this.finishedLoadings) {
                 this.tableData = []
