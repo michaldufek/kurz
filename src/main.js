@@ -25,6 +25,7 @@ import i18n from "./i18n"
 import './registerServiceWorker'
 import helper from '@/custom/assets/js/helper';
 import constants from '@/custom/assets/js/constants';
+import auth from '@/custom/assets/js/auth'
 import Axios from 'axios'
 // workaround for strange axios TypeError: ..get(...).then(...).catch(...).finally is not a function
 const promiseFinally = require('promise.prototype.finally');
@@ -38,6 +39,9 @@ Vue.use(VueSimpleAlert);
 // global filter on the Vue instance
 Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
 Vue.filter(helper.chartUpdateTsText.name, helper.chartUpdateTsText)
+
+console.log('setCSRFToken from main.js')
+auth.setCSRFToken()
 
 // axios get routine with automatic offline detection and fabrication
 // const getRoutine = (url) => new Promise ((resolve, reject) => {

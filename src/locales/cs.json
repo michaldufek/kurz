@@ -224,7 +224,7 @@
       },
       "backtestPatterns": {
         "title": "Backtest - patterny",
-        "addPattern": "Přidat pattern",
+        "addPattern": "Přidat patterny",
         "initialCapital": "Počáteční kapitál",
         "numberUSD": "Číslo v USD",
         "export": "Export",
@@ -249,7 +249,7 @@
           "profit_take": "ProfitTarget",
           "stoploss": "StopLoss"
         },
-        "runStrategy": "Spustit strategii",
+        "runStrategy": "Spustit strategie",
         "performanceResults": {
           "title": "Výkonostní výsledky",
           "patterns": {

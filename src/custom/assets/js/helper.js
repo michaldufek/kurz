@@ -11,18 +11,21 @@ export default {
     ytd(data, nrOfQuarters) {
         // ytd = (this_year['equity'].iloc[-1] / this_year['equity'].iloc[0]) * 100 - 100
         let last_equity = this.last_quarters_equity(data, nrOfQuarters)
-        return (last_equity[last_equity.length - 1] / last_equity[0]) * 100 - 100
+        return last_equity.length ? (last_equity[last_equity.length - 1] / last_equity[0]) * 100 - 100 : 0
     },
 
     maxDD(data, nrOfQuarters) {
         // maxdd = ((df['equity'] - df['equity'].cummax()) / df['equity']).min() * 100
         let last_equity = this.last_quarters_equity(data, nrOfQuarters)
-        return Math.min(...last_equity.map((val,ind) => (val - Math.max(...last_equity.slice(0, ind + 1))) / val)) * 100
+        return last_equity.length ? Math.min(...last_equity.map((val,ind) => (val - Math.max(...last_equity.slice(0, ind + 1))) / val)) * 100 : 0
     },
 
     last_quarters_equity(data, nr) {
         // this_year = df[df['time'] > dt.datetime(now.year, 1, 1)]
-        let timeFiltered = data.time.filter(dt => new Date(dt) >= new Date(new Date(Date.now()).getFullYear(), 12 - (nr * 3) - 1, 1))
+        let now = new Date(Date.now())
+        let monthBefore = now.getMonth() - (nr * 3)
+        let yearBefore = now.getFullYear() - (monthBefore < 0 ? 1 : 0)        
+        let timeFiltered = data.time.filter(dt => new Date(dt) >= new Date(yearBefore, monthBefore < 0 ? 12 + monthBefore : monthBefore, now.getDate()))
         return data.equity.slice(data.equity.length - timeFiltered.length, data.equity.length)
     },
 
