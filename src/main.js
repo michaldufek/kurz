@@ -40,7 +40,6 @@ Vue.use(VueSimpleAlert);
 Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
 Vue.filter(helper.chartUpdateTsText.name, helper.chartUpdateTsText)
 
-console.log('setCSRFToken from main.js')
 auth.setCSRFToken()
 
 // axios get routine with automatic offline detection and fabrication
