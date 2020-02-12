@@ -224,7 +224,7 @@
       },
       "backtestPatterns": {
         "title": "Backtest - patterns",
-        "addPattern": "Add pattern",
+        "addPattern": "Add patterns",
         "initialCapital": "Initial capital",
         "numberUSD": "Number in USD",
         "export": "Export",
@@ -249,7 +249,7 @@
           "profit_take": "ProfitTarget",
           "stoploss": "StopLoss"
         },
-        "runStrategy": "Run strategy",
+        "runStrategy": "Run strategies",
         "performanceResults": {
           "title": "Performance results",
           "patterns": {
@@ -322,7 +322,7 @@
       },
       "alerts": {
         "title": "Alerts",
-        "addAlert": "Add alert",
+        "addAlert": "Add alerts",
         "columns": [
           "Pattern",
           "Asset"
