@@ -98,7 +98,7 @@ const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, 
 
 
 export default {  
-    init() {
+    setCSRFToken() {
       if (process.env.NODE_ENV === 'production') {
         var cokieName = 'csrftoken'
       } else {
