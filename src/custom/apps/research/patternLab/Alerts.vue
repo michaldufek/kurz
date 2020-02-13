@@ -15,7 +15,7 @@
                   :authorize="true"
                   :rowsCreator="rowsCreator"
                   :columns="$t(alertsKey + '.columns').concat($t(alertsKey + '.columns4check'))"
-                  :checked="checked"
+                  :columns4check="$t(alertsKey + '.columns4check')"
                   @checked="checkedEmit"
                   :sortable="true"
                   :filterable="true"
@@ -42,7 +42,6 @@
       return {
         alertsKey: 'research.patternLab.alerts',
         assetsPatterns: null,
-        checked: {},
         tableKey: 0
       }
     },
@@ -73,15 +72,11 @@
         this.tableKey++
       },
       checkedEmit(data) {
-        helper.updateStore(this.$store, 'checked', data, this.alertsKey)
+        // helper.updateStore(this.$store, 'checked', data, this.alertsKey)
       },
       
       rowsCreator(data) {
         let rows = []
-        let columns4checkKey = this.alertsKey + '.columns4check'
-        this.checked = {}
-        this.checked[this.$t(columns4checkKey)[0]] = []
-        this.checked[this.$t(columns4checkKey)[1]] = []
 
         data.forEach(datum => {
           let pName = this.getPatternName(datum.pattern)
@@ -90,11 +85,10 @@
           if (pName && symbol) {
             rows.push([
               pName,
-              symbol
+              symbol,
+              datum.email, // Email notification
+              datum.app    // App notification
             ])
-
-            this.checked[this.$t(columns4checkKey)[0]].push(datum.email)  // Email notification
-            this.checked[this.$t(columns4checkKey)[1]].push(datum.app)  // App notification          
           }
         })
 

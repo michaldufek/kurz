@@ -8,10 +8,10 @@
             :title="headerTitle"
             @dblclick="filter(column)"
             @keyup.esc="filtering = {}"
-            :class="{ 'interactive': sortable || filterable }"
-            style="text-align: right;" >
+            :class="{ 'interactive': sortable || filterable, 'checkbox': filterable && column in filtering && column in columns4check, 'notCheckbox': !(filterable && column in filtering && column in columns4check) }" >
             <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
-            <base-input v-show="filterable && column in filtering" placeholder="Filter" v-model="filterText" style="min-width: 75px" />
+            <base-input v-show="filterable && column in filtering && !(column in columns4check)" placeholder="Filter" v-model="filterText" style="min-width: 75px" />
+            <base-checkbox v-show="filterable && column in filtering && column in columns4check" v-model="filterChecked" />
         </th>
       </slot>
     </tr>
@@ -23,11 +23,15 @@
             :key="clIndex"
             v-if="hasValue(item, column)"
             :title="valueTitle(item, column)"
-            @dblclick="edit(rowIndex, item, column)"
+            @dblclick="edit(item, rowIndex, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
-            :class="{ 'interactive': editable, 'checkbox': column in checked, 'notCheckbox': !(column in checked) }" >
-              <base-checkbox v-if="column in checked" v-model="checked[column]" />
+            :class="{ 'interactive': editable, 'checkbox': column in columns4check, 'notCheckbox': !(column in columns4check) }" >
+              <input v-if="column in columns4check" type="checkbox" :id="rowIndex" :value="itemValue(item, column)" @click="check(item, rowIndex, column)" />
+              <!-- <base-checkbox v-if="column in columns4check" :value="itemValue(item, column)" @click="check(item, rowIndex, column)" /> -->
+              <!-- v-model="checked[column]" -->
+              <!-- <input v-if="column in columns4check" type="checkbox" @click="check(rowIndex, column)"> -->
+              <!-- :value="selectedPattern" -->
               <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />              
               <p v-else>{{ itemValue(item, column) | toFixed2 }}</p>
             </td>
@@ -48,14 +52,10 @@
         default: () => [],
         description: "Table columns"
       },
-      checked: {
-        type: Object,
-        default: () => {
-          return {
-            column: []
-          }
-        },
-        description: "Columns items that are checkboxes and whether they are checked"
+      columns4check: {
+        type: Array,
+        default: () => [],
+        description: "Columns that are checkboxes"
       },
       data: {
         type: Array,
@@ -102,6 +102,7 @@
 
         filtering: {},
         filterText: null,
+        filterChecked: false,
 
         editing: null,
         editText: null
@@ -110,28 +111,13 @@
 
     computed: {
       sortedFilteredData() {
-        let data = this.data.map(row => row instanceof Map ? Object.fromEntries(row) : row)
+        let data = this.data.map(row => row instanceof Map ? Object.fromEntries(row) : row)     // because Patterns (backtests) table is Array of Maps
 
-        if (!(Object.keys(this.filtering).length === 0 && this.filtering.constructor === Object)) { // object not empty 
-          let column = Object.keys(this.filtering)[0]
-          data = data.filter(item => column in this.filtering && this.filterText 
-                                      && String(item[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase()) 
-                                      || !(column in this.filtering) || !this.filterText)
+        if (!(Object.keys(this.filtering).length === 0 && this.filtering.constructor === Object)) {   // ie.object not empty 
+          this.filterData(data)
         }
-        
-        if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) { // object not empty
-          data = data.sort((item1,item2) => {        
-            let column = Object.keys(this.sorting)[0].toLowerCase()          
-            let order = Object.values(this.sorting)[0]
-            let item1nr = Number(String(item1[column]).split(' ')[0])
-            return isNaN(item1nr)   // ie.is String
-                    ? (order === 'asc' 
-                        ? String(item1[column]).localeCompare(String(item2[column])) 
-                        : String(item2[column]).localeCompare(String(item1[column])))
-                    : (order === 'asc' 
-                        ? item1nr - Number(String(item2[column]).split(' ')[0])
-                        : Number(String(item2[column]).split(' ')[0]) - item1nr)
-           })
+        if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) {
+          this.sortData(data)
         }
 
         return data
@@ -178,6 +164,31 @@
     },
 
     methods: {
+      sortData(data) {
+        data = data.sort((row1,row2) => {        
+          let column = Object.keys(this.sorting)[0]          
+          let order = Object.values(this.sorting)[0]
+          let item1AsNr = Number(String(row1[column.toLowerCase()]).split(' ')[0])
+          let item2AsNr = Number(String(row2[column.toLowerCase()]).split(' ')[0])
+
+          return isNaN(item1AsNr)   // ie.is String
+                  ? (order === 'asc' 
+                    ? String(row1[column.toLowerCase()]).localeCompare(String(row2[column.toLowerCase()])) 
+                    : String(row2[column.toLowerCase()]).localeCompare(String(row1[column.toLowerCase()])))
+                  : (order === 'asc' 
+                    ? item1AsNr - item2AsNr
+                    : item2AsNr - item1AsNr)
+        })
+      },
+      filterData(data) {
+        let column = Object.keys(this.filtering)[0]
+        let rowNr = 0
+
+        data = data.filter(row => column in this.filtering && (this.filterText || this.filterChecked)
+                                    && ((this.filterText && String(row[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase())) 
+                                        || (column in this.columns4check && this.filterChecked === row[column.toLowerCase()]))
+                                    || !(column in this.filtering) || !this.filterText || !this.filterChecked)
+      },
       sort(column) {
         if (this.sortable) {
           let origOrder = this.sorting[column]
@@ -191,7 +202,7 @@
         this.filtering[column] = true
       },
 
-      edit(index, item, column) { 
+      edit(item, index, column) { 
         let val = this.itemValue(item, column)   
         
         let del = ' '
@@ -201,9 +212,9 @@
         this.editText = val ? ((!isNaN(Number(val)) ? String(val) : val).split(del)[0]) : ''
         this.editing = [index, column]
       },
-      finishEdit(index, column) {
+      finishEdit(rowIndex, column) {
         this.$emit('edited', {
-          position: [index, column],    // to-do: probably bug - after sort  this returns sorted (new) index, store has unsorted (different) index
+          position: [rowIndex, column],    // to-do: probably bug - after sort  this returns sorted (new) index, store has unsorted (different) index
           value: this.editText})
         this.editing = null
       },
@@ -211,14 +222,19 @@
         return this.editable && this.editing && this.editing[0] === rowIndex && this.editing[1] === column
       },      
 
+      check(item, rowIndex, column) {
+        this.$emit('checked', {
+          position: [rowIndex, column],
+          value: !this.itemValue(item, column)})
+      },
+
       hasValue(item, column) {
         return item[column.toLowerCase()] !== "undefined";
       },
-
       itemValue(item, column) {
         return item[column.toLowerCase()];
       },
-      
+
       valueTitle(item, column) {
         let suffix = this.editable ? ' ' + this.$t('titles.edit') : ''
         let value = this.itemValue(item, column)
@@ -229,15 +245,6 @@
 
         // split because in portfolio card it is in '<statisticName>: <number>' format
         return this.titles[value.split(': ')[0].toLowerCase()] + suffix
-      }
-    },
-
-    watch: {
-      checked: {
-        handler(val){
-          this.$emit('checked', val)
-        },
-        deep: true
       }
     }
   }

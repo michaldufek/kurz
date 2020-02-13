@@ -14,7 +14,7 @@
         <base-table :data="data.length ? data : tableData"
                     :titles="titles"
                     :columns="columns"
-                    :checked="checked"
+                    :columns4check="columns4check"
                     @checked="checkedEmit"
                     thead-classes="text-primary"
                     :sortable="sortable"
@@ -92,14 +92,10 @@ export default {
       default: () => [],
       description: "Table columns"
     },
-    checked: {
-      type: Object,
-      default: () => {
-        return {
-          column: []
-        }
-      },
-      description: "Columns items that are checkboxes and whether they are checked"
+    columns4check: {
+      type: Array,
+      default: () => [],
+      description: "Columns that are checkboxes"
     },
     sortable: {
       type: Boolean,
