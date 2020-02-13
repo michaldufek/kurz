@@ -82,8 +82,10 @@
 
       clearSettings() {
         let token = localStorage.token
+        let headers = localStorage.headers
         localStorage.clear()
         localStorage.setItem('token', token)
+        localStorage.setItem('headers', headers)
 
         this.$notify({type: 'success', message: this.$t('notifications.settingsCleared')})        
         this.init()

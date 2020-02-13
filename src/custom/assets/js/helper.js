@@ -51,12 +51,15 @@ export default {
             let aggRow = {}
             
             for (const [key, oldVal] of Object.entries(oldRow)) {
+                if (typeof oldVal === "boolean") {
+                    var newVal = oldVal
+                } else {
                 if (!oldVal) {
                     continue
                 }
 
                 if (oldVal instanceof Number || typeof oldVal === 'number') {
-                    var newVal = oldVal
+                        newVal = oldVal
                 } else {
                     // split because in portfolio card it is in '<statisticName>: <number>' format
                     var sep = ': '
@@ -86,6 +89,8 @@ export default {
                 if (oldValSplitted && oldValSplitted.length > 1) {
                     newVal = [ oldValSplitted[0], newVal ].join(sep)
                 } 
+                }
+
                 aggRow[key] = newVal
             }
 

@@ -58,6 +58,7 @@ export default {
                 results: baseUrl + PLPartUrl + patternResultsPartUrl,
                 status: baseUrl + PLPartUrl + patternResultsPartUrl + "Status"
             },
+            alert: baseUrl + PLPartUrl + alertPartUrl + "/",
             alerts: baseUrl + PLPartUrl + alertPartUrl + "s"
         },
 

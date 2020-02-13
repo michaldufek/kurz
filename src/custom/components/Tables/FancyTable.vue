@@ -14,7 +14,7 @@
         <base-table :data="data.length ? data : tableData"
                     :titles="titles"
                     :columns="columns"
-                    :checked="checked"
+                    :checkboxColumns="checkboxColumns"
                     @checked="checkedEmit"
                     thead-classes="text-primary"
                     :sortable="sortable"
@@ -92,14 +92,10 @@ export default {
       default: () => [],
       description: "Table columns"
     },
-    checked: {
-      type: Object,
-      default: () => {
-        return {
-          column: []
-        }
-      },
-      description: "Columns items that are checkboxes and whether they are checked"
+    checkboxColumns: {
+      type: Array,
+      default: () => [],
+      description: "Columns that are checkboxes"
     },
     sortable: {
       type: Boolean,
@@ -220,6 +216,7 @@ export default {
           // aggregation
           let weight = response.data.equity ? response.data.equity[response.data.equity.length - 1] / eqOutsSum : 1
           this.tableData = this.aggregator(this.tableData, newTableData, weight).slice(0, constants.maxRows)
+          let td = this.tableData
         })
       })
     },

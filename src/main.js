@@ -40,7 +40,6 @@ Vue.use(VueSimpleAlert);
 Vue.filter(helper.roundToFixed.name, helper.roundToFixed)
 Vue.filter(helper.chartUpdateTsText.name, helper.chartUpdateTsText)
 
-console.log('setCSRFToken from main.js')
 auth.setCSRFToken()
 
 // axios get routine with automatic offline detection and fabrication
@@ -110,6 +109,14 @@ const postOnlineRoutine = (url, data, config) => new Promise ((resolve, reject) 
   .catch(error => reject(error))
   .finally(() => resolve(response))
 })
+const putOnlineRoutine = (url, data, config) => new Promise ((resolve, reject) => {
+  let response = {}
+  Axios
+  .put(url, data, config)
+  .then(resp => response = resp)
+  .catch(error => reject(error))
+  .finally(() => resolve(response))
+})
 const offline = false
 Vue.prototype.$http = {
   get(url, config) {
@@ -124,6 +131,9 @@ Vue.prototype.$http = {
   },
   post(url, data, config) {
     return postOnlineRoutine(url, data, config)
+  },
+  put(url, data, config) {
+    return putOnlineRoutine(url, data, config)
   }
 }
 
