@@ -8,14 +8,16 @@
                               @btnClicked="addAlert" />
     </div>
 
-    <div class="col-lg-9 col-md-12">
-      <fancy-table :title="$t(alertsKey + '.title')"
+    <div class="col-lg-9 col-md-12" style="text-align: center">
+      <DualRingLoader v-if="loading" :color="'#54f1d2'" />
+      <fancy-table v-else 
+                  :title="$t(alertsKey + '.title')"
                   :showTitle="false"
                   :apiUrls="alertsUrl"
                   :authorize="true"
                   :rowsCreator="rowsCreator"
-                  :columns="$t(alertsKey + '.columns').concat($t(alertsKey + '.columns4check'))"
-                  :columns4check="$t(alertsKey + '.columns4check')"
+                  :columns="columns"
+                  :checkboxColumns="$t(alertsKey + '.checkboxColumns')"
                   @checked="checkedEmit"
                   :sortable="true"
                   :filterable="true"
@@ -27,6 +29,7 @@
 <script>
   import FancyTable from '@/custom/components/Tables/FancyTable';
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
+  import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
   import constants from '@/custom/assets/js/constants';
   import helper from '@/custom/assets/js/helper';
@@ -35,13 +38,18 @@
   export default {
     components: {
       AssetsPatternsPicker,
-      FancyTable
+      FancyTable,
+      DualRingLoader
     },
 
     data() {
-      return {
+      return {        
         alertsKey: 'research.patternLab.alerts',
+
         assetsPatterns: null,
+        loading: false,
+        alerts: [],
+
         tableKey: 0
       }
     },
@@ -49,6 +57,9 @@
     computed: {        
       alertsUrl() {
         return [ constants.urls.patternLab.alerts ]
+      },
+      columns() {
+        return this.$t(this.alertsKey + '.columns').concat(this.$t(this.alertsKey + '.checkboxColumns'))
       }
     },
 
@@ -59,35 +70,104 @@
 
       // emited events
       addAlert() {
-        this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
+        this.alerts = []
+        this.assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)        
 
         if (this.assetsPatterns) {
           this.assetsPatterns.checkedAssets.forEach(asset => 
             this.assetsPatterns.checkedPatterns.forEach(pattern =>
               this.$http
-              .post(constants.urls.patternLab.alerts, { pattern: pattern.id, ticker: asset.id, /*app: , email:*/ }, this.$store.getItem('headers'))
-              .catch(error => console.log(error))))
+              .post(constants.urls.patternLab.alerts, { pattern: pattern.id, ticker: asset.id }, this.$store.getItem('headers'))
+              .then(response => this.alerts.push(response.data))
+              .catch(error => {
+                console.log(error);
+                if (error.message === constants.strings.networkError) {
+                  helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
+                }
+              })
+          ))
         }
 
-        this.tableKey++
+        this.loading = true
+        this.setCheckAlertsInterval()
       },
-      checkedEmit(data) {
-        // helper.updateStore(this.$store, 'checked', data, this.alertsKey)
+      checkedEmit(row) {
+        if (!this.alerts.length) {
+          this.$http
+          .get(constants.urls.patternLab.alerts, this.$store.getItem('headers'))
+          .then(response => response.data.forEach(datum => this.alerts.push(datum)))
+          .catch(error => {
+            console.log(error);
+            if (error.message === constants.strings.networkError) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
+            }
+          })
+          .finally(() => this.putAlert(row))
+        } else {
+          this.putAlert(row)
+        }
+      },
+      putAlert(row) {
+        let rowAlerts = this.alerts.filter(alert => alert.pattern === this.getIdByName(this.assetsPatterns ? this.assetsPatterns.selectedPatterns : [], (pattern) => pattern.name, row[this.columns[0].toLowerCase()]) 
+                      && alert.ticker === this.getIdByName(this.assetsPatterns ? this.assetsPatterns.selectedAssets : [], (asset) => asset.symbol, row[this.columns[1].toLowerCase()]))
+
+        if (rowAlerts.length) {
+          this.$http
+          .put(constants.urls.patternLab.alert + rowAlerts[0].id, { app: row[this.columns[3].toLowerCase()], email: row[this.columns[2].toLowerCase()] }, this.$store.getItem('headers'))
+          .catch(error => {
+            console.log(error);
+            if (error.message === constants.strings.networkError) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
+            }
+          })
+        } else {
+          console.log("Server inconsistency: Couldn't find changed alert on server!")
+        }
+      },
+
+      setCheckAlertsInterval() {
+        let interval = setInterval(() => { 
+          this.checkAlerts(interval)
+        }, constants.intervals.backtestsDone )        
+      },
+      checkAlerts(interval) {
+        let idsDone = []
+
+        this.$http
+        .get(constants.urls.patternLab.alerts, this.$store.getItem('headers'))
+        .then(response => response.data.forEach(datum => {
+          if (this.alerts.map(alert => alert.id).includes(datum.id)) {
+            idsDone.push(datum.id)       
+          }   
+        }))
+        .catch(error => {
+          console.log(error);
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
+          }
+        })
+        .finally(() => {
+          if (idsDone.length === this.alerts.length) {
+            this.loading = false
+            clearInterval(interval)
+            this.tableKey++
+          }
+        })
       },
       
       rowsCreator(data) {
         let rows = []
 
         data.forEach(datum => {
-          let pName = this.getPatternName(datum.pattern)
-          let symbol = this.getAssetSymbol(datum.ticker)
+          let pattern = this.assetsPatterns ? this.getItemById(this.assetsPatterns.selectedPatterns, datum.pattern) : null
+          let asset = this.assetsPatterns ? this.getItemById(this.assetsPatterns.selectedAssets, datum.ticker) : null
 
-          if (pName && symbol) {
+          if (pattern && asset) {
             rows.push([
-              pName,
-              symbol,
-              datum.email, // Email notification
-              datum.app    // App notification
+              pattern.name,        // Pattern
+              asset.symbol,       // Asset
+              datum.email,  // Email notification
+              datum.app     // App notification
             ])
           }
         })
@@ -95,25 +175,14 @@
         return rows
       },
 
-      getPatternName(patternId) {
-        if (this.assetsPatterns) {
-          let patterns = this.assetsPatterns.selectedPatterns.filter(pattern => pattern.id === patternId)
-          if (patterns.length) {
-            return patterns[0].name
-          }
-        }
-        return null
+      getItemById(items, id) {
+        let itemsFiltered = items.filter(item => item.id === id)
+        return itemsFiltered.length ? itemsFiltered[0] : null
       },
-      getAssetSymbol(assetId) {
-        if (this.assetsPatterns) {
-          let assets = this.assetsPatterns.selectedAssets.filter(asset => asset.id === assetId)
-          if (assets.length) {
-            return assets[0].symbol
-          }
-        }
-        return null
+      getIdByName(items, nameSelector, name) {
+        let itemsFiltered = items.filter(item => nameSelector(item) === name)
+        return itemsFiltered.length ? itemsFiltered[0].id : null
       }
-
     },
 
     mounted() {

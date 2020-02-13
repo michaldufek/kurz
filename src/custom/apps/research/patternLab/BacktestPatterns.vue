@@ -256,16 +256,14 @@
             }            
           }
         }
+      },
 
-        setInterval(() => { 
-          this.checkBacktests()
+      setCheckBacktestsInterval() {
+        let interval = setInterval(() => { 
+          this.checkBacktests(interval)
         }, constants.intervals.backtestsDone )        
       },
-      checkBacktests() {
-        if (!this.loading) {
-          return
-        }
-
+      checkBacktests(interval) {
         let backtestsDone = true
         let noResp = true
 
@@ -296,7 +294,7 @@
                 this.$http
                 .get(constants.urls.patternLab.backtestPatterns.results)
                 .then(response => {
-                  bts.forEach(bt => {
+                  bts.forEach(bt => {   // we have ids so change backtests names to 'bt_name (bt_id)' form
                     bt.set('btId', response.data.filter(datum => datum.ticker === bt.get('assetId') && datum.pattern === bt.get('patternId'))[0].id)
                     bt.set(this.columns[0].toLowerCase(), `${bt.get(this.columns[0].toLowerCase()) && !this.isDefaultPrName(bt.get(this.columns[0].toLowerCase())) 
                                                         ? bt.get(this.columns[0].toLowerCase()).split(' (')[0] 
@@ -313,6 +311,7 @@
                 })
                 .finally(() => {
                   this.loading = false
+                  clearInterval(interval)
                   this.cardKey++
                 })
               }
@@ -470,6 +469,8 @@
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
           }
         })
+
+        this.setCheckBacktestsInterval()  
       },
 
       toggleSidebar() {

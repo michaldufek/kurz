@@ -109,6 +109,14 @@ const postOnlineRoutine = (url, data, config) => new Promise ((resolve, reject) 
   .catch(error => reject(error))
   .finally(() => resolve(response))
 })
+const putOnlineRoutine = (url, data, config) => new Promise ((resolve, reject) => {
+  let response = {}
+  Axios
+  .put(url, data, config)
+  .then(resp => response = resp)
+  .catch(error => reject(error))
+  .finally(() => resolve(response))
+})
 const offline = false
 Vue.prototype.$http = {
   get(url, config) {
@@ -123,6 +131,9 @@ Vue.prototype.$http = {
   },
   post(url, data, config) {
     return postOnlineRoutine(url, data, config)
+  },
+  put(url, data, config) {
+    return putOnlineRoutine(url, data, config)
   }
 }
 

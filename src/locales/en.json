@@ -327,7 +327,7 @@
           "Pattern",
           "Asset"
         ],
-        "columns4check": [
+        "checkboxColumns": [
           "Email notification",
           "App notification"
         ]

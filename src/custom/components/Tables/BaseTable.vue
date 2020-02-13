@@ -8,10 +8,10 @@
             :title="headerTitle"
             @dblclick="filter(column)"
             @keyup.esc="filtering = {}"
-            :class="{ 'interactive': sortable || filterable, 'checkbox': filterable && column in filtering && column in columns4check, 'notCheckbox': !(filterable && column in filtering && column in columns4check) }" >
+            :class="{ 'interactive': sortable || filterable, 'checkbox': filterable && column in filtering && checkboxColumns.includes(column), 'notCheckbox': !(filterable && column in filtering && checkboxColumns.includes(column)) }" >
             <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
-            <base-input v-show="filterable && column in filtering && !(column in columns4check)" placeholder="Filter" v-model="filterText" style="min-width: 75px" />
-            <base-checkbox v-show="filterable && column in filtering && column in columns4check" v-model="filterChecked" />
+            <base-input v-show="filterable && column in filtering && !checkboxColumns.includes(column)" placeholder="Filter" v-model="filterText" style="min-width: 75px" />
+            <base-checkbox v-show="filterable && column in filtering && checkboxColumns.includes(column)" v-model="filterChecked" />
         </th>
       </slot>
     </tr>
@@ -26,12 +26,8 @@
             @dblclick="edit(item, rowIndex, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
-            :class="{ 'interactive': editable, 'checkbox': column in columns4check, 'notCheckbox': !(column in columns4check) }" >
-              <input v-if="column in columns4check" type="checkbox" :id="rowIndex" :value="itemValue(item, column)" @click="check(item, rowIndex, column)" />
-              <!-- <base-checkbox v-if="column in columns4check" :value="itemValue(item, column)" @click="check(item, rowIndex, column)" /> -->
-              <!-- v-model="checked[column]" -->
-              <!-- <input v-if="column in columns4check" type="checkbox" @click="check(rowIndex, column)"> -->
-              <!-- :value="selectedPattern" -->
+            :class="{ 'interactive': editable, 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
+              <input type="checkbox" v-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
               <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />              
               <p v-else>{{ itemValue(item, column) | toFixed2 }}</p>
             </td>
@@ -52,7 +48,7 @@
         default: () => [],
         description: "Table columns"
       },
-      columns4check: {
+      checkboxColumns: {
         type: Array,
         default: () => [],
         description: "Columns that are checkboxes"
@@ -114,7 +110,7 @@
         let data = this.data.map(row => row instanceof Map ? Object.fromEntries(row) : row)     // because Patterns (backtests) table is Array of Maps
 
         if (!(Object.keys(this.filtering).length === 0 && this.filtering.constructor === Object)) {   // ie.object not empty 
-          this.filterData(data)
+          data = this.filterData(data)
         }
         if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) {
           this.sortData(data)
@@ -143,7 +139,7 @@
 
     filters: {
       toFixed2(nr) {
-        if (!nr || Number.isInteger(nr)) {
+        if (!nr || Number.isInteger(nr) || typeof nr === "boolean") {
           return nr
         }
 
@@ -182,12 +178,13 @@
       },
       filterData(data) {
         let column = Object.keys(this.filtering)[0]
-        let rowNr = 0
 
-        data = data.filter(row => column in this.filtering && (this.filterText || this.filterChecked)
-                                    && ((this.filterText && String(row[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase())) 
-                                        || (column in this.columns4check && this.filterChecked === row[column.toLowerCase()]))
-                                    || !(column in this.filtering) || !this.filterText || !this.filterChecked)
+        return data.filter(row => (column in this.filtering && 
+                                  ((this.filterText && String(row[column.toLowerCase()]).toLowerCase().includes(this.filterText.toLowerCase()))
+                                   || (this.checkboxColumns.includes(column) && this.filterChecked === row[column.toLowerCase()])))
+                                  || !(column in this.filtering) 
+                                  || (!this.checkboxColumns.includes(column) && !this.filterText)
+                          )
       },
       sort(column) {
         if (this.sortable) {
@@ -199,6 +196,7 @@
       filter(column) {
         this.filtering = {}
         this.filterText = null
+        this.filterChecked = false
         this.filtering[column] = true
       },
 
@@ -222,10 +220,8 @@
         return this.editable && this.editing && this.editing[0] === rowIndex && this.editing[1] === column
       },      
 
-      check(item, rowIndex, column) {
-        this.$emit('checked', {
-          position: [rowIndex, column],
-          value: !this.itemValue(item, column)})
+      check(item) {
+        this.$emit('checked', item)
       },
 
       hasValue(item, column) {
