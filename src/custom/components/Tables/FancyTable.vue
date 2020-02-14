@@ -20,7 +20,8 @@
                     :sortable="sortable"
                     :filterable="filterable"
                     :editable="editable"
-                    @edited="edited">
+                    @edited="edited"
+                    @filtered="filtered" >
         </base-table>
       </section>
     </div>
@@ -227,6 +228,9 @@ export default {
     },
     checkedEmit(data) {
       this.$emit('checked', data)
+    },
+    filtered(data) {
+      this.$emit('filtered', data)      
     }
   },
 

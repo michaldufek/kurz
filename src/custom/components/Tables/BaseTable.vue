@@ -7,7 +7,7 @@
             :key="column"
             :title="headerTitle"
             @dblclick="filter(column)"
-            @keyup.esc="filtering = {}"
+            @keyup.esc="cancelFilter"
             :class="{ 'interactive': sortable || filterable, 'checkbox': filterable && column in filtering && checkboxColumns.includes(column), 'notCheckbox': !(filterable && column in filtering && checkboxColumns.includes(column)) }" >
             <b @click="sort(column)">{{column}}</b>&nbsp;<i v-if="column in sorting" :class="[ sorting[column] === 'asc' ? 'tim-icons icon-minimal-up' : 'tim-icons icon-minimal-down' ]"></i>
             <base-input v-show="filterable && column in filtering && !checkboxColumns.includes(column)" placeholder="Filter" v-model="filterText" style="min-width: 75px" />
@@ -194,10 +194,13 @@
         }
       },
       filter(column) {
+        this.cancelFilter()  
+        this.filtering[column] = true
+      },
+      cancelFilter() {
         this.filtering = {}
         this.filterText = null
         this.filterChecked = false
-        this.filtering[column] = true
       },
 
       edit(item, index, column) { 
@@ -241,6 +244,19 @@
 
         // split because in portfolio card it is in '<statisticName>: <number>' format
         return this.titles[value.split(': ')[0].toLowerCase()] + suffix
+      }
+    },
+
+    watch: {
+      filterText(val) {
+        let filterCl = null
+
+        Object.keys(this.filtering).forEach(cl => { 
+          if (this.filtering[cl]) {
+            filterCl = cl
+          } 
+        })
+        this.$emit('filtered', { column: filterCl, filter: val })        
       }
     }
   }
