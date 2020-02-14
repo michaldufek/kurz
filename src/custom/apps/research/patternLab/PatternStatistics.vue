@@ -60,11 +60,12 @@
         <fancy-table :title="$t(storeKey + '.patternsTable.title')"
                      :showTitle="false"
                      :apiUrls="patternsUrl"
-                     :columns="$t(storeKey + '.patternsTable.columns')"
+                     :columns="columns"
                      :rowsCreator="rowsCreator"
                      :sortable="true"
                      :filterable="true"
-                     :key="tableKey">
+                     :key="tableKey"
+                     @filtered="filtered">
         </fancy-table>
       </div>
     </div>
@@ -79,6 +80,8 @@
   import constants from '@/custom/assets/js/constants';
   import helper from '@/custom/assets/js/helper';
 
+  const sKey = 'research.patternLab.patternStatistics'
+
 
   export default {
     components: {  
@@ -90,7 +93,8 @@
 
     data() {
       return {
-        storeKey: 'research.patternLab.patternStatistics',
+        storeKey: sKey,
+        columns: this.$t(sKey + '.patternsTable.columns'),
 
         // statistics card
         patternsStats: {
@@ -114,6 +118,7 @@
         // all assets and patterns
         patternsByAsset: {},
         assetsByPattern: {},
+        // initPieChartsLock: false,
 
         // patterns table
         patternsUrl: [],
@@ -150,7 +155,15 @@
 
         this.initPieCharts()
       },
-      initPieCharts() {
+      initPieCharts(column=null, filter=null) {
+        // let interval = setInterval(() => {      // to-do: need test this locking (after BE starts working)
+        //   if (!this.initPieChartsLock) {
+        //     clearInterval(interval)
+        //   }
+        // }, constants.intervals.shake )        
+        // this.initPieChartsLock = true
+        // console.log(`Setting lock for ${column}-${filter}`)
+
         this.patternsStats = {
           total: 0,
           bullish: 0,
@@ -163,7 +176,7 @@
           this.$http
           .get(helper.getPatternLabHistoryUrl(this.assets, this.patterns, this.timeframe))
           .then(response => response.data.forEach(data => {
-              if (data.count) {
+              if (data.count && (!column || (column && String(this.getColumnValue(column, data)).toLowerCase().includes(filter.toLowerCase())))) {
                 this.updatePatternsStats(this.getDirection(data.signal_set), data.count)
                 this.updateChartDatas(data)            
               }
@@ -180,8 +193,16 @@
             this.createChartDatas()
             // force reload of fancy-card component
             this.cardKey++
+
+            // this.initPieChartsLock = false
+            // console.log(`Disabling lock for ${column}-${filter}`)
           })
         }
+      },
+
+      // emit event
+      filtered(data) {
+        this.initPieCharts(data.column, data.filter)
       },
 
       // table rows creator
@@ -224,6 +245,32 @@
         signal_set.forEach(signal => directionNr += signal.direction) // to-do: how to calculate overall direction?
 
         return helper.convertDirection(directionNr)
+      },
+
+      getColumnValue(column, data) {
+        let clNr = 0
+
+        switch (column) {
+          case this.columns[clNr++]:
+            return data.history.ticker.symbol // Asset
+          case this.columns[clNr++]:
+            return data.pattern.name          // Pattern
+          case this.columns[clNr++]:
+            return data.count                 // # of occurence          
+          case this.columns[clNr++]:
+            return data.signal_set.length    // Pattern length
+          case this.columns[clNr++]:
+            let direction = this.getDirection(data.signal_set)       
+            return direction                  // Direction
+          case this.columns[clNr++]:
+            return data.count_mean ? 1 / data.count_mean : null // Average frequency
+          case this.columns[clNr++]:
+            return direction === constants.strings.bullish ? data.d1_bull_up + ' %' : data.d1_bear_down + ' %'  // 1 day up_down
+          case this.columns[clNr++]:
+            return direction === constants.strings.bullish ? data.d5_bull_up + ' %' : data.d5_bear_down + ' %'  // 5 days up_down
+          case this.columns[clNr++]:
+            return direction === constants.strings.bullish ? data.d10_bull_up + ' %' : data.d10_bear_down + ' %'  // 10 days up_down
+        }
       },
 
       // chart & stats methods
