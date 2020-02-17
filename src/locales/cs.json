@@ -20,10 +20,15 @@
   "chart": "graf",
   "table": "tabulka",
   "number": "Číslo",
+  "serverIncontinency": "Inkonzistence servru",
   "titles": {
     "sort": "Klikni pro třídení.",
     "filter": "Dvoj-klik pro filtrování.",
-    "edit": "Dvoj-klik pro úpravu."
+    "filterCancel": "Stlačte ESC pro zrušení filtrování.",
+    "edit": "Dvoj-klik pro úpravu.",
+    "editCancel": "Stlačte ESC pro zrušení upravování.",
+    "showPattern": "Dvoj-klik pro zobrazení patternu v grafu.",
+    "showPatternCancel": "Dvoj-klik pro zrušení zobrazování patternu v grafu."
   },
   "paging": {
     "previous": "Předchozí",

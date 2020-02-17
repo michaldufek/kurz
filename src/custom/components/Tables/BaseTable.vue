@@ -17,16 +17,21 @@
     </tr>
     </thead>
     <tbody :class="tbodyClasses">
-    <tr v-for="(item, rowIndex) in sortedFilteredData" :key="rowIndex">
+    <tr v-for="(item, rowIndex) in sortedFilteredData" 
+        :key="rowIndex"
+        :title="clickable ? (selectedRow === rowIndex ? $t('titles.showPatternCancel') : $t('titles.showPattern')) : ''"
+        :class="{ 'selected': clickable && selectedRow === rowIndex }"
+        @dblclick="select(rowIndex)" >
+        <!-- fix not showing clickable title -->
       <slot :row="item">
         <td v-for="(column, clIndex) in columns"
             :key="clIndex"
             v-if="hasValue(item, column)"
-            :title="valueTitle(item, column)"
+            :title="valueTitle(item, rowIndex, column)"
             @dblclick="edit(item, rowIndex, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
-            :class="{ 'interactive': editable, 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
+            :class="{ 'interactive': editable || clickable, 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
               <input type="checkbox" v-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
               <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />              
               <p v-else>{{ itemValue(item, column) | toFixed2 }}</p>
@@ -80,6 +85,10 @@
         type: Boolean,
         description: "Whether values can be directly edited by double-click"
       },
+      clickable: {
+        type: Boolean,
+        description: "Whether rows can be double-clicked for some action"
+      },
       theadClasses: {
         type: String,
         default: '',
@@ -101,7 +110,9 @@
         filterChecked: false,
 
         editing: null,
-        editText: null
+        editText: null,
+
+        selectedRow: -1
       }
     },
 
@@ -109,10 +120,10 @@
       sortedFilteredData() {
         let data = this.data.map(row => row instanceof Map ? Object.fromEntries(row) : row)     // because Patterns (backtests) table is Array of Maps
 
-        if (!(Object.keys(this.filtering).length === 0 && this.filtering.constructor === Object)) {   // ie.object not empty 
+        if (!helper.objectEmpty(this.filtering)) {
           data = this.filterData(data)
         }
-        if (!(Object.keys(this.sorting).length === 0 && this.sorting.constructor === Object)) {
+        if (!helper.objectEmpty(this.sorting)) {
           this.sortData(data)
         }
 
@@ -130,7 +141,7 @@
           title += this.$t('titles.sort')
         }
         if (this.filterable) {
-          title += ' ' + this.$t('titles.filter')
+          title += ' ' + (helper.objectEmpty(this.filtering) ? this.$t('titles.filter') : this.$t('titles.filterCancel'))
         }
 
         return title
@@ -186,16 +197,21 @@
                                   || (!this.checkboxColumns.includes(column) && !this.filterText)
                           )
       },
-      sort(column) {
+
+      sort(column) {  // to-do: sort by multiple columns?
         if (this.sortable) {
           let origOrder = this.sorting[column]
-          this.sorting = {} // to-do: sort by multiple columns?
-          this.sorting[column] = origOrder === 'asc' ? 'desc' : 'asc'
+          this.sorting = {} 
+          if (origOrder !== 'desc') {
+            this.sorting[column] = origOrder === 'asc' ? 'desc' : 'asc'
+          }          
         }
       },
       filter(column) {
-        this.cancelFilter()  
-        this.filtering[column] = true
+        if (Object.keys(this.filtering)[0] !== column) {    // only if it's not the same column
+          this.cancelFilter()  
+          this.filtering[column] = true
+        }
       },
       cancelFilter() {
         this.filtering = {}
@@ -227,6 +243,11 @@
         this.$emit('checked', item)
       },
 
+      select(rowIndex) {
+        this.selectedRow = this.selectedRow === rowIndex ? -1 : rowIndex  
+        this.$emit('selected', this.selectedRow)
+      },
+
       hasValue(item, column) {
         return item[column.toLowerCase()] !== "undefined";
       },
@@ -234,8 +255,8 @@
         return item[column.toLowerCase()];
       },
 
-      valueTitle(item, column) {
-        let suffix = this.editable ? ' ' + this.$t('titles.edit') : ''
+      valueTitle(item, rowIndex, column) {
+        let suffix = this.editable ? ' ' + (this.isEditing(rowIndex, column) ? this.$t('titles.editCancel') : this.$t('titles.edit')) : ''
         let value = this.itemValue(item, column)
 
         if (!value || !(typeof value === 'string' || value instanceof String) || !this.titles) {
@@ -273,5 +294,9 @@
 
 .checkbox {
   text-align: center
+}
+
+.selected {
+  background-color: darkslategrey
 }
 </style>

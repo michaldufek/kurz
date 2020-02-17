@@ -21,7 +21,7 @@
                          :title="selectedAsset ? selectedAsset.symbol : null"
                          style="width: 20%">
             <ul style="list-style-type: none;">
-              <li v-for="asset in (selectedAsset ? assets.filter(p => p.id !== selectedAsset.id) : assets)">            
+              <li v-for="asset in (selectedAsset ? assets.filter(a => a.id !== selectedAsset.id) : assets)">            
                 <a class="dropdown-item" 
                    @click="selectAsset(asset)" 
                    href="#">
@@ -129,75 +129,70 @@
     methods: {
       // initialization
       initData() {
-        let checkedAsset = []
-        let checkedPatterns = []
-
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
-          ({ timeframe:this.timeframe, selectedAssets:this.assets, checkedAsset:checkedAsset, selectedPatterns:this.patterns, checkedPatterns:checkedPatterns } = data)
-        }
+          this.timeframe = data.timeframe
+          this.patternsUrl = helper.getPatternLabHistoryUrl(data.selectedAssets, data.checkedPatterns, this.timeframe)
+          this.tableKey++ // force reload of fancy-table component
 
-        data = this.$store.getItem(this.storeKey)
-        if (data) {
-          ({ selectedAsset:this.selectedAsset, selectedPattern:this.selectedPattern } = data)
-        }
-
-        // setting valid value of selected asset and pattern
-        if (!this.selectedAsset && this.assets.length) {
-          this.selectedAsset = this.assets[0]
-        }
-        if (!this.selectedPattern && this.patterns.length) {
-          this.selectedPattern = this.patterns[0]
-        }
-
-        this.patternsUrl = helper.getPatternLabHistoryUrl([ checkedAsset ], checkedPatterns, this.timeframe)
-        this.tableKey++ // force reload of fancy-table component
-
-        this.initPieCharts()
+          this.initPieCharts()
+        }        
       },
       initPieCharts(column=null, filter=null) {
-        // let interval = setInterval(() => {      // to-do: need test this locking (after BE starts working)
-        //   if (!this.initPieChartsLock) {
-        //     clearInterval(interval)
-        //   }
-        // }, constants.intervals.shake )        
-        // this.initPieChartsLock = true
-        // console.log(`Setting lock for ${column}-${filter}`)
-
-        this.patternsStats = {
-          total: 0,
-          bullish: 0,
-          bearish: 0
-        }
-        this.patternsByAsset = {} 
-        this.assetsByPattern = {} 
- 
-        if (this.assets && this.assets.length) {
+        if (this.patternsUrl) {
+          let datas = []          
           this.$http
-          .get(helper.getPatternLabHistoryUrl(this.assets, this.patterns, this.timeframe))
-          .then(response => response.data.forEach(data => {
-              if (data.count && (!column || (column && String(this.getColumnValue(column, data)).toLowerCase().includes(filter.toLowerCase())))) {
-                this.updatePatternsStats(this.getDirection(data.signal_set), data.count)
-                this.updateChartDatas(data)            
+          .get(this.patternsUrl)
+          .then(response => response.data.forEach(datum => {
+              if (datum.count && (!column || (column && String(this.getColumnValue(column, datum)).toLowerCase().includes(filter.toLowerCase())))) {
+                datas.push(datum)
               }
           }))
           .catch(error => {
             console.log(error)
-
             if (error.message === constants.strings.networkError) {
               helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ' ' + this.$t(this.storeKey + '.title') + ')')
             }
           })
           .finally(() => {
+            this.assets = []
+            this.patterns = []
+            this.patternsStats = {  // doing it in finally because of emmited events based concurrency
+              total: 0,
+              bullish: 0,
+              bearish: 0
+            }
+            this.patternsByAsset = {} 
+            this.assetsByPattern = {} 
+
+            datas.forEach(datum => {
+              this.updateAssetsPatterns(datum)
+              this.updatePatternsStats(this.getDirection(datum.signal_set), datum.count)
+              this.updateChartDatas(datum)
+            }) 
+            this.initSelectedAssetPattern()     
+
             // creating pie charts data
             this.createChartDatas()
             // force reload of fancy-card component
             this.cardKey++
-
-            // this.initPieChartsLock = false
-            // console.log(`Disabling lock for ${column}-${filter}`)
           })
         }
+      },
+      initSelectedAssetPattern() {
+        // setting valid value of selected asset and pattern
+        let data = this.$store.getItem(this.storeKey)
+
+        this.selectedAsset = this.initSelectedItem(this.selectedAsset, this.assets)
+        this.selectedPattern = this.initSelectedItem(this.selectedPattern ? this.selectedPattern : data ? data.selectedPattern : null, this.patterns)
+      },
+      initSelectedItem(selectedCandidate, items) {
+        if (selectedCandidate && items.includes(selectedCandidate)) {
+          return selectedCandidate
+        } else if (items.length) {
+          return items[0]
+        }        
+        return null
       },
 
       // emit event
@@ -274,6 +269,17 @@
       },
 
       // chart & stats methods
+      updateAssetsPatterns(datum) {
+        let asset = datum.history.ticker
+        if (!this.assets.map(a => a.id).includes(asset.id)) {
+          this.assets.push({ id: asset.id, symbol: asset.symbol })
+        }
+
+        let pattern = datum.pattern
+        if (!this.patterns.map(p => p.id).includes(pattern.id)) {
+          this.patterns.push(pattern)
+        }
+      },
       updatePatternsStats(direction, count) {
         this.patternsStats.total += count
 

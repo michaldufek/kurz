@@ -379,6 +379,9 @@ export default {
             return i18n.t(nrsKey)
         }
     },
+    objectEmpty(obj) {
+        return Object.keys(obj).length === 0 && obj.constructor === Object
+    },
 
     getDefaultPrName(btId) {
         return 'pr_' + btId

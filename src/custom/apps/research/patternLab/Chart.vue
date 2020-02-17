@@ -33,6 +33,7 @@
         <fancy-chart v-if="chartType === $t('research.patternLab.chartTypes')[0]"
                      :title="$t('sidebar.patternLab') + ' ' + $t('research.patternLab.chart.title')"
                      :apiUrls="chartUrl ? [ chartUrl ] : []"
+                      :highlights="highlights"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :responsive="true"
                      style="top: -45px; height: 100%"
@@ -52,6 +53,8 @@
                      :apiUrls="patternsHistoryUrl"
                      :columns="$t('research.patternLab.chart.patternsHistory.columns')"
                      :rowsCreator="rowsCreator"
+                     :clickable="true"
+                     @selected="selected"
                      :key="tableKey">
         </fancy-table>
       </div>
@@ -98,6 +101,7 @@
 
         // patterns history
         patternsHistoryUrl: [],
+        patternLabels: [],
         tableKey: 0
       }
     },
@@ -114,6 +118,13 @@
 
           return this.asset.symbol + (patterns.length ? ' (' + patterns.join(', ') + ')' : '')
         }
+      },
+
+      highlights() {
+        return [{
+          points: this.patternLabels,
+          color: constants.colors.tradeEntry 
+        }]
       }
     },
 
@@ -139,7 +150,7 @@
         this.patternsHistoryUrl = null
         if (this.patterns.length) {
           // load patterns history table
-          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl([ this.asset ], this.patterns, this.timeframe)     
+          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl(this.asset ? [ this.asset ] : [], this.patterns, this.timeframe)     
         }
         this.tableKey++ // force reload of fancy-table component
       },
@@ -151,6 +162,7 @@
         this.chartKey++ // force reload of fancy-chart component
       },      
 
+      // emited events
       timeframeChanged() {
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
@@ -158,6 +170,37 @@
         }
 
         this.loadChart()
+      },
+      selected(rowIndex) {
+        if (rowIndex > -1) {
+          let data = this.$store.getItem(this.storeKey)
+          let signalSet = null
+
+          // patternsHistoryUrl and data (with rowsSignalIds) must exist if we managed to get here - no need to check
+          this.$http
+          .get(this.patternsHistoryUrl)
+          .then(response => {
+            let filtered = response.data.filter(datum => datum.id === data.rowsSignalIds[rowIndex])
+            signalSet = filtered.length ? filtered[0].signal_set : null
+          })
+          .catch(error => {
+            console.log(error)
+            if (error.message === constants.strings.networkError) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.patternLab') + ' ' + this.$t(this.storeKey + '.title') + ')')
+            }
+          })
+          .finally(() => {
+            if (signalSet) {
+              this.patternLabels = signalSet.map(s => new Date(s.date).getTime())
+              this.chartKey++
+            } else {
+              console.log(`${this.$t('serverIncontinency')}: Couldn't find selected signal set on server!`)
+            }
+          }) 
+        } else {
+          this.patternLabels = []
+          this.chartKey++
+        }       
       },
       
       selectChartType(chartType) {
@@ -168,6 +211,7 @@
       // table methods (patterns history)
       rowsCreator(responseData) {
         let rows = []
+        let rowsSignalIds = []
 
         responseData.forEach(data => {            
             let pattern = data.pattern.name
@@ -180,9 +224,11 @@
               row.push(helper.convertDirection(signal.direction))
 
               rows.push(row);
+              rowsSignalIds.push(data.id)
             })
           });
 
+        helper.updateStore(this.$store, 'rowsSignalIds', rowsSignalIds, this.storeKey)
         return rows
       }
     },
