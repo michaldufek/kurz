@@ -121,7 +121,7 @@
             }
           })
         } else {
-          console.log("Server inconsistency: Couldn't find changed alert on server!")
+          console.log(`${this.$t('serverIncontinency')}: Couldn't find changed alert on server!`)
         }
       },
 

@@ -418,6 +418,7 @@ export default {
         range: {
             handler(val){
                 helper.updateStore(this.$store, 'range', { from: helper.formatDate(val.from, ''), to: helper.formatDate(val.to, '') }) 
+                // to-do: bug - deletes stored range after reload
             },
             deep: true
         },

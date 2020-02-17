@@ -20,10 +20,15 @@
   "chart": "chart",
   "table": "table",
   "number": "Number",
+  "serverIncontinency": "Server inconsistency",
   "titles": {
     "sort": "Click for sort.",
     "filter": "Double-click for filter.",
-    "edit": "Double-click for edit."
+    "filterCancel": "Press ESC to cancel filtering.",
+    "edit": "Double-click for edit.",
+    "editCancel": "Press ESC to cancel editing.",
+    "showPattern": "Double-click to show pattern in chart.",
+    "showPatternCancel": "Double-click to cancel showing pattern in chart."
   },
   "paging": {
     "previous": "Previous",

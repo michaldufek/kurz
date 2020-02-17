@@ -20,8 +20,10 @@
                     :sortable="sortable"
                     :filterable="filterable"
                     :editable="editable"
+                    :clickable="true"
                     @edited="edited"
-                    @filtered="filtered" >
+                    @filtered="filtered"
+                    @selected="selected" >
         </base-table>
       </section>
     </div>
@@ -109,6 +111,10 @@ export default {
     editable: {
       type: Boolean,
       description: "Whether values can be directly edited by double-click"
+    },
+    clickable: {
+      type: Boolean,
+      description: "Whether rows can be double-clicked for some action"
     }
   },
 
@@ -231,6 +237,9 @@ export default {
     },
     filtered(data) {
       this.$emit('filtered', data)      
+    },
+    selected(data) {
+      this.$emit('selected', data)      
     }
   },
 
