@@ -194,8 +194,10 @@
         }
       },
       filter(column) {
-        this.cancelFilter()  
-        this.filtering[column] = true
+        if (Object.keys(this.filtering)[0] !== column) {    // only if it's not the same column
+          this.cancelFilter()  
+          this.filtering[column] = true
+        }
       },
       cancelFilter() {
         this.filtering = {}
