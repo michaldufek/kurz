@@ -148,6 +148,12 @@ export default {
         }
     },
 
+    deformatDate(date) {
+        // for RRRRMMDD formatted inputs
+        // returns new Date() format
+        return new Date(date.substring(0,4), Number(date.substring(4,6)) - 1, date.substring(6,8))
+    },
+
     formatDateTime(dt) {
         // returns RRRR-MM-DD HH:MM:SS formatted date from string of type YYYY-MM-DDTHH:MM:SS
         let newDt = new Date(dt)
