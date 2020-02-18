@@ -152,6 +152,7 @@
           // load patterns history table
           this.patternsHistoryUrl = helper.getPatternLabHistoryUrl(this.asset ? [ this.asset ] : [], this.patterns, this.timeframe)     
         }
+        this.patternLabels = []
         this.tableKey++ // force reload of fancy-table component
       },
       loadChart() {
