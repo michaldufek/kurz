@@ -217,10 +217,14 @@ export default {
         initData() {
             let data = helper.getAssetsPatternsPickerData(this.$store)
             if (data) {
-                ({ timeframe:this.timeframe, from:this.range.from, to:this.range.to, selectedAssets:this.selectedAssets, checkedAssets:this.checkedAssets, 
+                ({ timeframe:this.timeframe, selectedAssets:this.selectedAssets, checkedAssets:this.checkedAssets, 
                    checkedAsset:this.checkedAsset, selectedPatterns:this.selectedPatterns, checkedPatterns:this.checkedPatterns, 
                    checkedAllPatterns:this.checkedAllPatterns } 
                 = data)
+                this.range = { 
+                    from: helper.deformatDate(data.range.from),
+                    to: helper.deformatDate(data.range.to)
+                }
             }
         },
 
@@ -418,7 +422,6 @@ export default {
         range: {
             handler(val){
                 helper.updateStore(this.$store, 'range', { from: helper.formatDate(val.from, ''), to: helper.formatDate(val.to, '') }) 
-                // to-do: bug - deletes stored range after reload
             },
             deep: true
         },
