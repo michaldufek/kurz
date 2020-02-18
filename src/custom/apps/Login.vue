@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <img src="../assets/img/logo2020.png" class="logo" :alt="$t('siteTitle')" style="height: 25%; width: 25%; margin-top: 80px; margin-right: -500px; margin-left: 300px;"/>
+    <img src="../assets/img/logo2020.png" class="logo" :alt="$t('siteTitle')" style="height: 25%;width: 25%;margin-top: 80px;margin-right: -300px;margin-left: 200px;"/>
 
     <SlideYUpTransition>
         
