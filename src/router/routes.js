@@ -18,8 +18,10 @@ const PortfolioManager = () => import(/* webpackChunkName: "portfolioManager" */
 const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@/custom/apps/research/StockPickingLab.vue");
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
-const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
+// menu SubViews
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
+const IBConnection = () => import(/* webpackChunkName: "ibConnection" */"@/custom/apps/IBConnection.vue");
+const Settings = () => import(/* webpackChunkName: "settings" */"@/custom/apps/Settings.vue");
 // PatternLab SubViews
 const PatternLabChart = () => import(/* webpackChunkName: "patternLabchart" */"@/custom/apps/research/patternLab/Chart.vue");
 const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
@@ -198,7 +200,7 @@ const routes = [
     ],
     beforeEnter: requireAuth
   },
-  // user settings & profile pages
+  // user menu pages
   {
     path: "/profile",
     component: SettingsLayout,
@@ -208,6 +210,11 @@ const routes = [
         path: "/profile",
         name: "profile",
         component: Profile        
+      },
+      {
+        path: "/ibConnection",
+        name: "ibConnection",
+        component: IBConnection        
       },   
       {
         path: "/settings",

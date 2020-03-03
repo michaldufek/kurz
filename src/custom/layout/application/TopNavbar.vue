@@ -82,6 +82,9 @@
                 <router-link to="/profile" class="nav-item dropdown-item">{{$t('userMenu.profile')}}</router-link>
               </li>
               <li class="nav-link">
+                <router-link to="/ibConnection" class="nav-item dropdown-item">{{$t('userMenu.ibConnection')}}</router-link>
+              </li>
+              <li class="nav-link">
                 <router-link to="/settings" class="nav-item dropdown-item">{{$t('userMenu.settings')}}</router-link>
               </li>
               <div class="dropdown-divider"></div>
