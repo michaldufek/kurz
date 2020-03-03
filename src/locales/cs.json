@@ -62,7 +62,12 @@
     "alreadyAccount": "Již máte konto?",
     "registerSuccess": "Ověření registrace proběhlo úspěšně.",
     "registerFail": "Ověření registrace zlyhalo.",
-    "login": "Přihlašte se."
+    "login": "Přihlašte se.",
+    "IB": {
+      "signIn": "Přihlašte se Interactive Brokers údaji",
+      "paper": "Paper Trading mode",
+      "confirmLive": "Jste si jisti, že chcete použít Live Trading mode?"
+    }
   },
   "dashboard": { 
     "title": "Nástěnka",
@@ -424,6 +429,7 @@
   "userMenu": {
     "title": "Uživatelské akce",
     "profile": "Profil",
+    "ibConnection": "IB Spojení",
     "settings": "Nastavení",
     "logout": "Odhlásit"
   },

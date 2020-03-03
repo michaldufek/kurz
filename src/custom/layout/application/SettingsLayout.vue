@@ -3,6 +3,7 @@
     <side-bar>
       <template slot="links">
         <sidebar-link to="/profile" :name="$t('sidebar.userProfile')" icon="tim-icons icon-single-02"/>
+        <sidebar-link to="/ibConnection" :name="$t('userMenu.ibConnection')" icon="tim-icons icon-key-25"/>
         <sidebar-link to="/settings" :name="$t('userMenu.settings')" icon="tim-icons icon-settings-gear-63"/>
       </template>
     </side-bar>
