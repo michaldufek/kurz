@@ -64,7 +64,9 @@
     "registerFail": "Registration verification failed.",
     "login": "Log in.",
     "IB": {
-      "signIn": "Sign in with Interactive Brokers credentials",
+      "title": "Interactive Brokers",
+      "credentials": "credentials",
+      "login": "login",
       "paper": "Paper Trading mode",
       "confirmLive": "Are you sure you want to use Live Trading mode?"
     }
@@ -427,7 +429,8 @@
     "loading": "Strategies already running"
   },
   "userMenu": {
-    "title": "User actions",
+    "actions": "User actions",
+    "notifications": "New notifications",
     "profile": "Profile",
     "ibConnection": "IB Connection",
     "settings": "Settings",

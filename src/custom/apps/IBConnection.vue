@@ -12,7 +12,7 @@
             <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 150px" />
             <template>
                 <div class="text-center text-muted mb-4">
-                    {{$t('login.IB.signIn')}}
+                    {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
                 </div>
                 <form role="form">
                     <base-input alternative
@@ -30,8 +30,7 @@
                                 @keyup.enter="logIn">
                     </base-input>
                     <div class="text-center">
-                        <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>                    
-                        <base-button v-if="error" style="color: #00f2c3" type="link" @click="resetPass">{{$t('login.resetPass')}}</base-button>
+                        <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>
                     </div>
                     <base-checkbox v-model="paper">
                         {{$t('login.IB.paper')}}
@@ -51,7 +50,9 @@
 import { SlideYUpTransition } from "vue2-transitions";
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 import '../assets/css/shake.css'
+
 import constants from '@/custom/assets/js/constants'
+import helper from '@/custom/assets/js/helper'
 
 
 export default {
@@ -94,11 +95,26 @@ export default {
             }
         },        
         startGW() {
-            var msg = {
+            this.$http
+            .post(constants.urls.liveDepl.gwStart, {
                 tradingMode: this.paper ? 'paper' : 'live',
                 userid: this.email,
                 password: this.pass
-            }
+            })//, this.$store.getItem('headers'))
+            .then(response => {
+                this.error = false
+                this.message = response.data.message
+            })
+            .catch(error => {
+                console.log(error)
+                this.error = true
+                this.message = error.message
+                this.shakeModal()
+
+                if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
+                }
+            })
         },
 
         shakeModal(){

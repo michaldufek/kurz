@@ -2,10 +2,13 @@ import i18n from "@/i18n"
 
 const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
 // const baseUrl = "https://dev.analyticalplatform.com"
-const SPPartUrl = "/api/sp"
-const PLPartUrl = "/api/pl"
+const APIPartUrl = "/api"
+const SPPartUrl = APIPartUrl + "/sp"
+const PLPartUrl = APIPartUrl + "/pl"
+const livedeplPartUrl = APIPartUrl + "/livedepl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
+const gwStartPartUrl = "/GatewayStart"
 const patternResultsPartUrl = "/PatternResults"
 const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
@@ -45,6 +48,10 @@ export default {
     },    
 
     urls: {
+        liveDepl: {
+            gwStart : baseUrl + livedeplPartUrl + gwStartPartUrl
+        },
+
         tickerSP: {
              base : baseUrl + SPPartUrl + tickerPartUrl,
              stock: baseUrl + SPPartUrl + tickerPartUrl + "OHLC?ticker="
