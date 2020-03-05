@@ -17,7 +17,7 @@
                 <form role="form">
                     <base-input alternative
                                 class="mb-3"
-                                :placeholder="$t('login.emailExample')"
+                                :placeholder="$t('login.username')"
                                 addon-left-icon="ni ni-email-83"
                                 v-model="email"
                                 @keyup.enter="logIn">

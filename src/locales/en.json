@@ -50,6 +50,7 @@
     "signInCredentials": "Or sign in with credentials",
     "email": "Email",
     "emailExample": "joe@example.com",
+    "username": "Username",
     "password": "Password",
     "passwordAgain": "Password again",
     "resetPass": "Reset Password",

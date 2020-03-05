@@ -50,6 +50,7 @@
     "signInCredentials": "Nebo přímo",
     "email": "Email",
     "emailExample": "joe@example.com",
+    "username": "Jméno",
     "password": "Heslo",
     "passwordAgain": "Heslo znovu",
     "resetPass": "Resetovat Heslo",
