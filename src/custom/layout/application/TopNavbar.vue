@@ -56,7 +56,7 @@
                 <div class="notification d-none d-lg-block d-xl-block"></div>
                 <i class="tim-icons icon-sound-wave"></i>
                 <p class="d-lg-none">
-                  New Notifications
+                  {{$t('userMenu.notifications')}}
                 </p>
               </a>
               <ul style="list-style-type: none;">
@@ -75,7 +75,7 @@
                 </div>
                 <b class="caret d-none d-lg-block d-xl-block"></b>
                 <p class="d-lg-none">
-                  {{$t('userMenu.title')}}
+                  {{$t('userMenu.actions')}}
                 </p>
               </a>
               <li class="nav-link">

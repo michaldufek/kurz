@@ -50,6 +50,7 @@
     "signInCredentials": "Nebo přímo",
     "email": "Email",
     "emailExample": "joe@example.com",
+    "username": "Jméno",
     "password": "Heslo",
     "passwordAgain": "Heslo znovu",
     "resetPass": "Resetovat Heslo",
@@ -64,6 +65,9 @@
     "registerFail": "Ověření registrace zlyhalo.",
     "login": "Přihlašte se.",
     "IB": {
+      "title": "Interactive Brokers",
+      "credentials": "údajů",
+      "login": "přihlášení",
       "signIn": "Přihlašte se Interactive Brokers údaji",
       "paper": "Paper Trading mode",
       "confirmLive": "Jste si jisti, že chcete použít Live Trading mode?"
@@ -427,7 +431,8 @@
     "loading": "Strategie již běží"
   },
   "userMenu": {
-    "title": "Uživatelské akce",
+    "actions": "Uživatelské akce",
+    "notifications": "Nové notifikace",
     "profile": "Profil",
     "ibConnection": "IB Spojení",
     "settings": "Nastavení",
