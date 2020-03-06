@@ -9,7 +9,7 @@
                 class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
                 v-if="showLogin">
-            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 150px" />
+            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 60px" />
             <template>
                 <div class="text-center text-muted mb-4">
                     {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
@@ -95,12 +95,15 @@ export default {
             }
         },        
         startGW() {
+            this.loading = true
+
             this.$http
             .post(constants.urls.liveDepl.gwStart, {
                 tradingMode: this.paper ? 'paper' : 'live',
                 userid: this.email,
                 password: this.pass
-            })//, this.$store.getItem('headers'))
+            })
+            //, this.$store.getItem('headers')) // Authorization
             .then(response => {
                 this.error = false
                 this.message = response.data.message
@@ -115,6 +118,7 @@ export default {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
                 }
             })
+            .finally(() => this.loading = false)
         },
 
         shakeModal(){
