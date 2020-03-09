@@ -11,18 +11,20 @@
                 v-if="showLogin">
             <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 60px" />
             <template>
-                <div class="text-center text-muted mb-4">
+                <div v-if="!connected" class="text-center text-muted mb-4">
                     {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
                 </div>
                 <form role="form">
-                    <base-input alternative
+                    <base-input v-if="!connected"
+                                alternative
                                 class="mb-3"
                                 :placeholder="$t('login.username')"
                                 addon-left-icon="ni ni-email-83"
                                 v-model="email"
                                 @keyup.enter="logIn">
                     </base-input>
-                    <base-input alternative
+                    <base-input v-if="!connected"
+                                alternative
                                 type="password"
                                 :placeholder="$t('login.password')"
                                 addon-left-icon="ni ni-lock-circle-open"
@@ -32,11 +34,12 @@
                     <div class="text-center">
                         <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>
                     </div>
-                    <base-checkbox v-model="paper">
+                    <base-checkbox v-if="!connected" v-model="paper">
                         {{$t('login.IB.paper')}}
                     </base-checkbox>
                     <div class="text-center">
-                        <base-button type="secondary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
+                        <base-button v-if="!connected" type="secondary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
+                        <base-button v-else type="secondary" class="my-4" @click="disconnect">{{$t('login.disconnect')}}</base-button>
                     </div>
                 </form>
             </template>
@@ -61,16 +64,17 @@ export default {
         DualRingLoader
     },
     data() {
-      return {
-        showLogin: false,
-        loading: false,
-        paper: true,
-
-        email: '',
-        pass: '',
+      return {        
+        loading: false,        
+        connected: false,
         error: false,
         message: '',
         isShaking: false,
+
+        showLogin: false,
+        paper: true,
+        email: '',
+        pass: '',
 
         // css classes
         msgClass: 'message',
@@ -80,6 +84,8 @@ export default {
     },
     methods: {
         init() {
+            let data = this.$store.getItem('IB connected')  // to-do: better check IB GW is running
+            this.connected = data ? data : false
             this.openLoginModal()
         },
 
@@ -105,8 +111,14 @@ export default {
             })
             //, this.$store.getItem('headers')) // Authorization
             .then(response => {
-                this.error = false
-                this.message = response.data.message
+                if ('error' in response.data) {
+                    this.error = true
+                    this.message = response.data.error
+                } else {
+                    this.error = false
+                    this.message = response.data.message
+                    this.connected = true
+                }
             })
             .catch(error => {
                 console.log(error)
@@ -119,6 +131,9 @@ export default {
                 }
             })
             .finally(() => this.loading = false)
+        },
+        disconnect() {
+
         },
 
         shakeModal(){
@@ -140,8 +155,15 @@ export default {
             }, constants.intervals.loginShow );
         }
     },
+
     mounted() {
         this.init()
+    },
+
+    watch: {
+        connected(val) {
+            this.$store.setItem('IB connected', val)
+        }
     }
 }
 </script>

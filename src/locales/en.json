@@ -46,6 +46,7 @@
   },
   "login": {
     "signIn": "Sign in",
+    "disconnect": "Disconnect",
     "with": "with",
     "signInCredentials": "Or sign in with credentials",
     "email": "Email",
