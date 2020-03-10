@@ -9,7 +9,7 @@
                 class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
                 v-if="showLogin">
-            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 60px" />
+            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
             <template>
                 <div v-if="!connected" class="text-center text-muted mb-4">
                     {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
@@ -84,8 +84,8 @@ export default {
     },
     methods: {
         init() {
-            let data = this.$store.getItem('IB connected')  // to-do: better check IB GW is running
-            this.connected = data ? data : false
+            // let data = this.$store.getItem('IB connected')  // to-do: better check IB GW is running
+            // this.connected = data ? data : false
             this.openLoginModal()
         },
 
@@ -99,7 +99,10 @@ export default {
                 })
                 .catch(() => {})
             }
-        },        
+        },   
+        disconnect() {
+            this.stopGW()
+        },     
         startGW() {
             this.loading = true
 
@@ -109,7 +112,6 @@ export default {
                 userid: this.email,
                 password: this.pass
             })
-            //, this.$store.getItem('headers')) // Authorization
             .then(response => {
                 if ('error' in response.data) {
                     this.error = true
@@ -118,6 +120,7 @@ export default {
                     this.error = false
                     this.message = response.data.message
                     this.connected = true
+                    this.pass = ''
                 }
             })
             .catch(error => {
@@ -132,9 +135,33 @@ export default {
             })
             .finally(() => this.loading = false)
         },
-        disconnect() {
+        stopGW() {
+            this.loading = true
 
-        },
+            this.$http
+            .post(constants.urls.liveDepl.gwStop, { userid: this.email })
+            .then(response => {
+                if ('error' in response.data) {
+                    this.error = true
+                    this.message = response.data.error
+                } else {
+                    this.error = false
+                    this.message = response.data.message
+                    this.connected = false
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                this.error = true
+                this.message = error.message
+                this.shakeModal()
+
+                if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.disconnect')}`)
+                }
+            })
+            .finally(() => this.loading = false)
+        },        
 
         shakeModal(){
             this.isShaking = true
@@ -191,5 +218,10 @@ export default {
   height: 80px;  
   position: absolute;
   left: 150px;
+  top: 10px;
+}
+
+.loaderDisconnected {
+    top: 60px;
 }
 </style>
