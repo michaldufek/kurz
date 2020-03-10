@@ -219,6 +219,7 @@ export default {
   position: absolute;
   left: 150px;
   top: 10px;
+  z-index: 1;
 }
 
 .loaderDisconnected {
