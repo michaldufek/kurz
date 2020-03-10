@@ -46,6 +46,7 @@
   },
   "login": {
     "signIn": "Přihlásit se",
+    "disconnect": "Odpojit se",
     "with": "pomocí",
     "signInCredentials": "Nebo přímo",
     "email": "Email",

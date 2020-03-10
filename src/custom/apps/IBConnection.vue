@@ -9,20 +9,22 @@
                 class="modal-sm animated landingCard"
                 :class="{ shake: isShaking }"
                 v-if="showLogin">
-            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 60px" />
+            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
             <template>
-                <div class="text-center text-muted mb-4">
+                <div v-if="!connected" class="text-center text-muted mb-4">
                     {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
                 </div>
                 <form role="form">
-                    <base-input alternative
+                    <base-input v-if="!connected"
+                                alternative
                                 class="mb-3"
                                 :placeholder="$t('login.username')"
                                 addon-left-icon="ni ni-email-83"
                                 v-model="email"
                                 @keyup.enter="logIn">
                     </base-input>
-                    <base-input alternative
+                    <base-input v-if="!connected"
+                                alternative
                                 type="password"
                                 :placeholder="$t('login.password')"
                                 addon-left-icon="ni ni-lock-circle-open"
@@ -32,11 +34,12 @@
                     <div class="text-center">
                         <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>
                     </div>
-                    <base-checkbox v-model="paper">
+                    <base-checkbox v-if="!connected" v-model="paper">
                         {{$t('login.IB.paper')}}
                     </base-checkbox>
                     <div class="text-center">
-                        <base-button type="secondary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
+                        <base-button v-if="!connected" type="secondary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
+                        <base-button v-else type="secondary" class="my-4" @click="disconnect">{{$t('login.disconnect')}}</base-button>
                     </div>
                 </form>
             </template>
@@ -61,16 +64,17 @@ export default {
         DualRingLoader
     },
     data() {
-      return {
-        showLogin: false,
-        loading: false,
-        paper: true,
-
-        email: '',
-        pass: '',
+      return {        
+        loading: false,        
+        connected: false,
         error: false,
         message: '',
         isShaking: false,
+
+        showLogin: false,
+        paper: true,
+        email: '',
+        pass: '',
 
         // css classes
         msgClass: 'message',
@@ -80,6 +84,8 @@ export default {
     },
     methods: {
         init() {
+            // let data = this.$store.getItem('IB connected')  // to-do: better check IB GW is running
+            // this.connected = data ? data : false
             this.openLoginModal()
         },
 
@@ -93,7 +99,10 @@ export default {
                 })
                 .catch(() => {})
             }
-        },        
+        },   
+        disconnect() {
+            this.stopGW()
+        },     
         startGW() {
             this.loading = true
 
@@ -103,10 +112,16 @@ export default {
                 userid: this.email,
                 password: this.pass
             })
-            //, this.$store.getItem('headers')) // Authorization
             .then(response => {
-                this.error = false
-                this.message = response.data.message
+                if ('error' in response.data) {
+                    this.error = true
+                    this.message = response.data.error
+                } else {
+                    this.error = false
+                    this.message = response.data.message
+                    this.connected = true
+                    this.pass = ''
+                }
             })
             .catch(error => {
                 console.log(error)
@@ -120,6 +135,33 @@ export default {
             })
             .finally(() => this.loading = false)
         },
+        stopGW() {
+            this.loading = true
+
+            this.$http
+            .post(constants.urls.liveDepl.gwStop, { userid: this.email })
+            .then(response => {
+                if ('error' in response.data) {
+                    this.error = true
+                    this.message = response.data.error
+                } else {
+                    this.error = false
+                    this.message = response.data.message
+                    this.connected = false
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                this.error = true
+                this.message = error.message
+                this.shakeModal()
+
+                if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.disconnect')}`)
+                }
+            })
+            .finally(() => this.loading = false)
+        },        
 
         shakeModal(){
             this.isShaking = true
@@ -140,8 +182,15 @@ export default {
             }, constants.intervals.loginShow );
         }
     },
+
     mounted() {
         this.init()
+    },
+
+    watch: {
+        connected(val) {
+            this.$store.setItem('IB connected', val)
+        }
     }
 }
 </script>
@@ -169,5 +218,10 @@ export default {
   height: 80px;  
   position: absolute;
   left: 150px;
+  top: 10px;
+}
+
+.loaderDisconnected {
+    top: 60px;
 }
 </style>

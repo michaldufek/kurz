@@ -8,7 +8,7 @@ const PLPartUrl = APIPartUrl + "/pl"
 const livedeplPartUrl = APIPartUrl + "/livedepl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
-const gwStartPartUrl = "/GatewayStart"
+const gwPartUrl = "/Gateway"
 const patternResultsPartUrl = "/PatternResults"
 const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
@@ -49,7 +49,8 @@ export default {
 
     urls: {
         liveDepl: {
-            gwStart : baseUrl + livedeplPartUrl + gwStartPartUrl
+            gwStart : baseUrl + livedeplPartUrl + gwPartUrl + "Start",
+            gwStop : baseUrl + livedeplPartUrl + gwPartUrl + "Stop"
         },
 
         tickerSP: {
