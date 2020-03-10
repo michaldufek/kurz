@@ -1,9 +1,10 @@
 <template>
-  <div class="row">
+  <div class="row flex-stretch">
 
-    <div class="col-lg-3 col-md-12 container">
+    <div class="col-lg-3 col-md-12 killflex container">
       <assets-patterns-picker :title="$t('research.patternLab.alerts.title')"
                               :btnText="$t('research.patternLab.alerts.addAlert')" 
+                              :class="killflex"
                               :showDatePickers="false"
                               @btnClicked="addAlert" />
     </div>

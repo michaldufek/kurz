@@ -14,7 +14,7 @@
           </button>
         </div>
         
-        <div style="margin-top: -10px;">
+        <div>
           <router-link class="navbar-brand" to="/" exact><img src="../../assets/img/logo2020_small.png" class="logo navbar-brand" :alt="$t('siteTitle')"/></router-link>
           <router-link class="navbar-brand" to="/dashboard" style="margin-top: 10px">{{$t("dashboard.title")}}</router-link>
           <router-link class="navbar-brand" to="/research">{{$t("research.title")}}</router-link>

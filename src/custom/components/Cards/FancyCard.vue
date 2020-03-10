@@ -236,9 +236,15 @@ img.mouseOver {
 }
 
 .dataDiv {
-  width: 50%;
-  float: left;
-  text-align: right;
+  width: 100%;
   white-space: pre-wrap;
+  color:#42b883;
+}
+@media screen and (max-width: 1024px){
+  .dataDiv{
+    float: left;
+    width: 50%;
+    text-align: left;
+  }
 }
 </style>

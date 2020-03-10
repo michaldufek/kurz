@@ -8,7 +8,7 @@
         </fancy-chart>
       </div>
 
-      <div class="col-lg-4 col-md-12">
+      <div class="col-lg-4 col-md-12 flex-stretch">
         <fancy-card :title="$t('dashboard.performanceStatistics').toLowerCase()"
                     :apiUrl="apiUrl" 
                     :items="[$t('ytd'), $t('cagr'), $t('sr'), $t('maxDD'), $t('equityOuts')]"

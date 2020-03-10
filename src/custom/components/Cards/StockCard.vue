@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <!-- <card class="card"> to-do: must be in one card --> 
-      <div class="col-lg-4 col-md-12">
+      <div class="flex-stretch col-xl-4 col-12">
         <fancy-card :title="$t('research.stockPickingLab.stock').toLowerCase()"
                     :fullTitle="rank + '. ' + symbol + (name ? ' (' + name + ')' : '')"
                     :showTitle="true"
@@ -12,7 +12,7 @@
         </fancy-card>
       </div>
 
-      <div class="col-lg-8 col-md-12">
+      <div class="col-xl-8 col-12">
         <fancy-chart :title="$t('sidebar.stockPickingLab') + ' - ' + symbol"
                      :axesLabels="[ $t('research.stockPickingLab.xLabel'), $t('research.stockPickingLab.yLabel') ]"
                      :apiUrls="chartApiUrl">

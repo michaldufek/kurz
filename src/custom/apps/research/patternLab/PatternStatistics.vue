@@ -352,9 +352,4 @@
   .table > thead > tr > th {
     font-size: inherit
   }
-
-  .dd {
-    float: left;
-    width: 10%
-  }
 </style>

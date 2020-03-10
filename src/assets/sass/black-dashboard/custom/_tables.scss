@@ -140,7 +140,10 @@
         padding-top: 20px;
         text-align: right;
     }
-
+    .td-actions{
+      padding: 0;
+      margin-bottom: 1em;
+    }
    .td-actions .btn{
     margin: 0px;
     }
@@ -185,5 +188,13 @@ table.tablesorter thead tr .headerSortDown {
 
   .form-control-sm {
     font-size: 10px;
+  }
+}
+.regrow{
+    display: table;
+    padding-bottom: 1em;
+    // justify-content: space-between;
+  td{
+    padding: 0;
   }
 }

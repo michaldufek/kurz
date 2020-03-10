@@ -2,7 +2,7 @@
   <div class="row">
     <!-- <card class="card">  -->
       <!-- to-do: must be in one card -->
-      <div class="col-lg-8 col-md-12">
+      <div class="col-lg-8 col-md-12 flex-stretch">
         <card class="card">
           <table class="table tablesorter">
             <thead>
