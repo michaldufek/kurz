@@ -64,7 +64,9 @@ export default {
         DualRingLoader
     },
     data() {
-      return {        
+      return { 
+        storeKey: 'login.IB',
+
         loading: false,        
         connected: false,
         error: false,
@@ -84,11 +86,41 @@ export default {
     },
     methods: {
         init() {
-            // let data = this.$store.getItem('IB connected')  // to-do: better check IB GW is running
-            // this.connected = data ? data : false
+            let data = this.$store.getItem(this.storeKey)
+            if (data) {
+                this.email = data.email
+                this.checkGWrunning()
+            }
+
             this.openLoginModal()
         },
 
+        checkGWrunning() {
+            this.loading = true
+
+            this.$http
+            .post(constants.urls.liveDepl.gwStatus, { userid: this.email })
+            .then(response => {
+                if ('error' in response.data) {
+                    this.error = true
+                    this.message = response.data.error
+                } else {
+                    this.error = false
+                    this.connected = response.data.status
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                this.error = true
+                this.message = error.message
+                this.shakeModal()
+
+                if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
+                }
+            })
+            .finally(() => this.loading = false)
+        },
         logIn () {
             if (this.paper) {
                 this.startGW()
@@ -190,6 +222,9 @@ export default {
     watch: {
         connected(val) {
             this.$store.setItem('IB connected', val)
+        },
+        email(val) {
+            helper.updateStore(this.$store, 'email', val, this.storeKey)            
         }
     }
 }

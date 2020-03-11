@@ -69,6 +69,7 @@
       "title": "Interactive Brokers",
       "credentials": "credentials",
       "login": "login",
+      "status": "status",
       "paper": "Paper Trading mode",
       "confirmLive": "Are you sure you want to use Live Trading mode?"
     }

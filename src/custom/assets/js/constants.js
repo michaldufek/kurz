@@ -49,8 +49,9 @@ export default {
 
     urls: {
         liveDepl: {
-            gwStart : baseUrl + livedeplPartUrl + gwPartUrl + "Start",
-            gwStop : baseUrl + livedeplPartUrl + gwPartUrl + "Stop"
+            gwStart: baseUrl + livedeplPartUrl + gwPartUrl + "Start",
+            gwStop: baseUrl + livedeplPartUrl + gwPartUrl + "Stop",
+            gwStatus: baseUrl + livedeplPartUrl + gwPartUrl + "Status"
         },
 
         tickerSP: {
