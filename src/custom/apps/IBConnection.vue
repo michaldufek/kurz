@@ -99,7 +99,7 @@ export default {
             this.loading = true
 
             this.$http
-            .post(constants.urls.liveDepl.gwStatus, { userid: this.email })
+            .get(constants.urls.liveDepl.gwStatus + '/' + this.email)
             .then(response => {
                 if ('error' in response.data) {
                     this.error = true
@@ -107,6 +107,8 @@ export default {
                 } else {
                     this.error = false
                     this.connected = response.data.status
+
+                    // this.getGWLogs()
                 }
             })
             .catch(error => {
@@ -116,11 +118,12 @@ export default {
                 this.shakeModal()
 
                 if (error.message === constants.strings.networkError) {
-                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.status')}`)
                 }
             })
             .finally(() => this.loading = false)
         },
+
         logIn () {
             if (this.paper) {
                 this.startGW()
@@ -134,7 +137,8 @@ export default {
         },   
         disconnect() {
             this.stopGW()
-        },     
+        }, 
+
         startGW() {
             this.loading = true
 
@@ -153,6 +157,8 @@ export default {
                     this.message = response.data.message
                     this.connected = true
                     this.pass = ''
+
+                    // this.getGWLogs()
                 }
             })
             .catch(error => {
@@ -171,7 +177,7 @@ export default {
             this.loading = true
 
             this.$http
-            .post(constants.urls.liveDepl.gwStop, { userid: this.email })
+            .post(constants.urls.liveDepl.gwStop, { userid: this.email }, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
                 if ('error' in response.data) {
                     this.error = true
@@ -193,7 +199,34 @@ export default {
                 }
             })
             .finally(() => this.loading = false)
-        },        
+        }, 
+
+        getGWLogs() {
+            this.loading = true
+
+            this.$http
+            .get(constants.urls.liveDepl.gwLogs + '/' + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
+            .then(response => {
+                if ('error' in response.data) {
+                    this.error = true
+                    // this.message = response.data.error
+                } else {
+                    this.error = false
+                    // this.connected = response.data.status
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                this.error = true
+                this.message = error.message
+                this.shakeModal()
+
+                if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.logs')}`)
+                }
+            })
+            .finally(() => this.loading = false)
+        },
 
         shakeModal(){
             this.isShaking = true
