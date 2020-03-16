@@ -1,53 +1,63 @@
 <template>
-  <div class="row" style="margin-top: 20px">
+    <div>
 
-    <SlideYUpTransition>
-        
-        <card type="secondary"
-                header-classes="bg-white pb-5"
-                body-classes="p-0 px-lg-5 py-lg-5"
-                class="modal-sm animated landingCard"
-                :class="{ shake: isShaking }"
-                v-if="showLogin">
-            <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
-            <template>
-                <div v-if="!connected" class="text-center text-muted mb-4">
-                    {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
-                </div>
-                <form role="form">
-                    <base-input v-if="!connected"
-                                alternative
-                                class="mb-3"
-                                :placeholder="$t('login.username')"
-                                addon-left-icon="ni ni-email-83"
-                                v-model="email"
-                                @keyup.enter="logIn">
-                    </base-input>
-                    <base-input v-if="!connected"
-                                alternative
-                                type="password"
-                                :placeholder="$t('login.password')"
-                                addon-left-icon="ni ni-lock-circle-open"
-                                v-model="pass"
-                                @keyup.enter="logIn">
-                    </base-input>
-                    <div class="text-center">
-                        <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>
-                    </div>
-                    <base-checkbox v-if="!connected" v-model="paper">
-                        {{$t('login.IB.paper')}}
-                    </base-checkbox>
-                    <div class="text-center">
-                        <base-button v-if="!connected" type="secondary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
-                        <base-button v-else type="secondary" class="my-4" @click="disconnect">{{$t('login.disconnect')}}</base-button>
-                    </div>
-                </form>
-            </template>
-        </card>
+        <div class="row" style="margin-top: 20px">
+            <SlideYUpTransition>
 
-    </SlideYUpTransition>
+                <card type="secondary"
+                    header-classes="bg-white pb-5"
+                    body-classes="p-0 px-lg-5 py-lg-5"
+                    class="modal-sm animated landingCard"
+                    :class="{ shake: isShaking }"
+                    v-if="showLogin">
+                    <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
+                    <template>
+                        <div v-if="!connected" class="text-center text-muted mb-4">
+                            {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
+                        </div>
+                        <form role="form">
+                            <base-input v-if="!connected"
+                                        alternative
+                                        class="mb-3"
+                                        :placeholder="$t('login.username')"
+                                        addon-left-icon="ni ni-email-83"
+                                        v-model="email"
+                                        @keyup.enter="logIn">
+                            </base-input>
+                            <base-input v-if="!connected"
+                                        alternative
+                                        type="password"
+                                        :placeholder="$t('login.password')"
+                                        addon-left-icon="ni ni-lock-circle-open"
+                                        v-model="pass"
+                                        @keyup.enter="logIn">
+                            </base-input>
+                            <div class="text-center">
+                                <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>
+                            </div>
+                            <base-checkbox v-if="!connected" v-model="paper">
+                                {{$t('login.IB.paper')}}
+                            </base-checkbox>
+                            <div class="text-center">
+                                <base-button v-if="!connected" type="secondary" class="my-4" @click="logIn">{{$t('login.signIn')}}</base-button>
+                                <base-button v-else type="secondary" class="my-4" @click="disconnect">{{$t('login.disconnect')}}</base-button>
+                            </div>
+                        </form>
+                    </template>
+                </card>
 
-  </div>
+            </SlideYUpTransition>
+        </div>
+
+        <div class="row" style="margin-top: 20px">
+            <ul v-if="connected" style="list-style-type: none;">
+                <li v-for="log in logs">            
+                    {{`[${log.timestamp}] ${log.info}`}}
+                </li>
+            </ul>
+        </div>
+
+    </div>
 </template>
 <script>
 import { SlideYUpTransition } from "vue2-transitions";
@@ -66,6 +76,7 @@ export default {
     data() {
       return { 
         storeKey: 'login.IB',
+        logs: [],
 
         loading: false,        
         connected: false,
@@ -108,7 +119,9 @@ export default {
                     this.error = false
                     this.connected = response.data.status
 
-                    // this.getGWLogs()
+                    if (this.connected) {
+                        this.getGWLogs()
+                    }
                 }
             })
             .catch(error => {
@@ -158,7 +171,7 @@ export default {
                     this.connected = true
                     this.pass = ''
 
-                    // this.getGWLogs()
+                    this.getGWLogs()
                 }
             })
             .catch(error => {
@@ -209,10 +222,9 @@ export default {
             .then(response => {
                 if ('error' in response.data) {
                     this.error = true
-                    // this.message = response.data.error
                 } else {
                     this.error = false
-                    // this.connected = response.data.status
+                    this.logs = response.data
                 }
             })
             .catch(error => {
