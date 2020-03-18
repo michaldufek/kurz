@@ -70,6 +70,7 @@
       "credentials": "credentials",
       "login": "login",
       "status": "status",
+      "logs": "logs",
       "paper": "Paper Trading mode",
       "confirmLive": "Are you sure you want to use Live Trading mode?"
     }

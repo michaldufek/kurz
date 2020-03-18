@@ -76,6 +76,7 @@ export default {
     data() {
       return { 
         storeKey: 'login.IB',
+        GWLogsTimer: null,
         logs: [],
 
         loading: false,        
@@ -120,7 +121,7 @@ export default {
                     this.connected = response.data.status
 
                     if (this.connected) {
-                        this.getGWLogs()
+                        this.setGWLogsInterval()
                     }
                 }
             })
@@ -171,7 +172,7 @@ export default {
                     this.connected = true
                     this.pass = ''
 
-                    this.getGWLogs()
+                    this.setGWLogsInterval()
                 }
             })
             .catch(error => {
@@ -199,6 +200,10 @@ export default {
                     this.error = false
                     this.message = response.data.message
                     this.connected = false
+
+                    if (this.GWLogsTimer) {
+                       clearInterval(this.GWLogsTimer);
+                    }
                 }
             })
             .catch(error => {
@@ -214,6 +219,17 @@ export default {
             .finally(() => this.loading = false)
         }, 
 
+        setGWLogsInterval() {
+            this.getGWLogs();
+        
+            if (this.GWLogsTimer) {
+                clearInterval(this.GWLogsTimer);
+            }
+
+            this.GWLogsTimer = setInterval(() => { 
+                this.getGWLogs();
+            }, constants.intervals.soundSignal );
+        },
         getGWLogs() {
             this.loading = true
 
@@ -251,7 +267,6 @@ export default {
         openLoginModal(){
             this.error = false
             this.message = ''
-            this.email = ''
             this.pass = ''
 
             setTimeout(() => {
@@ -265,9 +280,6 @@ export default {
     },
 
     watch: {
-        connected(val) {
-            this.$store.setItem('IB connected', val)
-        },
         email(val) {
             helper.updateStore(this.$store, 'email', val, this.storeKey)            
         }
