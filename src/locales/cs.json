@@ -69,6 +69,8 @@
       "title": "Interactive Brokers",
       "credentials": "údajů",
       "login": "přihlášení",
+      "status": "stav",
+      "logs": "logy",
       "signIn": "Přihlašte se Interactive Brokers údaji",
       "paper": "Paper Trading mode",
       "confirmLive": "Jste si jisti, že chcete použít Live Trading mode?"
