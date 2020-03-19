@@ -32,8 +32,9 @@
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
             :class="{ 'interactive': editable || clickable, 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
-              <input type="checkbox" v-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
-              <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />              
+              <base-button v-if="saveable && clIndex === columns.length - 1" @click="save(item)" type="secondary" size="sm" fill>{{$t('research.save')}}</base-button>
+              <input type="checkbox" v-else-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
+              <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />
               <p v-else>{{ itemValue(item, column) | toFixed2 }}</p>
             </td>
       </slot>
@@ -89,6 +90,10 @@
         type: Boolean,
         description: "Whether rows can be double-clicked for some action"
       },
+      saveable: {
+        type: Boolean,
+        description: "Whether rows have Save button at last column (to do emit Save action)"
+      },
       theadClasses: {
         type: String,
         default: '',
@@ -127,6 +132,11 @@
           this.sortData(data)
         }
 
+        if (this.saveable) {
+          data.forEach(row => row[""] = "")
+          this.columns.push("");          
+        }
+        
         return data
       },
 
@@ -237,7 +247,11 @@
       },
       isEditing(rowIndex, column) {
         return this.editable && this.editing && this.editing[0] === rowIndex && this.editing[1] === column
-      },      
+      },   
+      
+      save(item) {
+        this.$emit('saved', item)
+      },
 
       check(item) {
         this.$emit('checked', item)

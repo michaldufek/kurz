@@ -20,10 +20,12 @@
                     :sortable="sortable"
                     :filterable="filterable"
                     :editable="editable"
-                    :clickable="true"
+                    :clickable="clickable"
+                    :saveable="saveable"
                     @edited="edited"
                     @filtered="filtered"
-                    @selected="selected" >
+                    @selected="selected"
+                    @saved="saved" >
         </base-table>
       </section>
     </div>
@@ -115,6 +117,10 @@ export default {
     clickable: {
       type: Boolean,
       description: "Whether rows can be double-clicked for some action"
+    },
+    saveable: {
+      type: Boolean,
+      description: "Whether rows have Save button at last column (to do emit Save action)"
     }
   },
 
@@ -239,7 +245,10 @@ export default {
       this.$emit('filtered', data)      
     },
     selected(data) {
-      this.$emit('selected', data)      
+      this.$emit('selected', data)
+    },
+    saved(data) {
+      this.$emit('saved', data)
     }
   },
 

@@ -118,6 +118,7 @@
     "from": "Od",
     "to": "Do",
     "pickDate": "Vyberte datum",
+    "save": "Uložit",
     "portfolioManager": {
       "designedPortfolio": "Navržené Portfolio",
       "livePortfolio": "Živé Portfolio",
@@ -382,8 +383,7 @@
             "RiskPerTrade"
           ],
           "chart": "Interaktivní 3D graf"
-        },
-        "save": "Uložit"
+        }
       },
       "genetics" : {
         "title": "Genetika"
