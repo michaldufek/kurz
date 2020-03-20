@@ -1,7 +1,6 @@
 import i18n from "@/i18n"
 
 const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
-// const baseUrl = "https://dev.analyticalplatform.com"
 const APIPartUrl = "/api"
 const SPPartUrl = APIPartUrl + "/sp"
 const PLPartUrl = APIPartUrl + "/pl"

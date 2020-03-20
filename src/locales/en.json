@@ -117,6 +117,7 @@
     "from": "From",
     "to": "To",
     "pickDate": "Pick a date",
+    "save": "Save",
     "portfolioManager": {
       "designedPortfolio": "Designed Portfolio",
       "livePortfolio": "Live Portfolio",
@@ -381,8 +382,7 @@
             "RiskPerTrade"
           ],
           "chart": "Interactive 3D chart"
-        },
-        "save": "Save"
+        }
       },
       "genetics" : {
         "title": "Genetics"

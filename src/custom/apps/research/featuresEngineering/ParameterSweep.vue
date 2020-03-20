@@ -175,7 +175,7 @@
                         :columns="$t(storeKey + '.results.columns')">
             </fancy-table>
             <!-- save button -->
-            <base-button native-type="submit" type="secondary" @click="saveClick">{{ $t(storeKey + '.save') }}</base-button>
+            <base-button native-type="submit" type="secondary" @click="saveClick">{{ $t('research.save') }}</base-button>
         </div>
 
         <!-- results chart -->

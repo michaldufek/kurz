@@ -5,7 +5,9 @@
                      :data="tableData"
                      :columns="columns"
                      :editable="true"
+                     :saveable="true"
                      @edited="edited" 
+                     @saved="saved" 
                      :key="tableKey" />
 
 </template>
@@ -116,6 +118,21 @@ export default {
             this.tableData[data.position[0]].set(data.position[1].toLowerCase(), data.value)   // write edited/changed value to the table
             helper.updateStoreBacktests(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)            
             this.tableKey++
+        },
+
+        saved(row) {
+            this.loading = true
+
+            this.$http
+            .patch(constants.urls.patternLab.backtestPatterns.results + '/' + row.btId, { ...helper.mapStrategyFromRow(row, false), "saved": true })
+            .catch(error => {
+                console.log(error)
+
+                if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.save')}`)
+                }
+            })
+            .finally(() => this.loading = false)
         }
     },
 
