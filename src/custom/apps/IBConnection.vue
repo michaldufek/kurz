@@ -163,27 +163,32 @@ export default {
                 password: this.pass
             })
             .then(response => {
-                if ('error' in response.data) {
-                    this.error = true
-                    this.message = response.data.error
-                } else {
-                    this.error = false
-                    this.message = response.data.message
-                    this.connected = true
-                    this.pass = ''
+                this.error = false
+                this.message = response.data.message
+                this.connected = true
+                this.pass = ''
 
-                    this.setGWLogsInterval()
-                }
+                this.setGWLogsInterval()
             })
             .catch(error => {
                 console.log(error)
                 this.error = true
-                this.message = error.message
                 this.shakeModal()
 
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
+                    this.message = error.message
                 }
+
+                if ('type' in error.response.data) {
+                    this.message = error.response.data.type + ' error'
+
+                    if ('message' in error.response.data) {
+                        this.message += ': ' + error.response.data.message
+                    } else {
+                        this.message += '.'
+                    }
+                }                
             })
             .finally(() => this.loading = false)
         },
@@ -193,27 +198,32 @@ export default {
             this.$http
             .post(constants.urls.liveDepl.gwStop, { userid: this.email }, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
-                if ('error' in response.data) {
-                    this.error = true
-                    this.message = response.data.error
-                } else {
-                    this.error = false
-                    this.message = response.data.message
-                    this.connected = false
+                this.error = false
+                this.message = response.data.message
+                this.connected = false
 
-                    if (this.GWLogsTimer) {
-                       clearInterval(this.GWLogsTimer);
-                    }
+                if (this.GWLogsTimer) {
+                    clearInterval(this.GWLogsTimer);
                 }
             })
             .catch(error => {
                 console.log(error)
-                this.error = true
-                this.message = error.message
+                this.error = true                
                 this.shakeModal()
 
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.disconnect')}`)
+                    this.message = error.message
+                }
+
+                if ('type' in error.response.data) {
+                    this.message = error.response.data.type + ' error'
+
+                    if ('message' in error.response.data) {
+                        this.message += ': ' + error.response.data.message
+                    } else {
+                        this.message += '.'
+                    }
                 }
             })
             .finally(() => this.loading = false)
