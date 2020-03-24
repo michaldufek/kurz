@@ -301,6 +301,7 @@
                                                         : helper.getDefaultPrName(bt.get('btId'))} (${bt.get('btId')})`)    // Name
                   })
                   helper.updateStoreBacktests(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
+                  helper.updateStore(this.$store, 'allowSave', true, constants.storeKeys.backtestPatterns)
                 })
                 .catch(error => {
                   console.log(error);
@@ -355,6 +356,7 @@
 
         this.setBacktestsTable(true)
         this.cardKey++
+        helper.updateStore(this.$store, 'allowSave', false, constants.storeKeys.backtestPatterns)
       },
 
       runStrategyClick() {
@@ -461,16 +463,20 @@
 
         this.$http
         .post(constants.urls.patternLab.backtestPatterns.results, backtests2Run)
+        .then(_ => this.setCheckBacktestsInterval())
         .catch(error => {
           this.loading = false
           console.log(error);
 
           if (error.message === constants.strings.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
+          } else {
+            this.$notify({
+                          type: 'warning', 
+                          message: this.$t('notifications.couldntRunBacktests') + this.errorTitle
+                        })
           }
-        })
-
-        this.setCheckBacktestsInterval()  
+        })        
       },
 
       toggleSidebar() {
