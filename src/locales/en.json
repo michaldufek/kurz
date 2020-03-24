@@ -28,7 +28,8 @@
     "edit": "Double-click for edit.",
     "editCancel": "Press ESC to cancel editing.",
     "showPattern": "Double-click to show pattern in chart.",
-    "showPatternCancel": "Double-click to cancel showing pattern in chart."
+    "showPatternCancel": "Double-click to cancel showing pattern in chart.",
+    "save2dataWarehouse": "Save to Ware House"
   },
   "paging": {
     "previous": "Previous",
@@ -118,6 +119,7 @@
     "to": "To",
     "pickDate": "Pick a date",
     "save": "Save",
+    "saved": "Saved",
     "portfolioManager": {
       "designedPortfolio": "Designed Portfolio",
       "livePortfolio": "Live Portfolio",
@@ -430,7 +432,8 @@
     "addNoAsset": "You must select at least one asset",
     "addNoPattern": "You must check at least one pattern",
     "noInitialCapital": "Initial capital must be set",
-    "loading": "Strategies already running"
+    "loading": "Strategies already running",
+    "couldntRunBacktests": "Couldn't run backtests"
   },
   "userMenu": {
     "actions": "User actions",

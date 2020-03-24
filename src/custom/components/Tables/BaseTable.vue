@@ -27,12 +27,13 @@
         <td v-for="(column, clIndex) in columns"
             :key="clIndex"
             v-if="hasValue(item, column)"
-            :title="valueTitle(item, rowIndex, column)"
+            :title="valueTitle(item, rowIndex, clIndex, column)"
             @dblclick="edit(item, rowIndex, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
-            :class="{ 'interactive': editable || clickable, 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
-              <base-button v-if="saveable && clIndex === columns.length - 1" @click="save(item)" type="secondary" size="sm" fill>{{$t('research.save')}}</base-button>
+            :class="{ 'interactive': (editable || clickable) && !(saveable && clIndex === columns.length - 1), 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
+              <base-button v-if="saveable && clIndex === columns.length - 1 && allowSave && !(rowIndex in savedRows)" @click="save(item)" type="secondary" size="sm" fill>{{ $t('research.save') }}</base-button>
+              <p v-else-if="saveable && clIndex === columns.length - 1 && allowSave && rowIndex in savedRows">{{ $t('research.saved') }}</p>
               <input type="checkbox" v-else-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
               <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />
               <p v-else>{{ itemValue(item, column) | toFixed2 }}</p>
@@ -93,6 +94,15 @@
       saveable: {
         type: Boolean,
         description: "Whether rows have Save button at last column (to do emit Save action)"
+      },
+      allowSave: {
+        type: Boolean,
+        description: "Whether rows can use Save button functionality" // ie. backtest was run and row has result ID
+      },
+      savedRows: {
+        type: Array,
+        default: () => [],
+        description: "Table rows that are already saved"
       },
       theadClasses: {
         type: String,
@@ -269,7 +279,11 @@
         return item[column.toLowerCase()];
       },
 
-      valueTitle(item, rowIndex, column) {
+      valueTitle(item, rowIndex, clIndex, column) {
+        if (this.saveable && clIndex === this.columns.length - 1) {
+          return this.$t('titles.save2dataWarehouse')
+        }
+
         let suffix = this.editable ? ' ' + (this.isEditing(rowIndex, column) ? this.$t('titles.editCancel') : this.$t('titles.edit')) : ''
         let value = this.itemValue(item, column)
 

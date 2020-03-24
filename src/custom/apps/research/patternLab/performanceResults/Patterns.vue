@@ -6,6 +6,8 @@
                      :columns="columns"
                      :editable="true"
                      :saveable="true"
+                     :allowSave="allowSave"
+                     :savedRows="savedRows"
                      @edited="edited" 
                      @saved="saved" 
                      :key="tableKey" />
@@ -28,7 +30,15 @@ export default {
 
             tableData: null,
             columns: this.$t(constants.translationKeys.patterns + '.columns'),
+            allowSave: false,
+
             tableKey: 0
+        }
+    },
+
+    computed: {
+        savedRows() {
+            return [ ]
         }
     },
 
@@ -37,6 +47,7 @@ export default {
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data) {
                 this.tableData = helper.getStoredBacktests(data)
+                this.allowSave = data.allowSave
             }
         },        
 

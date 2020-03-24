@@ -22,6 +22,8 @@
                     :editable="editable"
                     :clickable="clickable"
                     :saveable="saveable"
+                    :allowSave="allowSave"
+                    :savedRows="savedRows"
                     @edited="edited"
                     @filtered="filtered"
                     @selected="selected"
@@ -121,6 +123,15 @@ export default {
     saveable: {
       type: Boolean,
       description: "Whether rows have Save button at last column (to do emit Save action)"
+    },
+    allowSave: {
+      type: Boolean,
+      description: "Whether rows can use Save button functionality" // ie. backtest was run and row has result ID
+    },
+    savedRows: {
+      type: Array,
+      default: () => [],
+      description: "Table rows that are already saved"
     }
   },
 

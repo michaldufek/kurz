@@ -28,7 +28,8 @@
     "edit": "Dvoj-klik pro úpravu.",
     "editCancel": "Stlačte ESC pro zrušení upravování.",
     "showPattern": "Dvoj-klik pro zobrazení patternu v grafu.",
-    "showPatternCancel": "Dvoj-klik pro zrušení zobrazování patternu v grafu."
+    "showPatternCancel": "Dvoj-klik pro zrušení zobrazování patternu v grafu.",
+    "save2dataWarehouse": "Uložit do Skladu strategií"
   },
   "paging": {
     "previous": "Předchozí",
@@ -119,6 +120,7 @@
     "to": "Do",
     "pickDate": "Vyberte datum",
     "save": "Uložit",
+    "saved": "Uložené",
     "portfolioManager": {
       "designedPortfolio": "Navržené Portfolio",
       "livePortfolio": "Živé Portfolio",
@@ -431,7 +433,8 @@
     "addNoAsset": "Musíte označit alespoň jedno aktivum",
     "addNoPattern": "Musíte zaškrtnout alespoň jeden pattern",
     "noInitialCapital": "Počáteční kapitál musí být nastavený",
-    "loading": "Strategie již běží"
+    "loading": "Strategie již běží",
+    "couldntRunBacktests": "Strategie se nezdařilo rozběhat"
   },
   "userMenu": {
     "actions": "Uživatelské akce",
