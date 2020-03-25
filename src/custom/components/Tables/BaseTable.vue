@@ -32,7 +32,7 @@
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
             :class="{ 'interactive': (editable || clickable) && !(saveable && clIndex === columns.length - 1), 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
-              <base-button v-if="saveable && clIndex === columns.length - 1 && allowSave && !(rowIndex in savedRows)" @click="save(item)" type="secondary" size="sm" fill>{{ $t('research.save') }}</base-button>
+              <base-button v-if="saveable && clIndex === columns.length - 1 && allowSave && !(rowIndex in savedRows)" @click="save(rowIndex, item)" type="secondary" size="sm" fill>{{ $t('research.save') }}</base-button>
               <p v-else-if="saveable && clIndex === columns.length - 1 && allowSave && rowIndex in savedRows">{{ $t('research.saved') }}</p>
               <input type="checkbox" v-else-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
               <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />
@@ -259,8 +259,8 @@
         return this.editable && this.editing && this.editing[0] === rowIndex && this.editing[1] === column
       },   
       
-      save(item) {
-        this.$emit('saved', item)
+      save(rowIndex, item) {
+        this.$emit('saved', { rowIndex: rowIndex, item: item })
       },
 
       check(item) {

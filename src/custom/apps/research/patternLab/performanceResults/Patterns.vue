@@ -31,24 +31,49 @@ export default {
             tableData: null,
             columns: this.$t(constants.translationKeys.patterns + '.columns'),
             allowSave: false,
+            savedRows: [],
 
             tableKey: 0
         }
     },
 
-    computed: {
-        savedRows() {
-            return [ ]
-        }
-    },
-
     methods: {
         initData() { 
+            console.log('initData')
+            let backtestsIDs = []
+            let savedBacktestsIDs = []
+            let unsavedBacktestsIDs = []
+
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data) {
                 this.tableData = helper.getStoredBacktests(data)
                 this.allowSave = data.allowSave
+                backtestsIDs = this.tableData.map(bt => bt.get('btId'))
+                savedBacktestsIDs = data.savedBacktestsIDs
             }
+            
+            console.log('backtestsIDs')
+            console.log(backtestsIDs)
+            console.log('savedBacktestsIDs')
+            console.log(savedBacktestsIDs)
+            this.$http
+            .get(constants.urls.datawarehouse)
+            .then(response => response.data.forEach(datum => {
+                if (backtestsIDs.includes(datum.original_result_id) && !unsavedBacktestsIDs.includes(datum.original_result_id)) {
+                    this.savedRows.push(datum.original_result_id)
+                    console.log(datum.original_result_id)
+                }
+            }))
+            .catch(error => {
+                console.log(error)
+                if (error.message === constants.strings.networkError) {
+                    helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t(this.patternsKey + '.title'))
+                }
+            })
+            .finally(() => { 
+                console.log('this.savedRows')
+                console.log(this.savedRows)
+            })
         },        
 
         // FancyTable emited event
@@ -128,6 +153,10 @@ export default {
 
             this.tableData[data.position[0]].set(data.position[1].toLowerCase(), data.value)   // write edited/changed value to the table
             helper.updateStoreBacktests(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)            
+
+            this.savedRows.splice(this.savedRows.indexOf(data.position[0]), 1)  // remove from savedRows
+            helper.updateStore(this.$store, 'unsavedBacktestsIDs', this.$store.getItem(constants.storeKeys.backtestPatterns).unsavedBacktestsIDs.concat([ data.position[0] ]), constants.storeKeys.backtestPatterns) 
+
             this.tableKey++
         },
 
@@ -136,19 +165,36 @@ export default {
 
             this.$http
             .patch(constants.urls.patternLab.backtestPatterns.results + '/' + row.btId, { ...helper.mapStrategyFromRow(row, false), "saved": true })
+            .then(_ => { 
+                this.savedRows.push(row.btId) 
+                console.log(this.savedRows)
+                let unsavedBacktestsIDs = this.$store.getItem(constants.storeKeys.backtestPatterns).unsavedBacktestsIDs
+                unsavedBacktestsIDs.splice(unsavedBacktestsIDs.indexOf(row.btId), 1)  // remove from unsavedBacktestsIDs
+                helper.updateStore(this.$store, 'unsavedBacktestsIDs', unsavedBacktestsIDs, constants.storeKeys.backtestPatterns) 
+            })
             .catch(error => {
                 console.log(error)
-
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.save')}`)
                 }
             })
-            .finally(() => this.loading = false)
+            .finally(() => {
+                this.loading = false
+            })
         }
     },
 
     mounted() {
         this.initData()
+    },
+
+    watch: {
+      savedRows: {
+        handler(val){
+          helper.updateStore(this.$store, 'savedBacktestsIDs', val, constants.storeKeys.backtestPatterns) 
+        },
+        deep: true
+      }
     }
 }
 </script>
