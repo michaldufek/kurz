@@ -362,6 +362,7 @@
         this.setBacktestsTable(true)
 
         helper.updateStore(this.$store, 'savedBacktestsIDs', [], constants.storeKeys.backtestPatterns)
+        helper.updateStore(this.$store, 'unsavedBacktestsIDs', [], constants.storeKeys.backtestPatterns)
         helper.updateStore(this.$store, 'allowSave', false, constants.storeKeys.backtestPatterns)
 
         this.cardKey++

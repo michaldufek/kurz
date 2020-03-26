@@ -39,41 +39,35 @@ export default {
 
     methods: {
         initData() { 
-            console.log('initData')
             let backtestsIDs = []
-            let savedBacktestsIDs = []
             let unsavedBacktestsIDs = []
 
+            // get data from store
             let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
             if (data) {
                 this.tableData = helper.getStoredBacktests(data)
                 this.allowSave = data.allowSave
                 backtestsIDs = this.tableData.map(bt => bt.get('btId'))
-                savedBacktestsIDs = data.savedBacktestsIDs
+                unsavedBacktestsIDs = data.unsavedBacktestsIDs
             }
             
-            console.log('backtestsIDs')
-            console.log(backtestsIDs)
-            console.log('savedBacktestsIDs')
-            console.log(savedBacktestsIDs)
+            // get data from server
             this.$http
             .get(constants.urls.datawarehouse)
-            .then(response => response.data.forEach(datum => {
-                if (backtestsIDs.includes(datum.original_result_id) && !unsavedBacktestsIDs.includes(datum.original_result_id)) {
-                    this.savedRows.push(datum.original_result_id)
-                    console.log(datum.original_result_id)
-                }
-            }))
+            .then(response => { 
+                response.data.forEach(datum => {
+                    if (backtestsIDs.includes(datum.original_result_id) && !unsavedBacktestsIDs.includes(datum.original_result_id)) {
+                        this.savedRows.push(datum.original_result_id)
+                    }
+                })
+            })
             .catch(error => {
                 console.log(error)
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t(this.patternsKey + '.title'))
                 }
             })
-            .finally(() => { 
-                console.log('this.savedRows')
-                console.log(this.savedRows)
-            })
+            .finally(_ => {})
         },        
 
         // FancyTable emited event
@@ -81,10 +75,10 @@ export default {
             // check if new value is valid
             let assetsPatterns = helper.getAssetsPatternsPickerData(this.$store)
             let clNr = 0
+            let btId = this.tableData[data.position[0]].get('btId')
 
             switch(data.position[1]) {
-                case this.columns[clNr++]:  // Name
-                    let btId = this.tableData[data.position[0]].get('btId')
+                case this.columns[clNr++]:  // Name                    
                     data.value = data.value + (btId && btId !== -1 ? ` (${btId})` : '')
                     break
                 case this.columns[clNr++]:   // From
@@ -154,8 +148,8 @@ export default {
             this.tableData[data.position[0]].set(data.position[1].toLowerCase(), data.value)   // write edited/changed value to the table
             helper.updateStoreBacktests(this.$store, 'backtests', this.tableData, constants.storeKeys.backtestPatterns)            
 
-            this.savedRows.splice(this.savedRows.indexOf(data.position[0]), 1)  // remove from savedRows
-            helper.updateStore(this.$store, 'unsavedBacktestsIDs', this.$store.getItem(constants.storeKeys.backtestPatterns).unsavedBacktestsIDs.concat([ data.position[0] ]), constants.storeKeys.backtestPatterns) 
+            this.savedRows.splice(this.savedRows.indexOf(btId), 1)  // remove from savedRows
+            helper.updateStore(this.$store, 'unsavedBacktestsIDs', this.$store.getItem(constants.storeKeys.backtestPatterns).unsavedBacktestsIDs.concat([ btId ]), constants.storeKeys.backtestPatterns)
 
             this.tableKey++
         },
@@ -167,7 +161,6 @@ export default {
             .patch(constants.urls.patternLab.backtestPatterns.results + '/' + row.btId, { ...helper.mapStrategyFromRow(row, false), "saved": true })
             .then(_ => { 
                 this.savedRows.push(row.btId) 
-                console.log(this.savedRows)
                 let unsavedBacktestsIDs = this.$store.getItem(constants.storeKeys.backtestPatterns).unsavedBacktestsIDs
                 unsavedBacktestsIDs.splice(unsavedBacktestsIDs.indexOf(row.btId), 1)  // remove from unsavedBacktestsIDs
                 helper.updateStore(this.$store, 'unsavedBacktestsIDs', unsavedBacktestsIDs, constants.storeKeys.backtestPatterns) 
@@ -178,9 +171,7 @@ export default {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.save')}`)
                 }
             })
-            .finally(() => {
-                this.loading = false
-            })
+            .finally(() => this.loading = false)
         }
     },
 
