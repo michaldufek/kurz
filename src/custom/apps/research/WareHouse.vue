@@ -37,7 +37,7 @@
 
       <div class="col-lg-6 col-md-12">
         <card class="card">
-          <table class="table tablesorter">
+          <table class="table tablesorter" :key="tableKey">
             <thead>
             <tr>
               <!-- <slot name="columns"> -->
@@ -46,25 +46,26 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="strategyName in myStrategies">
-              <!-- <slot :row="item"> -->
-                <td style="border-top: 0px; margin-top: 10px;">
-                  {{strategyName}}
-                </td>
-                <td style="border-top: 0px;">
-                  <base-button type="secondary" fill style="float:right; margin-left: 10px">
-                    {{$t('research.wareHouse.remove')}}
-                  </base-button>
-                  <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
-                  <base-button type="secondary" fill style="float:right;">
-                    {{$t('research.wareHouse.select')}}
-                  </base-button>
-                </td>
-                <!-- to-do: export to Portfolio manager/Designed portfolio -->
-                <!-- to-do: v-if="strategies.enableLive" -->                        
-                <!-- v-if="strategies.enableStore" -->
-              <!-- </slot> -->
-            </tr>
+              <DualRingLoader v-if="loading" :color="'#54f1d2'" style="margin-left: 400px" />
+              <tr v-else v-for="strategy in myStrategies">
+                <!-- <slot :row="item"> -->
+                  <td style="border-top: 0px; margin-top: 10px;">
+                    {{strategy.name}}
+                  </td>
+                  <td style="border-top: 0px;">
+                    <base-button @click="remove(strategy.id)" type="secondary" fill style="float:right; margin-left: 10px">
+                      {{$t('research.wareHouse.remove')}}
+                    </base-button>
+                    <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
+                    <base-button type="secondary" fill style="float:right;">
+                      {{$t('research.wareHouse.select')}}
+                    </base-button>
+                  </td>
+                  <!-- to-do: export to Portfolio manager/Designed portfolio -->
+                  <!-- to-do: v-if="strategies.enableLive" -->                        
+                  <!-- v-if="strategies.enableStore" -->
+                <!-- </slot> -->
+              </tr>
             </tbody>
           </table>
         </card>
@@ -74,18 +75,72 @@
 </template>
 <script>
   import { BaseButton } from "@/components";
+  import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
+  import constants from '@/custom/assets/js/constants'
+  import helper from '@/custom/assets/js/helper';
 
   var samplePortfolioNames = ["S1 with very very long title", "S2 with very very long title", "S3 with very very long title", "S4 with very very long title"];
+  
 
   export default {
     components: {
-      BaseButton        
+      BaseButton,
+      DualRingLoader
     },
     data() {
-      return {    
+      return {   
+        warehouseKey: 'sidebar.wareHouse',
+        loading: false,
+
         premiumStrategies: samplePortfolioNames,  
-        myStrategies: samplePortfolioNames
+        myStrategies: [],
+
+        tableKey: 0
       }
+    },
+
+    methods: {
+      getMyStrategies() {
+        this.loading = true
+
+        this.$http
+        .get(constants.urls.datawarehouse.results)
+        .then(response => this.myStrategies = response.data.map(datum => {
+          let idSuffix = `(${datum.original_result_id})`        
+          return { 
+            id: datum.id, 
+            name: `${datum.name ? datum.name : helper.getDefaultPrName(datum.original_result_id)} ${datum.name.includes(idSuffix) ? '' : idSuffix}`
+          }
+        }))
+        .catch(error => {
+          console.log(error)
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t(this.warehouseKey))
+          }
+        })
+        .finally(() => this.loading = false)
+      },
+
+      remove(id) {
+        this.loading = true
+
+        this.$http
+        .delete(constants.urls.datawarehouse.result + '/' + id)
+        .catch(error => {
+          console.log(error)
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.wareHouse.remove')}`)
+          }
+        })
+        .finally(() => {
+          this.getMyStrategies()
+          this.loading = false   
+        })
+      }
+    },
+
+    mounted() {
+      this.getMyStrategies()
     }
   };
 </script>
