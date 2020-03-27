@@ -53,7 +53,7 @@ export default {
             
             // get data from server
             this.$http
-            .get(constants.urls.datawarehouse)
+            .get(constants.urls.datawarehouse.results)
             .then(response => { 
                 response.data.forEach(datum => {
                     if (backtestsIDs.includes(datum.original_result_id) && !unsavedBacktestsIDs.includes(datum.original_result_id)) {
@@ -156,14 +156,24 @@ export default {
 
         saved(row) {
             this.loading = true
-
+            // change saved to true
             this.$http
-            .patch(constants.urls.patternLab.backtestPatterns.results + '/' + row.btId, { ...helper.mapStrategyFromRow(row, false), "saved": true })
+            .patch(constants.urls.patternLab.backtestPatterns.results + '/' + row.btId, { ...helper.mapStrategyFromRow(row, false), saved: true })
             .then(_ => { 
                 this.savedRows.push(row.btId) 
                 let unsavedBacktestsIDs = this.$store.getItem(constants.storeKeys.backtestPatterns).unsavedBacktestsIDs
                 unsavedBacktestsIDs.splice(unsavedBacktestsIDs.indexOf(row.btId), 1)  // remove from unsavedBacktestsIDs
                 helper.updateStore(this.$store, 'unsavedBacktestsIDs', unsavedBacktestsIDs, constants.storeKeys.backtestPatterns) 
+
+                // change name of previously stored bt
+                this.$http
+                .patch(constants.urls.datawarehouse.result + '/' + row.btId, { name: row[this.columns[0].toLowerCase()] })
+                .catch(error => {
+                    console.log(error)
+                    if (error.message === constants.strings.networkError) {
+                        helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.saveName')}`)
+                    }
+                })
             })
             .catch(error => {
                 console.log(error)
@@ -171,7 +181,7 @@ export default {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.save')}`)
                 }
             })
-            .finally(() => this.loading = false)
+            .finally(() => this.loading = false)            
         }
     },
 
