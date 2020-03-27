@@ -156,6 +156,7 @@ export default {
 
         saved(row) {
             this.loading = true
+
             // change saved to true
             this.$http
             .patch(constants.urls.patternLab.backtestPatterns.results + '/' + row.btId, { ...helper.mapStrategyFromRow(row, false), saved: true })
@@ -181,7 +182,7 @@ export default {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.save')}`)
                 }
             })
-            .finally(() => this.loading = false)            
+            .finally(() => this.loading = false)
         }
     },
 

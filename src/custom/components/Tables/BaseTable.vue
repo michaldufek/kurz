@@ -28,7 +28,7 @@
             :key="clIndex"
             v-if="hasValue(item, column)"
             :title="valueTitle(item, rowIndex, clIndex, column)"
-            @dblclick="edit(item, rowIndex, column)"
+            @dblclick="edit(item, rowIndex, clIndex, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
             @keyup.esc="editing = null"            
             :class="{ 'interactive': (editable || clickable) && !(saveable && clIndex === columns.length - 1), 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
@@ -239,7 +239,11 @@
         this.filterChecked = false
       },
 
-      edit(item, index, column) { 
+      edit(item, rowIndex, clIndex, column) { 
+        if (this.saveable && clIndex === this.columns.length - 1) {
+          return
+        }
+
         let val = this.itemValue(item, column)   
         
         let del = ' '
@@ -247,7 +251,7 @@
           del += '('
         }
         this.editText = val ? ((!isNaN(Number(val)) ? String(val) : val).split(del)[0]) : ''
-        this.editing = [index, column]
+        this.editing = [rowIndex, column]
       },
       finishEdit(rowIndex, column) {
         this.$emit('edited', {
