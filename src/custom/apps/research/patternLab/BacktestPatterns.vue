@@ -246,6 +246,10 @@
         let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
         if (data) {
           this.loading = data.loading ? data.loading : false
+          if (this.loading) {
+            this.setCheckBacktestsInterval()
+          }
+
           if (data.strategy) {
             this.strategy = data.strategy
             this.strategy.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions')[data.strategy.direction]
@@ -300,6 +304,7 @@
                                                         ? bt.get(this.columns[0].toLowerCase()).split(' (')[0] 
                                                         : helper.getDefaultPrName(bt.get('btId'))} (${bt.get('btId')})`)    // Name
                   })
+
                   helper.updateStoreBacktests(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
                   helper.updateStore(this.$store, 'allowSave', true, constants.storeKeys.backtestPatterns)
                 })
@@ -355,8 +360,12 @@
         }
 
         this.setBacktestsTable(true)
-        this.cardKey++
+
+        helper.updateStore(this.$store, 'savedBacktestsIDs', [], constants.storeKeys.backtestPatterns)
+        helper.updateStore(this.$store, 'unsavedBacktestsIDs', [], constants.storeKeys.backtestPatterns)
         helper.updateStore(this.$store, 'allowSave', false, constants.storeKeys.backtestPatterns)
+
+        this.cardKey++
       },
 
       runStrategyClick() {
