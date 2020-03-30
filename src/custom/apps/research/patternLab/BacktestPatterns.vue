@@ -343,7 +343,7 @@
                           type: 'warning', 
                           message: this.$t('notifications.noInitialCapital') + this.errorTitle
                       })
-          return 
+          return false
         }
 
         if (this.loading) {
@@ -351,12 +351,12 @@
                           type: 'warning', 
                           message: this.$t('notifications.loading') + this.errorTitle
                       })
-          return 
+          return false
         }
 
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (!data || !data.checkedPatterns.length) {   
-          return
+          return false
         }
 
         this.setBacktestsTable(true)
@@ -366,6 +366,8 @@
         helper.updateStore(this.$store, 'allowSave', false, constants.storeKeys.backtestPatterns)
 
         this.cardKey++
+
+        return true
       },
 
       runStrategyClick() {
@@ -375,26 +377,35 @@
                           type: 'warning', 
                           message: this.$t('notifications.addNoAsset') + this.errorTitle
                       })
+          return
+        }
+        
+        if (this.loading) {
+          this.$notify({
+                          type: 'warning', 
+                          message: this.$t('notifications.loading') + this.errorTitle
+                      })
+          return 
+        }
 
-        } else {
-          if (this.loading) {
-            this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.loading') + this.errorTitle
-                        })
-            return 
-          }
+        if (data && !data.checkedPatterns.length) {
+          this.$notify({
+              type: 'warning', 
+              message: this.$t('notifications.addNoPattern') + this.errorTitle
+          })  
+          return
+        } 
 
-          if (data && !data.checkedPatterns.length) {
-            this.$notify({
-                type: 'warning', 
-                message: this.$t('notifications.addNoPattern') + this.errorTitle
-            })  
-          } else if (data) {
-            this.setBacktestsTable()
-            this.cardKey++
-            this.runBacktests()     
-          }
+        let canRun = true
+        let btsData = this.$store.getItem(constants.storeKeys.backtestPatterns)
+        if (!btsData || (btsData && (btsData.backtests === undefined || btsData.backtests === []))) {
+          canRun = this.addPattern()
+        } 
+
+        if (canRun) {        
+          this.setBacktestsTable()
+          this.cardKey++
+          this.runBacktests()     
         }
       },
 
