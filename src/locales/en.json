@@ -121,6 +121,7 @@
     "save": "Save",
     "saveName": "Save name",
     "saved": "Saved",
+    "stop": "Stop",
     "portfolioManager": {
       "designedPortfolio": "Designed Portfolio",
       "livePortfolio": "Live Portfolio",
@@ -364,7 +365,6 @@
         "stopLoss": "Stop Loss",
         "step": "Step",
         "run": "Run",
-        "stop": "Stop",
         "estimatedTime": "Estimated running time is",
         "confirmEstimated": "longer than 5 hours. Are you sure?",
         "results": {
