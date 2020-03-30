@@ -122,6 +122,7 @@
     "save": "Uložit",
     "saveName": "Uložit jméno",
     "saved": "Uložené",
+    "stop": "Zastavit",
     "portfolioManager": {
       "designedPortfolio": "Navržené Portfolio",
       "livePortfolio": "Živé Portfolio",
@@ -365,7 +366,6 @@
         "range": "rozsah",
         "step": "Krok",
         "run": "Spustit",
-        "stop": "Zastavit",
         "estimatedTime": "Odhadovaný čas běhu je",
         "confirmEstimated": "větší než 5 hodin. Jste si jistí?",
         "results": {

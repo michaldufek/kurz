@@ -37,7 +37,7 @@
 
       <div class="col-lg-6 col-md-12">
         <card class="card">
-          <table class="table tablesorter" :key="tableKey">
+          <table class="table tablesorter">
             <thead>
             <tr>
               <!-- <slot name="columns"> -->
@@ -57,7 +57,7 @@
                       {{$t('research.wareHouse.remove')}}
                     </base-button>
                     <p style="float:right">&nbsp;&nbsp;&nbsp;</p>
-                    <base-button type="secondary" fill style="float:right;">
+                    <base-button @click="select(strategy.original_result_id)" type="secondary" fill style="float:right;">
                       {{$t('research.wareHouse.select')}}
                     </base-button>
                   </td>
@@ -93,9 +93,7 @@
         loading: false,
 
         premiumStrategies: samplePortfolioNames,  
-        myStrategies: [],
-
-        tableKey: 0
+        myStrategies: []
       }
     },
 
@@ -103,13 +101,17 @@
       getMyStrategies() {
         this.loading = true
 
+        this.myStrategies = []
         this.$http
         .get(constants.urls.datawarehouse.results)
-        .then(response => this.myStrategies = response.data.map(datum => {
-          let idSuffix = `(${datum.original_result_id})`        
-          return { 
-            id: datum.id, 
-            name: `${datum.name ? datum.name : helper.getDefaultPrName(datum.original_result_id)} ${datum.name.includes(idSuffix) ? '' : idSuffix}`
+        .then(response => response.data.forEach(datum => {
+          if (!datum.in_portfolio) {
+            let idSuffix = `(${datum.original_result_id})`        
+            this.myStrategies.push({ 
+              id: datum.id, 
+              original_result_id: datum.original_result_id,
+              name: `${datum.name ? datum.name : helper.getDefaultPrName(datum.original_result_id)} ${datum.name.includes(idSuffix) ? '' : idSuffix}`
+            })
           }
         }))
         .catch(error => {
@@ -131,6 +133,24 @@
           if (error.message === constants.strings.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.wareHouse.remove')}`)
           }
+        })
+        .finally(() => {
+          this.getMyStrategies()
+          this.loading = false   
+        })
+      },
+
+      select(id) {   
+        this.loading = true
+
+        // add to portfolio
+        this.$http
+        .patch(constants.urls.datawarehouse.result + '/' + id, { in_portfolio: true })
+        .catch(error => {
+            console.log(error)
+            if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.wareHouse.select')}`)
+            }
         })
         .finally(() => {
           this.getMyStrategies()
