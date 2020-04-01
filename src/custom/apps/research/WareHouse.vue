@@ -145,7 +145,7 @@
 
         // add to portfolio
         this.$http
-        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbrevation ]), { in_portfolio: true })
+        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { in_portfolio: true })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {

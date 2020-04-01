@@ -76,7 +76,7 @@ export default {
         },
 
         patternLab: {
-            abbrevation: PLminiPartUrl,
+            abbreviation: PLminiPartUrl,
             asset: PLPartUrl + tickerPartUrl + searchPartUrl,
             pattern: PLPartUrl + patternPartUrl + searchPartUrl,
             chart: PLPartUrl + "/HistoryData/",

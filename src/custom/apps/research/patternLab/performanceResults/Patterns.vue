@@ -168,7 +168,7 @@ export default {
 
                 // change name of previously stored bt
                 this.$http
-                .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ row.btId, constants.urls.patternLab.abbrevation ]), { name: row[this.columns[0].toLowerCase()] })
+                .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ row.btId, constants.urls.patternLab.abbreviation ]), { name: row[this.columns[0].toLowerCase()] })
                 .catch(error => {
                     console.log(error)
                     if (error.message === constants.strings.networkError) {
