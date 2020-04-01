@@ -252,11 +252,11 @@
         "export": "Export",
         "entryRules": {
           "direction": "Směr",
-          "directions": [
-            "NÁKUP",
-            "PRODEJ",
-            "OBĚ"
-          ],
+          "directions": {
+            "BUY": "NÁKUP",
+            "SELL": "PRODEJ",
+            "BOTH": "OBĚ"
+          },
           "trendFilter": "Trend filter",
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
           "ma_filter_period": "Klouzavý průměr",

@@ -258,7 +258,8 @@ export default {
         clNr++
 
         val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
-        data['direction'] = i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(val)
+        let directions = i18n.t('research.patternLab.backtestPatterns.entryRules.directions')
+        data['direction'] = Object.keys(directions)[Object.values(directions).indexOf(val)]
 
         val = (map && row.get('fixed_amount')) || (!map && row['fixed_amount'])
         if (val) {
@@ -267,6 +268,87 @@ export default {
 
         return data
     },
+    // mapStrategyFromRow2(row, map=false) {    // for api/pl2
+    //     // map Patterns table row to API structure
+    //     let data = {}
+    //     let clNr = 1    // 0th is Name - no need to map
+    //     let columns = i18n.t(constants.translationKeys.patterns + '.columns')
+
+    //     // data['history'] = {}
+
+    //     let val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     if (val) {
+    //         // data.history['start_date'] = val
+    //         data['start_date'] = val // From
+    //     }
+    //     clNr++
+
+    //     val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     if (val) {
+    //         // data.history['finish_date'] = val
+    //         data['finish_date'] = val    // To
+    //     }
+    //     clNr++
+
+    //     // val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     // if (val) {
+    //     //     data.history['time_frame'] = i18n.t('research.patternLab.timeframes').indexOf(val) + 1    // Time frame    // it's a big mystery why BE indexes from 1
+    //     // }
+    //     clNr++
+
+    //     // val = (map && row.get('assetId')) || (!map && row['assetId'])
+    //     // data['ticker'] = val   // Asset
+    //     val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     data['history'] = {
+    //         "asset": {
+    //             "symbol": val
+    //             // "name": "string"
+    //         }            
+    //     }
+
+    //     val = (map && row.get('patternId')) || (!map && row['patternId'])
+    //     data['pattern'] = val  // Pattern
+    //     clNr += 2
+
+    //     val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     if (val) {
+    //         data['initial_capital'] = val.split(' ')[0]
+    //     }
+    //     clNr += 2
+
+    //     val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     if (val) {
+    //         let profit_take = val.split(' ')
+    //         data['profit_take_value'] = profit_take[0]
+    //         data['profit_take_unit'] = profit_take[1]
+    //     }
+    //     clNr++
+
+    //     val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     if (val) {
+    //         let stop_loss = val.split(' ')
+    //         data['stop_loss_value'] =  stop_loss[0]
+    //         data['stop_loss_unit'] =  stop_loss[1]
+    //     }
+    //     clNr++
+
+    //     val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     if (val) {
+    //         data['ma_filter_period'] = val.split(' ')[0]
+    //     }
+    //     clNr++
+
+    //     val = (map && row.get(columns[clNr].toLowerCase())) || (!map && row[columns[clNr].toLowerCase()])
+    //     let directions = i18n.t('research.patternLab.backtestPatterns.entryRules.directions')
+    //     data['direction'] = Object.keys(directions)[Object.values(directions).indexOf(val)]
+
+    //     val = (map && row.get('fixed_amount')) || (!map && row['fixed_amount'])
+    //     if (val) {
+    //         data['fixed_amount'] = val  // Risk
+    //     }
+
+    //     return data
+    // },
     getPatternLabQueryData(assets, patterns, timeframe) {
         let data = {}
 
@@ -302,7 +384,7 @@ export default {
         let data = store.getItem(constants.storeKeys.assetsPatternsPicker)
         if (data) {
             return {
-                timeframe: i18n.t('research.patternLab.timeframes')[data.timeframe ? data.timeframe : [0]],
+                timeframe: i18n.t('research.patternLab.timeframes')[data.timeframe ? data.timeframe : 0],
                 range: {
                     from: data.range && data.range.from ? data.range.from : null,
                     to: data.range && data.range.to ? data.range.to : null
@@ -334,7 +416,7 @@ export default {
 
             let timeframeKey = i18n.t(constants.translationKeys.patterns + '.columns')[3].toLowerCase()
             let directionKey = i18n.t(constants.translationKeys.patterns + '.columns')[11].toLowerCase()
-            newRow.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(row.get(directionKey)))
+            newRow.set(directionKey, Object.values(i18n.t('research.patternLab.backtestPatterns.entryRules.directions')).indexOf(row.get(directionKey)))
             newRow.set(timeframeKey, i18n.t('research.patternLab.timeframes').indexOf(row.get(timeframeKey)))
 
             return Array.from(newRow.values())
@@ -355,7 +437,7 @@ export default {
                 
                 let timeframeKey = i18n.t(constants.translationKeys.patterns + '.columns')[3].toLowerCase()
                 let directionKey = i18n.t(constants.translationKeys.patterns + '.columns')[11].toLowerCase()
-                row.set(directionKey, i18n.t('research.patternLab.backtestPatterns.entryRules.directions')[row.get(directionKey)])
+                row.set(directionKey, Object.values(i18n.t('research.patternLab.backtestPatterns.entryRules.directions'))[row.get(directionKey)])
                 row.set(timeframeKey, i18n.t('research.patternLab.timeframes')[row.get(timeframeKey)])
 
                 bts.push(row)

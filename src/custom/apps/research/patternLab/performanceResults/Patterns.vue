@@ -137,7 +137,7 @@ export default {
                     data.value = `${data.value} ${constants.defaultUnit}`
                     break
                 case this.columns[clNr++]:   // Direction
-                    if (!this.$t('research.patternLab.backtestPatterns.entryRules.directions').includes(data.value)) {
+                    if (!Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions')).includes(data.value)) {
                         return
                     }
                     break
@@ -168,7 +168,7 @@ export default {
 
                 // change name of previously stored bt
                 this.$http
-                .patch(constants.urls.datawarehouse.result + '/' + row.btId, { name: row[this.columns[0].toLowerCase()] })
+                .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ row.btId, constants.urls.patternLab.abbrevation ]), { name: row[this.columns[0].toLowerCase()] })
                 .catch(error => {
                     console.log(error)
                     if (error.message === constants.strings.networkError) {

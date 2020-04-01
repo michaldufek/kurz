@@ -34,7 +34,7 @@
                             title-classes="btn btn-secondary"
                             :title="strategy.direction">
                 <ul style="list-style-type: none;">
-                  <li v-for="dir in $t('research.patternLab.backtestPatterns.entryRules.directions').filter(d => d !== strategy.direction)">            
+                  <li v-for="dir in Object.values($t('research.patternLab.backtestPatterns.entryRules.directions')).filter(d => d !== strategy.direction)">            
                     <a class="dropdown-item" 
                       @click="strategy.direction = dir" 
                       href="#">
@@ -229,7 +229,7 @@
 
         strategy: {
           ...defaultStrategy,
-          direction: this.$t('research.patternLab.backtestPatterns.entryRules.directions')[0]
+          direction: Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions'))[0]
         },
         loading: false,
         cardKey: 0,
@@ -252,11 +252,11 @@
 
           if (data.strategy) {
             this.strategy = data.strategy
-            this.strategy.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions')[data.strategy.direction]
+            this.strategy.direction = Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions'))[data.strategy.direction]
           } else {
             this.strategy = {
               ...defaultStrategy,
-              direction: this.$t('research.patternLab.backtestPatterns.entryRules.directions')[0]
+              direction: Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions'))[0]
             }            
           }
         }
@@ -518,7 +518,7 @@
       strategy: {
         handler(val){
           let val2store = JSON.parse(JSON.stringify(val))
-          val2store.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(val.direction)
+          val2store.direction = Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions')).indexOf(val.direction)
           helper.updateStore(this.$store, 'strategy', val2store, constants.storeKeys.backtestPatterns) 
         },
         deep: true

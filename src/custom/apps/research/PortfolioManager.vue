@@ -94,7 +94,7 @@
       // emitted events
       goLive(id) {        
         this.$http
-        .patch(constants.urls.datawarehouse.result + '/' + id, { live: true })
+        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbrevation ]), { live: true })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {
@@ -105,7 +105,7 @@
       },
       stored(id) {        
         this.$http
-        .patch(constants.urls.datawarehouse.result + '/' + id, { in_portfolio: false })
+        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbrevation ]), { in_portfolio: false })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {
@@ -116,7 +116,7 @@
       },
       stoped(id) {        
         this.$http
-        .patch(constants.urls.datawarehouse.result + '/' + id, { live: false })
+        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbrevation ]), { live: false })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {

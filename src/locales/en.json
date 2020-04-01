@@ -251,11 +251,11 @@
         "export": "Export",
         "entryRules": {
           "direction": "Direction",
-          "directions": [
-            "BUY",
-            "SELL",
-            "BOTH"
-          ],
+          "directions": {
+            "BUY": "BUY",
+            "SELL": "SELL",
+            "BOTH": "BOTH"
+          },
           "trendFilter": "Trend filter",
           "trendFilterTip": "If on Bullish patterns will be tested only if current price is above moving average and Bearish patterns only if current price is below moving average.",
           "ma_filter_period": "Moving average",
