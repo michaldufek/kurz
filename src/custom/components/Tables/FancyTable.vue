@@ -104,6 +104,11 @@ export default {
       default: () => [],
       description: "Columns that are checkboxes"
     },
+    // interval: {
+    //   type: Number,
+    //   default: () => constants.intervals.dataReload,
+    //   description: "Interval to reaload data"
+    // },
     sortable: {
       type: Boolean,
       description: "Whether columns can be sorted by header click"
@@ -168,7 +173,7 @@ export default {
         
       setInterval(() => { 
         this.loadData();
-      }, constants.intervals.dataReload );
+      }, constants.intervals.dataReload ); //this.interval
     },
 
     loadData() {

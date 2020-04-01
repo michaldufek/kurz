@@ -173,6 +173,7 @@
             <fancy-table :title="$t(storeKey + '.results.title')"
                         :showTitle="true"
                         :columns="$t(storeKey + '.results.columns')">
+                        <!-- :interval="tableInterval" > -->
             </fancy-table>
             <!-- save button -->
             <base-button native-type="submit" type="secondary" @click="saveClick">{{ $t('research.save') }}</base-button>
@@ -190,7 +191,10 @@
 import Datepicker from 'vuejs-datepicker';
 import FancyTable from '@/custom/components/Tables/FancyTable';
 import FancyChart from '@/custom/components/Charts/FancyChart';
+
 import helper from '@/custom/assets/js/helper';
+// import constants from '@/custom/assets/js/constants';
+
 
 export default {
     components: {  
@@ -241,7 +245,12 @@ export default {
 
         runText() {
             return this.running ? this.$t(this.storeKey + '.stop') : this.$t(this.storeKey + '.run')
-        }
+            // return this.running ? this.$t('research.stop') : this.$t(this.storeKey + '.run')
+        },
+
+        // tableInterval() {
+        //     return constants.intervals.featEngReload
+        // }
     },
 
     methods: {
@@ -273,6 +282,49 @@ export default {
 
         run() {
             this.running = true
+
+            // let data = {}
+            // if (this.period.from) {
+            //     data['start_date'] = this.period.from
+            // }
+            // if (this.period.to) {
+            //     data['finish_date'] = this.period.to
+            // }
+            // if (this.profitTarget.checked) {
+            //     if (this.profitTarget.from) {
+            //         data['profit_take_start'] = this.profitTarget.from
+            //     }
+            //     if (this.profitTarget.to) {
+            //         data['profit_take_stop'] = this.profitTarget.to
+            //     }
+            //     if (this.profitTarget.step) {
+            //         data['profit_take_step'] = this.profitTarget.step
+            //     }
+            //     // "profit_take_unit": "USD",
+            // }
+            // if (this.stopLoss.checked) {
+            //     if (this.stopLoss.from) {
+            //         data['stop_loss_start'] = this.stopLoss.from
+            //     }
+            //     if (this.stopLoss.to) {
+            //         data['stop_loss_stop'] = this.stopLoss.to
+            //     }
+            //     if (this.stopLoss.step) {
+            //         data['stop_loss_step'] = this.stopLoss.step
+            //     }
+            //     // "stop_loss_unit": "USD"
+            // }
+            // // "origin_result": 0,
+
+            // this.$http
+            // .post(constants.urls.featEng.sweepRequest, data)
+            // .then(_ => this.running = true)
+            // .catch(error => {
+            //     console.log(error);
+            //     if (error.message === constants.strings.networkError) {
+            //         helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
+            //     }
+            // })
         },
         stop() {
             this.running = false

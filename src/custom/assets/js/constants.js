@@ -13,7 +13,8 @@ const dwhPartUrl = APIPartUrl + "/datawarehouse"
 const sweepPartUrl = "/Sweep"
 const requestPartUrl = "Request"
 const SPPartUrl = APIPartUrl + "/sp"
-const PLPartUrl = APIPartUrl + "/pl"
+const PLminiPartUrl = "pl"
+const PLPartUrl = APIPartUrl + "/" + PLminiPartUrl
 const PL2PartUrl = APIPartUrl + "/pl2"
 const livedeplPartUrl = APIPartUrl + "/livedepl"
 const tickerPartUrl = "/Ticker"
@@ -75,6 +76,7 @@ export default {
         },
 
         patternLab: {
+            abbreviation: PLminiPartUrl,
             asset: PLPartUrl + tickerPartUrl + searchPartUrl,
             pattern: PLPartUrl + patternPartUrl + searchPartUrl,
             chart: PLPartUrl + "/HistoryData/",
@@ -93,7 +95,7 @@ export default {
         },
 
         datawarehouse: {
-            result: dwhPartUrl + "/" + resultPartUrl,
+            result: dwhPartUrl + "/" + resultPartUrl + "/",
             results: dwhPartUrl + "/" + resultPartUrl + "s",
         },
 
