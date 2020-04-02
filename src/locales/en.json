@@ -79,6 +79,8 @@
   "dashboard": { 
     "title": "Dashboard",
     "performanceStatistics": "Performance statistics",
+    "liquidate": "Liquidate",
+    "confirmLiquidate": "Are you sure you want to liquidate?",
     "lastTradesTable": {
       "title": "Last trades",
       "columns": [
