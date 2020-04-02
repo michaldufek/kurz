@@ -26,11 +26,27 @@
 
     methods: {
       initStrategies() { 
-        for (const [key, value] of Object.entries(constants.urls.chart)) {
+        let connected = false
+        let data = this.$store.getItem(constants.translationKeys.IBLogin)
+
+        if (data) {
+          connected = data.connected
+          var email = data.email
+        }
+
+        if (connected) {
           this.strategiesData.push({
-            title: key,
-            apiUrl: value
+            title: "Live Report",
+            apiUrl: constants.urls.liveDepl.report + email
           })
+        }
+        else {
+          for (const [key, value] of Object.entries(constants.urls.chart)) {
+            this.strategiesData.push({
+              title: key,
+              apiUrl: value
+            })
+          }
         }
       }
     },

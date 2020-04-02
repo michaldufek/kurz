@@ -75,7 +75,7 @@ export default {
     },
     data() {
       return { 
-        storeKey: 'login.IB',
+        storeKey: constants.translationKeys.IBLogin,
         GWLogsTimer: null,
         logs: [],
 
@@ -169,6 +169,8 @@ export default {
                 this.pass = ''
 
                 this.setGWLogsInterval()
+
+                this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
             })
             .catch(error => {
                 console.log(error)
@@ -292,6 +294,9 @@ export default {
     watch: {
         email(val) {
             helper.updateStore(this.$store, 'email', val, this.storeKey)            
+        },
+        connected(val) {
+            helper.updateStore(this.$store, 'connected', val, this.storeKey)
         }
     }
 }

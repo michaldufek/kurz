@@ -80,6 +80,8 @@
   "dashboard": { 
     "title": "Nástěnka",
     "performanceStatistics": "Výkon - statistiky",
+    "liquidate": "Likvidace",
+    "confirmLiquidate": "Jste si jistí, že chcete livkidaci?",
     "lastTradesTable": {
       "title": "Poslední obchody",
       "columns": [
