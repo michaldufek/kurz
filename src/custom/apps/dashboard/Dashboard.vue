@@ -43,6 +43,12 @@
                      :titles="$t('terms.perfStats')"
                      :columns="$t('dashboard.performanceStatisticsTable.columns')">
         </fancy-table>
+
+        <div v-if="connected" style="float: right;">
+          <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px;margin-right: 50px;margin-bottom: -35px;" />
+          <base-button type="secondary" class="my-4" @click="liquidate">{{$t('dashboard.liquidate')}}</base-button>
+          <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>
+        </div>        
       </div>
     </div> 
     
@@ -51,6 +57,7 @@
 <script>
   import FancyChart from '@/custom/components/Charts/FancyChart';
   import FancyTable from '@/custom/components/Tables/FancyTable';
+  import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
   import helper from '@/custom/assets/js/helper';
   import constants from '@/custom/assets/js/constants';
@@ -59,17 +66,29 @@
   export default {
     components: {
       FancyChart,
-      FancyTable
+      FancyTable,
+      DualRingLoader
     },
 
     data() {
       return {
+        connected: false,
+        email: '',
+        error: false,
+        message: '',
+        loading: false,
+
         heardOrders: {
           open: [],
           win: [],
           lose: [],
           breakEven: []
-        }        
+        },
+        
+        // css classes
+        msgClass: 'message',
+        noErrorClass: 'noError',
+        errorClass: 'error'
       }
     },
 
@@ -80,6 +99,14 @@
         }, constants.intervals.soundSignal );
       },
 
+      initIB() {
+        let data = this.$store.getItem(constants.translationKeys.IBLogin)
+        if (data) {
+          this.connected = data.connected
+          this.email = data.email
+        }
+      },
+
       notify(audioEl, type, msg) {
         document.getElementById(audioEl).play();
 
@@ -87,6 +114,41 @@
           type: type, 
           message: msg
         })
+      },
+
+      liquidate() {
+        this.$confirm(this.$t('dashboard.confirmLiquidate'))
+        .then(() => {
+          this.loading = true
+
+          this.$http
+          .post(constants.urls.liveDepl.liquidate, { userid: this.email })
+          .then(response => {
+            this.error = false
+            this.message = response.data.message
+          })
+          .catch(error => {
+            console.log(error)
+            this.error = true
+
+            if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
+                this.message = error.message
+            }
+
+            if ('type' in error.response.data) {
+                this.message = error.response.data.type + ' error'
+
+                if ('message' in error.response.data) {
+                    this.message += ': ' + error.response.data.message
+                } else {
+                    this.message += '.'
+                }
+            }                
+          })
+          .finally(() => this.loading = false)
+        })
+        .catch(_ => {})
       },
 
       checkOrdersStatusChange() {
@@ -202,16 +264,11 @@
 
       apiUrls(forChart=false) {
         let urls = []
-        let connected = false
-        let data = this.$store.getItem(constants.translationKeys.IBLogin)
 
-        if (data) {
-          connected = data.connected
-          var email = data.email
-        }
+        this.initIB()
 
-        if (connected) {
-          urls.push(constants.urls.liveDepl.report + email)
+        if (this.connected) {
+          urls.push(constants.urls.liveDepl.report + this.email)
         }
         else {
           // get just urls from named urls dictionary
@@ -230,9 +287,21 @@
     },
 
     mounted() {
-      this.initSoundSignals();
+      this.initSoundSignals()
+      this.initIB()
     }
   };
 </script>
 <style>
+.message {
+    white-space: pre-line;
+}
+
+.noError {
+    color: gray;    
+}
+
+.error {
+  color: red !important;
+}
 </style>

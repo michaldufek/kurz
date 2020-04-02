@@ -68,7 +68,8 @@ export default {
             gwStop: livedeplPartUrl + gwPartUrl + "Stop/",
             gwStatus: livedeplPartUrl + gwPartUrl + "Status",
             gwLogs: livedeplPartUrl + gwPartUrl + "Logs",
-            report: livedeplPartUrl + "/Report/"
+            report: livedeplPartUrl + "/Report/",
+            liquidate: livedeplPartUrl + "/Liquidate"
         },
 
         tickerSP: {
