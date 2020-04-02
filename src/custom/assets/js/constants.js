@@ -1,8 +1,8 @@
 import i18n from "@/i18n"
 
-const baseUrlLocal = "http://localhost"
+const baseUrlLocal = window.location.origin
 const baseUrlDev = "https://dev.analyticalplatform.com"
-const baseUrlProd = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
+const baseUrlProd = process.env.NODE_ENV === 'production' ? baseUrlLocal : baseUrlDev
 // const baseUrl = baseUrlLocal
 // const baseUrl = baseUrlDev
 const baseUrl = baseUrlProd
@@ -67,7 +67,8 @@ export default {
             gwStart: livedeplPartUrl + gwPartUrl + "Start/",
             gwStop: livedeplPartUrl + gwPartUrl + "Stop/",
             gwStatus: livedeplPartUrl + gwPartUrl + "Status",
-            gwLogs: livedeplPartUrl + gwPartUrl + "Logs"            
+            gwLogs: livedeplPartUrl + gwPartUrl + "Logs",
+            report: livedeplPartUrl + "/Report/"
         },
 
         tickerSP: {
@@ -120,7 +121,8 @@ export default {
     translationKeys: {
         patterns: 'research.patternLab.backtestPatterns.performanceResults.patterns',
         trades: 'research.patternLab.backtestPatterns.performanceResults.trades',
-        performanceMetrics: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics'
+        performanceMetrics: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
+        IBLogin: 'login.IB'
     },
 
     strings: {

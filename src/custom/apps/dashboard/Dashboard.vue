@@ -201,16 +201,28 @@
       },
 
       apiUrls(forChart=false) {
-        // get just urls from named urls dictionary
         let urls = []
+        let connected = false
+        let data = this.$store.getItem(constants.translationKeys.IBLogin)
 
-        if (forChart) {
-          var type = 'chart'
-        } else {
-          type = 'stats'          
+        if (data) {
+          connected = data.connected
+          var email = data.email
         }
-        for (const [key, value] of Object.entries(constants.urls[type])) {
-          urls.push(value)
+
+        if (connected) {
+          urls.push(constants.urls.liveDepl.report + email)
+        }
+        else {
+          // get just urls from named urls dictionary
+          if (forChart) {
+            var type = 'chart'
+          } else {
+            type = 'stats'          
+          }
+          for (const [key, value] of Object.entries(constants.urls[type])) {
+            urls.push(value)
+          }
         }
 
         return urls
