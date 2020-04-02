@@ -232,6 +232,26 @@ code {
 }
 
 @media screen and (max-width: 576px){
+  .tablesorter{
+    th{
+      display: none;
+    }
+    tr:nth-child(even){
+      background: rgba(0,0,0,.2);
+    }
+    td{
+      display: flex;
+      justify-content: space-between;
+      p{
+        text-align: right;
+      }
+      &:before{
+        text-align: left;
+        display: inline-block;
+        content: attr(data-name);
+      }
+    }
+  }
     .page-header{
         .container h6.category-absolute{
             width: 90%;

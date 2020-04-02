@@ -30,7 +30,8 @@
             :title="valueTitle(item, rowIndex, column)"
             @dblclick="edit(item, rowIndex, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
-            @keyup.esc="editing = null"            
+            @keyup.esc="editing = null"        
+            :data-name="column"    
             :class="{ 'interactive': editable || clickable, 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
               <input type="checkbox" v-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
               <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />              
