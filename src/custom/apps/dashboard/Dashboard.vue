@@ -10,7 +10,8 @@
     <div class="row">
       <div class="col-12">
         <fancy-chart :title="$t('dashboard.title')"
-                     :apiUrls="chartUrls">
+                     :apiUrls="chartUrls"
+                     :key="updateKey" >
         </fancy-chart>
       </div>
     </div>  
@@ -22,7 +23,8 @@
                      :rowsCreator="tradesRowsCreator"
                      :aggregator="tradesAggregator"
                      :titles="$t('terms.tradeTypes')"
-                     :columns="$t('dashboard.lastTradesTable.columns')">
+                     :columns="$t('dashboard.lastTradesTable.columns')"
+                     :key="updateKey" >
         </fancy-table>
       </div>
 
@@ -32,7 +34,8 @@
                      :rowsCreator="ordersRowsCreator"
                      :aggregator="ordersAggregator"
                      :titles="$t('terms.tradeTypes')"
-                     :columns="$t('dashboard.pendingOrdersTable.columns')">
+                     :columns="$t('dashboard.pendingOrdersTable.columns')"
+                     :key="updateKey" >
         </fancy-table>
       </div>
 
@@ -41,7 +44,8 @@
                      :apiUrls="chartUrls"
                      :rowsCreator="statsRowsCreator"
                      :titles="$t('terms.perfStats')"
-                     :columns="$t('dashboard.performanceStatisticsTable.columns')">
+                     :columns="$t('dashboard.performanceStatisticsTable.columns')"
+                     :key="updateKey" >
         </fancy-table>
 
         <div v-if="connected" style="float: right;">
@@ -77,6 +81,7 @@
         error: false,
         message: '',
         loading: false,
+        updateKey: 0,
 
         chartUrls: [],
         statsUrls: [],
@@ -135,20 +140,13 @@
         })
       },
 
-      notify(audioEl, type, msg) {
-        document.getElementById(audioEl).play();
-
-        this.$notify({
-          type: type, 
-          message: msg
-        })
-      },
-
       setApiUrls() {
-        this.urls = []
+        this.chartUrls = []
+        this.statsUrls = []
 
         if (this.connected) {
-          this.urls.push(constants.urls.liveDepl.report + this.email)
+          this.chartUrls.push(constants.urls.liveDepl.report + this.email)    // todo: must be chart url here!
+          this.statsUrls.push(constants.urls.liveDepl.report + this.email)
         }
         else {
           // get just urls from named urls dictionary
@@ -159,6 +157,8 @@
             this.statsUrls.push(value)
           }
         }
+
+        this.updateKey++
       },
 
       liquidate() {
@@ -218,6 +218,15 @@
           })
         })
       },      
+
+      notify(audioEl, type, msg) {
+        document.getElementById(audioEl).play();
+
+        this.$notify({
+          type: type, 
+          message: msg
+        })
+      },
 
       // fancy-tables props functions
       tradesRowsCreator(responseData) {

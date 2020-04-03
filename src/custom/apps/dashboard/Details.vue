@@ -64,7 +64,7 @@
         if (this.connected) {
           this.strategiesData.push({
             title: "Live Report",
-            apiUrl: constants.urls.liveDepl.report + email
+            apiUrl: constants.urls.liveDepl.report + this.email
           })
         }
         else {
