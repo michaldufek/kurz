@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-12">
         <fancy-chart :title="$t('dashboard.title')"
-                     :apiUrls="apiUrls(forChart=true)">
+                     :apiUrls="chartUrls">
         </fancy-chart>
       </div>
     </div>  
@@ -18,7 +18,7 @@
      <div class="row">      
       <div class="col-lg-4 col-md-12">
         <fancy-table :title="$t('dashboard.lastTradesTable.title')"
-                     :apiUrls="apiUrls()"
+                     :apiUrls="statsUrls"
                      :rowsCreator="tradesRowsCreator"
                      :aggregator="tradesAggregator"
                      :titles="$t('terms.tradeTypes')"
@@ -28,7 +28,7 @@
 
       <div class="col-lg-4 col-md-12">  
         <fancy-table :title="$t('dashboard.pendingOrdersTable.title')"
-                     :apiUrls="apiUrls()"
+                     :apiUrls="statsUrls"
                      :rowsCreator="ordersRowsCreator"
                      :aggregator="ordersAggregator"
                      :titles="$t('terms.tradeTypes')"
@@ -38,7 +38,7 @@
 
       <div class="col-lg-4 col-md-12">
         <fancy-table :title="$t('dashboard.performanceStatistics')"
-                     :apiUrls="apiUrls(forChart=true)"
+                     :apiUrls="chartUrls"
                      :rowsCreator="statsRowsCreator"
                      :titles="$t('terms.perfStats')"
                      :columns="$t('dashboard.performanceStatisticsTable.columns')">
@@ -78,6 +78,8 @@
         message: '',
         loading: false,
 
+        chartUrls: [],
+        statsUrls: [],
         heardOrders: {
           open: [],
           win: [],
@@ -102,9 +104,35 @@
       initIB() {
         let data = this.$store.getItem(constants.translationKeys.IBLogin)
         if (data) {
-          this.connected = data.connected
           this.email = data.email
+          this.checkGWrunning()
+        } else {
+          this.setApiUrls()
         }
+      },
+
+      checkGWrunning() {
+        this.loading = true
+
+        this.$http
+        .get(constants.urls.liveDepl.gwStatus + '/' + this.email)
+        .then(response => {
+          if ('error' in response.data) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')} - ${response.data.error}`)
+          } else {
+            this.connected = response.data.status
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')}`)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+          this.setApiUrls()
+        })
       },
 
       notify(audioEl, type, msg) {
@@ -114,6 +142,23 @@
           type: type, 
           message: msg
         })
+      },
+
+      setApiUrls() {
+        this.urls = []
+
+        if (this.connected) {
+          this.urls.push(constants.urls.liveDepl.report + this.email)
+        }
+        else {
+          // get just urls from named urls dictionary
+          for (const [key, value] of Object.entries(constants.urls['chart'])) {
+            this.chartUrls.push(value)
+          }
+          for (const [key, value] of Object.entries(constants.urls['stats'])) {
+            this.statsUrls.push(value)
+          }
+        }
       },
 
       liquidate() {
@@ -260,30 +305,7 @@
 
       ordersAggregator(oldRows, newRows) {
         return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase())
-      },
-
-      apiUrls(forChart=false) {
-        let urls = []
-
-        this.initIB()
-
-        if (this.connected) {
-          urls.push(constants.urls.liveDepl.report + this.email)
-        }
-        else {
-          // get just urls from named urls dictionary
-          if (forChart) {
-            var type = 'chart'
-          } else {
-            type = 'stats'          
-          }
-          for (const [key, value] of Object.entries(constants.urls[type])) {
-            urls.push(value)
-          }
-        }
-
-        return urls
-      }
+      }      
     },
 
     mounted() {

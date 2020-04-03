@@ -294,9 +294,6 @@ export default {
     watch: {
         email(val) {
             helper.updateStore(this.$store, 'email', val, this.storeKey)            
-        },
-        connected(val) {
-            helper.updateStore(this.$store, 'connected', val, this.storeKey)
         }
     }
 }

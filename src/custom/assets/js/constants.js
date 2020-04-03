@@ -69,7 +69,7 @@ export default {
             gwStatus: livedeplPartUrl + gwPartUrl + "Status",
             gwLogs: livedeplPartUrl + gwPartUrl + "Logs",
             report: livedeplPartUrl + "/Report/",
-            liquidate: livedeplPartUrl + "/Liquidate"
+            liquidate: livedeplPartUrl + "/Liquidate/"
         },
 
         tickerSP: {
