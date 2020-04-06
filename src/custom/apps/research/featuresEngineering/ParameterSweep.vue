@@ -23,7 +23,7 @@
 
     <div class="row">
         <!-- parameters checkboxes       -->
-        <card class="col-lg-2 col-md-12 container">
+        <card class="col-lg-3 col-12 container">
             <h4>{{ $t(storeKey + '.parameters') }}</h4>
             <base-checkbox v-model="profitTarget.checked">
                 {{ $t(storeKey + '.profitTarget') }}
@@ -34,17 +34,15 @@
         </card>
 
         <!-- date pickers -->
-        <card class="col-lg-2 col-md-12 container">
+        <card class="col-lg-3 col-12 container">
             <h4>{{ $t(storeKey + '.period') }}</h4>
             <div class="controls">
                 <table class="table tablesorter">
                     <tbody>
                         <tr>
                             <!-- <slot :row="item"> -->
-                            <td style="border-top: 0px; text-align: right">
-                                {{ $t('research.from') }}
-                            </td>
-                            <td style="border-top: 0px;">
+                            <td class="fullpicker" style="border-top: 0px;">
+                                {{ $t('research.from') }}<br>
                                 <datepicker v-model="period.from" 
                                             :clear-button="true" 
                                             :format="dateFormat" 
@@ -54,10 +52,8 @@
                         </tr>
                         <tr>
                             <!-- <slot :row="item"> -->
-                            <td style="border-top: 0px; text-align: right">
-                                {{ $t('research.to') }}
-                            </td>
-                            <td style="border-top: 0px;">
+                            <td class="fullpicker" style="border-top: 0px;">
+                                {{ $t('research.to') }}<br>
                                 <datepicker v-model="period.to" 
                                             :clear-button="true" 
                                             :format="dateFormat" 
@@ -71,7 +67,7 @@
         </card>
 
         <!-- Profit Target range -->
-        <card v-if="profitTarget.checked" class="col-lg-2 col-md-12 container">
+        <card v-if="profitTarget.checked" class="col-lg-3 col-md-12 container">
             <h4>{{ $t(storeKey + '.profitTarget') + ' ' + $t(storeKey + '.range') }}</h4>
 
             <table>
@@ -115,7 +111,7 @@
         </card>
 
         <!-- Stop Loss range -->
-        <card v-if="stopLoss.checked" class="col-lg-2 col-md-12 container">
+        <card v-if="stopLoss.checked" class="col-lg-3 col-md-12 container">
             <h4>{{ $t(storeKey + '.stopLoss') + ' ' + $t(storeKey + '.range') }}</h4>
 
             <table>
@@ -159,17 +155,21 @@
         </card>
 
         <!-- estimated time of run -->
-        <card class="col-lg-2 col-md-12 container">
-            <h4 :class="[ warnEstimated ? 'warning' : 'noWarning' ]" style="margin-top: 60px">{{ $t(storeKey + '.estimatedTime') + ' ' + estimated + ' .' }}</h4>
-        </card>
 
-        <!-- run button -->
-        <base-button native-type="submit" type="secondary" @click="runClick" style="height: 10%; margin-top: auto; margin-bottom: auto; margin-right: 15px;">{{ runText }}</base-button>
+    </div>
+    <!-- run button -->
+    <div class="row">
+    <div class="col-12 flex-stretch" style="margin-bottom:1em; text-align:center;">
+        <div class="flex-middle">
+            <h4 :class="[ warnEstimated ? 'warning' : 'noWarning' ]">{{ $t(storeKey + '.estimatedTime') + ' ' + estimated + ' .' }}</h4>
+            <base-button native-type="submit" type="secondary" @click="runClick" style="margin-right: auto; margin-left:auto;">{{ runText }}</base-button>
+        </div>
+    </div>
     </div>
 
     <div class="row">
         <!-- results table -->
-        <div class="col-lg-8 col-md-12 container">
+        <div class="col-lg-8 col-md-12">
             <fancy-table :title="$t(storeKey + '.results.title')"
                         :showTitle="true"
                         :columns="$t(storeKey + '.results.columns')">
@@ -344,10 +344,12 @@ export default {
 </script>
 <style scoped>
 .warning {
-    color: red
+    text-align: center;
+    color: #66ffba;
 }
 
 .noWarning {
+    text-align: center;
     color: white
 }
 </style>

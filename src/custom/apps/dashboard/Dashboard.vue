@@ -16,7 +16,7 @@
     </div>  
 
      <div class="row">      
-      <div class="col-lg-4 col-md-12">
+      <div class="col-xl-4 col-12">
         <fancy-table :title="$t('dashboard.lastTradesTable.title')"
                      :apiUrls="apiUrls()"
                      :rowsCreator="tradesRowsCreator"
@@ -26,7 +26,7 @@
         </fancy-table>
       </div>
 
-      <div class="col-lg-4 col-md-12">  
+      <div class="col-xl-4 col-12">  
         <fancy-table :title="$t('dashboard.pendingOrdersTable.title')"
                      :apiUrls="apiUrls()"
                      :rowsCreator="ordersRowsCreator"
@@ -36,7 +36,7 @@
         </fancy-table>
       </div>
 
-      <div class="col-lg-4 col-md-12">
+      <div class="col-xl-4 col-12">
         <fancy-table :title="$t('dashboard.performanceStatistics')"
                      :apiUrls="apiUrls(forChart=true)"
                      :rowsCreator="statsRowsCreator"

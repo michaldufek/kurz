@@ -1,4 +1,5 @@
 .dropdown-menu {
+    min-width: 200px;
     border: 0;
     box-shadow: 0px 10px 50px 0px rgba(0, 0, 0, 0.2);
     border-radius: $border-radius-xs;
@@ -12,10 +13,14 @@
     }
 
     &.dropdown-black {
-      background: linear-gradient(to bottom, $black 0%, $black-states 100%);
+      background: linear-gradient(to bottom, darken(#1b6a6a,10) 0%, #359268 100%);
       border: 1px solid $default;
       .dropdown-item {
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(255, 255, 255,1);
+        &:hover{
+          background: #359268;
+          // color:#359268;
+        }
       }
 
       .dropdown-divider {
@@ -166,7 +171,7 @@
 
       &:hover,
       &:focus {
-        background-color: $opacity-gray-3;
+        background-color: .95;//$opacity-gray-3;
       }
 
       &.disabled,

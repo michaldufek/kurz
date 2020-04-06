@@ -1,13 +1,14 @@
 <template>
   <div class="wrapper">
     <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
-    <div>
+    <div class="formblocks">
 
       <!-- symbol/name search -->
-      <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.symbolName')}}</p>
+      <div class="formblock">
+      <p>{{$t('research.stockPickingLab.filters.symbolName')}}</p>
       <base-input alternative
                   type="text"
-                  style="float: left; width: 6%; margin-right: 20px"
+                  style="float: left;  margin-right: 20px"
                   v-model="symbolSearch"
                   :placeholder="$t('research.stockPickingLab.filters.text')"
                   @keyup.enter="symbolSearchEnter">
@@ -44,6 +45,9 @@
            class="notEqual"
            onMouseOver="this.classList.add('mouseOver')"
            onMouseOut="this.classList.remove('mouseOver')">
+
+      </div>
+      <div class="formblock">
       <base-dropdown v-if="showExchange" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -74,6 +78,8 @@
            class="notEqual"
            onMouseOver="this.classList.add('mouseOver')"
            onMouseOut="this.classList.remove('mouseOver')">
+      </div>
+      <div class="formblock">
       <base-dropdown v-if="showSector" 
                      class="dd" 
                      menu-classes="dropdown-black" 
@@ -92,25 +98,26 @@
       </base-dropdown>
       
       <!-- market price -->
-      <div style="page-break-inside:avoid !important;">
-        <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.marketPrice')}}</p>
+      <div class="formblock formblock--centered ">
+        <p>{{$t('research.stockPickingLab.filters.marketPrice')}}</p>
         <base-input alternative
                     type="text"
-                    style="float: left; width: 6%; margin-right: 10px"
+                    style="float: left;  margin-right: 10px"
                     v-model="marketPriceGte"
                     :placeholder="$t('number')"
                     @keyup.enter="marketPriceGteEnter">
         </base-input>
-        <p style="float:left; margin-right: 10px; padding-top: 10px">{{$t('research.stockPickingLab.filters.and')}}</p>
+        <p>{{$t('research.stockPickingLab.filters.and')}}</p>
         <base-input alternative
                     type="text"
-                    style="float: left; width: 6%"
+                    style="float: left;"
                     v-model="marketPriceLte"
                     :placeholder="$t('number')"
                     @keyup.enter="marketPriceLteEnter">
         </base-input>
       </div>
-
+      </div>
+      <div class="formblock">
       <!-- watchlist -->
       <img :src="watchlistSrc" 
            style="float: right; border-radius: 10rem;"
@@ -119,6 +126,7 @@
            class="watchlist"
            onMouseOver="this.classList.add('mouseOver')"
            onMouseOut="this.classList.remove('mouseOver')">
+     </div>
     </div>
 
     <!-- pagination -->
@@ -133,15 +141,15 @@
         </ul>
       </nav>
       <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
-      <ul style="list-style-type: none;">
-        <li v-for="stockData in stocksData">
+      <div style="list-style-type: none;">
+        <div v-for="stockData in stocksData">
           <stock-card :symbol="stockData.symbol"                      
                       :name="stockData.name"
                       :rank="stockData.rank"
                       :stats="stockData.statsData">
           </stock-card>
-        </li>
-      </ul>
+        </div>
+      </div>
       <nav v-if="nrOfPages > 1" aria-label="Page navigation">
         <ul class="pagination justify-content-center">
           <li v-for="page in pages" 
@@ -606,18 +614,8 @@
 img.notEqual {
   float: left;   
   margin-right: 10px;
-  margin-top: 10px;
+  
   border-radius: 10rem;
-}
-
-.dd {
-  float: left;
-  width: 10%
-}
-
-.chb {
-  float: left;
-  width: 10%
 }
 
 img.watchlist {

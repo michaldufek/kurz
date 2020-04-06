@@ -1,8 +1,9 @@
 <template>
-    <div>
+    <card>
+    <div class=" row xl-flex">
         <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
 
-        <div v-if="showDatePickers">
+        <div class="col-12 col-xl-4"  style="min-width: 300px;" v-if="showDatePickers">
             <!-- timeframe dropdown -->
             <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
                 <base-dropdown class="dd" 
@@ -22,46 +23,34 @@
             </div>
 
             <!-- date pickers -->
-            <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: -25px')">
+            <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '')">
                 <div class="controls">
-                    <table class="table tablesorter">
-                        <tbody>
-                            <tr>
+                            <div>
                                 <!-- <slot :row="item"> -->
-                                <td style="border-top: 0px; text-align: right">
-                                    {{ $t('research.from') }}
-                                </td>
-                                <td style="border-top: 0px;">
-                                    <datepicker v-model="range.from" 
+                                <div>{{ $t('research.from') }}<datepicker v-model="range.from" 
                                                 :disabled-dates="disabledDatesFrom" 
                                                 :clear-button="true" 
                                                 :format="dateFormat" 
                                                 :placeholder="$t('research.pickDate')" />
-                                </td>
+                                </div>
                                 <!-- </slot> -->
-                            </tr>
-                            <tr>
+                            </div>
+                            <div>
                                 <!-- <slot :row="item"> -->
-                                <td style="border-top: 0px; text-align: right">
-                                    {{ $t('research.to') }}
-                                </td>
-                                <td style="border-top: 0px;">
-                                    <datepicker v-model="range.to" 
+                                <div>{{ $t('research.to') }}<datepicker v-model="range.to" 
                                                 :disabled-dates="disabledDatesTo" 
                                                 :clear-button="true" 
                                                 :format="dateFormat" 
                                                 :placeholder="$t('research.pickDate')" />
-                                </td>
+                                </div>
                                 <!-- </slot> -->
-                            </tr>
-                        </tbody>
-                    </table>
+                            </div>
                 </div>
             </div>
         </div>
 
         <!-- assets -->
-        <card style="text-align: center;">
+        <div class="col-12 col-xl-4" style="text-align: center;">
             <label>{{ $t('research.patternLab.assets') }}</label>
             <Dropdown :options="assets"
                       :disabled="false"
@@ -77,13 +66,13 @@
                     <th></th>
                 </template>  
                 <template slot-scope="{row}">
-                    <div>
+                    <div class="regrow">
                         <td style="border: none">
                             <input v-if="oneAssetLimit" type="radio" :id="row.id" :value="row" v-model="checkedAsset">
                             <input v-else type="checkbox" :id="row.id" :value="row" v-model="checkedAssets">
                         </td>
-                        <td style="font-size: 0.65rem; border: none">{{row.symbol}}</td>
-                        <td style="font-size: 0.65rem; border: none; border-left: 1px; text-align: left">{{row.name}}</td>
+                        <td style="border: none; color:white;margin: 0 1em; display: inline-block;">{{row.symbol}}</td>
+                        <td style="border: none; border-left: 1px; text-align: left">{{row.name}}</td>
                     </div>
                     <td class="td-actions text-right" style="border: none">                        
                         <base-button size="sm" icon @click="removeAsset(row)" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem;">
@@ -92,10 +81,10 @@
                     </td>
                 </template>    
             </base-table>
-        </card>
+        </div>
 
         <!-- patterns -->
-        <card style="text-align: center;">
+        <div class="col-12 col-xl-4" style="text-align: center;">
             <label>{{ $t('research.patternLab.patterns') }}</label>
             <Dropdown :options="patterns"
                       :disabled="false"
@@ -114,12 +103,14 @@
                     <label :for="selectedPattern.id" style="margin-left: 10px">{{ selectedPattern.name }}</label>
                 </li>
             </ul> 
-        </card>
+        </div>
 
+        </div>
         <!-- Add button -->
-        <base-button native-type="submit" type="secondary" @click="btnClick" style="width: 100%">{{ btnText }}</base-button>
-
-    </div>
+        <div class="button-wrap">
+            <base-button native-type="submit" type="secondary" @click="btnClick" style="width: 300px">{{ btnText }}</base-button>
+        </div>
+    </card>
 </template>
 <script>
 import Datepicker from 'vuejs-datepicker';
@@ -153,7 +144,7 @@ export default {
         },
         tfLeftPos: {
             type: Number,
-            default: 30,
+            default: 0,
             description: "Position of timeFrame dropdown from left in pixels"
         },
         btnText: {
@@ -164,7 +155,7 @@ export default {
 
     data() {
         return {
-            defaultTfLeftPos: 30,
+            defaultTfLeftPos: 0,
             timeframe: this.$t('research.patternLab.timeframes')[0],
 
             // datepickers
@@ -453,62 +444,5 @@ export default {
 }
 </script>
 <style>
-  .form-control {
-    box-shadow: gray 0px 0px 7px;
-  }
 
-  .dropdown input,
-  .vdp-datepicker span,
-  .vdp-datepicker input {
-    box-shadow: gray 0px 0px 7px;
-    width: 94%;
-    text-align: center;
-    background-color: transparent;
-    border-radius: 0.4285rem !important;
-    color: gray; 
-    border: none;
-  }
-
-  .vdp-datepicker span {
-    box-shadow: none;    
-    color: inherit; 
-  }
-
-  .dropdown input {
-    background: transparent !important;
-    color: gray !important;
-    border: none !important;
-    min-width: 100% !important;
-  }
-
-  /* .dropdown:focus { // to-do: this focus should be on all inputs (ie.dtpicker, dropdowns)
-    border-color: #1d8cf8 !important
-  } */
-
-  .dropdown .dropdown-content,
-  .vdp-datepicker__calendar {
-    background-color: darkslategrey !important;
-    border-radius: 0.4285rem;
-    opacity: 0.8;
-    min-width: 100% !important;
-    border: none !important;
-    box-shadow: gray 0px 0px 7px !important;
-  }
-
-  .disabled {
-    color: gray !important
-  }
-
-  .day__month_btn up {
-    color: white !important
-  }
-
-  .vdp-datepicker__calendar header .prev:not(.disabled):hover, .vdp-datepicker__calendar header .next:not(.disabled):hover, .vdp-datepicker__calendar header .up:not(.disabled):hover {
-    background: darkgray !important
-  }
-
-  .selectedAsset {
-    background-color: #1d8cf8;
-    border-radius: 0.4285rem
-  }
 </style>
