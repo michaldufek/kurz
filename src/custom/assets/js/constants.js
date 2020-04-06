@@ -1,6 +1,6 @@
 import i18n from "@/i18n"
 
-const baseUrlLocal = "http://localhost"
+const baseUrlLocal = window.location.origin
 const baseUrlDev = "https://dev.analyticalplatform.com"
 const baseUrlProd = process.env.NODE_ENV === 'production' ? window.location.origin : baseUrlDev
 // const baseUrl = baseUrlLocal

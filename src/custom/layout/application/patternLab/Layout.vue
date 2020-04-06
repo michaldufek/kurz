@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="main-panel">
+    <div class="">
       <top-navbar></top-navbar>
 
       <dashboard-content @click.native="toggleSidebar">

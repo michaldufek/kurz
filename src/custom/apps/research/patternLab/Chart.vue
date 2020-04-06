@@ -1,19 +1,18 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col-lg-2 col-md-12 container">
+    <div class="row ">
+      <div class="col-xl-4 col-md-6 col-12 killflex container">
         <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
                                 :oneAssetLimit="true"
                                 :btnText="$t('research.patternLab.chart.addChart')" 
-                                :tfLeftPos="475"
                                 @btnClicked="addChart" 
                                 @timeframeChanged="timeframeChanged" />      
       </div>
 
       <!-- chart -->
-      <div class="col-lg-7 col-md-12">
+      <div class="col-xl-8 col-md-6 col-12">
         <!-- chart settings -->
-        <div style="position: relative; left: 10px; top: 10px; z-index: 1">
+        <div style="position: relative; z-index: 1">
           <base-dropdown class="dd" 
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
@@ -36,18 +35,20 @@
                       :highlights="highlights"
                      :dataFields="[ 'Close', 'Volume' ]"
                      :responsive="true"
-                     style="top: -45px; height: 100%"
+                     style="height: 100%"
                      :key="chartKey" />
         <ohlc-chart v-else 
                     :title="ohlcChartTitle"
                     :apiUrl="chartUrl" 
                     :type="chartType"
-                    style="top: -45px; height: 830px" 
+                    style="height: 830px" 
                     :key="chartKey" />
       </div>
 
       <!-- patterns history -->
-      <div class="col-lg-3 col-md-12">
+      </div>
+      <div class="row">
+      <div class="col-12">
         <fancy-table :title="$t('research.patternLab.chart.patternsHistory.title')"
                      noDataText="No patterns detected."
                      :apiUrls="patternsHistoryUrl"

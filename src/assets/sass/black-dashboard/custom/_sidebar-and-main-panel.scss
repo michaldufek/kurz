@@ -1,7 +1,9 @@
+$card-black-background: #385a5a22;
+$box-shadow: 0 1px 20px 0px #385a5a;
 .wrapper{
     position: relative;
     top: 0;
-    height: 100vh;
+    min-height: 100vh;
 
     &.wrapper-full-page{
         min-height: 100vh;
@@ -25,16 +27,21 @@
     top: 0;
     left: 0;
     z-index: 1;
-    background: transparent;
+    background: $card-black-background;
     background-size: cover;
     background-position: center center;
     display: block;
-    box-shadow: 0px 0px 45px 0px rgba(0,0,0,0.6);
+    box-shadow: $box-shadow;
     margin-top: 80px;
     margin-left: 20px;
     border-radius: 5px;
+    border: 1px solid $bdc;
+    border-top: 2px solid $bdc;
+    border-radius: 0 0 5px 5px;
 
     .sidebar-wrapper{
+      background: $card-black-background;
+      border-color: 1px solid $bdc;
         width: $full-width;
         min-height: 100%;
         max-height: calc(100vh - 705px);
@@ -497,7 +504,24 @@
     }
 }
 
+.content {
+  .wrapper .navbar {
+    z-index: 100;
+        position: relative;
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        margin-bottom: 1em;
+        .navbar-brand{
+          margin-top: 0;
+          padding-top: 1em;
+          padding-bottom: 1em;
+          font-size: 14px;
 
+        }
+    }
+}
 .perfect-scrollbar-on{
   .sidebar,
   .main-panel{
@@ -671,6 +695,8 @@
     z-index: 1032;
     visibility: visible;
     overflow-y: visible;
+
+    border-width: 0 2px 0 0;
     padding: 0;
     @include transition(0.5s cubic-bezier(0.685, 0.0473, 0.346, 1));
     @include transform-translate-x(-260px);

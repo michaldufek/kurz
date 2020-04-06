@@ -17,7 +17,7 @@
     </div>  
 
      <div class="row">      
-      <div class="col-lg-4 col-md-12">
+      <div class="col-xl-4 col-12">
         <fancy-table :title="$t('dashboard.lastTradesTable.title')"
                      :apiUrls="statsUrls"
                      :rowsCreator="tradesRowsCreator"
@@ -28,7 +28,7 @@
         </fancy-table>
       </div>
 
-      <div class="col-lg-4 col-md-12">  
+      <div class="col-xl-4 col-12">  
         <fancy-table :title="$t('dashboard.pendingOrdersTable.title')"
                      :apiUrls="statsUrls"
                      :rowsCreator="ordersRowsCreator"
@@ -39,7 +39,7 @@
         </fancy-table>
       </div>
 
-      <div class="col-lg-4 col-md-12">
+      <div class="col-xl-4 col-12">
         <fancy-table :title="$t('dashboard.performanceStatistics')"
                      :apiUrls="chartUrls"
                      :rowsCreator="statsRowsCreator"
@@ -172,6 +172,41 @@
             this.error = false
             this.message = response.data.message
             this.updateKey++
+          })
+          .catch(error => {
+            console.log(error)
+            this.error = true
+
+            if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
+                this.message = error.message
+            }
+
+            if ('type' in error.response.data) {
+                this.message = error.response.data.type + ' error'
+
+                if ('message' in error.response.data) {
+                    this.message += ': ' + error.response.data.message
+                } else {
+                    this.message += '.'
+                }
+            }                
+          })
+          .finally(() => this.loading = false)
+        })
+        .catch(_ => {})
+      },
+
+      liquidate() {
+        this.$confirm(this.$t('dashboard.confirmLiquidate'))
+        .then(() => {
+          this.loading = true
+
+          this.$http
+          .post(constants.urls.liveDepl.liquidate, { userid: this.email })
+          .then(response => {
+            this.error = false
+            this.message = response.data.message
           })
           .catch(error => {
             console.log(error)

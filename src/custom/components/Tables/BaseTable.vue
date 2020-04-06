@@ -1,5 +1,5 @@
 <template>
-  <table class="table tablesorter" :class="tableClass">
+  <table class="table tablesorter tableflow" :class="tableClass">
     <thead :class="theadClasses">
     <tr>
       <slot name="columns">
@@ -30,12 +30,20 @@
             :title="valueTitle(item, rowIndex, clIndex, column)"
             @dblclick="edit(item, rowIndex, clIndex, column)"
             @keyup.enter="finishEdit(rowIndex, column)" 
+<<<<<<< src/custom/components/Tables/BaseTable.vue
+            @keyup.esc="editing = null"        
+            :data-name="column"    
+            :class="{ 'interactive': editable || clickable, 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
+              <input type="checkbox" v-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
+              <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />              
+=======
             @keyup.esc="editing = null"            
             :class="{ 'interactive': (editable || clickable) && !(saveable && clIndex === columns.length - 1), 'checkbox': checkboxColumns.includes(column), 'notCheckbox': !checkboxColumns.includes(column) }" >
               <base-button v-if="saveable && clIndex === columns.length - 1 && allowSave && !(savedRows.includes(item.btId))" @click="save(item)" type="secondary" size="sm" fill>{{ $t('research.save') }}</base-button>
               <p v-else-if="saveable && clIndex === columns.length - 1 && allowSave && savedRows.includes(item.btId)">{{ $t('research.saved') }}</p>
               <input type="checkbox" v-else-if="checkboxColumns.includes(column)" v-model="item[column.toLowerCase()]" @change="check(item)" />
               <base-input v-else-if="isEditing(rowIndex, column)" v-model="editText" style="min-width: 75px" />
+>>>>>>> src/custom/components/Tables/BaseTable.vue
               <p v-else>{{ itemValue(item, column) | toFixed2 }}</p>
             </td>
       </slot>
