@@ -167,7 +167,10 @@ import { SlideYUpTransition } from "vue2-transitions";
 import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 import auth from '@/custom/assets/js/auth'
 import '../assets/css/shake.css'
+
 import constants from '@/custom/assets/js/constants'
+import helper from '@/custom/assets/js/helper'
+
 
 export default {
     components: {
@@ -227,6 +230,7 @@ export default {
                             "Authorization": `Basic ${window.btoa(`${this.email}:${this.pass}`)}`
                         }
                     })
+                    helper.updateStore(this.$store, 'email', this.email, 'login')
                     
                     this.$router.replace(this.$route.query.redirect || '/')
                 }

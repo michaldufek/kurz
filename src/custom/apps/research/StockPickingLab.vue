@@ -309,9 +309,7 @@
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.$t('sidebar.stockPickingLab') + ')')
           }
         })
-        .finally(() => {
-          this.loading = false
-        });
+        .finally(() => this.loading = false);
       },
 
       getQueryData() {

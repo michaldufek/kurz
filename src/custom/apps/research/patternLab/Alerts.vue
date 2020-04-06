@@ -44,7 +44,8 @@
     },
 
     data() {
-      return {        
+      return {     
+        errorTitle: ' (' + this.$t('research.alerts.title') + ').',   
         alertsKey: 'research.patternLab.alerts',
 
         assetsPatterns: null,

@@ -1,15 +1,30 @@
 import i18n from "@/i18n"
 
-const baseUrl = process.env.NODE_ENV === 'production' ? window.location.origin : "https://dev.analyticalplatform.com"
-// const baseUrl = "https://dev.analyticalplatform.com"
-const SPPartUrl = "/api/sp"
-const PLPartUrl = "/api/pl"
+const baseUrlLocal = window.location.origin
+const baseUrlDev = "https://dev.analyticalplatform.com"
+const baseUrlProd = process.env.NODE_ENV === 'production' ? baseUrlLocal : baseUrlDev
+// const baseUrl = baseUrlLocal
+// const baseUrl = baseUrlDev
+const baseUrl = baseUrlProd
+
+const APIPartUrl = baseUrl + "/api"
+const optPartUrl = APIPartUrl + "/optimization"
+const dwhPartUrl = APIPartUrl + "/datawarehouse"
+const sweepPartUrl = "/Sweep"
+const requestPartUrl = "Request"
+const SPPartUrl = APIPartUrl + "/sp"
+const PLminiPartUrl = "pl"
+const PLPartUrl = APIPartUrl + "/" + PLminiPartUrl
+const PL2PartUrl = APIPartUrl + "/pl2"
+const livedeplPartUrl = APIPartUrl + "/livedepl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
-const patternResultsPartUrl = "/PatternResults"
+const gwPartUrl = "/Gateway"
+const patternResultsPartUrl = "/Pattern"
+const resultPartUrl = "Result"
 const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
-const reportPartUrl = "/api/xreport"
+const reportPartUrl = APIPartUrl + "/xreport"
 const statsPartUrl = reportPartUrl + "/last_report"
 const chartPartUrl = reportPartUrl + "/compute"
 const mfPartUrl = "/mf"
@@ -41,37 +56,61 @@ export default {
         loginShow: 230,
 
         // time of checking whether Backtest patterns backtests are done
-        backtestsDone: 1000 * 3 // 3 seconds
+        backtestsDone: 1000 * 3, // 3 seconds,
+
+        // time of downloading features engineering results
+        featEngReload: 1000 * 5 // 5 seconds
     },    
 
     urls: {
-        tickerSP: {
-             base : baseUrl + SPPartUrl + tickerPartUrl,
-             stock: baseUrl + SPPartUrl + tickerPartUrl + "OHLC?ticker="
+        liveDepl: {
+            gwStart: livedeplPartUrl + gwPartUrl + "Start/",
+            gwStop: livedeplPartUrl + gwPartUrl + "Stop/",
+            gwStatus: livedeplPartUrl + gwPartUrl + "Status",
+            gwLogs: livedeplPartUrl + gwPartUrl + "Logs",
+            report: livedeplPartUrl + "/Report/",
+            liquidate: livedeplPartUrl + "/Liquidate"
         },
+
+        tickerSP: {
+            base : SPPartUrl + tickerPartUrl,
+            stock: SPPartUrl + tickerPartUrl + "OHLC?ticker="
+        },
+
         patternLab: {
-            asset: baseUrl + PLPartUrl + tickerPartUrl + searchPartUrl,
-            pattern: baseUrl + PLPartUrl + patternPartUrl + searchPartUrl,
-            chart: baseUrl + PLPartUrl + "/HistoryData/",
-            patternsHistory: baseUrl + PLPartUrl + patternPartUrl + "Tests",
+            abbreviation: PLminiPartUrl,
+            asset: PLPartUrl + tickerPartUrl + searchPartUrl,
+            pattern: PLPartUrl + patternPartUrl + searchPartUrl,
+            chart: PLPartUrl + "/HistoryData/",
+            patternsHistory: PLPartUrl + patternPartUrl + "Tests",
             backtestPatterns: {
-                results: baseUrl + PLPartUrl + patternResultsPartUrl,
-                status: baseUrl + PLPartUrl + patternResultsPartUrl + "Status"
+                results: PLPartUrl + patternResultsPartUrl + resultPartUrl + "s",
+                results2: PL2PartUrl + patternResultsPartUrl + resultPartUrl + "s",
+                status: PLPartUrl + patternResultsPartUrl  + resultPartUrl + "s" + "Status"
             },
-            alert: baseUrl + PLPartUrl + alertPartUrl + "/",
-            alerts: baseUrl + PLPartUrl + alertPartUrl + "s"
+            alert: PLPartUrl + alertPartUrl + "/",
+            alerts: PLPartUrl + alertPartUrl + "s"
+        },
+
+        featEng: {
+            sweepRequest: optPartUrl + sweepPartUrl + requestPartUrl + "/"
+        },
+
+        datawarehouse: {
+            result: dwhPartUrl + "/" + resultPartUrl + "/",
+            results: dwhPartUrl + "/" + resultPartUrl + "s",
         },
 
         auth: baseUrl + "/rest-auth",
 
         stats: {
-            "MF Report": baseUrl + statsPartUrl + mfPartUrl,
-            "UVXY Report": baseUrl + statsPartUrl + uvxyPartUrl
+            "MF Report": statsPartUrl + mfPartUrl,
+            "UVXY Report": statsPartUrl + uvxyPartUrl
         },
 
         chart: {
-            "MF Report": baseUrl + chartPartUrl + mfPartUrl, 
-            "UVXY Report": baseUrl + chartPartUrl + uvxyPartUrl
+            "MF Report": chartPartUrl + mfPartUrl, 
+            "UVXY Report": chartPartUrl + uvxyPartUrl
         }
     },
 
@@ -83,7 +122,8 @@ export default {
     translationKeys: {
         patterns: 'research.patternLab.backtestPatterns.performanceResults.patterns',
         trades: 'research.patternLab.backtestPatterns.performanceResults.trades',
-        performanceMetrics: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics'
+        performanceMetrics: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
+        IBLogin: 'login.IB'
     },
 
     strings: {

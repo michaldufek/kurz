@@ -20,10 +20,14 @@
                     :sortable="sortable"
                     :filterable="filterable"
                     :editable="editable"
-                    :clickable="true"
+                    :clickable="clickable"
+                    :saveable="saveable"
+                    :allowSave="allowSave"
+                    :savedRows="savedRows"
                     @edited="edited"
                     @filtered="filtered"
-                    @selected="selected" >
+                    @selected="selected"
+                    @saved="saved" >
         </base-table>
       </section>
     </div>
@@ -100,6 +104,11 @@ export default {
       default: () => [],
       description: "Columns that are checkboxes"
     },
+    // interval: {
+    //   type: Number,
+    //   default: () => constants.intervals.dataReload,
+    //   description: "Interval to reaload data"
+    // },
     sortable: {
       type: Boolean,
       description: "Whether columns can be sorted by header click"
@@ -115,6 +124,19 @@ export default {
     clickable: {
       type: Boolean,
       description: "Whether rows can be double-clicked for some action"
+    },
+    saveable: {
+      type: Boolean,
+      description: "Whether rows have Save button at last column (to do emit Save action)"
+    },
+    allowSave: {
+      type: Boolean,
+      description: "Whether rows can use Save button functionality" // ie. backtest was run and row has result ID
+    },
+    savedRows: {
+      type: Array,
+      default: () => [],
+      description: "Table rows that are already saved"
     }
   },
 
@@ -151,7 +173,7 @@ export default {
         
       setInterval(() => { 
         this.loadData();
-      }, constants.intervals.dataReload );
+      }, constants.intervals.dataReload ); //this.interval
     },
 
     loadData() {
@@ -239,7 +261,10 @@ export default {
       this.$emit('filtered', data)      
     },
     selected(data) {
-      this.$emit('selected', data)      
+      this.$emit('selected', data)
+    },
+    saved(data) {
+      this.$emit('saved', data)
     }
   },
 

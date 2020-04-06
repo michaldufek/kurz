@@ -10,9 +10,85 @@
     <!-- strategy settings  -->
     <div class="col-md-6 container col-12 col-xl-4">
       <card>
+<<<<<<< src/custom/apps/research/patternLab/BacktestPatterns.vue
         <!-- initial capital -->
         <div>
           <p class="label">{{ $t('research.patternLab.backtestPatterns.initialCapital') }}</p>
+=======
+        <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.entry') + ' ' + $t('research.patternLab.rules') }}</h4>        
+
+        <table>
+          <!-- direction -->
+          <tr>
+            <td>
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.direction') }}</p>
+            </td>
+            <td>
+              <base-dropdown menu-classes="dropdown-black" 
+                            title-classes="btn btn-secondary"
+                            :title="strategy.direction">
+                <ul style="list-style-type: none;">
+                  <li v-for="dir in Object.values($t('research.patternLab.backtestPatterns.entryRules.directions')).filter(d => d !== strategy.direction)">            
+                    <a class="dropdown-item" 
+                      @click="strategy.direction = dir" 
+                      href="#">
+                      {{ dir }}
+                    </a>
+                  </li>
+                </ul>
+              </base-dropdown>
+            </td>
+          </tr>
+
+          <!-- trend filter -->
+          <tr :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')">
+            <td style="width: 46%">
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.trendFilter') }}</p>
+            </td>
+            <td>
+              <base-checkbox v-model="strategy.trendFilter" style="margin-top: -20px; margin-bottom: 10px; text-align: center;" />
+            </td>
+          </tr>
+
+          <!-- moving average -->
+          <tr v-if="strategy.trendFilter" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
+            <td>
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.ma_filter_period') }}</p>
+            </td>
+            <td>
+              <base-input alternative
+                          type="text"
+                          v-model="strategy.ma_filter_period"
+                          :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
+              </base-input>
+            </td>
+          </tr>
+          
+          <!-- risk (fix-amount) -->
+          <tr>
+            <td>
+              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.fixed_amount') }}</p>
+            </td>
+            <td>
+              <base-input alternative
+                      type="text"
+                      v-model="strategy.fixed_amount"
+                      :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
+              </base-input>
+            </td>
+          </tr>
+        </table>
+        
+      </card>
+
+      <!-- exit rules -->
+      <card>
+        <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.exit') + ' ' + $t('research.patternLab.rules') }}</h4>
+
+        <!-- analyze -->
+        <div :title="$t('research.patternLab.backtestPatterns.exitRules.analyzeTip')">
+          <p class="label" style="width: 34%">{{ $t('research.patternLab.backtestPatterns.exitRules.analyze') }}</p>
+>>>>>>> src/custom/apps/research/patternLab/BacktestPatterns.vue
           <base-input alternative
                       type="text"
                       class="input"
@@ -238,7 +314,7 @@
 
         strategy: {
           ...defaultStrategy,
-          direction: this.$t('research.patternLab.backtestPatterns.entryRules.directions')[0]
+          direction: Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions'))[0]
         },
         loading: false,
         cardKey: 0,
@@ -255,13 +331,17 @@
         let data = this.$store.getItem(constants.storeKeys.backtestPatterns)
         if (data) {
           this.loading = data.loading ? data.loading : false
+          if (this.loading) {
+            this.setCheckBacktestsInterval()
+          }
+
           if (data.strategy) {
             this.strategy = data.strategy
-            this.strategy.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions')[data.strategy.direction]
+            this.strategy.direction = Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions'))[data.strategy.direction]
           } else {
             this.strategy = {
               ...defaultStrategy,
-              direction: this.$t('research.patternLab.backtestPatterns.entryRules.directions')[0]
+              direction: Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions'))[0]
             }            
           }
         }
@@ -309,7 +389,9 @@
                                                         ? bt.get(this.columns[0].toLowerCase()).split(' (')[0] 
                                                         : helper.getDefaultPrName(bt.get('btId'))} (${bt.get('btId')})`)    // Name
                   })
+
                   helper.updateStoreBacktests(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
+                  helper.updateStore(this.$store, 'allowSave', true, constants.storeKeys.backtestPatterns)
                 })
                 .catch(error => {
                   console.log(error);
@@ -346,7 +428,7 @@
                           type: 'warning', 
                           message: this.$t('notifications.noInitialCapital') + this.errorTitle
                       })
-          return 
+          return false
         }
 
         if (this.loading) {
@@ -354,16 +436,23 @@
                           type: 'warning', 
                           message: this.$t('notifications.loading') + this.errorTitle
                       })
-          return 
+          return false
         }
 
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (!data || !data.checkedPatterns.length) {   
-          return
+          return false
         }
 
         this.setBacktestsTable(true)
+
+        helper.updateStore(this.$store, 'savedBacktestsIDs', [], constants.storeKeys.backtestPatterns)
+        helper.updateStore(this.$store, 'unsavedBacktestsIDs', [], constants.storeKeys.backtestPatterns)
+        helper.updateStore(this.$store, 'allowSave', false, constants.storeKeys.backtestPatterns)
+
         this.cardKey++
+
+        return true
       },
 
       runStrategyClick() {
@@ -373,26 +462,35 @@
                           type: 'warning', 
                           message: this.$t('notifications.addNoAsset') + this.errorTitle
                       })
+          return
+        }
+        
+        if (this.loading) {
+          this.$notify({
+                          type: 'warning', 
+                          message: this.$t('notifications.loading') + this.errorTitle
+                      })
+          return 
+        }
 
-        } else {
-          if (this.loading) {
-            this.$notify({
-                            type: 'warning', 
-                            message: this.$t('notifications.loading') + this.errorTitle
-                        })
-            return 
-          }
+        if (data && !data.checkedPatterns.length) {
+          this.$notify({
+              type: 'warning', 
+              message: this.$t('notifications.addNoPattern') + this.errorTitle
+          })  
+          return
+        } 
 
-          if (data && !data.checkedPatterns.length) {
-            this.$notify({
-                type: 'warning', 
-                message: this.$t('notifications.addNoPattern') + this.errorTitle
-            })  
-          } else if (data) {
-            this.setBacktestsTable()
-            this.cardKey++
-            this.runBacktests()     
-          }
+        let canRun = true
+        let btsData = this.$store.getItem(constants.storeKeys.backtestPatterns)
+        if (!btsData || (btsData && (btsData.backtests === undefined || btsData.backtests === []))) {
+          canRun = this.addPattern()
+        } 
+
+        if (canRun) {        
+          this.setBacktestsTable()
+          this.cardKey++
+          this.runBacktests()     
         }
       },
 
@@ -470,16 +568,20 @@
 
         this.$http
         .post(constants.urls.patternLab.backtestPatterns.results, backtests2Run)
+        .then(_ => this.setCheckBacktestsInterval())
         .catch(error => {
           this.loading = false
           console.log(error);
 
           if (error.message === constants.strings.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
+          } else {
+            this.$notify({
+                          type: 'warning', 
+                          message: this.$t('notifications.couldntRunBacktests') + this.errorTitle
+                        })
           }
-        })
-
-        this.setCheckBacktestsInterval()  
+        })        
       },
 
       toggleSidebar() {
@@ -501,7 +603,7 @@
       strategy: {
         handler(val){
           let val2store = JSON.parse(JSON.stringify(val))
-          val2store.direction = this.$t('research.patternLab.backtestPatterns.entryRules.directions').indexOf(val.direction)
+          val2store.direction = Object.values(this.$t('research.patternLab.backtestPatterns.entryRules.directions')).indexOf(val.direction)
           helper.updateStore(this.$store, 'strategy', val2store, constants.storeKeys.backtestPatterns) 
         },
         deep: true

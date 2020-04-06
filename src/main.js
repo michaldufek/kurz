@@ -117,6 +117,22 @@ const putOnlineRoutine = (url, data, config) => new Promise ((resolve, reject) =
   .catch(error => reject(error))
   .finally(() => resolve(response))
 })
+const patchOnlineRoutine = (url, data, config) => new Promise ((resolve, reject) => {
+  let response = {}
+  Axios
+  .patch(url, data, config)
+  .then(resp => response = resp)
+  .catch(error => reject(error))
+  .finally(() => resolve(response))
+})
+const deleteOnlineRoutine = (url, config) => new Promise ((resolve, reject) => {
+  let response = {}
+  Axios
+  .delete(url, config)
+  .then(resp => response = resp)
+  .catch(error => reject(error))
+  .finally(() => resolve(response))
+})
 const offline = false
 Vue.prototype.$http = {
   get(url, config) {
@@ -134,6 +150,12 @@ Vue.prototype.$http = {
   },
   put(url, data, config) {
     return putOnlineRoutine(url, data, config)
+  },
+  patch(url, data, config) {
+    return patchOnlineRoutine(url, data, config)
+  },
+  delete(url, config) {
+    return deleteOnlineRoutine(url, config)
   }
 }
 

@@ -28,7 +28,8 @@
     "edit": "Dvoj-klik pro úpravu.",
     "editCancel": "Stlačte ESC pro zrušení upravování.",
     "showPattern": "Dvoj-klik pro zobrazení patternu v grafu.",
-    "showPatternCancel": "Dvoj-klik pro zrušení zobrazování patternu v grafu."
+    "showPatternCancel": "Dvoj-klik pro zrušení zobrazování patternu v grafu.",
+    "save2dataWarehouse": "Uložit do Skladu strategií"
   },
   "paging": {
     "previous": "Předchozí",
@@ -46,10 +47,12 @@
   },
   "login": {
     "signIn": "Přihlásit se",
+    "disconnect": "Odpojit se",
     "with": "pomocí",
     "signInCredentials": "Nebo přímo",
     "email": "Email",
     "emailExample": "joe@example.com",
+    "username": "Jméno",
     "password": "Heslo",
     "passwordAgain": "Heslo znovu",
     "resetPass": "Resetovat Heslo",
@@ -62,11 +65,23 @@
     "alreadyAccount": "Již máte konto?",
     "registerSuccess": "Ověření registrace proběhlo úspěšně.",
     "registerFail": "Ověření registrace zlyhalo.",
-    "login": "Přihlašte se."
+    "login": "Přihlašte se.",
+    "IB": {
+      "title": "Interactive Brokers",
+      "credentials": "údajů",
+      "login": "přihlášení",
+      "status": "stav",
+      "logs": "logy",
+      "signIn": "Přihlašte se Interactive Brokers údaji",
+      "paper": "Paper Trading mode",
+      "confirmLive": "Jste si jisti, že chcete použít Live Trading mode?"
+    }
   },
   "dashboard": { 
     "title": "Nástěnka",
     "performanceStatistics": "Výkon - statistiky",
+    "liquidate": "Likvidace",
+    "confirmLiquidate": "Jste si jistí, že chcete livkidaci?",
     "lastTradesTable": {
       "title": "Poslední obchody",
       "columns": [
@@ -106,6 +121,10 @@
     "from": "Od",
     "to": "Do",
     "pickDate": "Vyberte datum",
+    "save": "Uložit",
+    "saveName": "Uložit jméno",
+    "saved": "Uložené",
+    "stop": "Zastavit",
     "portfolioManager": {
       "designedPortfolio": "Navržené Portfolio",
       "livePortfolio": "Živé Portfolio",
@@ -235,11 +254,11 @@
         "export": "Export",
         "entryRules": {
           "direction": "Směr",
-          "directions": [
-            "NÁKUP",
-            "PRODEJ",
-            "OBĚ"
-          ],
+          "directions": {
+            "BUY": "NÁKUP",
+            "SELL": "PRODEJ",
+            "BOTH": "OBĚ"
+          },
           "trendFilter": "Trend filter",
           "trendFilterTip": "Pokud je funkce zapnuta, tak jsou Bullish patterny testovány pouze když je aktuální cena nad klouzavým průměrem a Bearish patterny testovány pouze pokud je aktuální cena pod klouzavým průměrem.",         
           "ma_filter_period": "Klouzavý průměr",
@@ -349,7 +368,6 @@
         "range": "rozsah",
         "step": "Krok",
         "run": "Spustit",
-        "stop": "Zastavit",
         "estimatedTime": "Odhadovaný čas běhu je",
         "confirmEstimated": "větší než 5 hodin. Jste si jistí?",
         "results": {
@@ -370,8 +388,7 @@
             "RiskPerTrade"
           ],
           "chart": "Interaktivní 3D graf"
-        },
-        "save": "Uložit"
+        }
       },
       "genetics" : {
         "title": "Genetika"
@@ -419,11 +436,14 @@
     "addNoAsset": "Musíte označit alespoň jedno aktivum",
     "addNoPattern": "Musíte zaškrtnout alespoň jeden pattern",
     "noInitialCapital": "Počáteční kapitál musí být nastavený",
-    "loading": "Strategie již běží"
+    "loading": "Strategie již běží",
+    "couldntRunBacktests": "Strategie se nezdařilo rozběhat"
   },
   "userMenu": {
-    "title": "Uživatelské akce",
+    "actions": "Uživatelské akce",
+    "notifications": "Nové notifikace",
     "profile": "Profil",
+    "ibConnection": "IB Spojení",
     "settings": "Nastavení",
     "logout": "Odhlásit"
   },
