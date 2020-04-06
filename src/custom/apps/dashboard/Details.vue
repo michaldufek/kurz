@@ -31,7 +31,7 @@
         let data = this.$store.getItem(constants.translationKeys.IBLogin)
         if (data) {
           this.email = data.email
-          this.checkGWrunning()
+          this.checkGWrunning()   // no need to set interval because only live portfolio should be here
         } else {
           this.setStrategies()
         }
