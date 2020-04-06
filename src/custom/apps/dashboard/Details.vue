@@ -20,24 +20,51 @@
 
     data() {
       return {
-        strategiesData: []
+        strategiesData: [],
+        connected: false,
+        email: ''
       };
     },
 
     methods: {
       initStrategies() { 
-        let connected = false
         let data = this.$store.getItem(constants.translationKeys.IBLogin)
-
         if (data) {
-          connected = data.connected
-          var email = data.email
+          this.email = data.email
+          this.checkGWrunning()   // no need to set interval because only live portfolio should be here
+        } else {
+          this.setStrategies()
         }
+      },
 
-        if (connected) {
+      checkGWrunning() {
+        this.$http
+        .get(constants.urls.liveDepl.gwStatus + '/' + this.email)
+        .then(response => {
+          if ('error' in response.data) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('sidebar.details')} ${this.$t('login.IB.status')} - ${response.data.error}`)
+          } else {
+            this.connected = response.data.status
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('sidebar.details')} ${this.$t('login.IB.status')}`)
+          }
+        })
+        .finally(() => {
+          this.setStrategies()
+        })
+      },
+
+      setStrategies() {        
+        this.strategiesData = []
+
+        if (this.connected) {
           this.strategiesData.push({
             title: "Live Report",
-            apiUrl: constants.urls.liveDepl.report + email
+            apiUrl: constants.urls.liveDepl.report + this.email
           })
         }
         else {

@@ -10,85 +10,9 @@
     <!-- strategy settings  -->
     <div class="col-md-6 container col-12 col-xl-4">
       <card>
-<<<<<<< src/custom/apps/research/patternLab/BacktestPatterns.vue
         <!-- initial capital -->
         <div>
           <p class="label">{{ $t('research.patternLab.backtestPatterns.initialCapital') }}</p>
-=======
-        <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.entry') + ' ' + $t('research.patternLab.rules') }}</h4>        
-
-        <table>
-          <!-- direction -->
-          <tr>
-            <td>
-              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.direction') }}</p>
-            </td>
-            <td>
-              <base-dropdown menu-classes="dropdown-black" 
-                            title-classes="btn btn-secondary"
-                            :title="strategy.direction">
-                <ul style="list-style-type: none;">
-                  <li v-for="dir in Object.values($t('research.patternLab.backtestPatterns.entryRules.directions')).filter(d => d !== strategy.direction)">            
-                    <a class="dropdown-item" 
-                      @click="strategy.direction = dir" 
-                      href="#">
-                      {{ dir }}
-                    </a>
-                  </li>
-                </ul>
-              </base-dropdown>
-            </td>
-          </tr>
-
-          <!-- trend filter -->
-          <tr :title="$t('research.patternLab.backtestPatterns.entryRules.trendFilterTip')">
-            <td style="width: 46%">
-              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.trendFilter') }}</p>
-            </td>
-            <td>
-              <base-checkbox v-model="strategy.trendFilter" style="margin-top: -20px; margin-bottom: 10px; text-align: center;" />
-            </td>
-          </tr>
-
-          <!-- moving average -->
-          <tr v-if="strategy.trendFilter" :title="$t('research.patternLab.backtestPatterns.entryRules.movingAverageTip')">
-            <td>
-              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.ma_filter_period') }}</p>
-            </td>
-            <td>
-              <base-input alternative
-                          type="text"
-                          v-model="strategy.ma_filter_period"
-                          :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
-              </base-input>
-            </td>
-          </tr>
-          
-          <!-- risk (fix-amount) -->
-          <tr>
-            <td>
-              <p>{{ $t('research.patternLab.backtestPatterns.entryRules.fixed_amount') }}</p>
-            </td>
-            <td>
-              <base-input alternative
-                      type="text"
-                      v-model="strategy.fixed_amount"
-                      :placeholder="$t('research.patternLab.backtestPatterns.numberUSD')">
-              </base-input>
-            </td>
-          </tr>
-        </table>
-        
-      </card>
-
-      <!-- exit rules -->
-      <card>
-        <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.exit') + ' ' + $t('research.patternLab.rules') }}</h4>
-
-        <!-- analyze -->
-        <div :title="$t('research.patternLab.backtestPatterns.exitRules.analyzeTip')">
-          <p class="label" style="width: 34%">{{ $t('research.patternLab.backtestPatterns.exitRules.analyze') }}</p>
->>>>>>> src/custom/apps/research/patternLab/BacktestPatterns.vue
           <base-input alternative
                       type="text"
                       class="input"
@@ -113,7 +37,7 @@
                               title-classes="btn btn-secondary"
                               :title="strategy.direction">
                   <ul style="list-style-type: none;">
-                    <li v-for="dir in $t('research.patternLab.backtestPatterns.entryRules.directions').filter(d => d !== strategy.direction)">            
+                    <li v-for="dir in Object.values($t('research.patternLab.backtestPatterns.entryRules.directions')).filter(d => d !== strategy.direction)">            
                       <a class="dropdown-item" 
                         @click="strategy.direction = dir" 
                         href="#">

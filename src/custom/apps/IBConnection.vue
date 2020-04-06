@@ -101,7 +101,7 @@ export default {
             let data = this.$store.getItem(this.storeKey)
             if (data) {
                 this.email = data.email
-                this.checkGWrunning()
+                this.setGWStatusInterval()
             }
 
             this.openLoginModal()
@@ -231,16 +231,23 @@ export default {
             .finally(() => this.loading = false)
         }, 
 
-        setGWLogsInterval() {
-            this.getGWLogs();
+        setInterval(timer, routine) {
+            routine()
         
-            if (this.GWLogsTimer) {
-                clearInterval(this.GWLogsTimer);
+            if (timer) {
+                clearInterval(timer)
             }
 
-            this.GWLogsTimer = setInterval(() => { 
-                this.getGWLogs();
-            }, constants.intervals.soundSignal );
+            timer = setInterval(() => { 
+                routine()
+            }, constants.intervals.soundSignal )
+        },
+        
+        setGWStatusInterval() {
+            this.setInterval(this.GWStatusTimer, this.checkGWrunning)
+        },
+        setGWLogsInterval() {
+            this.setInterval(this.GWLogsTimer, this.getGWLogs)
         },
         getGWLogs() {
             this.loading = true

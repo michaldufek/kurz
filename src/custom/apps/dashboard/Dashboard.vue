@@ -10,7 +10,8 @@
     <div class="row">
       <div class="col-12">
         <fancy-chart :title="$t('dashboard.title')"
-                     :apiUrls="apiUrls(forChart=true)">
+                     :apiUrls="chartUrls"
+                     :key="updateKey" >
         </fancy-chart>
       </div>
     </div>  
@@ -18,30 +19,33 @@
      <div class="row">      
       <div class="col-xl-4 col-12">
         <fancy-table :title="$t('dashboard.lastTradesTable.title')"
-                     :apiUrls="apiUrls()"
+                     :apiUrls="statsUrls"
                      :rowsCreator="tradesRowsCreator"
                      :aggregator="tradesAggregator"
                      :titles="$t('terms.tradeTypes')"
-                     :columns="$t('dashboard.lastTradesTable.columns')">
+                     :columns="$t('dashboard.lastTradesTable.columns')"
+                     :key="updateKey" >
         </fancy-table>
       </div>
 
       <div class="col-xl-4 col-12">  
         <fancy-table :title="$t('dashboard.pendingOrdersTable.title')"
-                     :apiUrls="apiUrls()"
+                     :apiUrls="statsUrls"
                      :rowsCreator="ordersRowsCreator"
                      :aggregator="ordersAggregator"
                      :titles="$t('terms.tradeTypes')"
-                     :columns="$t('dashboard.pendingOrdersTable.columns')">
+                     :columns="$t('dashboard.pendingOrdersTable.columns')"
+                     :key="updateKey" >
         </fancy-table>
       </div>
 
       <div class="col-xl-4 col-12">
         <fancy-table :title="$t('dashboard.performanceStatistics')"
-                     :apiUrls="apiUrls(forChart=true)"
+                     :apiUrls="chartUrls"
                      :rowsCreator="statsRowsCreator"
                      :titles="$t('terms.perfStats')"
-                     :columns="$t('dashboard.performanceStatisticsTable.columns')">
+                     :columns="$t('dashboard.performanceStatisticsTable.columns')"
+                     :key="updateKey" >
         </fancy-table>
 
         <div v-if="connected" style="float: right;">
@@ -77,7 +81,10 @@
         error: false,
         message: '',
         loading: false,
+        updateKey: 0,
 
+        chartUrls: [],
+        statsUrls: [],
         heardOrders: {
           open: [],
           win: [],
@@ -102,18 +109,92 @@
       initIB() {
         let data = this.$store.getItem(constants.translationKeys.IBLogin)
         if (data) {
-          this.connected = data.connected
           this.email = data.email
+          this.checkGWrunning()   // no need to set interval because only live portfolio should be here
+        } else {
+          this.setApiUrls()
         }
       },
 
-      notify(audioEl, type, msg) {
-        document.getElementById(audioEl).play();
+      checkGWrunning() {
+        this.loading = true
 
-        this.$notify({
-          type: type, 
-          message: msg
+        this.$http
+        .get(constants.urls.liveDepl.gwStatus + '/' + this.email)
+        .then(response => {
+          if ('error' in response.data) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')} - ${response.data.error}`)
+          } else {
+            this.connected = response.data.status
+          }
         })
+        .catch(error => {
+          console.log(error)
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')}`)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+          this.setApiUrls()
+        })
+      },
+
+      setApiUrls() {
+        this.chartUrls = []
+        this.statsUrls = []
+
+        if (this.connected) {
+          this.chartUrls.push(constants.urls.liveDepl.report + this.email)    // todo: must be chart url here!
+          this.statsUrls.push(constants.urls.liveDepl.report + this.email)
+        }
+        else {
+          // get just urls from named urls dictionary
+          for (const [key, value] of Object.entries(constants.urls['chart'])) {
+            this.chartUrls.push(value)
+          }
+          for (const [key, value] of Object.entries(constants.urls['stats'])) {
+            this.statsUrls.push(value)
+          }
+        }
+
+        this.updateKey++
+      },
+
+      liquidate() {
+        this.$confirm(this.$t('dashboard.confirmLiquidate'))
+        .then(() => {
+          this.loading = true
+
+          this.$http
+          .post(constants.urls.liveDepl.liquidate, { userid: this.email })
+          .then(response => {
+            this.error = false
+            this.message = response.data.message
+            this.updateKey++
+          })
+          .catch(error => {
+            console.log(error)
+            this.error = true
+
+            if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
+                this.message = error.message
+            }
+
+            if ('type' in error.response.data) {
+                this.message = error.response.data.type + ' error'
+
+                if ('message' in error.response.data) {
+                    this.message += ': ' + error.response.data.message
+                } else {
+                    this.message += '.'
+                }
+            }                
+          })
+          .finally(() => this.loading = false)
+        })
+        .catch(_ => {})
       },
 
       liquidate() {
@@ -173,6 +254,15 @@
           })
         })
       },      
+
+      notify(audioEl, type, msg) {
+        document.getElementById(audioEl).play();
+
+        this.$notify({
+          type: type, 
+          message: msg
+        })
+      },
 
       // fancy-tables props functions
       tradesRowsCreator(responseData) {
@@ -260,30 +350,7 @@
 
       ordersAggregator(oldRows, newRows) {
         return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase())
-      },
-
-      apiUrls(forChart=false) {
-        let urls = []
-
-        this.initIB()
-
-        if (this.connected) {
-          urls.push(constants.urls.liveDepl.report + this.email)
-        }
-        else {
-          // get just urls from named urls dictionary
-          if (forChart) {
-            var type = 'chart'
-          } else {
-            type = 'stats'          
-          }
-          for (const [key, value] of Object.entries(constants.urls[type])) {
-            urls.push(value)
-          }
-        }
-
-        return urls
-      }
+      }      
     },
 
     mounted() {
