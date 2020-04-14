@@ -130,6 +130,8 @@
         })
         .catch(error => {
           console.log(error)
+          this.connected = false
+
           if (error.message === constants.strings.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')}`)
           }

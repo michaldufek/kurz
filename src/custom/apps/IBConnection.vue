@@ -298,6 +298,15 @@ export default {
         this.init()
     },
 
+    destroyed() {
+        if (this.GWStatusTimer) {
+            clearInterval(this.GWStatusTimer)
+        }
+        if (this.GWLogsTimer) {
+            clearInterval(this.GWLogsTimer)
+        }
+    },
+
     watch: {
         email(val) {
             helper.updateStore(this.$store, 'email', val, this.storeKey)            
