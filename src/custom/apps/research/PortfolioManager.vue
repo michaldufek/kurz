@@ -94,7 +94,7 @@
       // emitted events
       goLive(id) {        
         this.$http
-        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { live: true })
+        .post(constants.urls.liveDepl.strategy.deploy, { bt_id: id })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {
@@ -116,7 +116,7 @@
       },
       stoped(id) {        
         this.$http
-        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { live: false })
+        .post(constants.urls.liveDepl.strategy.stop, { bt_id: id })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {

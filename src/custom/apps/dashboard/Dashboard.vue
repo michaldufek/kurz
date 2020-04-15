@@ -120,7 +120,7 @@
         this.loading = true
 
         this.$http
-        .get(constants.urls.liveDepl.gwStatus + '/' + this.email)
+        .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
         .then(response => {
           if ('error' in response.data) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')} - ${response.data.error}`)
