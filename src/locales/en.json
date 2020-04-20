@@ -403,9 +403,13 @@
       "svjd": "SVJD Stationary",
       "svjd2": "SVJD Non-Stationary",
       "cot": "Commitment of Traders",
+      "modelResults": "Modeling Results",
       "equityCurve": "Equity Curve",
       "drawDown": "Drawdown",
-      "run": "Run"
+      "run": "Run",
+      "stop":"Stop",
+      "estimatedTime":"Estimated running time is",
+      "confirmEstimated":"longer than 5 hours. Are you sure?"
     },
     "wareHouse": {
       "premiumStrategies": "Premium Strategies",

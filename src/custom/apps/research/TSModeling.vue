@@ -25,11 +25,11 @@
         <!-- available models checkboxes       -->
         <card class="col-lg-3 col-12 container">
             <h4>{{ $t(storeKey + '.models') }}</h4>
-            <base-checkbox v-for="model in models">
-            {{ $t(storeKey + model) }}
+            <base-checkbox v-for="model in models" :key="models.model">
+                {{ $t(storeKey + model) }}
             </base-checkbox>     
         </card>
-
+        
         <!-- date pickers -->
         <card class="col-lg-3 col-12 container">
             <h4>{{ $t('research.period') }}</h4>
@@ -63,6 +63,15 @@
             </div>
         </card>      
 
+        
+        <!-- modeling results -->
+        <card class="col-lg-3 col-12 container">
+            <h4>{{ $t(storeKey + '.modelResults') }}</h4>
+            <!-- <div>
+                <b-table striped hover :results="results"></b-table>
+            </div> -->
+        </card>
+
         <!-- run button  -->
          <div>
             <base-button native-type="submit" type="secondary" @click="runClick" style="margin-right: auto; margin-left:auto;">{{ runText }}</base-button>
@@ -72,7 +81,7 @@
     <!-- Results block-->   
 
     <div class="row">
-        <!-- Equity curve -->
+        <!-- equity curve -->
         <div class="col-md">
             <fancy-chart :title="$t(storeKey + '.equityCurve')"
                         :showTitle="true">
@@ -80,7 +89,7 @@
             </fancy-chart>
         </div>
 
-         <!-- Drawdown curve -->
+         <!-- drawdown curve -->
         <div class="col-md">
             <fancy-chart :title="$t(storeKey + '.drawDown')"
                         :showTitle="true">                                              
@@ -99,6 +108,7 @@
 import Datepicker from 'vuejs-datepicker';
 import FancyTable from '@/custom/components/Tables/FancyTable';
 import FancyChart from '@/custom/components/Charts/FancyChart';
+import FancyCard from '@/custom/components/Cards/FancyCard';
 
 import helper from '@/custom/assets/js/helper';
 // import constants from '@/custom/assets/js/constants';
@@ -108,7 +118,8 @@ export default {
     components: {  
       Datepicker,
       FancyTable,
-      FancyChart 
+      FancyChart,
+      FancyCard 
     },
 
     data() {
@@ -133,7 +144,9 @@ export default {
             warnEstimated: false,
             running: false,
 
-            updateKey: 0
+            updateKey: 0,
+
+            // results: ['AR_In', 'AR_Out', 'AR_Out1']
         }
     },
 

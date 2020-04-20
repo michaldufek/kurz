@@ -404,9 +404,13 @@
       "svjd": "SVJD Stationary",
       "svjd2": "SVJD Non-Stationary",
       "cot": "Commitment of Traders",
+      "modelResults": "Vysledky modelu",
       "equityCurve": "Ekvitni krivka",
       "drawDown": "Maximalni pokles",
-      "run": "Spustit"
+      "run": "Spustit",
+      "stop":"Zastavit",
+      "estimatedTime":"Odhadovaný čas běhu je",
+      "confirmEstimated":"větší než 5 hodin. Jste si jistí?"
     },
     "wareHouse": {
       "premiumStrategies": "Prémiové Strategie",
