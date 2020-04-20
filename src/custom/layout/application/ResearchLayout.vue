@@ -6,6 +6,7 @@
         <sidebar-link to="/research/stockPickingLab" :name="$t('sidebar.stockPickingLab')" icon="tim-icons icon-tap-02"/>
         <sidebar-link to="/research/patternLab" :name="$t('sidebar.patternLab')" icon="tim-icons icon-sound-wave"/>
         <sidebar-link to="/research/featuresEngineering" :name="$t('sidebar.featuresEngineering')" icon="tim-icons icon-vector"/>
+        <sidebar-link to="/research/tsmodeling" :name="$t('sidebar.tsmodeling')" icon="tim-icons icon-atom"/>
         <!-- <sidebar-link to="/research/relativeValuesLab" :name="$t('sidebar.relativeValuesLab')" icon="tim-icons icon-tap-02"/> -->
         <sidebar-link to="/research/wareHouse" :name="$t('sidebar.wareHouse')" icon="tim-icons icon-paper"/>
       </template>

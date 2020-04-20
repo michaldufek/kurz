@@ -118,6 +118,7 @@
   },
   "research": { 
     "title": "Výzkum",
+    "period": "Perioda",
     "from": "Od",
     "to": "Do",
     "pickDate": "Vyberte datum",
@@ -394,6 +395,18 @@
         "title": "Genetika"
       }
     }, 
+    "tsmodeling": {
+      "selectBacktest":"Vyberte backtest", 
+      "models": "Available Models",
+      "basic": "Basic",
+      "hmm": "Hidden Markov Models",
+      "hmm2": "Hidden Markov Models Extended",
+      "svjd": "SVJD Stationary",
+      "svjd2": "SVJD Non-Stationary",
+      "cot": "Commitment of Traders",
+      "equityCurve": "Ekvitni krivka",
+      "drawDown": "Maximalni pokles"
+    },
     "wareHouse": {
       "premiumStrategies": "Prémiové Strategie",
       "myStrategies": "Moje Strategie",
@@ -455,6 +468,7 @@
     "patternLab": "Pattern Lab",
     "featuresEngineering": "Features Engineering",
     "relativeValuesLab": "RelativeValues Lab",
+    "tsmodeling": "TS Modeling",
     "wareHouse": "Sklad Strategií",
     "notifications": "Notifikace",
     "userProfile": "Profil"

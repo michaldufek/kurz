@@ -117,6 +117,7 @@
   },
   "research": { 
     "title": "Research",
+    "period": "Period",
     "from": "From",
     "to": "To",
     "pickDate": "Pick a date",
@@ -393,6 +394,18 @@
         "title": "Genetics"
       }
     },
+    "tsmodeling": {
+      "selectBacktest":"Select Backtest", 
+      "models": "Available Models",
+      "basic": "Basic",
+      "hmm": "Hidden Markov Models",
+      "hmm2": "Hidden Markov Models Extended",
+      "svjd": "SVJD Stationary",
+      "svjd2": "SVJD Non-Stationary",
+      "cot": "Commitment of Traders",
+      "equityCurve": "Equity Curve",
+      "drawDown": "Drawdown"
+    },
     "wareHouse": {
       "premiumStrategies": "Premium Strategies",
       "myStrategies": "My Strategies",
@@ -454,6 +467,7 @@
     "patternLab": "Pattern Lab",
     "featuresEngineering": "Features Engineering",
     "relativeValuesLab": "RelativeValues Lab",
+    "tsmodeling": "TS Modeling",
     "wareHouse": "Ware House",
     "notifications": "Notifications",
     "userProfile": "User Profile"

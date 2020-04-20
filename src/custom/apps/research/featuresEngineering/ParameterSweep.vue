@@ -209,12 +209,6 @@ export default {
 
             backtestsNames: [],
             selectedBacktest: null,
-            profitTarget: {
-                checked: true,
-                from: null,
-                to: null,
-                step: null
-            },
             stopLoss: {
                 checked: true,
                 from: null,

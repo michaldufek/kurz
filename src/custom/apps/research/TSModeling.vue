@@ -1,0 +1,220 @@
+<template>
+<div>
+
+    <div class="row">
+        <!-- select backtest -->
+        <span>{{ $t(storeKey + '.selectBacktest') }}</span>
+        <base-dropdown class="dd" 
+                        menu-classes="dropdown-black" 
+                        title-classes="btn btn-secondary"
+                        :title="selectedBacktest ? selectedBacktest.name : null"
+                        style="width: auto">
+            <ul style="list-style-type: none;">
+                <li v-for="bt in btNamesFiltered" :key="bt.id">            
+                    <a class="dropdown-item" 
+                        @click="selectBacktest(bt)" 
+                        href="#">
+                        {{ bt.name }}
+                    </a>
+                </li>
+            </ul>
+        </base-dropdown>    
+    </div>
+
+    <div class="row" style="margin">
+        <!-- available models checkboxes       -->
+        <card class="col-lg-3 col-12 container">
+            <h4>{{ $t(storeKey + '.models') }}</h4>
+            <base-checkbox v-for="model in models">
+              {{ $t(storeKey + model) }}
+            </base-checkbox>     
+        </card>
+
+        <!-- date pickers -->
+        <card class="col-lg-3 col-12 container">
+            <h4>{{ $t('research.period') }}</h4>
+            <div class="controls">
+                <table class="table tablesorter">
+                    <tbody>
+                        <tr>
+                            <!-- <slot :row="item"> -->
+                            <td class="fullpicker" style="border-top: 0px;">
+                                {{ $t('research.from') }}<br>
+                                <datepicker v-model="period.from" 
+                                            :clear-button="true" 
+                                            :format="dateFormat" 
+                                            :placeholder="$t('research.pickDate')" />
+                            </td>
+                            <!-- </slot> -->
+                        </tr>
+                        <tr>
+                            <!-- <slot :row="item"> -->
+                            <td class="fullpicker" style="border-top: 0px;">
+                                {{ $t('research.to') }}<br>
+                                <datepicker v-model="period.to" 
+                                            :clear-button="true" 
+                                            :format="dateFormat" 
+                                            :placeholder="$t('research.pickDate')" />
+                            </td>
+                            <!-- </slot> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </card>      
+
+    </div>
+
+    <!-- Results block-->   
+
+    <div class="row">
+        <!-- Equity curve -->
+        <div class="col-md">
+            <fancy-chart :title="$t(storeKey + '.equityCurve')"
+                        :showTitle="true">
+                                                
+            </fancy-chart>
+        </div>
+
+         <!-- Drawdown curve -->
+        <div class="col-md">
+            <fancy-chart :title="$t(storeKey + '.drawDown')"
+                        :showTitle="true">
+                                                
+            </fancy-chart>
+        </div>
+        
+        <div>
+            <!-- save button -->
+            <base-button native-type="submit" type="secondary" @click="saveClick">{{ $t('research.save') }}</base-button>
+        </div>
+    </div>
+</div>
+
+</template>
+<script>
+import Datepicker from 'vuejs-datepicker';
+import FancyTable from '@/custom/components/Tables/FancyTable';
+import FancyChart from '@/custom/components/Charts/FancyChart';
+
+import helper from '@/custom/assets/js/helper';
+// import constants from '@/custom/assets/js/constants';
+
+
+export default {
+    components: {  
+      Datepicker,
+      FancyTable,
+      FancyChart 
+    },
+
+    data() {
+        return {
+            storeKey: 'research.tsmodeling',
+
+            backtestsNames: [],
+            selectedBacktest: null,
+            models:['.basic', '.hmm', '.hmm2', '.svjd', '.svjd2', '.cot'],         
+            stopLoss: {
+                checked: true,
+                from: null,
+                to: null,
+                step: null
+            },
+            period: {
+                from: null,
+                to: null
+            },
+
+            estimated: '5.5 hours',
+            warnEstimated: false,
+            running: false,
+
+            updateKey: 0
+        }
+    },
+
+    computed: {
+        btNamesFiltered() {
+            return this.selectedBacktest ? this.backtestsNames.filter(bt => bt.id !== this.selectedBacktest.id) : this.backtestsNames
+        },
+
+        dateFormat() {
+            return "yyyy-MM-dd"
+        },
+
+        runText() {
+            return this.running ? this.$t(this.storeKey + '.stop') : this.$t(this.storeKey + '.run')
+            // return this.running ? this.$t('research.stop') : this.$t(this.storeKey + '.run')
+        },
+
+        // tableInterval() {
+        //     return constants.intervals.featEngReload
+        // }
+    },
+
+    methods: {
+        initData() {
+            ({ backtestsNames:this.backtestsNames, selectedBacktest:this.selectedBacktest, updateKey:this.updateKey } = helper.getBacktestsNames(this.$store, this.storeKey, this.updateKey))
+
+            let splitted = this.estimated.split(' ')
+            this.warnEstimated = this.estimated && splitted[0] > 5 && splitted[1] === 'hours'
+        },
+
+        runClick() {
+            if (this.running) {
+                this.stop()
+            } else {
+                if (this.warnEstimated) {
+                    this.$confirm(this.$t(this.storeKey + '.estimatedTime') + ' ' + this.$t(this.storeKey + '.confirmEstimated'))
+                    .then(() => {
+                        this.run()
+                    })
+                    .catch(() => {})
+
+                    return
+                }
+                
+                this.run()
+            }
+        },
+        saveClick() {},
+
+        run() {
+            this.running = true
+
+        },
+        stop() {
+            this.running = false
+        }
+    },
+
+    mounted() {
+        this.initData()
+    },
+
+    watch: {
+      selectedBacktest(val) {        
+        helper.updateStore(this.$store, 'selectedBacktest', val, this.storeKey)
+      }
+    },
+}
+</script>
+<style scoped>
+.warning {
+    text-align: center;
+    color: #66ffba;
+}
+
+.noWarning {
+    text-align: center;
+    color: white
+}
+
+.container {
+    padding-right: auto;
+    padding-left: auto;
+    margin-right: 2%;
+    margin-left: 2%;
+}
+</style>
