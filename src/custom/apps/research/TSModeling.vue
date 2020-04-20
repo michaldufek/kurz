@@ -26,7 +26,7 @@
         <card class="col-lg-3 col-12 container">
             <h4>{{ $t(storeKey + '.models') }}</h4>
             <base-checkbox v-for="model in models">
-              {{ $t(storeKey + model) }}
+            {{ $t(storeKey + model) }}
             </base-checkbox>     
         </card>
 
@@ -63,6 +63,10 @@
             </div>
         </card>      
 
+        <!-- run button  -->
+         <div>
+            <base-button native-type="submit" type="secondary" @click="runClick" style="margin-right: auto; margin-left:auto;">{{ runText }}</base-button>
+        </div>
     </div>
 
     <!-- Results block-->   
@@ -79,13 +83,12 @@
          <!-- Drawdown curve -->
         <div class="col-md">
             <fancy-chart :title="$t(storeKey + '.drawDown')"
-                        :showTitle="true">
-                                                
+                        :showTitle="true">                                              
             </fancy-chart>
         </div>
         
+        <!-- save button  -->
         <div>
-            <!-- save button -->
             <base-button native-type="submit" type="secondary" @click="saveClick">{{ $t('research.save') }}</base-button>
         </div>
     </div>

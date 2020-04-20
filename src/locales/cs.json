@@ -405,7 +405,8 @@
       "svjd2": "SVJD Non-Stationary",
       "cot": "Commitment of Traders",
       "equityCurve": "Ekvitni krivka",
-      "drawDown": "Maximalni pokles"
+      "drawDown": "Maximalni pokles",
+      "run": "Spustit"
     },
     "wareHouse": {
       "premiumStrategies": "Prémiové Strategie",

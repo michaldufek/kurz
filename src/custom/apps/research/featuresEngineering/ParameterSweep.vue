@@ -214,7 +214,7 @@ export default {
                 from: null,
                 to: null,
                 step: null
-                },
+            },
             stopLoss: {
                 checked: true,
                 from: null,

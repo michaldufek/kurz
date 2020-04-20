@@ -404,7 +404,8 @@
       "svjd2": "SVJD Non-Stationary",
       "cot": "Commitment of Traders",
       "equityCurve": "Equity Curve",
-      "drawDown": "Drawdown"
+      "drawDown": "Drawdown",
+      "run": "Run"
     },
     "wareHouse": {
       "premiumStrategies": "Premium Strategies",
