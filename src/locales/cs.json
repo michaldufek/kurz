@@ -358,7 +358,7 @@
         ]
       }
     }, 
-    "featuresEngineering": {
+    "optimization": {
       "parameterSweep" : {
         "title": "Hledání parametrů",
         "selectBacktest": "Vyberte backtest",
@@ -471,7 +471,7 @@
     "portfolioManager": "Portfolio Manažer",
     "stockPickingLab": "StockPicking Lab",
     "patternLab": "Pattern Lab",
-    "featuresEngineering": "Features Engineering",
+    "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
     "tsmodeling": "TS Modeling",
     "wareHouse": "Sklad Strategií",

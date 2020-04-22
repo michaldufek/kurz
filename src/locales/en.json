@@ -357,7 +357,7 @@
         ]
       }
     },  
-    "featuresEngineering": {
+    "optimization": {
       "parameterSweep" : {
         "title": "Parameter Sweep",
         "parameters": "Parameters",
@@ -470,7 +470,7 @@
     "portfolioManager": "Portfolio Manager",
     "stockPickingLab": "StockPicking Lab",
     "patternLab": "Pattern Lab",
-    "featuresEngineering": "Features Engineering",
+    "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
     "tsmodeling": "TS Modeling",
     "wareHouse": "Ware House",
