@@ -64,10 +64,16 @@ export default {
 
     urls: {
         liveDepl: {
-            gwStart: livedeplPartUrl + gwPartUrl + "Start/",
-            gwStop: livedeplPartUrl + gwPartUrl + "Stop/",
-            gwStatus: livedeplPartUrl + gwPartUrl + "Status",
-            gwLogs: livedeplPartUrl + gwPartUrl + "Logs",
+            gateway: {
+                start: livedeplPartUrl + gwPartUrl + "Start/",
+                stop: livedeplPartUrl + gwPartUrl + "Stop/",
+                status: livedeplPartUrl + gwPartUrl + "Status",
+                logs: livedeplPartUrl + gwPartUrl + "Logs"
+            },
+            strategy: {
+                deploy: livedeplPartUrl + "/StrategyDeploy/",
+                stop: livedeplPartUrl + "/StrategyStop/"
+            },
             report: livedeplPartUrl + "/Report/",
             liquidate: livedeplPartUrl + "/Liquidate/"
         },

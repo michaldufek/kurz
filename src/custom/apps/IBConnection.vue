@@ -111,7 +111,7 @@ export default {
             this.loading = true
 
             this.$http
-            .get(constants.urls.liveDepl.gwStatus + '/' + this.email)
+            .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
             .then(response => {
                 if ('error' in response.data) {
                     this.error = true
@@ -157,7 +157,7 @@ export default {
             this.loading = true
 
             this.$http
-            .post(constants.urls.liveDepl.gwStart, {
+            .post(constants.urls.liveDepl.gateway.start, {
                 tradingMode: this.paper ? 'paper' : 'live',
                 userid: this.email,
                 password: this.pass
@@ -198,7 +198,7 @@ export default {
             this.loading = true
 
             this.$http
-            .post(constants.urls.liveDepl.gwStop, { userid: this.email }, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
+            .post(constants.urls.liveDepl.gateway.stop, { userid: this.email }, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
                 this.error = false
                 this.message = response.data.message
@@ -253,7 +253,7 @@ export default {
             this.loading = true
 
             this.$http
-            .get(constants.urls.liveDepl.gwLogs + '/' + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
+            .get(constants.urls.liveDepl.gateway.logs + '/' + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
                 if ('error' in response.data) {
                     this.error = true
@@ -296,6 +296,15 @@ export default {
 
     mounted() {
         this.init()
+    },
+
+    destroyed() {
+        if (this.GWStatusTimer) {
+            clearInterval(this.GWStatusTimer)
+        }
+        if (this.GWLogsTimer) {
+            clearInterval(this.GWLogsTimer)
+        }
     },
 
     watch: {

@@ -39,6 +39,7 @@
       return {
         designedStrategies: [],
         liveStrategies: [],
+        email: null,
 
         loading: false
       }
@@ -91,10 +92,17 @@
         .finally(() => this.loading = false)
       },
 
+      initEmail() {
+        let data = this.$store.getItem(constants.translationKeys.IBLogin)
+        if (data) {
+            this.email = data.email
+        }
+      },
+
       // emitted events
       goLive(id) {        
         this.$http
-        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { live: true })
+        .post(constants.urls.liveDepl.strategy.deploy, { bt_id: id, userid: this.email })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {
@@ -103,6 +111,7 @@
         })
         .finally(() => this.initStrategies())
       },
+
       stored(id) {        
         this.$http
         .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { in_portfolio: false })
@@ -114,9 +123,10 @@
         })
         .finally(() => this.initStrategies())
       },
+
       stoped(id) {        
         this.$http
-        .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { live: false })
+        .post(constants.urls.liveDepl.strategy.stop, { bt_id: id, userid: this.email })
         .catch(error => {
             console.log(error)
             if (error.message === constants.strings.networkError) {
@@ -128,6 +138,7 @@
     },
 
     mounted() {
+      this.initEmail()
       this.initStrategies()
     }
   };
