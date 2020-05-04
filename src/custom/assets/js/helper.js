@@ -440,6 +440,8 @@ export default {
                 row.set(directionKey, Object.values(i18n.t('research.patternLab.backtestPatterns.entryRules.directions'))[row.get(directionKey)])
                 row.set(timeframeKey, i18n.t('research.patternLab.timeframes')[row.get(timeframeKey)])
 
+                row.set('fixed_amount', bt[15])     // Risk
+
                 bts.push(row)
             })
         }
