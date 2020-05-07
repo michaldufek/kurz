@@ -118,6 +118,7 @@ export default {
                     this.message = response.data.error
                 } else {
                     this.error = false
+                    this.message = ''
                     this.connected = response.data.status
 
                     if (this.connected) {
@@ -129,6 +130,7 @@ export default {
                 console.log(error)
                 this.error = true
                 this.message = error.message
+                this.connected = false
                 this.shakeModal()
 
                 if (error.message === constants.strings.networkError) {
@@ -168,7 +170,7 @@ export default {
                 this.connected = true
                 this.pass = ''
 
-                this.setGWLogsInterval()
+                this.destroyTimers()
 
                 this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
             })
@@ -243,12 +245,21 @@ export default {
             }, constants.intervals.soundSignal )
         },
         
-        setGWStatusInterval() {
+        setGWStatusInterval() {     // to-do: how to stop it?
             this.setInterval(this.GWStatusTimer, this.checkGWrunning)
         },
         setGWLogsInterval() {
             this.setInterval(this.GWLogsTimer, this.getGWLogs)
         },
+        destroyTimers() {
+            if (this.GWStatusTimer) {
+                clearInterval(this.GWStatusTimer)
+            }
+            if (this.GWLogsTimer) {
+                clearInterval(this.GWLogsTimer)
+            }
+        },
+
         getGWLogs() {
             this.loading = true
 
@@ -298,14 +309,9 @@ export default {
         this.init()
     },
 
-    destroyed() {
-        if (this.GWStatusTimer) {
-            clearInterval(this.GWStatusTimer)
-        }
-        if (this.GWLogsTimer) {
-            clearInterval(this.GWLogsTimer)
-        }
-    },
+    beforeDestroy() {
+        this.destroyTimers()
+    },    
 
     watch: {
         email(val) {
