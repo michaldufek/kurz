@@ -51,8 +51,8 @@
 
         <div class="row" style="margin-top: 20px">
             <ul v-if="connected" style="list-style-type: none;">
-                <li v-for="log in logs">            
-                    {{`[${log.timestamp}] ${log.info}`}}
+                <li v-for="log in logsParsed">
+                    {{ log }}
                 </li>
             </ul>
         </div>
@@ -73,6 +73,7 @@ export default {
         SlideYUpTransition,
         DualRingLoader
     },
+
     data() {
       return { 
         storeKey: constants.translationKeys.IBLogin,
@@ -96,6 +97,13 @@ export default {
         errorClass: 'error'
       };
     },
+
+    computed: {
+        logsParsed() {
+            return this.logs.map(log => `[${helper.formatDateTime(log.timestamp)}] ${log.type}: ${log.message}`)
+        }
+    },
+
     methods: {
         init() {
             let data = this.$store.getItem(this.storeKey)
@@ -118,6 +126,7 @@ export default {
                     this.message = response.data.error
                 } else {
                     this.error = false
+                    this.message = ''
                     this.connected = response.data.status
 
                     if (this.connected) {
@@ -129,6 +138,7 @@ export default {
                 console.log(error)
                 this.error = true
                 this.message = error.message
+                this.connected = false
                 this.shakeModal()
 
                 if (error.message === constants.strings.networkError) {
@@ -168,7 +178,7 @@ export default {
                 this.connected = true
                 this.pass = ''
 
-                this.setGWLogsInterval()
+                this.destroyTimers()
 
                 this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
             })
@@ -243,19 +253,28 @@ export default {
             }, constants.intervals.soundSignal )
         },
         
-        setGWStatusInterval() {
+        setGWStatusInterval() {     // to-do: how to stop it?
             this.setInterval(this.GWStatusTimer, this.checkGWrunning)
         },
         setGWLogsInterval() {
             this.setInterval(this.GWLogsTimer, this.getGWLogs)
         },
+        destroyTimers() {
+            if (this.GWStatusTimer) {
+                clearInterval(this.GWStatusTimer)
+            }
+            if (this.GWLogsTimer) {
+                clearInterval(this.GWLogsTimer)
+            }
+        },
+
         getGWLogs() {
             this.loading = true
 
             this.$http
             .get(constants.urls.liveDepl.gateway.logs + '/' + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
-                if ('error' in response.data) {
+                if ('error' in response.data) {      // currently not used in GW Logs response
                     this.error = true
                 } else {
                     this.error = false
@@ -298,14 +317,9 @@ export default {
         this.init()
     },
 
-    destroyed() {
-        if (this.GWStatusTimer) {
-            clearInterval(this.GWStatusTimer)
-        }
-        if (this.GWLogsTimer) {
-            clearInterval(this.GWLogsTimer)
-        }
-    },
+    beforeDestroy() {
+        this.destroyTimers()
+    },    
 
     watch: {
         email(val) {

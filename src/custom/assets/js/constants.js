@@ -20,7 +20,6 @@ const livedeplPartUrl = APIPartUrl + "/livedepl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
 const gwPartUrl = "/Gateway"
-const patternResultsPartUrl = "/Pattern"
 const resultPartUrl = "Result"
 const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
@@ -90,9 +89,9 @@ export default {
             chart: PLPartUrl + "/HistoryData/",
             patternsHistory: PLPartUrl + patternPartUrl + "Tests",
             backtestPatterns: {
-                results: PLPartUrl + patternResultsPartUrl + resultPartUrl + "s",
-                results2: PL2PartUrl + patternResultsPartUrl + resultPartUrl + "s",
-                status: PLPartUrl + patternResultsPartUrl  + resultPartUrl + "s" + "Status"
+                results: PLPartUrl + patternPartUrl + resultPartUrl + "s",
+                results2: PL2PartUrl + patternPartUrl + resultPartUrl + "s",
+                status: PLPartUrl + patternPartUrl  + resultPartUrl + "s" + "Status"
             },
             alert: PLPartUrl + alertPartUrl + "/",
             alerts: PLPartUrl + alertPartUrl + "s"
