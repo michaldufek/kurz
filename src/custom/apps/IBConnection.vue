@@ -51,8 +51,8 @@
 
         <div class="row" style="margin-top: 20px">
             <ul v-if="connected" style="list-style-type: none;">
-                <li v-for="log in logs">            
-                    {{`[${log.timestamp}] ${log.info}`}}
+                <li v-for="log in logsParsed">
+                    {{ log }}
                 </li>
             </ul>
         </div>
@@ -73,6 +73,7 @@ export default {
         SlideYUpTransition,
         DualRingLoader
     },
+
     data() {
       return { 
         storeKey: constants.translationKeys.IBLogin,
@@ -96,6 +97,13 @@ export default {
         errorClass: 'error'
       };
     },
+
+    computed: {
+        logsParsed() {
+            return this.logs.map(log => `[${helper.formatDateTime(log.timestamp)}] ${log.type}: ${log.message}`)
+        }
+    },
+
     methods: {
         init() {
             let data = this.$store.getItem(this.storeKey)
@@ -266,7 +274,7 @@ export default {
             this.$http
             .get(constants.urls.liveDepl.gateway.logs + '/' + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
-                if ('error' in response.data) {
+                if ('error' in response.data) {      // currently not used in GW Logs response
                     this.error = true
                 } else {
                     this.error = false
