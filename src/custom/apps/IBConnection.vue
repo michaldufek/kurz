@@ -290,6 +290,16 @@ export default {
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.logs')}`)
                 }
+
+                if ('type' in error.response.data) {
+                    this.message = error.response.data.type + ' error'
+
+                    if ('message' in error.response.data) {
+                        this.message += ': ' + error.response.data.message
+                    } else {
+                        this.message += '.'
+                    }
+                }
             })
             .finally(() => this.loading = false)
         },
