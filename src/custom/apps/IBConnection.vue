@@ -117,6 +117,7 @@ export default {
 
         checkGWrunning() {
             this.loading = true
+            this.message = ''
 
             this.$http
             .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
