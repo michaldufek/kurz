@@ -287,16 +287,18 @@
       ordersRowsCreator(responseData) {
         let rows = []
 
-        responseData.fills.forEach(fill => {
-            let row = []
+        if ('fills' in responseData) {
+          responseData.fills.forEach(fill => {
+              let row = []
 
-            row.push(helper.formatDate(fill.time)) // date
-            row.push(fill.execution.side) // trade type
-            // target (usd)
-            // stop loss (usd)
+              row.push(helper.formatDate(fill.time)) // date
+              row.push(fill.execution.side) // trade type
+              // target (usd)
+              // stop loss (usd)
 
-            rows.push(row);
-        })
+              rows.push(row);
+          })
+        }
 
         return rows
       },

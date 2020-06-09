@@ -10,7 +10,7 @@
                     class="modal-sm animated landingCard"
                     :class="{ shake: isShaking }"
                     v-if="showLogin">
-                    <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
+                    <DualRingLoader v-if="loading || loadingStart || loadingStop" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
                     <template>
                         <div v-if="!connected" class="text-center text-muted mb-4">
                             {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
@@ -81,6 +81,9 @@ export default {
         logs: [],
 
         loading: false,        
+        loadingStart: false,
+        loadingStop: false,
+
         connected: false,
         error: false,
         message: '',
@@ -117,6 +120,7 @@ export default {
 
         checkGWrunning() {
             this.loading = true
+            this.message = ''
 
             this.$http
             .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
@@ -129,8 +133,18 @@ export default {
                     this.message = ''
                     this.connected = response.data.status
 
-                    if (this.connected) {
+                    if (this.connected) {                        
                         this.setGWLogsInterval()
+
+                        if (this.loadingStart) {
+                            this.loadingStart = false
+                            this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
+                        }
+                    } else {
+                        this.loadingStop = false
+                        if (this.GWLogsTimer) {
+                            clearInterval(this.GWLogsTimer);
+                        }
                     }
                 }
             })
@@ -164,7 +178,7 @@ export default {
         }, 
 
         startGW() {
-            this.loading = true
+            this.loadingStart = true
 
             this.$http
             .post(constants.urls.liveDepl.gateway.start, {
@@ -173,72 +187,54 @@ export default {
                 password: this.pass
             })
             .then(response => {
-                this.error = false
+                this.error = false                
                 this.message = response.data.message
-                this.connected = true
                 this.pass = ''
 
-                this.destroyTimers()
-
-                this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
+                setTimeout(() => { 
+                    this.loadingStart = false
+                }, constants.intervals.soundSignal );                
             })
             .catch(error => {
                 console.log(error)
                 this.error = true
                 this.shakeModal()
+                this.loadingStart = false
 
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
                     this.message = error.message
-                }
-
-                if ('type' in error.response.data) {
-                    this.message = error.response.data.type + ' error'
-
-                    if ('message' in error.response.data) {
-                        this.message += ': ' + error.response.data.message
-                    } else {
-                        this.message += '.'
-                    }
+                } else {
+                    this.message = error
                 }                
             })
-            .finally(() => this.loading = false)
         },
         stopGW() {
-            this.loading = true
+            this.loadingStop = true
 
             this.$http
             .post(constants.urls.liveDepl.gateway.stop, { userid: this.email }, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
                 this.error = false
                 this.message = response.data.message
-                this.connected = false
 
-                if (this.GWLogsTimer) {
-                    clearInterval(this.GWLogsTimer);
-                }
+                setTimeout(() => { 
+                    this.loadingStop = false
+                }, constants.intervals.soundSignal );                
             })
             .catch(error => {
                 console.log(error)
-                this.error = true                
+                this.error = true
                 this.shakeModal()
+                this.loadingStop = false
 
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.disconnect')}`)
                     this.message = error.message
-                }
-
-                if ('type' in error.response.data) {
-                    this.message = error.response.data.type + ' error'
-
-                    if ('message' in error.response.data) {
-                        this.message += ': ' + error.response.data.message
-                    } else {
-                        this.message += '.'
-                    }
+                } else {
+                    this.message = error
                 }
             })
-            .finally(() => this.loading = false)
         }, 
 
         setInterval(timer, routine) {
