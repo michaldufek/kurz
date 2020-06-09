@@ -5,6 +5,7 @@ COPY package*.json ./
 RUN npm config set '@bit:registry' https://node.bit.dev
 RUN npm install
 # not working in production: RUN npm install --production
+RUN npm audit fix
 COPY . .
 RUN npm run build
 
