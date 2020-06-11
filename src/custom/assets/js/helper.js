@@ -433,10 +433,17 @@ export default {
                 row.set('btId', bt[clNr++])
                 row.set('assetId', bt[clNr++])
                 row.set('patternId', bt[clNr++])
-                i18n.t(constants.translationKeys.patterns + '.columns').forEach(column => row.set(column.toLowerCase(), bt[clNr++]))
+
+                // add columns values from translations
+                let cls = i18n.t(constants.translationKeys.patterns + '.columns')
+                cls.forEach(column => { 
+                    if (column) { 
+                        row.set(column.toLowerCase(), bt[clNr++]) 
+                    } 
+                })
                 
-                let timeframeKey = i18n.t(constants.translationKeys.patterns + '.columns')[3].toLowerCase()
-                let directionKey = i18n.t(constants.translationKeys.patterns + '.columns')[11].toLowerCase()
+                let timeframeKey = cls[3].toLowerCase()
+                let directionKey = cls[11].toLowerCase()
                 row.set(directionKey, Object.values(i18n.t('research.patternLab.backtestPatterns.entryRules.directions'))[row.get(directionKey)])
                 row.set(timeframeKey, i18n.t('research.patternLab.timeframes')[row.get(timeframeKey)])
 
