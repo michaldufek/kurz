@@ -13,9 +13,8 @@ const dwhPartUrl = APIPartUrl + "/datawarehouse"
 const sweepPartUrl = "/Sweep"
 const requestPartUrl = "Request"
 const SPPartUrl = APIPartUrl + "/sp"
-const PLminiPartUrl = "pl"
+const PLminiPartUrl = "pl2"
 const PLPartUrl = APIPartUrl + "/" + PLminiPartUrl
-const PL2PartUrl = APIPartUrl + "/pl2"
 const livedeplPartUrl = APIPartUrl + "/livedepl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
@@ -90,7 +89,6 @@ export default {
             patternsHistory: PLPartUrl + patternPartUrl + "Tests",
             backtestPatterns: {
                 results: PLPartUrl + patternPartUrl + resultPartUrl + "s",
-                results2: PL2PartUrl + patternPartUrl + resultPartUrl + "s",
                 status: PLPartUrl + patternPartUrl  + resultPartUrl + "s" + "Status"
             },
             alert: PLPartUrl + alertPartUrl + "/",

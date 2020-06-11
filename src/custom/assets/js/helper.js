@@ -223,7 +223,7 @@ export default {
         }
 
         val = (map && row.get('assetId')) || (!map && row['assetId'])
-        data['ticker'] = val   // Asset
+        data['asset'] = val   // Asset
 
         val = (map && row.get('patternId')) || (!map && row['patternId'])
         data['pattern'] = val  // Pattern
