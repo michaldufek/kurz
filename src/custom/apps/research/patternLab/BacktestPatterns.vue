@@ -307,11 +307,37 @@
                 this.$http
                 .get(constants.urls.patternLab.backtestPatterns.results)
                 .then(response => {
+                  let errorIDs = []
+
                   bts.forEach(bt => {   // we have ids so change backtests names to 'bt_name (bt_id)' form
-                    bt.set('btId', response.data.filter(datum => datum.ticker === bt.get('assetId') && datum.pattern === bt.get('patternId'))[0].id)
-                    bt.set(this.columns[0].toLowerCase(), `${bt.get(this.columns[0].toLowerCase()) && !this.isDefaultPrName(bt.get(this.columns[0].toLowerCase())) 
-                                                        ? bt.get(this.columns[0].toLowerCase()).split(' (')[0] 
-                                                        : helper.getDefaultPrName(bt.get('btId'))} (${bt.get('btId')})`)    // Name
+                    let respBts = response.data.filter(datum => datum.asset === bt.get('assetId') && datum.pattern === bt.get('patternId'))
+                    if (respBts.length) {
+                      let respBt = respBts[0]
+                      
+                      bt.set('btId', respBt.id)
+                      bt.set(this.columns[0].toLowerCase(), `${bt.get(this.columns[0].toLowerCase()) && !this.isDefaultPrName(bt.get(this.columns[0].toLowerCase())) 
+                                                          ? bt.get(this.columns[0].toLowerCase()).split(' (')[0] 
+                                                          : helper.getDefaultPrName(bt.get('btId'))} (${bt.get('btId')})`)    // Name
+
+                      if (respBt.error) {
+                        this.$notify({
+                          type: 'danger', 
+                          message: bt.get(this.columns[0].toLowerCase()) + ': ' + respBt.msg
+                        })
+                      }
+                      errorIDs.push(respBt.id)
+                    }
+                  })
+
+                  // notifying response backtests errors that weren't matched by frontend backtests
+                  response.data.forEach(respBt => {
+                    if (respBt.error && !errorIDs.includes(respBt.id)) {
+                      let btsFiltered = bts.filter(bt => bt.get('btId') === respBt.id)
+                      this.$notify({
+                        type: 'danger', 
+                        message: (btsFiltered.length ? btsFiltered[0].get(this.columns[0].toLowerCase()) : (this.$t('research.patternLab.backtestPatterns.patternResult') + ' nr.' + respBt.id)) + ': ' + respBt.msg
+                      })
+                    }
                   })
 
                   helper.updateStoreBacktests(this.$store, 'backtests', bts, constants.storeKeys.backtestPatterns)
