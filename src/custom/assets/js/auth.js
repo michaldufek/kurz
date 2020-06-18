@@ -1,11 +1,13 @@
 /* globals localStorage */
 import axios from '@/../node_modules/axios';
 import i18n from "@/i18n"
-import Cookies from 'js-cookie'
 import constants from '@/custom/assets/js/constants';
+import http from "@/custom/assets/js/http";
 
 
 const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
+  http.setCSRFToken()
+
   axios({url: constants.urls.auth + '/login/', data: { "email": email, "password": pass }, method: 'POST' })
   .then(resp => {
     const token = resp.data.key
@@ -19,6 +21,8 @@ const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
 });
 
 const loginFacebookRoutine = (token, code) => new Promise ((resolve, reject) => {
+  http.setCSRFToken()
+
   axios({url: constants.urls.auth + '/facebook/', data: { "access_token": token, "code": code }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
@@ -32,6 +36,8 @@ const loginFacebookRoutine = (token, code) => new Promise ((resolve, reject) => 
 });
 
 const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) => {
+  http.setCSRFToken()
+  
   axios({url: constants.urls.auth + '/twitter/', data: { "access_token": token, "token_secret": secret }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
@@ -46,6 +52,7 @@ const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) =>
 
 const logoutRoutine = () => new Promise ((resolve, reject) => {
   localStorage.removeItem('token')
+  http.setCSRFToken()
 
   axios({url: constants.urls.auth + '/logout/', method: 'POST' })
   .then(resp => {
@@ -57,6 +64,8 @@ const logoutRoutine = () => new Promise ((resolve, reject) => {
 });
 
 const resetPassRoutine = email => new Promise ((resolve, reject) => {
+  http.setCSRFToken()
+
   axios({url: constants.urls.auth + '/password/reset/', data: { "email": email }, method: 'POST' })
   .then(resp => {
     resolve(resp)
@@ -67,6 +76,8 @@ const resetPassRoutine = email => new Promise ((resolve, reject) => {
 });
 
 const registerRoutine = (email, pass1, pass2) => new Promise ((resolve, reject) => {
+  http.setCSRFToken()
+
   axios({url: constants.urls.auth + '/registration/', data: { "email": email, "password1": pass1, "password2": pass2 }, method: 'POST' })
   .then(resp => {
     resolve(resp)
@@ -77,6 +88,8 @@ const registerRoutine = (email, pass1, pass2) => new Promise ((resolve, reject) 
 });
 
 const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
+  http.setCSRFToken()
+
   axios({url: constants.urls.auth + '/registration/verify-email/', data: { "key": key }, method: 'POST' })
   .then(resp => {
     resolve(resp)
@@ -87,6 +100,8 @@ const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
 });
 
 const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, reject) => {
+  http.setCSRFToken()
+
   axios({url: constants.urls.auth + '/password/reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
   .then(resp => {
     resolve(resp)
@@ -97,21 +112,7 @@ const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, 
 });
 
 
-export default {  
-    setCSRFToken() {
-      if (process.env.NODE_ENV === 'production') {
-        var cokieName = 'csrftoken'
-      } else {
-        cokieName = '_xsrf'
-      }
-
-      let csrfToken = Cookies.get(cokieName)        
-      axios.defaults.headers.common = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': csrfToken
-      }
-    },
-  
+export default {
     login (email, pass, cb, cbf) {
       cbf = arguments[arguments.length - 1]
       cb = arguments[arguments.length - 2]
