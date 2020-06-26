@@ -25,26 +25,26 @@
             <!-- date pickers -->
             <div class="col-xs-3" :style="'position: relative' + (tfLeftPos === defaultTfLeftPos ? '' : '')">
                 <div class="controls">
-                            <div>
-                                <!-- <slot :row="item"> -->
-                                <div>{{ $t('research.from') }}<datepicker v-model="range.from" 
-                                                :disabled-dates="disabledDatesFrom" 
-                                                :clear-button="true" 
-                                                :format="dateFormat" 
-                                                :placeholder="$t('research.pickDate')" />
-                                </div>
-                                <!-- </slot> -->
-                            </div>
-                            <div>
-                                <!-- <slot :row="item"> -->
-                                <div>{{ $t('research.to') }}<datepicker v-model="range.to" 
-                                                :disabled-dates="disabledDatesTo" 
-                                                :clear-button="true" 
-                                                :format="dateFormat" 
-                                                :placeholder="$t('research.pickDate')" />
-                                </div>
-                                <!-- </slot> -->
-                            </div>
+                    <div>
+                        <!-- <slot :row="item"> -->
+                        <div>{{ $t('research.from') }}<datepicker v-model="range.from" 
+                                        :disabled-dates="disabledDatesFrom" 
+                                        :clear-button="true" 
+                                        :format="dateFormat" 
+                                        :placeholder="$t('research.pickDate')" />
+                        </div>
+                        <!-- </slot> -->
+                    </div>
+                    <div>
+                        <!-- <slot :row="item"> -->
+                        <div>{{ $t('research.to') }}<datepicker v-model="range.to" 
+                                        :disabled-dates="disabledDatesTo" 
+                                        :clear-button="true" 
+                                        :format="dateFormat" 
+                                        :placeholder="$t('research.pickDate')" />
+                        </div>
+                        <!-- </slot> -->
+                    </div>
                 </div>
             </div>
         </div>

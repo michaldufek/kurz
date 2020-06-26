@@ -30,7 +30,8 @@ $transparent-bg:             transparent !default;
 $light-bg:                   #f5f6fa !default;
 $dark-background:            #555555 !default;
 
-$bdc: #42b883;
+// $bdc: #42b883;
+$bdc: #00ffff;
 $grays: () !default;
 $grays: map-merge((
   "100": $gray-100,
@@ -100,12 +101,13 @@ $default-color-opacity:      rgba(182, 182, 182, .6) !default;
 $orange-color:               #f96332 !default;
 
 $default:       #344675 !default;
-$primary:       #42b883 !default;//#e14eca !default;
+// $primary:       #42b883 !default;//#e14eca !default;
+$primary:       #00ffff !default;//#e14eca !default;
 $secondary:     #f4f5f7 !default;
 $success:       #00f2c3 !default;
-$info:          #e14eca !default;//#1d8cf8 !default;
-$warning:       #ff8d72 !default;
-$danger:        #fd5d93 !default;
+$info:          #6be14e !default;//#1d8cf8 !default;
+$warning:       #ff7272 !default;
+$danger:        #fd5d5d !default;
 $black:         #222a42 !default;
 $vue:           #42b883 !default;
 

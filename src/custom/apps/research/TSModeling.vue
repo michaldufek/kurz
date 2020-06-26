@@ -84,23 +84,25 @@
         <!-- equity curve -->
         <div class="col-md">
             <fancy-chart :title="$t(storeKey + '.equityCurve')"
-                        :showTitle="true">
-                                                
+                         :showTitle='true'  
+                        :apiUrls="[tsModelEqUrl]">
             </fancy-chart>
         </div>
 
          <!-- drawdown curve -->
         <div class="col-md">
             <fancy-chart :title="$t(storeKey + '.drawDown')"
-                        :showTitle="true">                                              
+                         :showTitle='true'  
+                        :apiUrls="[tsModelDDUrl]">
             </fancy-chart>
         </div>
-        
+          
         <!-- save button  -->
         <div>
             <base-button native-type="submit" type="secondary" @click="saveClick">{{ $t('research.save') }}</base-button>
         </div>
     </div>
+
 </div>
 
 </template>
@@ -110,8 +112,9 @@ import FancyTable from '@/custom/components/Tables/FancyTable';
 import FancyChart from '@/custom/components/Charts/FancyChart';
 import FancyCard from '@/custom/components/Cards/FancyCard';
 
+
 import helper from '@/custom/assets/js/helper';
-// import constants from '@/custom/assets/js/constants';
+import constants from '@/custom/assets/js/constants';
 
 
 export default {
@@ -122,6 +125,17 @@ export default {
       FancyCard 
     },
 
+    props: {
+        title: {
+            type: String,
+            description: "Chart title"
+        },
+        apiUrlDD: {
+            type: Array,
+            default: () => [],
+            description: "URL to drawdown API"
+        }
+    },
     data() {
         return {
             storeKey: 'research.tsmodeling',
@@ -143,13 +157,11 @@ export default {
             estimated: '5.5 hours',
             warnEstimated: false,
             running: false,
-
             updateKey: 0,
-
             // results: ['AR_In', 'AR_Out', 'AR_Out1']
         }
     },
-
+   
     computed: {
         btNamesFiltered() {
             return this.selectedBacktest ? this.backtestsNames.filter(bt => bt.id !== this.selectedBacktest.id) : this.backtestsNames
@@ -167,16 +179,16 @@ export default {
         // tableInterval() {
         //     return constants.intervals.featEngReload
         // }
+
+        tsModelEqUrl() {
+            return constants.urls.chart['MF Report']
+        },
+        tsModelDDUrl() {
+            return constants.urls.chart['UVXY Report']
+        }
     },
 
     methods: {
-        initData() {
-            ({ backtestsNames:this.backtestsNames, selectedBacktest:this.selectedBacktest, updateKey:this.updateKey } = helper.getBacktestsNames(this.$store, this.storeKey, this.updateKey))
-
-            let splitted = this.estimated.split(' ')
-            this.warnEstimated = this.estimated && splitted[0] > 5 && splitted[1] === 'hours'
-        },
-
         runClick() {
             if (this.running) {
                 this.stop()
@@ -202,11 +214,11 @@ export default {
         },
         stop() {
             this.running = false
-        }
+        },
     },
 
     mounted() {
-        this.initData()
+        
     },
 
     watch: {
