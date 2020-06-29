@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row ">
-      <div class="col-xl-4 col-md-6 col-12 killflex container">
+      <div class="col-xl-2 col-md-6 col-12 killflex container">
         <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
                                 :oneAssetLimit="true"
                                 :btnText="$t('research.patternLab.chart.addChart')" 
@@ -10,10 +10,10 @@
       </div>
 
       <!-- chart -->
-      <div class="col-xl-8 col-md-6 col-12">
+      <div class="col-xl-10 col-md-6 col-12">
         <!-- chart settings -->
         <div style="position: relative; z-index: 1">
-          <base-dropdown class="dd" 
+          <base-dropdown class="dd col-xl-2" 
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
                          :title="chartType">
