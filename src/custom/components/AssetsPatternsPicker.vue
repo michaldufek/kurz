@@ -3,7 +3,7 @@
     <div class=" row xl-flex">
         <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
 
-        <div class="col-12 col-xl-4"  style="min-width: 300px;" v-if="showDatePickers">
+        <div class="col-12 col-xl-4"  style="min-width: 80px;" v-if="showDatePickers">
             <!-- timeframe dropdown -->
             <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
                 <base-dropdown class="dd" 

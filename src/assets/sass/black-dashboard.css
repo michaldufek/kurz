@@ -4700,7 +4700,7 @@ input[type="button"].btn-block {
 }
 
 .active {
-  color: #00f2c3 !important;
+  color: #00ffff !important;
 }
 
 .navbar-nav {
@@ -17028,7 +17028,7 @@ textarea.form-control:focus, textarea.form-control:active {
 }
 
 .form-text {
-  font-size: 0.75rem;
+  font-size: 0.62475rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -17818,6 +17818,7 @@ Copyright (c) 2015 Daniel Eden
   position: relative;
   width: 100%;
   margin-bottom: 30px;
+  margin-left: 15px;
   -webkit-box-shadow: 0 1px 20px 0px #385a5a;
           box-shadow: 0 1px 20px 0px #385a5a;
   border-radius: 0 0 5px 5px;
