@@ -3,7 +3,7 @@
     <div class=" row xl-flex">
         <audio id="connectionLost" src="media/connectionLost.mp3" preload="auto"></audio>
 
-        <div class="col-12 col-xl-4"  style="min-width: 80px;" v-if="showDatePickers">
+        <div class="col-12 col-xl-2"  style="min-width: 80px;" v-if="showDatePickers">
             <!-- timeframe dropdown -->
             <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
                 <base-dropdown class="dd" 
@@ -50,7 +50,7 @@
         </div>
 
         <!-- assets -->
-        <div class="col-12 col-xl-4" style="text-align: center;">
+        <div class="col-12 col-xl-5" style="text-align: center;">
             <label>{{ $t('research.patternLab.assets') }}</label>
             <Dropdown :options="assets"
                       :disabled="false"
@@ -84,7 +84,7 @@
         </div>
 
         <!-- patterns -->
-        <div class="col-12 col-xl-4" style="text-align: center;">
+        <div class="col-12 col-xl-5" style="text-align: center;">
             <label>{{ $t('research.patternLab.patterns') }}</label>
             <Dropdown :options="patterns"
                       :disabled="false"
@@ -107,8 +107,9 @@
 
         </div>
         <!-- Add button -->
-        <div class="button-wrap">
-            <base-button native-type="submit" type="secondary" @click="btnClick" style="width: 300px">{{ btnText }}</base-button>
+        <!-- <div class="button-wrap"> -->
+        <div :style="'position: relative; left: ' + tfLeftPos + 'px; z-index: 1' + (tfLeftPos === defaultTfLeftPos ? '' : '; top: 10px')">
+            <base-button native-type="submit" type="secondary" @click="btnClick">{{ btnText }}</base-button>
         </div>
     </card>
 </template>
