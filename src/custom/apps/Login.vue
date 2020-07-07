@@ -209,8 +209,6 @@ export default {
             } 
             this.remember = JSON.parse(localStorage.remember)
 
-            auth.setCSRFToken()
-
             if (process.env.NODE_ENV !== 'production') {
                 console.log('In Dev Mode')
             }
@@ -224,7 +222,6 @@ export default {
                     this.shakeModal()
                     this.message = err
                 } else {
-                    auth.setCSRFToken()
                     this.$store.setItem('headers', {
                         headers: {
                             "Authorization": `Basic ${window.btoa(`${this.email}:${this.pass}`)}`
