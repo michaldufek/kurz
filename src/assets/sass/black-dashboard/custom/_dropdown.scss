@@ -13,13 +13,14 @@
     }
 
     &.dropdown-black {
-      background: linear-gradient(to bottom, darken(#1b6a6a,10) 0%, #359268 100%);
+      // background: linear-gradient(to bottom, darken(#1b6a6a,10) 0%, #359268 100%);
+      background: linear-gradient(to bottom, darken(#00ffff,10) 0%, #000000 100%);
       border: 1px solid $default;
       .dropdown-item {
         color: rgba(255, 255, 255,1);
         &:hover{
-          background: #359268;
-          // color:#359268;
+          background: #00ffff;
+          color:#000000;
         }
       }
 
@@ -171,7 +172,7 @@
 
       &:hover,
       &:focus {
-        background-color: .95;//$opacity-gray-3;
+        background-color: .5;//$opacity-gray-3;
       }
 
       &.disabled,

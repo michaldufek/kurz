@@ -236,7 +236,7 @@ export default {
         .get(apiUrl)
         .then(response => this.responseDataTransformer(response.data, loadings))
         .catch(error => {
-          console.log(error);
+          // console.log(error)
           if (++loadings.error === this.apiUrls.length) {
             this.error = true
           }
