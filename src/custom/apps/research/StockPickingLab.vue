@@ -326,7 +326,7 @@
         data['search'] = this.symbolSearch
         data['info__regularMarketPrice__gte'] = this.marketPriceGte
         data['info__regularMarketPrice__lte'] = this.marketPriceLte
-
+        data["sp500"] = "true"
         if (this.dividend) {          
           data['info__dividendDate__is_null'] = false
         }

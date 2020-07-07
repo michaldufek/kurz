@@ -117,6 +117,7 @@
   },
   "research": { 
     "title": "Research",
+    "period": "Period",
     "from": "From",
     "to": "To",
     "pickDate": "Pick a date",
@@ -357,7 +358,7 @@
         ]
       }
     },  
-    "featuresEngineering": {
+    "optimization": {
       "parameterSweep" : {
         "title": "Parameter Sweep",
         "parameters": "Parameters",
@@ -393,6 +394,23 @@
       "genetics" : {
         "title": "Genetics"
       }
+    },
+    "tsmodeling": {
+      "selectBacktest":"Select Backtest", 
+      "models": "Available Models",
+      "basic": "Basic",
+      "hmm": "Hidden Markov Models",
+      "hmm2": "Hidden Markov Models Extended",
+      "svjd": "SVJD Stationary",
+      "svjd2": "SVJD Non-Stationary",
+      "cot": "Commitment of Traders",
+      "modelResults": "Modeling Results",
+      "equityCurve": "Equity Curve",
+      "drawDown": "Drawdown",
+      "run": "Run",
+      "stop":"Stop",
+      "estimatedTime":"Estimated running time is",
+      "confirmEstimated":"longer than 5 hours. Are you sure?"
     },
     "wareHouse": {
       "premiumStrategies": "Premium Strategies",
@@ -453,8 +471,9 @@
     "portfolioManager": "Portfolio Manager",
     "stockPickingLab": "StockPicking Lab",
     "patternLab": "Pattern Lab",
-    "featuresEngineering": "Features Engineering",
+    "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
+    "tsmodeling": "TS Modeling",
     "wareHouse": "Ware House",
     "notifications": "Notifications",
     "userProfile": "User Profile"

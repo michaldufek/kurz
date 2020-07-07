@@ -14,7 +14,7 @@
         </fancy-card>
 
         <!-- pie charts -->
-        <div style="position: relative; left: 10px; top: 50px; z-index: 1">
+        <div style="position: relative; left: 10%; top: 50px; z-index: 1">
           <base-dropdown class="dd" 
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"
@@ -34,7 +34,7 @@
         <pie-chart-card :title="$t(storeKey + '.title') + ' - ' + $t(storeKey + '.patternsByStock')"
                         :chartData="chartData.patternsByAsset" />
 
-        <div style="position: relative; left: 10px; top: 50px; z-index: 1">
+        <div style="position: relative; left: 10%; top: 50px; z-index: 1">
           <base-dropdown class="dd" 
                          menu-classes="dropdown-black" 
                          title-classes="btn btn-secondary"

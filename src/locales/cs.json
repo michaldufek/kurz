@@ -118,6 +118,7 @@
   },
   "research": { 
     "title": "Výzkum",
+    "period": "Perioda",
     "from": "Od",
     "to": "Do",
     "pickDate": "Vyberte datum",
@@ -357,7 +358,7 @@
         ]
       }
     }, 
-    "featuresEngineering": {
+    "optimization": {
       "parameterSweep" : {
         "title": "Hledání parametrů",
         "selectBacktest": "Vyberte backtest",
@@ -394,6 +395,23 @@
         "title": "Genetika"
       }
     }, 
+    "tsmodeling": {
+      "selectBacktest":"Vyberte backtest", 
+      "models": "Available Models",
+      "basic": "Basic",
+      "hmm": "Hidden Markov Models",
+      "hmm2": "Hidden Markov Models Extended",
+      "svjd": "SVJD Stationary",
+      "svjd2": "SVJD Non-Stationary",
+      "cot": "Commitment of Traders",
+      "modelResults": "Vysledky modelu",
+      "equityCurve": "Ekvitni krivka",
+      "drawDown": "Maximalni pokles",
+      "run": "Spustit",
+      "stop":"Zastavit",
+      "estimatedTime":"Odhadovaný čas běhu je",
+      "confirmEstimated":"větší než 5 hodin. Jste si jistí?"
+    },
     "wareHouse": {
       "premiumStrategies": "Prémiové Strategie",
       "myStrategies": "Moje Strategie",
@@ -453,8 +471,9 @@
     "portfolioManager": "Portfolio Manažer",
     "stockPickingLab": "StockPicking Lab",
     "patternLab": "Pattern Lab",
-    "featuresEngineering": "Features Engineering",
+    "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
+    "tsmodeling": "TS Modeling",
     "wareHouse": "Sklad Strategií",
     "notifications": "Notifikace",
     "userProfile": "Profil"

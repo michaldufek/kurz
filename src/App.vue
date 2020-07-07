@@ -39,7 +39,5 @@
 </script>
 
 <style lang="scss">
-.active {
-  color: white
-}
+
 </style>

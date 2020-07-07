@@ -56,7 +56,7 @@ export default {
         // time of checking whether Backtest patterns backtests are done
         backtestsDone: 1000 * 3, // 3 seconds,
 
-        // time of downloading features engineering results
+        // time of downloading optimization results
         featEngReload: 1000 * 5 // 5 seconds
     },    
 

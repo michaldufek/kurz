@@ -469,7 +469,7 @@ $box-shadow: 0 1px 20px 0px #385a5a;
     width: $full-width;
     min-height: 100vh;
     // background: linear-gradient($background-black, $background-states-black);
-    background: radial-gradient(#1c8484, #061210); // 0e99b1
+    background: radial-gradient(#3dbebd, #000000); // 0e99b1
 
     @include transitions (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
 

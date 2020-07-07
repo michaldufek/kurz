@@ -1,14 +1,14 @@
 <template>
   <div class="row">
 
-    <div class="col-xl-12 col-12 col-md-6 container" style="">
+    <div class="col-xl-12 col-12 col-md-6 container">
       <assets-patterns-picker :title="$t('research.patternLab.backtestPatterns.title')"
                               :btnText="$t('research.patternLab.backtestPatterns.addPattern')" 
                               @btnClicked="addPattern" />
     </div>
 
     <!-- strategy settings  -->
-    <div class="col-md-6 container col-12 col-xl-4">
+    <div class="col-md-6 container col-12 col-xl-3" style="margin-left: 0px">
       <card>
         <!-- initial capital -->
         <div>
@@ -95,7 +95,7 @@
           <h4 slot="header" class="card-title">{{ $t('research.patternLab.exit') + ' ' + $t('research.patternLab.rules') }}</h4>
 
           <!-- analyze -->
-          <div :title="$t('research.patternLab.backtestPatterns.exitRules.analyzeTip')">
+          <!-- <div :title="$t('research.patternLab.backtestPatterns.exitRules.analyzeTip')">
             <p class="label" style="width: 34%">{{ $t('research.patternLab.backtestPatterns.exitRules.analyze') }}</p>
             <base-input alternative
                         type="text"
@@ -104,7 +104,7 @@
                         v-model="strategy.analyze"
                         :placeholder="$t('research.patternLab.backtestPatterns.exitRules.numberBars')">
             </base-input>
-          </div>
+          </div> -->
 
           <table>
             <!-- profit target -->
@@ -180,7 +180,7 @@
     </div>
     
     <!-- performance results  -->
-    <card class="col-xl-8 col-md-12  container " :key="cardKey">
+    <card class="col-xl-8 col-md-12  container " style="margin-right: 0px" :key="cardKey">
       <h4 slot="header" class="card-title" style="float: left">{{ $t('research.patternLab.backtestPatterns.performanceResults.title') }}</h4>
 
       <top-navbar />

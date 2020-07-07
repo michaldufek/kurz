@@ -3,7 +3,7 @@ import LandingLayout from "@/custom/layout/landing/LandingLayout.vue";
 import DashboardLayout from "@/custom/layout/application/DashboardLayout.vue";
 import ResearchLayout from "@/custom/layout/application/ResearchLayout.vue";
 import PatternLabLayout from "@/custom/layout/application/patternLab/Layout.vue";
-import FeaturesEngineeringLayout from "@/custom/layout/application/featuresEngineering/Layout.vue";
+import OptimizationLayout from "@/custom/layout/application/optimization/Layout.vue";
 import SettingsLayout from "@/custom/layout/application/SettingsLayout.vue";
 
 // GeneralViews
@@ -17,6 +17,7 @@ const Details = () => import(/* webpackChunkName: "details" */"@/custom/apps/das
 const PortfolioManager = () => import(/* webpackChunkName: "portfolioManager" */"@/custom/apps/research/PortfolioManager.vue");
 const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@/custom/apps/research/StockPickingLab.vue");
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
+const TSModeling = () => import(/* webpackChunkName: "tsmodeling" */"@/custom/apps/research/TSModeling.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
 // menu SubViews
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
@@ -27,9 +28,9 @@ const PatternLabChart = () => import(/* webpackChunkName: "patternLabchart" */"@
 const PatternStatistics = () => import(/* webpackChunkName: "patternStatistics" */"@/custom/apps/research/patternLab/PatternStatistics.vue");
 const BacktestPatterns = () => import(/* webpackChunkName: "backtestPatterns" */"@/custom/apps/research/patternLab/BacktestPatterns.vue");
 const Alerts = () => import(/* webpackChunkName: "patternLabAlerts" */"@/custom/apps/research/patternLab/Alerts.vue"); // app doesn't work with webpackChunkName: "alerts" !
-// FeaturesEngineering SubViews
-const FeaturesEngineeringParameterSweep = () => import(/* webpackChunkName: "featuresEngineeringParameterSweep" */"@/custom/apps/research/featuresEngineering/ParameterSweep.vue");
-const FeaturesEngineeringGenetics = () => import(/* webpackChunkName: "featuresEngineeringGenetics" */"@/custom/apps/research/featuresEngineering/Genetics.vue");
+// Optimization SubViews
+const OptimizationParameterSweep = () => import(/* webpackChunkName: "optimizationParameterSweep" */"@/custom/apps/research/optimization/ParameterSweep.vue");
+const OptimizationGenetics = () => import(/* webpackChunkName: "optimizationGenetics" */"@/custom/apps/research/optimization/Genetics.vue");
 // BacktestPatterns SubViews
 const Patterns = () => import(/* webpackChunkName: "patterns" */"@/custom/apps/research/patternLab/performanceResults/Patterns.vue");
 const Trades = () => import(/* webpackChunkName: "trades" */"@/custom/apps/research/patternLab/performanceResults/Trades.vue");
@@ -170,20 +171,20 @@ const routes = [
         ],
       },
       {
-        path: "/research/featuresEngineering",
-        name: "featuresEngineering",
-        component: FeaturesEngineeringLayout,
-        redirect: "/research/featuresEngineering/parameterSweep",
+        path: "/research/optimization",
+        name: "optimization",
+        component: OptimizationLayout,
+        redirect: "/research/optimization/parameterSweep",
         children: [
           {
-            path: "/research/featuresEngineering/parameterSweep",
-            name: "featuresEngineeringParameterSweep",
-            component: FeaturesEngineeringParameterSweep
+            path: "/research/optimization/parameterSweep",
+            name: "optimizationParameterSweep",
+            component: OptimizationParameterSweep
           },
           {
-            path: "/research/featuresEngineering/genetics",
-            name: "featuresEngineeringGenetics",
-            component: FeaturesEngineeringGenetics
+            path: "/research/optimization/genetics",
+            name: "optimizationGenetics",
+            component: OptimizationGenetics
           }
         ]
       },
@@ -192,6 +193,11 @@ const routes = [
       //   name: "relativeValuesLab",
       //   component: RelativeValuesLab
       // },
+      {
+        path: "/research/tsmodeling",
+        name: "tsmodeling",
+        component: TSModeling
+      }, 
       {
         path: "/research/wareHouse",
         name: "wareHouse",

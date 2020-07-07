@@ -205,7 +205,7 @@ export default {
 
     data() {
         return {
-            storeKey: 'research.featuresEngineering.parameterSweep',
+            storeKey: 'research.optimization.parameterSweep',
 
             backtestsNames: [],
             selectedBacktest: null,
