@@ -20,7 +20,7 @@
                     </p>
                     <br/>
                     <p>
-                        <strong>CYRRUS ADVISORY, a.s.,</strong><br> T: +420 538 705 730,<br> @: <a href="dotazy@cyrrusadvisory.cz" target="_self">dotazy@cyrrusadvisory.cz</a>
+                        <strong>CYRRUS ADVISORY, a.s.,</strong><br> T: +420 538 705 730,<br> @: <a href="mailto:dotazy@cyrrusadvisory.cz" target="_self">dotazy@cyrrusadvisory.cz</a>
                     </p>
                 </div>
             </div>

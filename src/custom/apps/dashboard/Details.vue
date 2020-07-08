@@ -3,10 +3,7 @@
     <ul style="list-style-type: none;">
       <li v-for="strategyData in strategiesData">
         <strategy-card :title="strategyData.title"
-                       :apiUrls="strategyData.apiUrl"
-                       :statsData="strategyData.statsData"
-                       :loading="strategyData.loading"
-                       :error="strategyData.error">
+                       :apiUrl="strategyData.apiUrl">
         </strategy-card>
       </li>
     </ul>
@@ -14,8 +11,6 @@
 </template>
 <script>
   import StrategyCard from '@/custom/components/Cards/StrategyCard.vue';
-  import axios from '@/../node_modules/axios';
-  import helper from '@/custom/assets/js/helper';
   import constants from '@/custom/assets/js/constants';
 
   export default {
@@ -26,67 +21,58 @@
     data() {
       return {
         strategiesData: [],
-        runningStrategies: []
+        connected: false,
+        email: ''
       };
     },
 
     methods: {
-      loadStrategy(title, apiUrl, strategyNr) {
-        return new Promise((resolve, reject) => {
-          let reportData = {
-            title: title,
-            loading: true,
-            apiUrl: [apiUrl]
+      initStrategies() { 
+        let data = this.$store.getItem(constants.translationKeys.IBLogin)
+        if (data) {
+          this.email = data.email
+          this.checkGWrunning()   // no need to set interval because only live portfolio should be here
+        } else {
+          this.setStrategies()
+        }
+      },
+
+      checkGWrunning() {
+        this.$http
+        .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
+        .then(response => {
+          if ('error' in response.data) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('sidebar.details')} ${this.$t('login.IB.status')} - ${response.data.error}`)
+          } else {
+            this.connected = response.data.status
           }
-          if (strategyNr === undefined) {          
-            // push it so it appears in data (ie. in child component) and save its number to update it after loaded
-            strategyNr = this.strategiesData.push(reportData) - 1;
+        })
+        .catch(error => {
+          console.log(error)
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('sidebar.details')} ${this.$t('login.IB.status')}`)
           }
-
-          axios
-          .get(apiUrl)
-          .then(response => {
-            reportData.statsData = {
-              ytd: response.data.ytd,
-              cagr: response.data.cagr,
-              sr: response.data.sharpe,
-              maxdd: response.data.maxdd,
-              equityOuts: -33.821
-            }
-          })
-          .catch(error => {
-            console.log(error);
-            reportData.error = true
-
-            // reject()
-          })
-          .finally(() => {
-            reportData.loading = false;            
-            // data loaded OK so update child component
-            this.strategiesData[strategyNr] = reportData;
-
-            resolve(strategyNr)
-          });
+        })
+        .finally(() => {
+          this.setStrategies()
         })
       },
-      
-      initStrategies() { 
-        for (const [key, value] of Object.entries(constants.reportUrls)) {
-          if (!(key in this.runningStrategies)) {
-            this.loadStrategy(key, value + 2)
-            .then(strategyNr => {
-              this.runningStrategies.push(key)
-              // reload this strategy data in intervals
-              setInterval(() => { 
-                this.loadStrategy(key, value + 2, strategyNr);
-              }, constants.dataReloadInterval );
+
+      setStrategies() {        
+        this.strategiesData = []
+
+        if (this.connected) {
+          this.strategiesData.push({
+            title: "Live Report",
+            apiUrl: constants.urls.liveDepl.report + this.email
+          })
+        }
+        else {
+          for (const [key, value] of Object.entries(constants.urls.chart)) {
+            this.strategiesData.push({
+              title: key,
+              apiUrl: value
             })
-            // .catch(() => {
-            //   // or try to init strategies again after timeout
-            //   setTimeout(() => { 
-            //     this.initStrategies();
-            //   }, constants.dataReloadInterval / 2 );
-            // })
           }
         }
       }

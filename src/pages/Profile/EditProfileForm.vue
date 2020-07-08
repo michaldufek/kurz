@@ -18,7 +18,7 @@
       <div class="col-md-4 pl-md-1">
         <base-input label="Email address"
                   type="email"
-                  placeholder="mike@email.com">
+                  :placeholder="email">
         </base-input>
       </div>
     </div>
@@ -76,7 +76,7 @@
         </base-input>
       </div>
     </div>
-    <base-button slot="footer" type="primary" fill>Save</base-button>
+    <base-button slot="footer" type="secondary" fill>Save</base-button>
   </card>
 </template>
 <script>
@@ -87,6 +87,19 @@
         default: () => {
           return {};
         }
+      }
+    },
+
+    data() {
+      return {
+        email: this.$t('login.emailExample')
+      }
+    },
+
+    mounted() {
+      let data = this.$store.getItem('login')
+      if (data) {
+          this.email = data.email
       }
     }
   }

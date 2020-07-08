@@ -2,11 +2,13 @@
   <div class="wrapper">
     <side-bar>
       <template slot="links">
-        <sidebar-link to="/portfolioManager" :name="$t('sidebar.portfolioManager')" icon="tim-icons icon-chart-pie-36"/>
-        <sidebar-link to="/stockPickingLab" :name="$t('sidebar.stockPickingLab')" icon="tim-icons icon-tap-02"/>
-        <!-- <sidebar-link to="/patternLab" :name="$t('sidebar.patternLab')" icon="tim-icons icon-tap-02"/>
-        <sidebar-link to="/relativeValuesLab" :name="$t('sidebar.relativeValuesLab')" icon="tim-icons icon-tap-02"/> -->
-        <sidebar-link to="/wareHouse" :name="$t('sidebar.wareHouse')" icon="tim-icons icon-paper"/>
+        <sidebar-link to="/research/portfolioManager" :name="$t('sidebar.portfolioManager')" icon="tim-icons icon-chart-pie-36"/>
+        <sidebar-link to="/research/stockPickingLab" :name="$t('sidebar.stockPickingLab')" icon="tim-icons icon-tap-02"/>
+        <sidebar-link to="/research/patternLab" :name="$t('sidebar.patternLab')" icon="tim-icons icon-sound-wave"/>
+        <sidebar-link to="/research/optimization" :name="$t('sidebar.optimization')" icon="tim-icons icon-vector"/>
+        <sidebar-link to="/research/tsmodeling" :name="$t('sidebar.tsmodeling')" icon="tim-icons icon-atom"/>
+        <!-- <sidebar-link to="/research/relativeValuesLab" :name="$t('sidebar.relativeValuesLab')" icon="tim-icons icon-tap-02"/> -->
+        <sidebar-link to="/research/wareHouse" :name="$t('sidebar.wareHouse')" icon="tim-icons icon-paper"/>
       </template>
     </side-bar>
     <div class="main-panel">

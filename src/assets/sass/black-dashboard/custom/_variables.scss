@@ -30,7 +30,8 @@ $transparent-bg:             transparent !default;
 $light-bg:                   #f5f6fa !default;
 $dark-background:            #555555 !default;
 
-
+// $bdc: #42b883;
+$bdc: #00ffff;
 $grays: () !default;
 $grays: map-merge((
   "100": $gray-100,
@@ -99,13 +100,14 @@ $colors: map-merge((
 $default-color-opacity:      rgba(182, 182, 182, .6) !default;
 $orange-color:               #f96332 !default;
 
-$default:       #344675 !default;
-$primary:       #e14eca !default;
+$default:       #9fa1a3 !default;
+// $primary:       #42b883 !default;//#e14eca !default;
+$primary:       #00ffff !default;//#e14eca !default;
 $secondary:     #f4f5f7 !default;
 $success:       #00f2c3 !default;
-$info:          #1d8cf8 !default;
-$warning:       #ff8d72 !default;
-$danger:        #fd5d93 !default;
+$info:          #6be14e !default;//#1d8cf8 !default;
+$warning:       #ff7272 !default;
+$danger:        #fd5d5d !default;
 $black:         #222a42 !default;
 $vue:           #42b883 !default;
 
@@ -119,11 +121,11 @@ $danger-states:        #ec250d !default;
 $black-states:         #1d253b !default;
 $vue-states:           #389466 !default;
 
-$background-black:           #1e1e2f !default;
+$background-black:           #152b2a !default;
 $background-states-black:    #1e1e24 !default;
 
 // opacity
-$default-opacity:      rgba(182, 182, 182, .6) !default;
+$default-opacity:      rgba(0, 255, 255, .6) !default;
 $primary-opacity:      rgba(249, 99, 50, .3) !default;
 $success-opacity:      rgba(24, 206, 15, .3) !default;
 $info-opacity:         rgba(44, 168, 255, .3) !default;
@@ -239,7 +241,7 @@ $love-color: $red !default;
 // Body
 
 $body-bg: $background-black !default;
-$body-color: $gray-700 !default;
+$body-color: $bdc !default;
 
 
 // Sections
@@ -352,6 +354,7 @@ $box-shadow-lg:               0 1rem 3rem rgba($black, .175);
 $dropdown-shadow:          1px 2px 3px 0px rgba(0, 0, 0, 0.125);
 $box-shadow-raised:        0px 10px 25px 0px rgba(0, 0, 0, 0.3);
 $box-shadow:               0 1px 20px 0px rgba(0, 0, 0, 0.1);
+$box-shadow: 0 1px 20px 0px #385a5a;
 $sidebar-box-shadow:       0px 2px 22px 0 rgba(0, 0, 0,.20), 0px 2px 30px 0 rgba(0, 0, 0,.35);
 
 $component-active-color:        $white !default;
@@ -556,7 +559,7 @@ $btn-hover-box-shadow:        0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0
 $btn-focus-box-shadow:        $btn-hover-box-shadow !default;
 $btn-focus-width:             $input-btn-focus-width !default;
 
-
+$btn-states-color:            #42b883;
 $btn-active-box-shadow:       none !default;
 $btn-round-radius:            30px         !default;
 
@@ -901,6 +904,8 @@ $card-cap-bg:                       $gray-100 !default;
 $card-bg:                           $white !default;
 $card-black-background:             #27293d !default;
 $card-img-overlay-padding:          1.25rem !default;
+$card-black-background: #385a5a40;
+
 
 //$card-group-margin:                 ($grid-gutter-width / 2);
 //$card-deck-margin:                  $card-group-margin !default;

@@ -7,13 +7,19 @@
     margin:4px 1px;
     border-radius: $border-radius-lg;
     cursor: pointer;
-
-    @include btn-styles($default, $default-states);
+    background: $card-black-background;
+    color:white;
+    border: 1px solid $bdc;
+    box-shadow: 0px 0px 10px #42b88375;
+    
+    // @include btn-styles($default, $default-states);
 
     &:hover,
     &:focus{
         @include opacity(1);
         outline: 0 !important;
+        color: #000000;
+        background: darken(#3dbebd,10);
     }
     &:active,
     &.active,
@@ -100,6 +106,7 @@
     margin-left: 30px !important;
   }
 }
+
 
 // Apply the mixin to the buttons
 // .btn-default { @include btn-styles($default-color, $default-states-color); }
@@ -229,7 +236,10 @@
 .btn-secondary:not(:disabled):not(.disabled):active,
 .btn-secondary:not(:disabled):not(.disabled).active,
 .show > .btn-secondary.dropdown-toggle {
-    color: $white;
+    color: $black;
+    // background: darken(#00ffff,10);
+    background: #00ffff;
+    box-shadow: 0px 0px 10px #00ffff;
 }
 
 .btn-group label.btn.active {

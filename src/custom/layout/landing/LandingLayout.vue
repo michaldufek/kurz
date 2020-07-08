@@ -1,15 +1,9 @@
 <template>
   <div class="wrapper">
-    <!-- <side-bar>
-      <template slot="links">
-        <sidebar-link to="/login" :name="$t('landing.home')" icon="tim-icons icon-coins"/>
-        <sidebar-link to="/about" :name="$t('landing.about')" icon="tim-icons icon-chart-bar-32"/>
-      </template>
-    </side-bar> -->
     <div class="main-panel">
       <top-navbar></top-navbar>
 
-      <dashboard-content @click.native="toggleSidebar">
+      <dashboard-content @click.native="toggleSidebar" style="padding-left: 30px; min-height: calc(100vh - 210px)">
 
       </dashboard-content>
 
