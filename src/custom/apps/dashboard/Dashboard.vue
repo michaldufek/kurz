@@ -9,61 +9,60 @@
 
     <div class="row">
       <div class="col-12">
-        <fancy-chart title="Dashboard"
-                     :fullTitle="$t('dashboard.chart')"
-                     :apiUrls="apiUrls">
+        <fancy-chart :title="$t('dashboard.title')"
+                     :apiUrls="chartUrls"
+                     :key="updateKey" >
         </fancy-chart>
       </div>
     </div>  
 
      <div class="row">      
-      <div class="col-lg-4 col-md-12">
-        <fancy-table :title="$t('dashboard.dashboard.lastTradesTable.title')"
-                     :apiUrls="apiUrls"
+      <div class="col-xl-4 col-12">
+        <fancy-table :title="$t('dashboard.lastTradesTable.title')"
+                     :apiUrls="statsUrls"
+                     :rowsCreator="tradesRowsCreator"
+                     :aggregator="tradesAggregator"
                      :titles="$t('terms.tradeTypes')"
-                     :columns="$t('dashboard.dashboard.lastTradesTable.columns')">
-        </fancy-table>        
-        <!-- :data="tradesData" -->
+                     :columns="$t('dashboard.lastTradesTable.columns')"
+                     :key="updateKey" >
+        </fancy-table>
       </div>
 
-      <div class="col-lg-4 col-md-12">  
-        <base-table :title="$t('dashboard.dashboard.pendingOrdersTable.title')"
-                    :apiUrls="apiUrls"
-                    :titles="$t('terms.tradeTypes')"
-                    :columns="$t('dashboard.dashboard.pendingOrdersTable.columns')">
-        </base-table>
-        <!-- :data="ordersData" -->
+      <div class="col-xl-4 col-12">  
+        <fancy-table :title="$t('dashboard.pendingOrdersTable.title')"
+                     :apiUrls="statsUrls"
+                     :rowsCreator="ordersRowsCreator"
+                     :aggregator="ordersAggregator"
+                     :titles="$t('terms.tradeTypes')"
+                     :columns="$t('dashboard.pendingOrdersTable.columns')"
+                     :key="updateKey" >
+        </fancy-table>
       </div>
 
-      <div class="col-lg-4 col-md-12">
-        <card class="card">
-          <h4 slot="header" class="card-title">{{$t('dashboard.performanceStatistics')}}</h4>
-          <div>
-             <!-- with scrollers: class="table-responsive" -->
-            <section v-if="statsError">
-              <p>{{$t('errorPrefix') + " " + $t('dashboard.performanceStatistics').toLowerCase() + ". " + $t('errorSuffix')}}</p>
-            </section>
-            <section v-else>
-              <DualRingLoader v-if="statsLoading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
-              <base-table :data="roundStatsData"
-                          :titles="$t('terms.perfStats')"
-                          :columns="$t('dashboard.dashboard.performanceStatisticsTable.columns')"
-                          thead-classes="text-primary">
-              </base-table>
-            </section>
-          </div>
-        </card>
+      <div class="col-xl-4 col-12">
+        <fancy-table :title="$t('dashboard.performanceStatistics')"
+                     :apiUrls="chartUrls"
+                     :rowsCreator="statsRowsCreator"
+                     :titles="$t('terms.perfStats')"
+                     :columns="$t('dashboard.performanceStatisticsTable.columns')"
+                     :key="updateKey" >
+        </fancy-table>
+
+        <div v-if="connected" style="float: right;">
+          <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px;margin-right: 50px;margin-bottom: -35px;" />
+          <base-button type="secondary" class="my-4" @click="liquidate">{{$t('dashboard.liquidate')}}</base-button>
+          <p :class="[ error ? errorClass : noErrorClass , msgClass ]">{{message}}</p>
+        </div>        
       </div>
     </div> 
     
   </div>
 </template>
 <script>
-  import FancyChart from '@/custom/components/FancyChart';
-  import FancyTable from '@/custom/components/FancyTable';
-  import { BaseTable } from "@/components";
+  import FancyChart from '@/custom/components/Charts/FancyChart';
+  import FancyTable from '@/custom/components/Tables/FancyTable';
+  import DualRingLoader from '@bit/joshk.vue-spinners-css.dual-ring-loader';
 
-  import axios from '@/../node_modules/axios';
   import helper from '@/custom/assets/js/helper';
   import constants from '@/custom/assets/js/constants';
 
@@ -72,82 +71,173 @@
     components: {
       FancyChart,
       FancyTable,
-      BaseTable
+      DualRingLoader
     },
+
     data() {
       return {
-        tradesData: null,
-        ordersData: null,
-        statsData: [],
-        ordersLoading: true,
-        statsLoading: true,
-        statsError: false,
-        ordersError: false,
+        connected: false,
+        email: '',
+        error: false,
+        message: '',
+        loading: false,
+        updateKey: 0,
+
+        chartUrls: [],
+        statsUrls: [],
         heardOrders: {
           open: [],
           win: [],
           lose: [],
           breakEven: []
-        }
-      }
-    },
-    computed: {
-      roundStatsData() {
-        // rounds performace statistics data table to 2 mantissa places
-        let newTable = []
-        this.statsData.forEach(row => {
-          let newRow = []
-          let firstColumn = true
-          this.$t("dashboard.dashboard.performanceStatisticsTable.columns").forEach(column => {
-            if (firstColumn) {
-              newRow[column.toLowerCase()] = row[column.toLowerCase()]
-              firstColumn = false
-              return
-            }
-            newRow[column.toLowerCase()] = row[column.toLowerCase()].toFixed(2)
-          })
-          newTable.push(newRow)
-        })
-        return newTable
-      },
-
-      apiUrls() {
-        // get just urls from apiUrls dictionary
-        let urls = []
-        for (const [key, value] of Object.entries(constants.apiUrls)) {
-          urls.push(value + 2)
-        }
-        return urls
+        },
+        
+        // css classes
+        msgClass: 'message',
+        noErrorClass: 'noError',
+        errorClass: 'error'
       }
     },
 
     methods: {
-      initStatsTableData() {
-        this.loadStatsTableData();
-        
-        setInterval(() => { 
-          this.loadStatsTableData();
-        }, constants.dataReloadInterval );
-      },
-
       initSoundSignals() {
         setInterval(() => { 
           // this.checkOrdersStatusChange();
-        }, constants.soundSignalInterval );
+        }, constants.intervals.soundSignal );
       },
 
-      notify(audioEl, type, msg) {
-        document.getElementById(audioEl).play();
+      initIB() {
+        let data = this.$store.getItem(constants.translationKeys.IBLogin)
+        if (data) {
+          this.email = data.email
+          this.checkGWrunning()   // no need to set interval because only live portfolio should be here
+        } else {
+          this.setApiUrls()
+        }
+      },
 
-        this.$notify({
-          type: type, 
-          message: msg
+      checkGWrunning() {
+        this.loading = true
+
+        this.$http
+        .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
+        .then(response => {
+          if ('error' in response.data) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')} - ${response.data.error}`)
+          } else {
+            this.connected = response.data.status
+          }
+        })
+        .catch(error => {
+          console.log(error)
+          this.connected = false
+
+          if (error.message === constants.strings.networkError) {
+            helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')}`)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+          this.setApiUrls()
         })
       },
 
+      setApiUrls() {
+        this.chartUrls = []
+        this.statsUrls = []
+
+        if (this.connected) {
+          this.chartUrls.push(constants.urls.liveDepl.report + this.email)    // todo: must be chart url here!
+          this.statsUrls.push(constants.urls.liveDepl.report + this.email)
+        }
+        else {
+          // get just urls from named urls dictionary
+          for (const [key, value] of Object.entries(constants.urls['chart'])) {
+            this.chartUrls.push(value)
+          }
+          for (const [key, value] of Object.entries(constants.urls['stats'])) {
+            this.statsUrls.push(value)
+          }
+        }
+
+        this.updateKey++
+      },
+
+      liquidate() {
+        this.$confirm(this.$t('dashboard.confirmLiquidate'))
+        .then(() => {
+          this.loading = true
+
+          this.$http
+          .post(constants.urls.liveDepl.liquidate, { userid: this.email })
+          .then(response => {
+            this.error = false
+            this.message = response.data.message
+            this.updateKey++
+          })
+          .catch(error => {
+            console.log(error)
+            this.error = true
+
+            if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
+                this.message = error.message
+            }
+
+            if ('type' in error.response.data) {
+                this.message = error.response.data.type + ' error'
+
+                if ('message' in error.response.data) {
+                    this.message += ': ' + error.response.data.message
+                } else {
+                    this.message += '.'
+                }
+            }                
+          })
+          .finally(() => this.loading = false)
+        })
+        .catch(_ => {})
+      },
+
+      liquidate() {
+        this.$confirm(this.$t('dashboard.confirmLiquidate'))
+        .then(() => {
+          this.loading = true
+
+          this.$http
+          .post(constants.urls.liveDepl.liquidate, { userid: this.email })
+          .then(response => {
+            this.error = false
+            this.message = response.data.message
+          })
+          .catch(error => {
+            console.log(error)
+            this.error = true
+
+            if (error.message === constants.strings.networkError) {
+                helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
+                this.message = error.message
+            }
+
+            if ('type' in error.response.data) {
+                this.message = error.response.data.type + ' error'
+
+                if ('message' in error.response.data) {
+                    this.message += ': ' + error.response.data.message
+                } else {
+                    this.message += '.'
+                }
+            }                
+          })
+          .finally(() => this.loading = false)
+        })
+        .catch(_ => {})
+      },
+
       checkOrdersStatusChange() {
-        axios
-        .get(constants.reportUrls["MF Report"])
+        // to-do: right definitions when to notify (blocker: BE)
+        this.$http
+        .get(constants.urls.stats["MF Report"])
         .then(response => {
           response.data.openTrades.forEach(openTrade => {
             if (!(openTrade.order.orderId in heardOrders.open) && openTrade.orderStatus === "Submitted") {
@@ -167,70 +257,122 @@
         })
       },      
 
-      loadStatsTableData() {
-        this.statsLoading = true
+      notify(audioEl, type, msg) {
+        document.getElementById(audioEl).play();
 
-        axios
-        .get(constants.reportUrls["MF Report"] + 2)
-        .then(response => {
-          let tableData = [];
-          let statsTableData = []
-
-          // 3 Months
-          tableData.push({            
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            "sharpe ratio": response.data.sharpe,
-            "max drawdown": response.data.maxdd,
-            "equity outstanding": -33.821
-          });     
-          // 12 Months
-          tableData.push({
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            "sharpe ratio": response.data.sharpe,
-            "max drawdown": response.data.maxdd,
-            "equity outstanding": -33.821
-          });     
-          // Since Inception
-          tableData.push({
-            ytd: response.data.ytd,
-            cagr: response.data.cagr,
-            "sharpe ratio": response.data.sharpe,
-            "max drawdown": response.data.maxdd,
-            "equity outstanding": -33.821
-          });     
-
-          // transposing tableData
-          var idCounter = 1;
-          this.$t('dashboard.dashboard.performanceStatisticsTable.lines').forEach(line => {
-            var jsonObj = {};
-            jsonObj.id = idCounter++;
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[0].toLowerCase()] = line;
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[1].toLowerCase()] = tableData[0][line.toLowerCase()];
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[2].toLowerCase()] = tableData[1][line.toLowerCase()];
-            jsonObj[this.$t("dashboard.dashboard.performanceStatisticsTable.columns")[3].toLowerCase()] = tableData[2][line.toLowerCase()];
-
-            statsTableData.push(jsonObj);
-          });          
-
-          this.statsData = statsTableData
+        this.$notify({
+          type: type, 
+          message: msg
         })
-        .catch(error => {
-          console.log(error);
-          this.statsError = true
-        })
-        .finally(() => {
-          this.statsLoading = false          
-        });
-      }
-    },    
+      },
+
+      // fancy-tables props functions
+      tradesRowsCreator(responseData) {
+        let rows = []
+
+        responseData.openTrades.forEach(openTrade => {
+            let row = []
+
+            row.push(helper.formatDateOnly(openTrade.contract.lastTradeDateOrContractMonth)) // date and time
+            row.push(openTrade.order.action) // trade type
+            row.push(openTrade.order.auxPrice) // result (%)
+            // result (usd)
+
+            rows.push(row);
+          });
+
+        return rows
+      },
+
+      ordersRowsCreator(responseData) {
+        let rows = []
+
+        if ('fills' in responseData) {
+          responseData.fills.forEach(fill => {
+              let row = []
+
+              row.push(helper.formatDate(fill.time)) // date
+              row.push(fill.execution.side) // trade type
+              // target (usd)
+              // stop loss (usd)
+
+              rows.push(row);
+          })
+        }
+
+        return rows
+      },
+
+      statsRowsCreator(responseData) {
+        let row = {}
+        let rows = [];
+        let rowsT = []
+        let eqOut = responseData.equity[responseData.equity.length - 1]
+        
+        // 3 Months
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[0].toLowerCase()] = helper.ytd(responseData, 1) + ' %' // YTD
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[1].toLowerCase()] = helper.cagr(responseData.equity, 1) + ' %' // CAGR
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[2].toLowerCase()] = responseData.sharpe + ' &nbsp;&nbsp;' // Sharpe Ratio // to-do: BE - sharpe for 3m and 12m bases
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[3].toLowerCase()] = helper.maxDD(responseData, 1) + ' %' // Max DrawDown
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[4].toLowerCase()] = eqOut + ' $' // Equity Outstanding
+        rows.push(row) 
+
+        // 12 Months
+        row = {}
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[0].toLowerCase()] = helper.ytd(responseData, 4) + ' %'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[1].toLowerCase()] = helper.cagr(responseData.equity, 4) + ' %'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[2].toLowerCase()] = responseData.sharpe + ' &nbsp;&nbsp;'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[3].toLowerCase()] = helper.maxDD(responseData, 4) + ' %'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[4].toLowerCase()] = eqOut + ' $'
+        rows.push(row)  
+
+        // Since Inception
+        row = {}
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[0].toLowerCase()] = responseData.ytd + ' %'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[1].toLowerCase()] = responseData.cagr + ' %'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[2].toLowerCase()] = responseData.sharpe + ' &nbsp;&nbsp;'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[3].toLowerCase()] = responseData.maxdd + ' %'
+        row[this.$t('dashboard.performanceStatisticsTable.lines')[4].toLowerCase()] = eqOut + ' $'
+        rows.push(row)     
+
+        // transposing rows
+        this.$t('dashboard.performanceStatisticsTable.lines').forEach(line => {
+          var row = []
+
+          row.push(line)
+          rows.forEach(origRow => row.push(origRow[line.toLowerCase()]))
+
+          rowsT.push(row);
+        });          
+
+        return rowsT
+      },
+
+      tradesAggregator(oldRows, newRows) {
+        return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.lastTradesTable.columns')[0].toLowerCase())
+      },
+
+      ordersAggregator(oldRows, newRows) {
+        return helper.sortAggregator(oldRows, newRows, this.$t('dashboard.pendingOrdersTable.columns')[0].toLowerCase())
+      }      
+    },
 
     mounted() {
-      this.initStatsTableData();
-      this.initSoundSignals();
+      this.initSoundSignals()
+      this.initIB()
     }
   };
 </script>
 <style>
+.message {
+    white-space: pre-line;
+}
+
+.noError {
+    color: gray;    
+}
+
+.error {
+  color: red !important;
+}
 </style>

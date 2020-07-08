@@ -1,86 +1,118 @@
 <template>
   <div class="row">
-    <!-- <card class="card"> to-do: must be in one card -->
-      <div class="col-lg-8 col-md-12">
+    <!-- <card class="card">  -->
+      <!-- to-do: must be in one card -->
+      <div class="col-lg-8 col-md-12 flex-stretch">
         <card class="card">
-          <h4 class="card-title">{{title}}</h4>
-          <li v-for="strategyName in strategies.names" style="list-style-type: none;">
-            {{strategyName}}
-            <base-button  type="secondary" size="1" fill>{{$t('research.portfolioManager.live')}}</base-button>
-            <!-- v-if="strategies.enableLive" -->
-            <base-button type="secondary" fill>{{$t('research.portfolioManager.store')}}</base-button>        
-            <!-- v-if="strategies.enableStore" -->
-            <br/>
-          </li>
+          <table class="table tablesorter">
+            <thead>
+              <tr>
+                <!-- <slot name="columns"> -->
+                  <h4 class="card-title">{{title}}</h4>
+                <!-- </slot> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="strategy in strategies">
+                <!-- <slot :row="item"> -->
+                  <td style="border-top: 0px; margin-top: 10px;">
+                    {{strategy.name}}
+                  </td>
+                  <td style="border-top: 0px;">
+                    <base-button v-if="!enableStop" @click="goLive(strategy.id)" type="secondary" style="float:right; margin-left: 10px" fill>{{$t('research.portfolioManager.live')}}</base-button>
+                    <base-button v-if="!enableStop" @click="store(strategy.id)" type="secondary" style="float:right;" fill>{{$t('research.portfolioManager.store')}}</base-button>
+                    <base-button v-if="enableStop" @click="stop(strategy.id)" type="secondary" style="float:right;" fill>{{$t('research.stop')}}</base-button>
+                  </td>
+                <!-- </slot> -->
+              </tr>
+            </tbody>
+          </table>
         </card>
       </div>
+
       <div class="col-lg-4 col-md-12">
-        <card class="card">
-          <base-table :data="statsData"
-                      :columns="$t('research.portfolioManager.statsTable.columns')"
-                      thead-classes="text-primary">
-                      <!-- to-do: add titles (refactoring needed) -->
-          </base-table>
-        </card>
+        <fancy-table :title="title + ' ' + $t('research.portfolioManager.statsTable.title').toLowerCase()"
+                     :showTitle="false"
+                     :apiUrls="strategiesUrls"
+                     :rowsCreator="rowsCreator"
+                     :titles="$t('terms.perfStats')"
+                     :columns="$t('research.portfolioManager.statsTable.columns')">
+        </fancy-table>
       </div>
     <!-- </card> -->
   </div>
 </template>
 <script>
-import Card from "@/components/Cards/Card.vue";
-import { BaseTable, BaseButton } from "@/components";
+import { BaseButton } from "@/components";
+import FancyTable from '@/custom/components/Tables/FancyTable';
+
+import constants from '@/custom/assets/js/constants';
+import helper from '@/custom/assets/js/helper';
+
 
 export default {
   name: "portfolio-card",
   components: {
-    Card,
     BaseButton,
-    BaseTable
+    FancyTable
   },
+
   props: {
     title: {
       type: String,
       description: "Portfolio title"
     },
-    stats: {
-      type: Object,
-      default: () => {},
-      description: "Statistics data"
-    },
     strategies: {
-      type: Object,
+      type: Array,
       default: () => {
-        return {
-          enableLive: true,
-          enableStore: true
-        };
+        return [ {} ]
       },
-      description: "Strategies data"
+      description: "Array of strategies names with their API urls and IDs"
     },
-    errored: false,
-    loading: true            
+    enableStop: {
+      type: Boolean,
+      description: "Whether only Stop button is showed"
+    }
   },
-  data() {
-    return {
-      statsData: [
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.cagr") + ": " + this.stats.cagr,
-          "Risk statistics": this.$t("research.portfolioManager.statsTable.rows.beta") + ": " + this.stats.beta
-        },
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.sr") + ": " + this.stats.sr,
-          "Risk statistics": this.$t("research.portfolioManager.statsTable.rows.alfa") + ": " + this.stats.alfa
-        },
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.equityOuts") + ": " + this.stats.equityOuts,
-          "Risk statistics": this.stats.missProposal
-        },
-        {
-          "performance statistics": this.$t("research.portfolioManager.statsTable.rows.maxDD") + ": " + this.stats.maxDD,
-          "Risk statistics": this.stats.missProposal
-        }
+
+  computed: {
+    strategiesUrls() {
+      // get all strategies urls only
+      let urls = []
+      this.strategies.forEach(strat => urls.push(strat.url))
+      return urls
+    }
+  },
+
+  methods: {
+    goLive(id) {
+      this.$emit('wentLive', id)
+    },
+    store(id) {
+      this.$emit('stored', id)
+    },
+    stop(id) {
+      this.$emit('stoped', id)
+    },
+
+    rowsCreator(responseData) {
+      return [
+        [ 
+          this.$t('cagr') + ": " + responseData.cagr + ' %', 
+          this.$t('research.portfolioManager.statsTable.rows.beta') + ": " + 43 
+        ],
+        [ 
+          this.$t('sr') + ": " + responseData.sharpe + ' &nbsp;&nbsp;', 
+          this.$t('research.portfolioManager.statsTable.rows.alfa') + ": " + 43 
+        ],        
+        [
+          this.$t('maxDD') + ": " + responseData.maxdd + ' %',
+        ],
+        [
+          this.$t('equityOuts') + ": " + responseData.equity[responseData.equity.length - 1] + ' $',
+        ]
       ]
-    };
+    }    
   }
 }
 </script>

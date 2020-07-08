@@ -1,12 +1,16 @@
+$card-black-background: #385a5a40;
+$box-shadow: 0 1px 20px 0px #385a5a;
 .card{
     background: $card-black-background;
     border: 0;
     position: relative;
     width: 100%;
     margin-bottom: 30px;
+    margin-left: 15px;
     box-shadow: $box-shadow;
-
-
+    border-radius: 0 0 5px 5px;
+    border: 1px solid $bdc;
+    border-top-width: 3px;
     label{
       color: rgba($white, 0.6);
     }

@@ -1,14 +1,16 @@
 /* globals localStorage */
 import axios from '@/../node_modules/axios';
 import i18n from "@/i18n"
-import Cookies from 'js-cookie'
 import constants from '@/custom/assets/js/constants';
+import http from "@/custom/assets/js/http";
 
 
 const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
-  axios({url: constants.authUrl + '/login/', data: { "email": email, "password": pass }, method: 'POST' })
+  http.setCSRFToken()
+
+  axios({url: constants.urls.auth + '/login/', data: { "email": email, "password": pass }, method: 'POST' })
   .then(resp => {
-    const token = resp.data.token
+    const token = resp.data.key
     localStorage.setItem('token', token) // store the token in localstorage
     resolve(resp)
   })
@@ -19,7 +21,9 @@ const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
 });
 
 const loginFacebookRoutine = (token, code) => new Promise ((resolve, reject) => {
-  axios({url: constants.authUrl + '/facebook/', data: { "access_token": token, "code": code }, method: 'POST' })
+  http.setCSRFToken()
+
+  axios({url: constants.urls.auth + '/facebook/', data: { "access_token": token, "code": code }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('token', token) // store the token in localstorage
@@ -32,7 +36,9 @@ const loginFacebookRoutine = (token, code) => new Promise ((resolve, reject) => 
 });
 
 const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) => {
-  axios({url: constants.authUrl + '/twitter/', data: { "access_token": token, "token_secret": secret }, method: 'POST' })
+  http.setCSRFToken()
+  
+  axios({url: constants.urls.auth + '/twitter/', data: { "access_token": token, "token_secret": secret }, method: 'POST' })
   .then(resp => {
     const token = resp.data.token
     localStorage.setItem('token', token) // store the token in localstorage
@@ -46,8 +52,9 @@ const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) =>
 
 const logoutRoutine = () => new Promise ((resolve, reject) => {
   localStorage.removeItem('token')
+  http.setCSRFToken()
 
-  axios({url: constants.authUrl + '/logout/', method: 'POST' })
+  axios({url: constants.urls.auth + '/logout/', method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -57,7 +64,9 @@ const logoutRoutine = () => new Promise ((resolve, reject) => {
 });
 
 const resetPassRoutine = email => new Promise ((resolve, reject) => {
-  axios({url: constants.authUrl + '/password/reset/', data: { "email": email }, method: 'POST' })
+  http.setCSRFToken()
+
+  axios({url: constants.urls.auth + '/password/reset/', data: { "email": email }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -67,7 +76,9 @@ const resetPassRoutine = email => new Promise ((resolve, reject) => {
 });
 
 const registerRoutine = (email, pass1, pass2) => new Promise ((resolve, reject) => {
-  axios({url: constants.authUrl + '/registration/', data: { "email": email, "password1": pass1, "password2": pass2 }, method: 'POST' })
+  http.setCSRFToken()
+
+  axios({url: constants.urls.auth + '/registration/', data: { "email": email, "password1": pass1, "password2": pass2 }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -77,7 +88,9 @@ const registerRoutine = (email, pass1, pass2) => new Promise ((resolve, reject) 
 });
 
 const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
-  axios({url: constants.authUrl + '/registration/verify-email/', data: { "key": key }, method: 'POST' })
+  http.setCSRFToken()
+
+  axios({url: constants.urls.auth + '/registration/verify-email/', data: { "key": key }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -87,7 +100,9 @@ const verifyRegisterRoutine = key => new Promise ((resolve, reject) => {
 });
 
 const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, reject) => {
-  axios({url: constants.authUrl + '/password/reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
+  http.setCSRFToken()
+
+  axios({url: constants.urls.auth + '/password/reset/confirm/', data: { "new_password1": pass1, "new_password2": pass2, "uid": uid, "token": token }, method: 'POST' })
   .then(resp => {
     resolve(resp)
   })
@@ -97,30 +112,17 @@ const verifyResetRoutine = (uid, token, pass1, pass2) => new Promise ((resolve, 
 });
 
 
-export default {  
-    init() {
-      if (process.env.NODE_ENV === 'production') {
-        var cokieName = 'csrftoken'
-      } else {
-        cokieName = '_xsrf'
-      }
-
-      let csrfToken = Cookies.get(cokieName)        
-      axios.defaults.headers.common = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': csrfToken
-      };
-    },
-  
-    login (email, pass, cb) {
-      cb = arguments[arguments.length - 1]
+export default {
+    login (email, pass, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       if (localStorage.token) {
         if (cb) cb(true)
         this.onChange(true)
         return
       }
       
-      if (pass === 'frspass') { // to-do: temporary, delete in production !!!
+      if (process.env.NODE_ENV !== 'production' && pass === 'frspass') {
         pretendRequest(email, pass, (res) => {
           if (res.authenticated) {
             localStorage.token = res.token
@@ -141,6 +143,7 @@ export default {
           if (cb) cb(false, this.parseError(err))
           this.onChange(false)        
         })
+        .finally(() => cbf())
       }
     },
 
@@ -194,18 +197,20 @@ export default {
   
     logout (cb) {
       cb = arguments[arguments.length - 1]
-      logoutRoutine()
-      .then(() => {
-        if (cb) cb()
-        this.onChange(true)
-      })
+      if (this.loggedIn()) {
+        logoutRoutine()
+        .then(() => {
+          if (cb) cb()
+          this.onChange(true)
+        })
+      }
     },
   
     loggedIn () {
       return !!localStorage.token
     },
 
-    resetPass (email, cb) {
+    resetPass (email, cb, cbf) {
       resetPassRoutine(email)
       .then(res => {
         if (cb) cb(true, res.data.detail)
@@ -215,10 +220,12 @@ export default {
         if (cb) cb(false, this.parseError(err, false))
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
-    verifyReset (uid, token, pass1, pass2, cb) {
-      cb = arguments[arguments.length - 1]
+    verifyReset (uid, token, pass1, pass2, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       verifyResetRoutine(uid, token, pass1, pass2)
       .then(res => {
         if (cb) cb(true, res.data.detail)
@@ -228,10 +235,12 @@ export default {
         if (cb) cb(false, this.parseError(err, false))
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
-    register (email, pass1, pass2, cb) {
-      cb = arguments[arguments.length - 1]
+    register (email, pass1, pass2, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       registerRoutine(email, pass1, pass2)
       .then(res => {
         if (cb) cb(true, i18n.t('login.registrationSent'))
@@ -241,10 +250,12 @@ export default {
         if (cb) cb(false, this.parseError(err))
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
-    verifyRegister (key, cb) {
-      cb = arguments[arguments.length - 1]
+    verifyRegister (key, cb, cbf) {
+      cbf = arguments[arguments.length - 1]
+      cb = arguments[arguments.length - 2]
       verifyRegisterRoutine(key)
       .then(res => {
         if (cb) cb(true)
@@ -254,6 +265,7 @@ export default {
         if (cb) cb(false)
         this.onChange(false)        
       })
+      .finally(() => cbf())
     },
 
     parseError(err, verbose=true) {
@@ -298,6 +310,9 @@ export default {
       if ("non_field_errors" in err.response.data) {
         msg += err.response.data.non_field_errors[0] + '\n'
       }
+      if (!msg) {
+        msg += i18n.t('login.unknownError')
+      }
       
       return msg
     },
@@ -307,13 +322,9 @@ export default {
   
   function pretendRequest (email, pass, cb) {
     setTimeout(() => {
-      // if (email === 'joe@example.com' && pass === 'frspass') {
         cb({
           authenticated: true,
           token: Math.random().toString(36).substring(7)
         })
-      // } else {
-      //   cb({ authenticated: false })
-      // }
     }, 0)
   }

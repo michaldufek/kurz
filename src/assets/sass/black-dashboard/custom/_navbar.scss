@@ -1,9 +1,12 @@
+$box-shadow: 0 1px 20px 0px #385a5a;
 .navbar {
-  padding: 10px 30px 10px 15px;
+  padding: 5px 30px 0 15px;
+  background: #000;
   width: 100%;
   z-index: 1050;
   background: $navbar-color;
-
+  box-shadow: 0 1px 20px 0px #385a5a; 
+  border-bottom: 2px solid $bdc;
   .photo {
     display: inline-block;
     height: 30px;
@@ -30,13 +33,13 @@
   }
 
   &.navbar-absolute{
-    position: absolute;
+    position: fixed;
     z-index: 1050;
   }
 
 
   &.navbar-transparent{
-    background: transparent !important;
+    background: #153231c7;
   }
 
   &.bg-white{
@@ -100,12 +103,12 @@
   }
 
   .navbar-brand {
-    position: fixed;
+    // position: fixed;
     padding-top: .3125rem;
     padding-bottom: .3125rem;
-    color: $white;
-    margin-left: 17px;
-    margin-top: 3px;
+    // color: $white;
+    margin-left: 0px;//17px;
+    // margin-top: 3px;
     text-transform: uppercase;
     font-size: $font-paragraph;
   }
@@ -133,7 +136,7 @@
 }
 
 .notification {
-  background: $danger;
+  background: #17a2b8;
 	color: $white;
 	border-radius: $border-radius-xl;
 	height: 6px;
@@ -144,7 +147,7 @@
 	font-weight: 800;
   top: 10px;
   right: 10px;
-	border: 1px solid $danger;
+	border: 1px solid #17a2b8;
 }
 
 .navbar-nav li{
@@ -409,5 +412,8 @@
   .navbar[class*='navbar-toggleable-'] .container{
       margin-left: 0;
       margin-right: 0;
+  }
+  .navbar-brand img{
+    display: none;
   }
 }

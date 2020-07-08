@@ -13,8 +13,12 @@
             <span class="navbar-toggler-bar bar3"></span>
           </button>
         </div>
-        <router-link class="navbar-brand" to="/dashboard">{{$t("dashboard.title")}}</router-link>
-        <router-link class="navbar-brand" to="/research" style="margin-left: 140px;">{{$t("research.title")}}</router-link>
+        
+        <div>
+          <router-link class="navbar-brand" to="/" exact><img src="../../assets/img/logo2020_small.png" class="logo navbar-brand" :alt="$t('siteTitle')"/></router-link>
+          <router-link class="navbar-brand" to="/dashboard" style="margin-top: 10px">{{$t("dashboard.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research">{{$t("research.title")}}</router-link>
+        </div>
       </div>
       <button class="navbar-toggler" type="button"
               @click="toggleMenu"
@@ -52,24 +56,14 @@
                 <div class="notification d-none d-lg-block d-xl-block"></div>
                 <i class="tim-icons icon-sound-wave"></i>
                 <p class="d-lg-none">
-                  New Notifications
+                  {{$t('userMenu.notifications')}}
                 </p>
               </a>
-              <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Mike John responded to your email</a>
-              </li>
-              <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">You have 5 more tasks</a>
-              </li>
-              <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Your friend Michael is in town</a>
-              </li>
-              <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Another notification</a>
-              </li>
-              <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Another one</a>
-              </li>
+              <ul style="list-style-type: none;">
+                <li v-for="notification in $notifications.notifications" class="nav-link">
+                  <a href="#" class="nav-item dropdown-item">{{ notification }}</a>
+                </li>
+              </ul>
             </base-dropdown>
             <base-dropdown tag="li" menu-classes="dropdown-black"
                            :menu-on-right="!$rtl.isRTL"
@@ -77,15 +71,18 @@
                            class="nav-item">
               <a slot="title" href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true">
                 <div class="photo">
-                  <img src="img/default-avatar.png">
+                  <img src="/img/default-avatar.png">
                 </div>
                 <b class="caret d-none d-lg-block d-xl-block"></b>
                 <p class="d-lg-none">
-                  {{$t('userMenu.title')}}
+                  {{$t('userMenu.actions')}}
                 </p>
               </a>
               <li class="nav-link">
                 <router-link to="/profile" class="nav-item dropdown-item">{{$t('userMenu.profile')}}</router-link>
+              </li>
+              <li class="nav-link">
+                <router-link to="/ibConnection" class="nav-item dropdown-item">{{$t('userMenu.ibConnection')}}</router-link>
               </li>
               <li class="nav-link">
                 <router-link to="/settings" class="nav-item dropdown-item">{{$t('userMenu.settings')}}</router-link>

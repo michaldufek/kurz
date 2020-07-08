@@ -18,7 +18,6 @@
         root.classList.toggle('nav-open');
       },
       leaving() {
-        // to-do: profile/settings is also reloading hence logouting
         if (!('remember' in localStorage) || !JSON.parse(localStorage.remember)) {
           this.$router.push('logout')
         }
@@ -26,7 +25,12 @@
     },
     mounted() {
       this.$watch('$route', this.disableRTL, { immediate: true });
-      this.$watch('$sidebar.showSidebar', this.toggleNavOpen)
+      this.$watch('$sidebar.showSidebar', this.toggleNavOpen)      
+        
+      if (!('locale' in localStorage)) {
+        localStorage.setItem('locale', this.$root.$i18n.locale)
+      } 
+      this.$root.$i18n.locale = localStorage.locale
     },
     created() {
       window.addEventListener('beforeunload', this.leaving)
@@ -34,4 +38,6 @@
   };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+</style>

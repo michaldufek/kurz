@@ -15,7 +15,7 @@ module.exports = {
     devtool: 'source-map',
     resolve: {
       alias: {
-        'chart.js': 'chart.js/dist/Chart.js'
+        'chart.js': 'chart.js/dist/Chart.bundle.js'
       }
     },
     plugins: [
@@ -34,7 +34,10 @@ module.exports = {
     themeColor: '#344675',
     msTileColor: '#344675',
     appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: '#344675'
+    appleMobileWebAppStatusBarStyle: '#344675',
+    workboxOptions: {
+      skipWaiting: true
+    }
   },
   pluginOptions: {
     i18n: {

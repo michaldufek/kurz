@@ -1,125 +1,62 @@
 <template>
   <div class="row">
     <!-- <card class="card"> to-do: must be in one card --> 
-      <div class="col-lg-4 col-md-12">
-        <card class="card">
-          <section v-if="errored">
-            <p>{{$t('errorPrefix') + " " + $t('research.stockPickingLab.stock').toLowerCase() + ". " + $t('errorSuffix')}}</p>
-          </section>
-          <section v-else>
-            <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.stock').toLowerCase() + "..."}}</div>
-            <div v-else>
-                <h4 class="card-title">{{title}}</h4>
-                <div style="width:50%; float: left;">
-                  <p :title="$t('terms.perfStats.cagr')">{{$t('cagr')}}: {{stats.cagr | roundToFixed}}</p>
-                  <p>{{$t('stdDev')}}: {{stats.stdDev | roundToFixed}}</p>
-                </div>
-                <div style="width:50%; float: right;">
-                  <p :title="$t('terms.perfStats.sharpe')">{{$t('sharpeRatio')}}: {{stats.sharpeRatio | roundToFixed}}</p>                  
-                  <p>{{$t('recoveryDDtime')}}: {{stats.recoveryDDtime | roundToFixed}}</p>
-                  <p :title="$t('terms.perfStats.maxDD')">{{$t('maxDD')}}: {{stats.maxDD | roundToFixed}}</p>
-                </div>
-            </div>
-          </section>
-        </card>
+      <div class="flex-stretch col-xl-4 col-12">
+        <fancy-card :title="$t('research.stockPickingLab.stock').toLowerCase()"
+                    :fullTitle="rank + '. ' + symbol + (name ? ' (' + name + ')' : '')"
+                    :showTitle="true"
+                    :watchable="true"
+                    :items="[ $t('cagr'), $t('sharpeRatio'), $t('stdDev'), $t('recoveryDDtime'), $t('maxDD'), $t('score') ]"
+                    :values="stats"                    
+                    :titles="$t('terms.perfStats')">
+        </fancy-card>
       </div>
-      <div class="col-lg-8 col-md-12">
-        <card type="chart">
-          <div class="card-header">
-            <h5 class="card-title" style="float: right;"><i class="tim-icons icon-heart-2" :class="{ 'text-success': live }" style="color:red"></i>  {{updateTs | chartUpdateTsText}}</h5>
-          </div>
-          <div class="chart-area">
-            <!-- to-do: errored and loading sections not working -->
-            <!-- to-do: use it also in another custom cards -->
-            <!-- <section v-if="errored">
-              <p>{{$t('errorPrefix') + " " + $t('research.stockPickingLab.chart').toLowerCase() + ". " + $t('errorSuffix')}}</p>
-            </section>
-            <section v-else> -->
-              <div v-if="loading">{{$t('loading') + " " + $t('research.stockPickingLab.chart').toLowerCase() + "..."}}</div>
-              <line-chart v-if="!loading" style="height: 100%"
-                          ref="bigChart"
-                          chart-id="big-line-chart"
-                          :chart-data="chartData"
-                          :gradient-colors="bigLineChart.gradientColors"
-                          :gradient-stops="bigLineChart.gradientStops"
-                          :extra-options="bigLineChart.extraOptions">
-              </line-chart>
-            <!-- </section> -->
-          </div>
-        </card>
+
+      <div class="col-xl-8 col-12">
+        <fancy-chart :title="$t('sidebar.stockPickingLab') + ' - ' + symbol"
+                     :axesLabels="[ $t('research.stockPickingLab.xLabel'), $t('research.stockPickingLab.yLabel') ]"
+                     :apiUrls="chartApiUrl">
+        </fancy-chart>
       </div>      
      <!-- </card> -->
-    </div>
+  </div>
 </template>
 <script>
-import Card from "@/components/Cards/Card.vue";
-import LineChart from '@/components/Charts/LineChart';
-import * as chartConfigs from '@/components/Charts/config';
-import config from '@/config';
-
+import FancyCard from '@/custom/components/Cards/FancyCard.vue';
+import FancyChart from '@/custom/components/Charts/FancyChart';
+import constants from '@/custom/assets/js/constants';
 
 export default {
   name: "stock-card",
   components: {
-    Card,
-    LineChart
+    FancyCard,
+    FancyChart
   },
+
   props: {
-    title: {
+    symbol: {
       type: String,
-      description: "Stock title"
+      description: "Stock symbol"
+    },
+    name: {
+      type: String,
+      description: "Stock name"
+    },
+    rank: {
+      type: Number,
+      description: "Rank of the stock"
     },
     stats: {
-      type: Object,
-      default: () => {},
-      description: "Statistics data"
-    },
-    chartData: {
-      type: Object,
-      default: () => {
-        return {
-          datasets: [{
-            fill: true,
-            borderColor: null, // config.colors.primary
-            borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            pointBackgroundColor: null, // config.colors.primary
-            pointBorderColor: 'rgba(255,255,255,0)',
-            pointHoverBackgroundColor: null, // config.colors.primary
-            pointBorderWidth: 20,
-            pointHoverRadius: 4,
-            pointHoverBorderWidth: 15,
-            pointRadius: 4,
-            data: [] // numbers
-          }],
-          labels: [] // datetimes
-        }
-      },
-      description: "Chart data"
-    },
-    errored: false,
-    loading: true,
-    live: {
-      type: Boolean,
-      default: false,
-      description: "Whether we have connection to data source"
-    },
-    updateTs: {
-      type: Number,
-      default: null,
-      description: "TimeStamp of last update"
-    }          
+      type: Array,
+      default: () => [],
+      description: "Statistics data in same shape and order as items"
+    }
   },
-  data() {
-      return {
-          bigLineChart: 
-          {
-              extraOptions: chartConfigs.purpleChartOptions,
-              gradientColors: config.colors.primaryGradient,
-              gradientStops: [1, 0.4, 0]
-          }        
-      }
+
+  computed: {
+    chartApiUrl() {
+      return [ constants.urls.tickerSP.stock + this.symbol ]
+    }
   }
 };
 </script>
