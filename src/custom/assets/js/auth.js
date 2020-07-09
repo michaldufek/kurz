@@ -1,8 +1,8 @@
 /* globals localStorage */
 import axios from '@/../node_modules/axios';
 import i18n from "@/i18n"
+import Cookies from 'js-cookie'
 import constants from '@/custom/assets/js/constants';
-import http from "@/custom/assets/js/http";
 
 
 const loginRoutine = (email, pass) => new Promise ((resolve, reject) => {
@@ -46,7 +46,6 @@ const loginTwitterRoutine = (token, secret) => new Promise ((resolve, reject) =>
 
 const logoutRoutine = () => new Promise ((resolve, reject) => {
   localStorage.removeItem('token')
-  http.setCSRFToken()
 
   axios({url: constants.urls.auth + '/logout/', method: 'POST' })
   .then(resp => {
