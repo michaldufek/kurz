@@ -77,8 +77,11 @@ export default {
     data() {
       return { 
         storeKey: constants.translationKeys.IBLogin,
-        GWLogsTimer: null,
         logs: [],
+
+        GWStatusTimer: null,
+        GWStartStatusTimer: null,
+        GWLogsTimer: null,
 
         loading: false,        
         loadingStart: false,
@@ -191,9 +194,12 @@ export default {
                 this.message = response.data.message
                 this.pass = ''
 
+                this.setInterval('GWStartStatusTimer', this.checkGWrunning, constants.intervals.seconds3)
+                
                 setTimeout(() => { 
+                    clearInterval(this.GWStartStatusTimer)
                     this.loadingStart = false
-                }, constants.intervals.soundSignal );                
+                }, constants.intervals.minute )
             })
             .catch(error => {
                 console.log(error)
@@ -220,7 +226,7 @@ export default {
 
                 setTimeout(() => { 
                     this.loadingStop = false
-                }, constants.intervals.soundSignal );                
+                }, constants.intervals.minute );                
             })
             .catch(error => {
                 console.log(error)
@@ -237,28 +243,33 @@ export default {
             })
         }, 
 
-        setInterval(timer, routine) {
+        setInterval(name, routine, interval = constants.intervals.minute) {
             routine()
         
-            if (timer) {
-                clearInterval(timer)
+            if (this[name]) {
+                clearInterval(this[name])
             }
 
-            timer = setInterval(() => { 
+            this[name] = setInterval(() => {
                 routine()
-            }, constants.intervals.soundSignal )
+            }, interval )
         },
         
-        setGWStatusInterval() {     // to-do: how to stop it?
-            this.setInterval(this.GWStatusTimer, this.checkGWrunning)
+        setGWStatusInterval() {
+            this.setInterval('GWStatusTimer', this.checkGWrunning)
         },
         setGWLogsInterval() {
-            this.setInterval(this.GWLogsTimer, this.getGWLogs)
+            this.setInterval('GWLogsTimer', this.getGWLogs)
         },
         destroyTimers() {
             if (this.GWStatusTimer) {
                 clearInterval(this.GWStatusTimer)
             }
+
+            if (this.GWStartStatusTimer) {
+                clearInterval(this.GWStartStatusTimer)
+            }
+
             if (this.GWLogsTimer) {
                 clearInterval(this.GWLogsTimer)
             }

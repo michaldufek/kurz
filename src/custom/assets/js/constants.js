@@ -45,7 +45,7 @@ export default {
         dataReload: 1000 * 60 * 10, // 10 minutes 
 
         // interval for checking whether we should play some orderStatus change sound
-        soundSignal: 1000 * 60, // minute
+        minute: 1000 * 60, // minute
 
         // time of shaking of login forms if unsuccessful
         shake: 500, // half second
@@ -54,7 +54,7 @@ export default {
         loginShow: 230,
 
         // time of checking whether Backtest patterns backtests are done
-        backtestsDone: 1000 * 3, // 3 seconds,
+        seconds3: 1000 * 3, // 3 seconds,
 
         // time of downloading optimization results
         featEngReload: 1000 * 5 // 5 seconds

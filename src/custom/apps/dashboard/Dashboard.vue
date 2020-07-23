@@ -103,7 +103,7 @@
       initSoundSignals() {
         setInterval(() => { 
           // this.checkOrdersStatusChange();
-        }, constants.intervals.soundSignal );
+        }, constants.intervals.minute );
       },
 
       initIB() {
