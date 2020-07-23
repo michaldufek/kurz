@@ -49,12 +49,13 @@
             </SlideYUpTransition>
         </div>
 
-        <div class="row" style="margin-top: 20px">
-            <ul v-if="connected" style="list-style-type: none;">
+        <div class="row" v-if="connected" style="margin-top: 20px">
+            <!-- <ul style="list-style-type: none;">
                 <li v-for="log in logsParsed">
                     {{ log }}
                 </li>
-            </ul>
+            </ul> -->
+            {{ logsParsed }}
         </div>
 
     </div>
@@ -81,6 +82,7 @@ export default {
 
         GWStatusTimer: null,
         GWStartStatusTimer: null,
+        GWStopStatusTimer: null,
         GWLogsTimer: null,
 
         loading: false,        
@@ -106,7 +108,8 @@ export default {
 
     computed: {
         logsParsed() {
-            return this.logs.map(log => `[${helper.formatDateTime(log.timestamp)}] ${log.type}: ${log.message}`)
+            // return this.logs.map(log => `[${helper.formatDateTime(log.timestamp)}] ${log.type}: ${log.message}`)
+            return `${helper.formatDateTime(this.logs.timestamp)}: ${JSON.stringify(this.logs.positions)}`
         }
     },
 
@@ -123,7 +126,6 @@ export default {
 
         checkGWrunning() {
             this.loading = true
-            this.message = ''
 
             this.$http
             .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
@@ -132,8 +134,6 @@ export default {
                     this.error = true
                     this.message = response.data.error
                 } else {
-                    this.error = false
-                    this.message = ''
                     this.connected = response.data.status
 
                     if (this.connected) {                        
@@ -144,7 +144,11 @@ export default {
                             this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
                         }
                     } else {
-                        this.loadingStop = false
+                        if (this.loadingStop) {
+                            this.loadingStop = false
+                            clearInterval(this.GWStopStatusTimer)
+                        }
+
                         if (this.GWLogsTimer) {
                             clearInterval(this.GWLogsTimer);
                         }
@@ -195,11 +199,7 @@ export default {
                 this.pass = ''
 
                 this.setInterval('GWStartStatusTimer', this.checkGWrunning, constants.intervals.seconds3)
-                
-                setTimeout(() => { 
-                    clearInterval(this.GWStartStatusTimer)
-                    this.loadingStart = false
-                }, constants.intervals.minute )
+                this.setGWTimeout('start', this.GWStartStatusTimer)
             })
             .catch(error => {
                 console.log(error)
@@ -224,9 +224,8 @@ export default {
                 this.error = false
                 this.message = response.data.message
 
-                setTimeout(() => { 
-                    this.loadingStop = false
-                }, constants.intervals.minute );                
+                this.setInterval('GWStopStatusTimer', this.checkGWrunning, constants.intervals.seconds3)
+                this.setGWTimeout('stop', this.GWStopStatusTimer)
             })
             .catch(error => {
                 console.log(error)
@@ -254,6 +253,20 @@ export default {
                 routine()
             }, interval )
         },
+        setGWTimeout(action, timer) {
+            setTimeout(() => { 
+                this.error = true
+                this.message = 'Gateway ' + action + ' timeout.'
+
+                clearInterval(timer)
+
+                if (action == 'start') {
+                    this.loadingStart = false
+                } else if (action == 'stop') {
+                    this.loadingStop = false
+                }
+            }, constants.intervals.minute )
+        },      
         
         setGWStatusInterval() {
             this.setInterval('GWStatusTimer', this.checkGWrunning)
@@ -270,6 +283,10 @@ export default {
                 clearInterval(this.GWStartStatusTimer)
             }
 
+            if (this.GWStopStatusTimer) {
+                clearInterval(this.GWStopStatusTimer)
+            }
+
             if (this.GWLogsTimer) {
                 clearInterval(this.GWLogsTimer)
             }
@@ -284,7 +301,6 @@ export default {
                 if ('error' in response.data) {      // currently not used in GW Logs response
                     this.error = true
                 } else {
-                    this.error = false
                     this.logs = response.data
                 }
             })
