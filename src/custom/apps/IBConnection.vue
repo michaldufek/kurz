@@ -49,12 +49,13 @@
             </SlideYUpTransition>
         </div>
 
-        <div class="row" style="margin-top: 20px">
-            <ul v-if="connected" style="list-style-type: none;">
+        <div class="row" v-if="connected" style="margin-top: 20px">
+            <!-- <ul style="list-style-type: none;">
                 <li v-for="log in logsParsed">
                     {{ log }}
                 </li>
-            </ul>
+            </ul> -->
+            {{ logsParsed }}
         </div>
 
     </div>
@@ -107,7 +108,8 @@ export default {
 
     computed: {
         logsParsed() {
-            return this.logs.map(log => `[${helper.formatDateTime(log.timestamp)}] ${log.type}: ${log.message}`)
+            // return this.logs.map(log => `[${helper.formatDateTime(log.timestamp)}] ${log.type}: ${log.message}`)
+            return `${helper.formatDateTime(this.logs.timestamp)}: ${JSON.stringify(this.logs.positions)}`
         }
     },
 
@@ -132,7 +134,6 @@ export default {
                     this.error = true
                     this.message = response.data.error
                 } else {
-                    this.error = false
                     this.connected = response.data.status
 
                     if (this.connected) {                        
@@ -300,7 +301,6 @@ export default {
                 if ('error' in response.data) {      // currently not used in GW Logs response
                     this.error = true
                 } else {
-                    this.error = false
                     this.logs = response.data
                 }
             })
