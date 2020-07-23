@@ -274,7 +274,7 @@
       setCheckBacktestsInterval() {
         let interval = setInterval(() => { 
           this.checkBacktests(interval)
-        }, constants.intervals.backtestsDone )        
+        }, constants.intervals.seconds3 )        
       },
       checkBacktests(interval) {
         let backtestsDone = true

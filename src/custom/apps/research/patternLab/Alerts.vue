@@ -130,7 +130,7 @@
       setCheckAlertsInterval() {
         let interval = setInterval(() => { 
           this.checkAlerts(interval)
-        }, constants.intervals.backtestsDone )        
+        }, constants.intervals.seconds3 )        
       },
       checkAlerts(interval) {
         let idsDone = []
