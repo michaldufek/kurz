@@ -395,7 +395,7 @@
         "title": "Genetika"
       }
     }, 
-    "tsmodeling": {
+    "fsengineering": {
       "selectBacktest":"Vyberte backtest", 
       "models": "Available Models",
       "basic": "Basic",
@@ -473,7 +473,7 @@
     "patternLab": "Pattern Lab",
     "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
-    "tsmodeling": "TS Modeling",
+    "fsengineering": "Features Engineering",
     "wareHouse": "Sklad Strategií",
     "notifications": "Notifikace",
     "userProfile": "Profil"
