@@ -13,14 +13,12 @@ const dwhPartUrl = APIPartUrl + "/datawarehouse"
 const sweepPartUrl = "/Sweep"
 const requestPartUrl = "Request"
 const SPPartUrl = APIPartUrl + "/sp"
-const PLminiPartUrl = "pl"
+const PLminiPartUrl = "pl2"
 const PLPartUrl = APIPartUrl + "/" + PLminiPartUrl
-const PL2PartUrl = APIPartUrl + "/pl2"
 const livedeplPartUrl = APIPartUrl + "/livedepl"
 const tickerPartUrl = "/Ticker"
 const patternPartUrl = "/Pattern"
 const gwPartUrl = "/Gateway"
-const patternResultsPartUrl = "/Pattern"
 const resultPartUrl = "Result"
 const alertPartUrl = "/Alert"
 const searchPartUrl = "?search="
@@ -47,7 +45,7 @@ export default {
         dataReload: 1000 * 60 * 10, // 10 minutes 
 
         // interval for checking whether we should play some orderStatus change sound
-        soundSignal: 1000 * 60, // minute
+        minute: 1000 * 60, // minute
 
         // time of shaking of login forms if unsuccessful
         shake: 500, // half second
@@ -56,7 +54,7 @@ export default {
         loginShow: 230,
 
         // time of checking whether Backtest patterns backtests are done
-        backtestsDone: 1000 * 3, // 3 seconds,
+        seconds3: 1000 * 3, // 3 seconds,
 
         // time of downloading optimization results
         featEngReload: 1000 * 5 // 5 seconds
@@ -90,9 +88,8 @@ export default {
             chart: PLPartUrl + "/HistoryData/",
             patternsHistory: PLPartUrl + patternPartUrl + "Tests",
             backtestPatterns: {
-                results: PLPartUrl + patternResultsPartUrl + resultPartUrl + "s",
-                results2: PL2PartUrl + patternResultsPartUrl + resultPartUrl + "s",
-                status: PLPartUrl + patternResultsPartUrl  + resultPartUrl + "s" + "Status"
+                results: PLPartUrl + patternPartUrl + resultPartUrl + "s",
+                status: PLPartUrl + patternPartUrl  + resultPartUrl + "s" + "Status"
             },
             alert: PLPartUrl + alertPartUrl + "/",
             alerts: PLPartUrl + alertPartUrl + "s"

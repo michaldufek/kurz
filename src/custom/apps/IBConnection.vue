@@ -10,7 +10,7 @@
                     class="modal-sm animated landingCard"
                     :class="{ shake: isShaking }"
                     v-if="showLogin">
-                    <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
+                    <DualRingLoader v-if="loading || loadingStart || loadingStop" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
                     <template>
                         <div v-if="!connected" class="text-center text-muted mb-4">
                             {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
@@ -49,12 +49,13 @@
             </SlideYUpTransition>
         </div>
 
-        <div class="row" style="margin-top: 20px">
-            <ul v-if="connected" style="list-style-type: none;">
-                <li v-for="log in logs">            
-                    {{`[${log.timestamp}] ${log.info}`}}
+        <div class="row" v-if="connected" style="margin-top: 20px">
+            <!-- <ul style="list-style-type: none;">
+                <li v-for="log in logsParsed">
+                    {{ log }}
                 </li>
-            </ul>
+            </ul> -->
+            {{ logsParsed }}
         </div>
 
     </div>
@@ -73,13 +74,21 @@ export default {
         SlideYUpTransition,
         DualRingLoader
     },
+
     data() {
       return { 
         storeKey: constants.translationKeys.IBLogin,
-        GWLogsTimer: null,
         logs: [],
 
+        GWStatusTimer: null,
+        GWStartStatusTimer: null,
+        GWStopStatusTimer: null,
+        GWLogsTimer: null,
+
         loading: false,        
+        loadingStart: false,
+        loadingStop: false,
+
         connected: false,
         error: false,
         message: '',
@@ -96,6 +105,14 @@ export default {
         errorClass: 'error'
       };
     },
+
+    computed: {
+        logsParsed() {
+            // return this.logs.map(log => `[${helper.formatDateTime(log.timestamp)}] ${log.type}: ${log.message}`)
+            return `${helper.formatDateTime(this.logs.timestamp)}: ${JSON.stringify(this.logs.positions)}`
+        }
+    },
+
     methods: {
         init() {
             let data = this.$store.getItem(this.storeKey)
@@ -117,11 +134,24 @@ export default {
                     this.error = true
                     this.message = response.data.error
                 } else {
-                    this.error = false
                     this.connected = response.data.status
 
-                    if (this.connected) {
+                    if (this.connected) {                        
                         this.setGWLogsInterval()
+
+                        if (this.loadingStart) {
+                            this.loadingStart = false
+                            this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
+                        }
+                    } else {
+                        if (this.loadingStop) {
+                            this.loadingStop = false
+                            clearInterval(this.GWStopStatusTimer)
+                        }
+
+                        if (this.GWLogsTimer) {
+                            clearInterval(this.GWLogsTimer);
+                        }
                     }
                 }
             })
@@ -129,6 +159,7 @@ export default {
                 console.log(error)
                 this.error = true
                 this.message = error.message
+                this.connected = false
                 this.shakeModal()
 
                 if (error.message === constants.strings.networkError) {
@@ -154,7 +185,7 @@ export default {
         }, 
 
         startGW() {
-            this.loading = true
+            this.loadingStart = true
 
             this.$http
             .post(constants.urls.liveDepl.gateway.start, {
@@ -163,102 +194,113 @@ export default {
                 password: this.pass
             })
             .then(response => {
-                this.error = false
+                this.error = false                
                 this.message = response.data.message
-                this.connected = true
                 this.pass = ''
 
-                this.setGWLogsInterval()
-
-                this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
+                this.setInterval('GWStartStatusTimer', this.checkGWrunning, constants.intervals.seconds3)
+                this.setGWTimeout('start', this.GWStartStatusTimer)
             })
             .catch(error => {
                 console.log(error)
                 this.error = true
                 this.shakeModal()
+                this.loadingStart = false
 
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
                     this.message = error.message
-                }
-
-                if ('type' in error.response.data) {
-                    this.message = error.response.data.type + ' error'
-
-                    if ('message' in error.response.data) {
-                        this.message += ': ' + error.response.data.message
-                    } else {
-                        this.message += '.'
-                    }
+                } else {
+                    this.message = error
                 }                
             })
-            .finally(() => this.loading = false)
         },
         stopGW() {
-            this.loading = true
+            this.loadingStop = true
 
             this.$http
             .post(constants.urls.liveDepl.gateway.stop, { userid: this.email }, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
                 this.error = false
                 this.message = response.data.message
-                this.connected = false
 
-                if (this.GWLogsTimer) {
-                    clearInterval(this.GWLogsTimer);
-                }
+                this.setInterval('GWStopStatusTimer', this.checkGWrunning, constants.intervals.seconds3)
+                this.setGWTimeout('stop', this.GWStopStatusTimer)
             })
             .catch(error => {
                 console.log(error)
-                this.error = true                
+                this.error = true
                 this.shakeModal()
+                this.loadingStop = false
 
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.disconnect')}`)
                     this.message = error.message
-                }
-
-                if ('type' in error.response.data) {
-                    this.message = error.response.data.type + ' error'
-
-                    if ('message' in error.response.data) {
-                        this.message += ': ' + error.response.data.message
-                    } else {
-                        this.message += '.'
-                    }
+                } else {
+                    this.message = error
                 }
             })
-            .finally(() => this.loading = false)
         }, 
 
-        setInterval(timer, routine) {
+        setInterval(name, routine, interval = constants.intervals.minute) {
             routine()
         
-            if (timer) {
-                clearInterval(timer)
+            if (this[name]) {
+                clearInterval(this[name])
             }
 
-            timer = setInterval(() => { 
+            this[name] = setInterval(() => {
                 routine()
-            }, constants.intervals.soundSignal )
+            }, interval )
         },
+        setGWTimeout(action, timer) {
+            setTimeout(() => { 
+                this.error = true
+                this.message = 'Gateway ' + action + ' timeout.'
+
+                clearInterval(timer)
+
+                if (action == 'start') {
+                    this.loadingStart = false
+                } else if (action == 'stop') {
+                    this.loadingStop = false
+                }
+            }, constants.intervals.minute )
+        },      
         
         setGWStatusInterval() {
-            this.setInterval(this.GWStatusTimer, this.checkGWrunning)
+            this.setInterval('GWStatusTimer', this.checkGWrunning)
         },
         setGWLogsInterval() {
-            this.setInterval(this.GWLogsTimer, this.getGWLogs)
+            this.setInterval('GWLogsTimer', this.getGWLogs)
         },
+        destroyTimers() {
+            if (this.GWStatusTimer) {
+                clearInterval(this.GWStatusTimer)
+            }
+
+            if (this.GWStartStatusTimer) {
+                clearInterval(this.GWStartStatusTimer)
+            }
+
+            if (this.GWStopStatusTimer) {
+                clearInterval(this.GWStopStatusTimer)
+            }
+
+            if (this.GWLogsTimer) {
+                clearInterval(this.GWLogsTimer)
+            }
+        },
+
         getGWLogs() {
             this.loading = true
 
             this.$http
             .get(constants.urls.liveDepl.gateway.logs + '/' + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
-                if ('error' in response.data) {
+                if ('error' in response.data) {      // currently not used in GW Logs response
                     this.error = true
                 } else {
-                    this.error = false
                     this.logs = response.data
                 }
             })
@@ -270,6 +312,16 @@ export default {
 
                 if (error.message === constants.strings.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.logs')}`)
+                }
+
+                if ('type' in error.response.data) {
+                    this.message = error.response.data.type + ' error'
+
+                    if ('message' in error.response.data) {
+                        this.message += ': ' + error.response.data.message
+                    } else {
+                        this.message += '.'
+                    }
                 }
             })
             .finally(() => this.loading = false)
@@ -298,14 +350,9 @@ export default {
         this.init()
     },
 
-    destroyed() {
-        if (this.GWStatusTimer) {
-            clearInterval(this.GWStatusTimer)
-        }
-        if (this.GWLogsTimer) {
-            clearInterval(this.GWLogsTimer)
-        }
-    },
+    beforeDestroy() {
+        this.destroyTimers()
+    },    
 
     watch: {
         email(val) {

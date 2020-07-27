@@ -252,6 +252,7 @@
         "initialCapital": "Initial capital",
         "numberUSD": "Number in USD",
         "export": "Export",
+        "patternResult": "Pattern result",
         "entryRules": {
           "direction": "Direction",
           "directions": {
