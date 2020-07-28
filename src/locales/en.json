@@ -81,6 +81,11 @@
     "performanceStatistics": "Performance statistics",
     "liquidate": "Liquidate",
     "confirmLiquidate": "Are you sure you want to liquidate?",
+    "tradeLog": {
+      "title": "Trade Log",
+      "hide": "Hide",
+      "show": "Show"
+    },
     "lastTradesTable": {
       "title": "Last trades",
       "columns": [

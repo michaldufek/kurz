@@ -82,6 +82,11 @@
     "performanceStatistics": "Výkon - statistiky",
     "liquidate": "Likvidace",
     "confirmLiquidate": "Jste si jistí, že chcete livkidaci?",
+    "tradeLog": {
+      "title": "Obchodní log",
+      "hide": "Skrýt",
+      "show": "Ukázat"
+    },
     "lastTradesTable": {
       "title": "Poslední obchody",
       "columns": [
