@@ -155,6 +155,8 @@ export default {
 
                         if (this.loading.start) {
                             this.loading.start = false
+                            this.storeLoading(this.loading)                                 // must store explicitly because redirect is faster than watcher
+
                             this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
                         }
                     } else {
@@ -356,6 +358,11 @@ export default {
             setTimeout(() => {
                 this.showLogin = true  
             }, constants.intervals.loginShow );
+        },
+
+        storeLoading(val) {
+            let val2store = JSON.parse(JSON.stringify(val))
+            helper.updateStore(this.$store, 'loading', val2store, this.storeKey) 
         }
     },
 
@@ -373,8 +380,7 @@ export default {
         },
         loading: {
             handler(val){
-                let val2store = JSON.parse(JSON.stringify(val))
-                helper.updateStore(this.$store, 'loading', val2store, this.storeKey) 
+                this.storeLoading(val)
             },
             deep: true
         }
