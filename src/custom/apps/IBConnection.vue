@@ -85,6 +85,8 @@ export default {
             stopStatus: null,
             logs: null
         },
+        defaultTimeout: constants.intervals.minute,
+        GWTimeoutStartTime: performance.now(),
 
         loading: {
             status: false,        
@@ -122,6 +124,12 @@ export default {
                 this.email = data.email
                 if (data.loading) {
                     this.loading = data.loading
+                    
+                    if (this.loading.start) {
+                        this.setGWStartStatusInterval(data.remainingGWTimeout)
+                    } else if (this.loading.stop) {
+                        this.setGWStopStatusInterval(data.remainingGWTimeout)
+                    }
                 }
 
                 this.setGWStatusInterval()
@@ -204,8 +212,7 @@ export default {
                 this.message = response.data.message
                 this.pass = ''
 
-                helper.setInterval(this.timers, 'startStatus', this.checkGWrunning, constants.intervals.seconds3)
-                this.setGWTimeout('start', this.timers.startStatus)
+                this.setGWStartStatusInterval()
             })
             .catch(error => {
                 console.log(error)
@@ -230,8 +237,7 @@ export default {
                 this.error = false
                 this.message = response.data.message
 
-                helper.setInterval(this.timers, 'stopStatus', this.checkGWrunning, constants.intervals.seconds3)
-                this.setGWTimeout('stop', this.timers.stopStatus)
+                this.setGWStopStatusInterval()                
             })
             .catch(error => {
                 console.log(error)
@@ -248,7 +254,7 @@ export default {
             })
         }, 
 
-        setGWTimeout(action, timer) {
+        setGWTimeout(action, timer, remainingTimeout) {
             setTimeout(() => { 
                 this.error = true
                 this.message = 'Gateway ' + action + ' timeout.'
@@ -260,11 +266,21 @@ export default {
                 } else if (action == 'stop') {
                     this.loading.stop = false
                 }
-            }, constants.intervals.minute )
+            }, remainingTimeout && remainingTimeout !== undefined ? remainingTimeout : this.defaultTimeout )
+
+            this.GWTimeoutStartTime = performance.now()
         },      
         
         setGWStatusInterval() {
             helper.setInterval(this.timers, 'status', this.checkGWrunning)
+        },
+        setGWStartStatusInterval(remainingTimeout=null) {
+            helper.setInterval(this.timers, 'startStatus', this.checkGWrunning, constants.intervals.seconds3)
+            this.setGWTimeout('start', this.timers.startStatus, remainingTimeout)
+        },
+        setGWStopStatusInterval(remainingTimeout=null) {
+            helper.setInterval(this.timers, 'stopStatus', this.checkGWrunning, constants.intervals.seconds3)
+            this.setGWTimeout('stop', this.timers.stopStatus, remainingTimeout)
         },
         setGWLogsInterval() {
             helper.setInterval(this.timers, 'logs', this.getGWLogs)
@@ -281,6 +297,8 @@ export default {
             if (this.timers.stopStatus) {
                 clearInterval(this.timers.stopStatus)
             }
+
+            helper.updateStore(this.$store, "remainingGWTimeout", this.defaultTimeout - (performance.now() - this.GWTimeoutStartTime), this.storeKey)
 
             if (this.timers.logs) {
                 clearInterval(this.timers.logs)
@@ -346,7 +364,7 @@ export default {
     },
 
     beforeDestroy() {
-        this.destroyTimers()
+        this.destroyTimers()        
     },    
 
     watch: {
