@@ -85,7 +85,7 @@
         }))
         .catch(error => {
           console.log(error)
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t(constants.storeKeys.portfolioManager))
           }
         })
@@ -105,7 +105,7 @@
         .post(constants.urls.liveDepl.strategy.deploy, { bt_id: id, userid: this.email })
         .catch(error => {
             console.log(error)
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.portfolioManager.live')}`)
             }
         })
@@ -117,7 +117,7 @@
         .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { in_portfolio: false })
         .catch(error => {
             console.log(error)
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.portfolioManager.live')}`)
             }
         })
@@ -129,7 +129,7 @@
         .post(constants.urls.liveDepl.strategy.stop, { bt_id: id, userid: this.email })
         .catch(error => {
             console.log(error)
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.portfolioManager.live')}`)
             }
         })

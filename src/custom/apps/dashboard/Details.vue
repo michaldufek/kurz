@@ -49,7 +49,7 @@
         })
         .catch(error => {
           console.log(error)
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('sidebar.details')} ${this.$t('login.IB.status')}`)
           }
         })

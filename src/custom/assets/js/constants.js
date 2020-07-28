@@ -131,7 +131,10 @@ export default {
     },
 
     strings: {
-        networkError: "Network Error",
+        errors: {
+            networkError: "Network Error",
+            CSRF: "CSRF Failed: CSRF token missing or incorrect."
+        },
         etc: "...",
         all: "all",
         bullish: "Bullish",

@@ -7,7 +7,7 @@
         <h5>{{ noDataText ? noDataText : $t('noData') }}</h5>
       </section>
       <section v-else-if="isError">
-        <p>{{ $t('dataError') }}</p>
+        <p>{{ $t('errors.dataError') }}</p>
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[finishedLoadings ? dataClass : noDataClass, loaderClass]"/>
@@ -207,7 +207,7 @@ export default {
                 reject()
               }
 
-              if (error.message === constants.strings.networkError) {
+              if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('table') + ')')
               }
             })

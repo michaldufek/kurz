@@ -20,8 +20,8 @@
       <div class="col-12">
         <div style="text-align: right">
           <base-button size="sm" icon @click="tradeLog.show = !tradeLog.show" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem; margin-right: -15px; margin-top: -5px">
-            <i v-if="tradeLog.show" :title="$t('dashboard.tradeLog.hide') + ' ' + $t('dashboard.tradeLog')" class="tim-icons icon-minimal-up"></i>
-            <i v-if="!tradeLog.show" :title="$t('dashboard.tradeLog.show') + ' ' + $t('dashboard.tradeLog')" class="tim-icons icon-minimal-down"></i>
+            <i v-if="tradeLog.show" :title="$t('dashboard.tradeLog.hide') + ' ' + $t('dashboard.tradeLog.title')" class="tim-icons icon-minimal-up"></i>
+            <i v-if="!tradeLog.show" :title="$t('dashboard.tradeLog.show') + ' ' + $t('dashboard.tradeLog.title')" class="tim-icons icon-minimal-down"></i>
           </base-button>       
         </div>
         <div v-if="tradeLog.show" style="background: black; margin-bottom: 10px; margin-top: -20px; margin-left: 15px; white-space: break-spaces; font-size: xx-small; width: 98%">
@@ -98,7 +98,7 @@
         updateKey: 0,
 
         tradeLog: {
-          show: true,
+          show: false,
           timer: null,
           text: ''
         },
@@ -146,14 +146,16 @@
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')} - ${response.data.error}`)
           } else {
             this.connected = response.data.status
-            helper.setInterval(this.tradeLog, 'timer', this.getTradeLog)
+            if (this.connected) {
+              helper.setInterval(this.tradeLog, 'timer', this.getTradeLog)
+            }
           }
         })
         .catch(error => {
           console.log(error)
           this.connected = false
 
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')}`)
           }
         })
@@ -176,8 +178,8 @@
         .catch(error => {
           console.log(error)
 
-          if (error.message === constants.strings.networkError) {
-              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} - ${this.$t('dashboard.tradeLog')}`)
+          if (error.message === constants.strings.errors.networkError) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} - ${this.$t('dashboard.tradeLog.title')}`)
           } else {
             if ('type' in error.response.data) {
               var message = error.response.data.type + ' error'
@@ -237,7 +239,7 @@
             console.log(error)
             this.error = true
 
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
                 this.message = error.message
             }
@@ -272,7 +274,7 @@
             console.log(error)
             this.error = true
 
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
                 this.message = error.message
             }

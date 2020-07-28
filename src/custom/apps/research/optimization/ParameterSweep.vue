@@ -321,7 +321,7 @@ export default {
             // .then(_ => this.running = true)
             // .catch(error => {
             //     console.log(error);
-            //     if (error.message === constants.strings.networkError) {
+            //     if (error.message === constants.strings.errors.networkError) {
             //         helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
             //     }
             // })

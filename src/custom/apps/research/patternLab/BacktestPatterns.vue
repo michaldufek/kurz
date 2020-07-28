@@ -293,7 +293,7 @@
         .catch(error => {
           console.log(error);
 
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
           }
         })
@@ -346,7 +346,7 @@
                 .catch(error => {
                   console.log(error);
 
-                  if (error.message === constants.strings.networkError) {
+                  if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
                   }
                 })
@@ -523,7 +523,7 @@
           this.loading = false
           console.log(error);
 
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
           } else {
             this.$notify({

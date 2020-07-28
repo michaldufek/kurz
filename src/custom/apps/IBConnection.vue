@@ -168,7 +168,7 @@ export default {
                 this.connected = false
                 this.shakeModal()
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.status')}`)
                 }
             })
@@ -213,7 +213,7 @@ export default {
                 this.shakeModal()
                 this.loading.start = false
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
                     this.message = error.message
                 } else {
@@ -239,7 +239,7 @@ export default {
                 this.shakeModal()
                 this.loading.stop = false
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.disconnect')}`)
                     this.message = error.message
                 } else {
@@ -305,7 +305,7 @@ export default {
                 this.message = error.message
                 this.shakeModal()
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.logs')}`)
                 }
 

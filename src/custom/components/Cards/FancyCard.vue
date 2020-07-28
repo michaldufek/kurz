@@ -15,7 +15,7 @@
       <p>{{ $t('noData') }}</p>
     </section>
     <section v-else-if="isError">
-      <p>{{ $t('dataError') }}</p>
+      <p>{{ $t('errors.dataError') }}</p>
     </section>
     <section v-else>
       <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="[ statsData.length ? dataClass : noDataClass, loaderClass ]"/>
@@ -143,7 +143,7 @@ export default {
           console.log(error);
           this.error = true
 
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('card') + ')')
           }
         })
