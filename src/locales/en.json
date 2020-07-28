@@ -403,7 +403,7 @@
         "title": "Genetics"
       }
     },
-    "tsmodeling": {
+    "fsengineering": {
       "selectBacktest":"Select Backtest", 
       "models": "Available Models",
       "basic": "Basic",
@@ -481,7 +481,7 @@
     "patternLab": "Pattern Lab",
     "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
-    "tsmodeling": "TS Modeling",
+    "fsengineering": "Features Engineering",
     "wareHouse": "Ware House",
     "notifications": "Notifications",
     "userProfile": "User Profile"

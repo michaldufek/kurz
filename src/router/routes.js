@@ -17,7 +17,7 @@ const Details = () => import(/* webpackChunkName: "details" */"@/custom/apps/das
 const PortfolioManager = () => import(/* webpackChunkName: "portfolioManager" */"@/custom/apps/research/PortfolioManager.vue");
 const StockPickingLab = () => import(/* webpackChunkName: "stockPickingLab" */"@/custom/apps/research/StockPickingLab.vue");
 // const RelativeValuesLab = () => import(/* webpackChunkName: "relativeValuesLab" */"@/custom/apps/research/RelativeValuesLab.vue");
-const TSModeling = () => import(/* webpackChunkName: "tsmodeling" */"@/custom/apps/research/TSModeling.vue");
+const FSEngineering = () => import(/* webpackChunkName: "fsengineering" */"@/custom/apps/research/FSEngineering.vue");
 const WareHouse = () => import(/* webpackChunkName: "wareHouse" */"@/custom/apps/research/WareHouse.vue");
 // menu SubViews
 const Profile = () => import(/* webpackChunkName: "profile" */"@/pages/Profile.vue");
@@ -194,9 +194,9 @@ const routes = [
       //   component: RelativeValuesLab
       // },
       {
-        path: "/research/tsmodeling",
-        name: "tsmodeling",
-        component: TSModeling
+        path: "/research/fsengineering",
+        name: "fsengineering",
+        component: FSEngineering
       }, 
       {
         path: "/research/wareHouse",
