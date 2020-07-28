@@ -39,7 +39,7 @@
 
       checkGWrunning() {
         this.$http
-        .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
+        .get(constants.urls.liveDepl.gateway.status + this.email)
         .then(response => {
           if ('error' in response.data) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('sidebar.details')} ${this.$t('login.IB.status')} - ${response.data.error}`)
@@ -49,7 +49,7 @@
         })
         .catch(error => {
           console.log(error)
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('sidebar.details')} ${this.$t('login.IB.status')}`)
           }
         })

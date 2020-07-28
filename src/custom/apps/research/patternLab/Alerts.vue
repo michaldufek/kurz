@@ -83,7 +83,7 @@
               .then(response => this.alerts.push(response.data))
               .catch(error => {
                 console.log(error);
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                   helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
                 }
               })
@@ -100,7 +100,7 @@
           .then(response => response.data.forEach(datum => this.alerts.push(datum)))
           .catch(error => {
             console.log(error);
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
               helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
             }
           })
@@ -118,7 +118,7 @@
           .put(constants.urls.patternLab.alert + rowAlerts[0].id, { app: row[this.columns[3].toLowerCase()], email: row[this.columns[2].toLowerCase()] }, this.$store.getItem('headers'))
           .catch(error => {
             console.log(error);
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
               helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
             }
           })
@@ -144,7 +144,7 @@
         }))
         .catch(error => {
           console.log(error);
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.errorTitle)
           }
         })

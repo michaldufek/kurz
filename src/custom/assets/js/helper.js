@@ -175,19 +175,6 @@ export default {
         return newDatetimes
     },
 
-    isNumber(val) {
-        return val instanceof Number || typeof val === 'number'
-    },
-
-    notifyAudio(self, element, type, msg) {
-        element.play();
-
-        self.$notify({
-          type: type, 
-          message: msg
-        })
-    },
-
     // convertors
     convertTimeframe(timeframe) {
         let index = i18n.t('research.patternLab.timeframes').indexOf(timeframe)
@@ -400,7 +387,7 @@ export default {
         return { backtestsNames, loading, selectedBacktest, updateKey }
     },
 
-    // plurazlizer
+    // pluralizer
     pluralize(nr, translationKey) {
         let nrsKey = translationKey + 's'
 
@@ -479,5 +466,31 @@ export default {
         }
 
         return i18n.t('chartNeverUpdated')
+    },
+
+    // others
+    isNumber(val) {
+        return val instanceof Number || typeof val === 'number'
+    },
+
+    notifyAudio(self, element, type, msg) {
+        element.play();
+
+        self.$notify({
+          type: type, 
+          message: msg
+        })
+    },
+
+    setInterval(self, name, routine, interval = constants.intervals.minute) {
+        routine()
+    
+        if (self[name]) {
+            clearInterval(self[name])
+        }
+
+        self[name] = setInterval(() => {
+            routine()
+        }, interval )
     }
 }

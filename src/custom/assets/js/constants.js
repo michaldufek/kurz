@@ -65,13 +65,14 @@ export default {
             gateway: {
                 start: livedeplPartUrl + gwPartUrl + "Start/",
                 stop: livedeplPartUrl + gwPartUrl + "Stop/",
-                status: livedeplPartUrl + gwPartUrl + "Status",
-                logs: livedeplPartUrl + gwPartUrl + "Logs"
+                status: livedeplPartUrl + gwPartUrl + "Status/",
+                logs: livedeplPartUrl + gwPartUrl + "Logs/"
             },
             strategy: {
                 deploy: livedeplPartUrl + "/StrategyDeploy/",
                 stop: livedeplPartUrl + "/StrategyStop/"
             },
+            tradeLog: livedeplPartUrl + "/TradeLog/",
             report: livedeplPartUrl + "/Report/",
             liquidate: livedeplPartUrl + "/Liquidate/"
         },
@@ -130,7 +131,10 @@ export default {
     },
 
     strings: {
-        networkError: "Network Error",
+        errors: {
+            networkError: "Network Error",
+            CSRF: "CSRF Failed: CSRF token missing or incorrect."
+        },
         etc: "...",
         all: "all",
         bullish: "Bullish",

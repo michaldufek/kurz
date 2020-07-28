@@ -63,7 +63,7 @@ export default {
             })
             .catch(error => {
                 console.log(error)
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t(this.patternsKey + '.title'))
                 }
             })
@@ -171,14 +171,14 @@ export default {
                 .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ row.btId, constants.urls.patternLab.abbreviation ]), { name: row[this.columns[0].toLowerCase()] })
                 .catch(error => {
                     console.log(error)
-                    if (error.message === constants.strings.networkError) {
+                    if (error.message === constants.strings.errors.networkError) {
                         helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.saveName')}`)
                     }
                 })
             })
             .catch(error => {
                 console.log(error)
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.patternsKey + '.title')} ${this.$t('research.save')}`)
                 }
             })

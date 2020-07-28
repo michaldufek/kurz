@@ -116,7 +116,7 @@
         }))
         .catch(error => {
           console.log(error)
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t(this.warehouseKey))
           }
         })
@@ -130,7 +130,7 @@
         .delete(constants.urls.datawarehouse.result + id)
         .catch(error => {
           console.log(error)
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.wareHouse.remove')}`)
           }
         })
@@ -148,7 +148,7 @@
         .patch(constants.urls.datawarehouse.result + helper.encodeRouteParams([ id, constants.urls.patternLab.abbreviation ]), { in_portfolio: true })
         .catch(error => {
             console.log(error)
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t(this.warehouseKey)} ${this.$t('research.wareHouse.select')}`)
             }
         })
