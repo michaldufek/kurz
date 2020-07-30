@@ -309,6 +309,12 @@ export default {
       if ("non_field_errors" in err.response.data) {
         msg += err.response.data.non_field_errors[0] + '\n'
       }
+      if ("detail" in err.response.data) {
+        if (err.response.data.detail === constants.strings.errors.CSRF) {
+	  this.setCSRFToken()
+          msg += err.response.data.detail + ' ' + i18n.t('errors.tryAgain') + '\n'
+        }
+      }
       if (!msg) {
         msg += i18n.t('errors.unknownError')
       }
