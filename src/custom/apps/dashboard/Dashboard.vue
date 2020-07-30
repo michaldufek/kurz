@@ -25,7 +25,7 @@
           </base-button>       
         </div>
         <div v-if="tradeLog.show" style="background: black; margin-bottom: 10px; margin-top: -20px; margin-left: 15px; white-space: break-spaces; font-size: xx-small; width: 98%">
-          {{ JSON.stringify(tradeLog.text, null, 4) }}
+          {{ tradeLogParsed }}
         </div>
       </div>
     </div>
@@ -116,6 +116,17 @@
         msgClass: 'message',
         noErrorClass: 'noError',
         errorClass: 'error'
+      }
+    },
+
+    computed: {
+      tradeLogParsed() {
+        let result = ""
+        this.tradeLog.forEach(log => {
+          text = log.text.replace(/\'/g, '"')
+          result +=  '[' + log.timestamp + ']: ' + JSON.stringify(JSON.parse(text), null, 4) + '\n'
+        })
+        return result
       }
     },
 
