@@ -24,7 +24,7 @@
             <i v-if="!tradeLog.show" :title="$t('dashboard.tradeLog.show') + ' ' + $t('dashboard.tradeLog.title')" class="tim-icons icon-minimal-down" style="width: 25px"></i>
           </base-button>       
         </div>
-        <div v-if="tradeLog.show" style="background: black; margin-bottom: 10px; margin-top: -20px; margin-left: 15px; white-space: break-spaces; font-size: xx-small; width: 98%">
+        <div v-if="tradeLog.show" style="background: black; margin-bottom: 10px; margin-top: -20px; margin-left: 15px; white-space: pre; font-size: xx-small; width: 98%">
           {{ tradeLogParsed }}
         </div>
       </div>
@@ -122,10 +122,7 @@
     computed: {
       tradeLogParsed() {
         let result = ""
-        this.tradeLog.forEach(log => {
-          text = log.text.replace(/\'/g, '"')
-          result +=  '[' + log.timestamp + ']: ' + JSON.stringify(JSON.parse(text), null, 4) + '\n'
-        })
+	this.tradeLog.text.forEach(log => result += `[${log.timestamp}]: ${log.text}\n`)
         return result
       }
     },
