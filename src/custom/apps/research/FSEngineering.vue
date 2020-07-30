@@ -138,7 +138,7 @@ export default {
     },
     data() {
         return {
-            storeKey: 'research.tsmodeling',
+            storeKey: 'research.fsengineering',
 
             backtestsNames: [],
             selectedBacktest: null,
