@@ -311,7 +311,7 @@ export default {
       }
       if ("detail" in err.response.data) {
         if (err.response.data.detail === constants.strings.errors.CSRF) {
-	  this.setCSRFToken()
+	        this.setCSRFToken()
           msg += err.response.data.detail + ' ' + i18n.t('errors.tryAgain') + '\n'
         }
       }

@@ -33,7 +33,7 @@
   "errors": {
     "dataError": "Omlouváme se, nejsme schopní získat data. Zkusíme to později...",
     "unknownError": "Neznámá chyba.",
-    "tryAgain": "Prosím, zkuste opět, nebo obnovte stránku."
+    "tryAgain": "Prosím, zkuste opět."
   },
   "paging": {
     "previous": "Předchozí",
