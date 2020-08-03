@@ -1,7 +1,7 @@
 import i18n from "@/i18n"
 import constants from './constants';
 
-export default { 
+export default {
     // statistics
     cagr(equity, nrOfQuarters) {
         // cagr = (df['equity'].iloc[-1] / df['equity'].iloc[0]) ** (1 / (time_span.days/365)) - 1
@@ -24,7 +24,7 @@ export default {
         // this_year = df[df['time'] > dt.datetime(now.year, 1, 1)]
         let now = new Date(Date.now())
         let monthBefore = now.getMonth() - (nr * 3)
-        let yearBefore = now.getFullYear() - (monthBefore < 0 ? 1 : 0)        
+        let yearBefore = now.getFullYear() - (monthBefore < 0 ? 1 : 0)
         let timeFiltered = data.time.filter(dt => new Date(dt) >= new Date(yearBefore, monthBefore < 0 ? 12 + monthBefore : monthBefore, now.getDate()))
         return data.equity.slice(data.equity.length - timeFiltered.length, data.equity.length)
     },
@@ -49,7 +49,7 @@ export default {
 
         allRows.forEach(oldRow => {
             let aggRow = {}
-            
+
             for (const [key, oldVal] of Object.entries(oldRow)) {
                 if (typeof oldVal === "boolean") {
                     var newVal = oldVal
@@ -76,19 +76,19 @@ export default {
                     newVal = ((firstTime ? newWeight : 1) * Number(newVal))
                                 + (firstTime
                                     ? 0
-                                    : (newWeight * ((oldValSplitted && oldValSplitted.length > 1) 
-                                                    ? Number(newRows[rowNr][key].split(sep)[1]) 
+                                    : (newWeight * ((oldValSplitted && oldValSplitted.length > 1)
+                                                    ? Number(newRows[rowNr][key].split(sep)[1])
                                                     : newRows[rowNr][key]))
                                     )
-                    if (noAverage && !firstTime) {  
-                        // it's probably Equity outstanding statistic                          
+                    if (noAverage && !firstTime) {
+                        // it's probably Equity outstanding statistic
                         newVal /= 2
                     }
                 }
-                
+
                 if (oldValSplitted && oldValSplitted.length > 1) {
                     newVal = [ oldValSplitted[0], newVal ].join(sep)
-                } 
+                }
                 }
 
                 aggRow[key] = newVal
@@ -103,10 +103,10 @@ export default {
     createTradesRow(rows, datum, base) {
         let rowNr = 0
 
-        Object.keys(datum.output.trades.pnl).forEach(_ => 
+        Object.keys(datum.output.trades.pnl).forEach(_ =>
             rows.push([
-                rowNr + 1,    // #                    
-                base.symbol,    // Asset                    
+                rowNr + 1,    // #
+                base.symbol,    // Asset
                 base.pattern,    // Pattern
                 datum.direction,   // Direction
                 'Entry price',   // Entry price
@@ -135,7 +135,7 @@ export default {
         ])
     },
 
-    // date-time types formatting    
+    // date-time types formatting
     pad(nr) {
         return String(nr).length < 2 ? "0" + nr : nr
     },
@@ -152,7 +152,14 @@ export default {
         // for RRRRMMDD formatted inputs
         // returns new Date() format
         return date !== null ? new Date(date.substring(0,4), Number(date.substring(4,6)) - 1, date.substring(6,8)) : null
-    },
+	},
+
+	delimitedDate(stringDate=null, delimiter="-") {
+		// for RRRRMMDD formatted inputs
+		// returns RRRR<delimiter>MM<delimiter>DD format
+		let dt = this.deformatDate(stringDate)
+		return dt !== null ? this.formatDate(dt.toDateString(), delimiter) : null
+	},
 
     formatDateTime(dt) {
         // returns RRRR-MM-DD HH:MM:SS formatted date from string of type YYYY-MM-DDTHH:MM:SS
@@ -183,7 +190,7 @@ export default {
         element.play();
 
         self.$notify({
-          type: type, 
+          type: type,
           message: msg
         })
     },
@@ -268,13 +275,15 @@ export default {
 
         return data
     },
-    getPatternLabQueryData(assets, patterns, timeframe) {
+    getPatternLabQueryData(assets, patterns, timeframe, range) {
         let data = {}
 
         data['symbols'] = assets.map(sa => sa.symbol)
-        data['patterns'] = patterns.map(sp => sp.id)        
-        data['timeframe'] = this.convertTimeframe(timeframe)
-        
+        data['patterns'] = patterns.map(sp => sp.id)
+		data['timeframe'] = this.convertTimeframe(timeframe)
+		data['start_date'] = this.delimitedDate(range.from)
+		data['finish_date'] = this.delimitedDate(range.to)
+
         return data
     },
     encodeQueryData(data) {
@@ -289,9 +298,9 @@ export default {
     getPatternLabChartUrl(asset, timeframe, range=null) {
         return constants.urls.patternLab.chart + this.encodeRouteParams([ asset.id, this.convertTimeframe(timeframe) ]) + this.encodeQueryData(range)
     },
-    getPatternLabHistoryUrl(assets, patterns, timeframe) {
+    getPatternLabHistoryUrl(assets, patterns, timeframe, range={}) {
         return assets.length && patterns.length
-                ? [ constants.urls.patternLab.patternsHistory + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe)) ]
+                ? [ constants.urls.patternLab.patternsHistory + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe, range)) ]
                 : []
     },
     encodeRouteParams(data) {
@@ -308,7 +317,7 @@ export default {
                     from: data.range && data.range.from ? data.range.from : null,
                     to: data.range && data.range.to ? data.range.to : null
                 },
-                
+
                 // assets
                 selectedAssets: data.selectedAssets ? data.selectedAssets : [],
                 checkedAssets: data.checkedAssets ? data.checkedAssets : (data.selectedAssets ? data.selectedAssets : []),
@@ -347,7 +356,7 @@ export default {
         if (data.backtests) {
             data.backtests.forEach(bt => {
                 let row = new Map()
-                let clNr = 0                
+                let clNr = 0
 
                 row.set('btId', bt[clNr++])
                 row.set('assetId', bt[clNr++])
@@ -355,12 +364,12 @@ export default {
 
                 // add columns values from translations
                 let cls = i18n.t(constants.translationKeys.patterns + '.columns')
-                cls.forEach(column => { 
-                    if (column) { 
-                        row.set(column.toLowerCase(), bt[clNr++]) 
-                    } 
+                cls.forEach(column => {
+                    if (column) {
+                        row.set(column.toLowerCase(), bt[clNr++])
+                    }
                 })
-                
+
                 let timeframeKey = cls[3].toLowerCase()
                 let directionKey = cls[11].toLowerCase()
                 row.set(directionKey, Object.values(i18n.t('research.patternLab.backtestPatterns.entryRules.directions'))[row.get(directionKey)])
@@ -374,19 +383,19 @@ export default {
 
         return bts
     },
-    getBacktestsNames(store, storeKey, updateKey) {             
+    getBacktestsNames(store, storeKey, updateKey) {
         let data = store.getItem(constants.storeKeys.backtestPatterns)
         let backtestsNames = []
         let selectedBacktest = null
 
         if (data) {
           var loading = data.loading
-          
+
           this.getStoredBacktests(data).forEach(bt => backtestsNames.push({ id: bt.get('btId'), name: bt.get(i18n.t(constants.translationKeys.patterns + '.columns')[0].toLowerCase()) }))
 
           data = store.getItem(storeKey)
           if (data && 'selectedBacktest' in data && backtestsNames.map(bn => bn.name).includes(data.selectedBacktest.name)) {
-            selectedBacktest = data.selectedBacktest 
+            selectedBacktest = data.selectedBacktest
           }
           if (!selectedBacktest && backtestsNames.length) {
             selectedBacktest = backtestsNames[0]
@@ -440,11 +449,11 @@ export default {
                 let symbols = backtests.filter(bt => bt.get('assetId') === datum.ticker)
                 if (symbols.length) {
                     symbol = symbols[0].get(btsColumns[4].toLowerCase())
-                }                
+                }
                 let patterns = backtests.filter(bt => bt.get('patternId') === datum.pattern)
                 if (patterns.length) {
                     pattern = patterns[0].get(btsColumns[5].toLowerCase())
-                }                    
+                }
             }
         }
 
@@ -466,14 +475,14 @@ export default {
                           ].concat(value.split(' ').slice(2, value.split(' ').lenght)).join(' '))
                     : value
     },
-    
+
     chartUpdateTsText(ts, loading) {
         // returns RRRR-M-D H:M:S like formatted text for chart (if not loading)
         if (loading) {
             return null
         }
 
-        if (ts) {            
+        if (ts) {
             let newDt = new Date(ts)
             return i18n.t('chartUpdatedPrefix') + ' ' + newDt.getFullYear() + "-" + Number(newDt.getMonth() + 1) + "-" + newDt.getDate() + " " + newDt.getHours() + ":" + newDt.getMinutes() + ":" + newDt.getSeconds()
         }

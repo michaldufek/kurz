@@ -4,29 +4,29 @@
       <div class="col-xl-2 col-md-6 col-12 killflex container">
         <assets-patterns-picker :title="$t('research.patternLab.chart.title')"
                                 :oneAssetLimit="true"
-                                :btnText="$t('research.patternLab.chart.addChart')" 
-                                @btnClicked="addChart" 
-                                @timeframeChanged="timeframeChanged" />      
+                                :btnText="$t('research.patternLab.chart.addChart')"
+                                @btnClicked="addChart"
+                                @timeframeChanged="timeframeChanged" />
       </div>
 
       <!-- chart -->
       <div class="col-xl-10 col-md-6 col-12">
         <!-- chart settings -->
         <div style="position: relative; z-index: 1">
-          <base-dropdown class="dd col-xl-2" 
-                         menu-classes="dropdown-black" 
+          <base-dropdown class="dd col-xl-2"
+                         menu-classes="dropdown-black"
                          title-classes="btn btn-secondary"
                          :title="chartType">
             <ul style="list-style-type: none;">
-              <li v-for="chartType in $t('research.patternLab.chartTypes').filter(el => el !== chartType)">            
-                <a class="dropdown-item" 
-                   @click="selectChartType(chartType)" 
+              <li v-for="chartType in $t('research.patternLab.chartTypes').filter(el => el !== chartType)">
+                <a class="dropdown-item"
+                   @click="selectChartType(chartType)"
                    href="#">
                   {{ chartType }}
                 </a>
               </li>
             </ul>
-          </base-dropdown>          
+          </base-dropdown>
         </div>
 
         <fancy-chart v-if="chartType === $t('research.patternLab.chartTypes')[0]"
@@ -37,11 +37,11 @@
                      :responsive="true"
                      style="height: 100%"
                      :key="chartKey" />
-        <ohlc-chart v-else 
+        <ohlc-chart v-else
                     :title="ohlcChartTitle"
-                    :apiUrl="chartUrl" 
+                    :apiUrl="chartUrl"
                     :type="chartType"
-                    style="height: 830px" 
+                    style="height: 830px"
                     :key="chartKey" />
       </div>
 
@@ -66,14 +66,14 @@
   import AssetsPatternsPicker from '@/custom/components/AssetsPatternsPicker'
   import FancyChart from '@/custom/components/Charts/FancyChart';
   import OhlcChart from '@/custom/components/Charts/OhlcChart';
-  import FancyTable from '@/custom/components/Tables/FancyTable';  
+  import FancyTable from '@/custom/components/Tables/FancyTable';
 
   import constants from '@/custom/assets/js/constants';
   import helper from '@/custom/assets/js/helper';
 
 
   export default {
-    components: {  
+    components: {
       AssetsPatternsPicker,
       FancyChart,
       OhlcChart,
@@ -98,7 +98,7 @@
         // chart
         chartType: this.$t('research.patternLab.chartTypes')[0],
         chartUrl: null,
-        chartKey: 0,        
+        chartKey: 0,
 
         // patterns history
         patternsHistoryUrl: [],
@@ -124,7 +124,7 @@
       highlights() {
         return [{
           points: this.patternLabels,
-          color: constants.colors.tradeEntry 
+          color: constants.colors.tradeEntry
         }]
       }
     },
@@ -135,7 +135,7 @@
         if (data) {
           this.chartType = this.$t('research.patternLab.chartTypes')[data.chartType]
         }
-        
+
         this.addChart()
       },
 
@@ -145,13 +145,13 @@
         if (data) {
           ({ range:this.range, timeframe:this.timeframe, checkedAsset:this.asset, checkedPatterns:this.patterns } = data)
         }
-        
+
         this.loadChart()
 
         this.patternsHistoryUrl = null
         if (this.patterns.length) {
           // load patterns history table
-          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl(this.asset ? [ this.asset ] : [], this.patterns, this.timeframe)     
+          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl(this.asset ? [ this.asset ] : [], this.patterns, this.timeframe, this.range)
         }
         this.patternLabels = []
         this.tableKey++ // force reload of fancy-table component
@@ -159,10 +159,10 @@
       loadChart() {
         this.chartUrl = null
         if (this.asset) {
-          this.chartUrl = helper.getPatternLabChartUrl(this.asset, this.timeframe, this.range) 
+          this.chartUrl = helper.getPatternLabChartUrl(this.asset, this.timeframe, this.range)
         }
         this.chartKey++ // force reload of fancy-chart component
-      },      
+      },
 
       // emited events
       timeframeChanged() {
@@ -198,13 +198,13 @@
             } else {
               console.log(`${this.$t('serverIncontinency')}: Couldn't find selected signal set on server!`)
             }
-          }) 
+          })
         } else {
           this.patternLabels = []
           this.chartKey++
-        }       
+        }
       },
-      
+
       selectChartType(chartType) {
         this.chartType = chartType
         this.loadChart()
@@ -215,9 +215,9 @@
         let rows = []
         let rowsSignalIds = []
 
-        responseData.forEach(data => {            
+        responseData.forEach(data => {
             let pattern = data.pattern.name
-            
+
             data.signal_set.forEach(signal => {
               let row = []
 
@@ -236,15 +236,15 @@
     },
 
     watch: {
-      chartType(val) {   
+      chartType(val) {
         helper.updateStore(this.$store, 'chartType', this.$t('research.patternLab.chartTypes').indexOf(val), this.storeKey)
       }
     },
 
     mounted() {
-      this.initData()      
+      this.initData()
     }
-  }  
+  }
 </script>
 <style>
 </style>
