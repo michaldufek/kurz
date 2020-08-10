@@ -218,7 +218,7 @@ export default {
 
         logIn () {
             this.loading = true
-            auth.login(this.email, this.pass, (loggedIn, err) => {
+            auth.login(this.email, this.pass, () => this.loading = false, (loggedIn, err) => {
                 this.error = !loggedIn
                 if (!loggedIn) {                    
                     this.shakeModal()
@@ -234,37 +234,37 @@ export default {
                     
                     this.$router.replace(this.$route.query.redirect || '/')
                 }
-            }, () => this.loading = false)
+            })
         },
         resetPass () {
             this.loading = true
-            auth.resetPass(this.email, (resetted, msg) => {
+            auth.resetPass(this.email, () => this.loading = false, (resetted, msg) => {
                 this.error = !resetted
                 if (!resetted) {
                     this.shakeModal()
                 }
                 this.message = msg
-            }, () => this.loading = false)
+            })
         },
         resetPassComplete() {
             this.loading = true
-            auth.verifyReset(this.$route.params.uid, this.$route.params.token, this.pass1, this.pass2, (success, msg) => {
+            auth.verifyReset(this.$route.params.uid, this.$route.params.token, this.pass1, this.pass2, () => this.loading = false, (success, msg) => {
                 this.error = !success
                 if (!success) {
                     this.shakeModal()
                 }
                 this.message = msg
-            }, () => this.loading = false)
+            })
         },
         register () {
             this.loading = true
-            auth.register(this.email, this.pass1, this.pass2, (registered, msg) => {
+            auth.register(this.email, this.pass1, this.pass2, () => this.loading = false, (registered, msg) => {
                 this.error = !registered
                 if (!registered) {
                     this.shakeModal()                    
                 }
                 this.message = msg
-            }, () => this.loading = false)
+            })
         },
 
         shakeModal(){
