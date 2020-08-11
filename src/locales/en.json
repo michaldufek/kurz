@@ -32,8 +32,7 @@
   },
   "errors": {
     "dataError": "We are sorry, at this moment we are unable to get the data. We'll try again later...",
-    "unknownError": "Unknown error.",
-    "tryAgain": "Please try again or refresh the page."
+    "unknownError": "Unknown error."
   },
   "paging": {
     "previous": "Previous",
