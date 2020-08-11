@@ -112,38 +112,22 @@ export default {
       }
     },
   
-    login (email, pass, cb, cbf) {
-      cbf = arguments[arguments.length - 1]
-      cb = arguments[arguments.length - 2]
+    login (email, pass, cbf, cb) {
+      cbf = arguments[arguments.length - 2]
+      cb = arguments[arguments.length - 1]
       if (localStorage.token) {
         if (cb) cb(true)
         this.onChange(true)
         return
       }
       
-      if (process.env.NODE_ENV !== 'production' && pass === 'frspass') {
-        pretendRequest(email, pass, (res) => {
-          if (res.authenticated) {
-            localStorage.token = res.token
-            if (cb) cb(true)
-            this.onChange(true)
-          } else {
-            if (cb) cb(false)
-            this.onChange(false)
-          }
-        })
-      } else {
-        loginRoutine(email, pass)
-        .then(() => {
-          if (cb) cb(true)
-          this.onChange(true)
-        })
-        .catch(err => {        
-          if (cb) cb(false, this.parseError(err))
-          this.onChange(false)        
-        })
-        .finally(() => cbf())
-      }
+      loginRoutine(email, pass)
+      .then(() => {
+        if (cb) cb(true)
+        this.onChange(true)
+      })
+      .catch(err => this.handleError(err, this.login, arguments))
+      .finally(() => cbf())
     },
 
     loginFacebook (cb) {
@@ -162,10 +146,7 @@ export default {
         if (cb) cb(true)
         this.onChange(true)
       })
-      .catch(err => {        
-        if (cb) cb(false, this.parseError(err))
-        this.onChange(false)        
-      })
+      .catch(err => this.handleError(err, this.loginFacebook, arguments))
     },
 
     loginTwitter (cb) {
@@ -184,10 +165,7 @@ export default {
         if (cb) cb(true)
         this.onChange(true)
       })
-      .catch(err => {        
-        if (cb) cb(false, this.parseError(err))
-        this.onChange(false)        
-      })
+      .catch(err => this.handleError(err, this.loginTwitter, arguments))
     },
   
     getToken () {
@@ -209,46 +187,37 @@ export default {
       return !!localStorage.token
     },
 
-    resetPass (email, cb, cbf) {
+    resetPass (email, cbf, cb) {
       resetPassRoutine(email)
       .then(res => {
         if (cb) cb(true, res.data.detail)
         this.onChange(true)
       })
-      .catch(err => {
-        if (cb) cb(false, this.parseError(err, false))
-        this.onChange(false)        
-      })
+      .catch(err => this.handleError(err, this.resetPass, arguments))
       .finally(() => cbf())
     },
 
-    verifyReset (uid, token, pass1, pass2, cb, cbf) {
-      cbf = arguments[arguments.length - 1]
-      cb = arguments[arguments.length - 2]
+    verifyReset (uid, token, pass1, pass2, cbf, cb) {
+      cbf = arguments[arguments.length - 2]
+      cb = arguments[arguments.length - 1]
       verifyResetRoutine(uid, token, pass1, pass2)
       .then(res => {
         if (cb) cb(true, res.data.detail)
         this.onChange(true)
       })
-      .catch(err => {
-        if (cb) cb(false, this.parseError(err, false))
-        this.onChange(false)        
-      })
+      .catch(err => this.handleError(err, this.verifyReset, arguments))
       .finally(() => cbf())
     },
 
-    register (email, pass1, pass2, cb, cbf) {
-      cbf = arguments[arguments.length - 1]
-      cb = arguments[arguments.length - 2]
+    register (email, pass1, pass2, cbf, cb) {
+      cbf = arguments[arguments.length - 2]
+      cb = arguments[arguments.length - 1]
       registerRoutine(email, pass1, pass2)
       .then(res => {
         if (cb) cb(true, i18n.t('login.registrationSent'))
         this.onChange(true)
       })
-      .catch(err => {
-        if (cb) cb(false, this.parseError(err))
-        this.onChange(false)        
-      })
+      .catch(err => this.handleError(err, this.register, arguments))
       .finally(() => cbf())
     },
 
@@ -265,6 +234,25 @@ export default {
         this.onChange(false)        
       })
       .finally(() => cbf())
+    },
+    
+    handleError(error, tryAgainMethod) {
+      let errMsg = this.parseError(error)
+
+      if (!('reloads' in localStorage)) {
+        localStorage.setItem('reloads', 0)
+      }
+
+      if (errMsg.includes(constants.strings.errors.CSRF) && Number(localStorage.reloads) < 5) {
+        localStorage.setItem('reloads', Number(localStorage.reloads) + 1)
+        console.log(errMsg + ' Trying request again..')  // to-do: temporary !
+        tryAgainMethod(arguments)
+      } else {
+        let origArguments = arguments[arguments.length - 1]
+        let callback = origArguments[origArguments.length - 1]
+        if (callback) callback(false, errMsg)
+        this.onChange(false)        
+      }
     },
 
     parseError(err, verbose=true) {
@@ -309,21 +297,19 @@ export default {
       if ("non_field_errors" in err.response.data) {
         msg += err.response.data.non_field_errors[0] + '\n'
       }
+      if ("detail" in err.response.data) {
+        if (err.response.data.detail === constants.strings.errors.CSRF) {
+	        this.setCSRFToken()
+        }
+
+        msg += err.response.data.detail + '\n'
+      }
       if (!msg) {
-        msg += i18n.t('login.unknownError')
+        msg += i18n.t('errors.unknownError')
       }
       
       return msg
     },
   
     onChange () {}
-  }
-  
-  function pretendRequest (email, pass, cb) {
-    setTimeout(() => {
-        cb({
-          authenticated: true,
-          token: Math.random().toString(36).substring(7)
-        })
-    }, 0)
-  }
+  }  

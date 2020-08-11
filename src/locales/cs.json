@@ -3,7 +3,6 @@
   "companyTitle": "CYRRUS ADVISORY, a.s.",
   "schoolTitle": "Mendelova univerzita v Brně",
   "loading": "Načítání",
-  "dataError": "Omlouváme se, nejsme schopní získat data. Zkusíme to později...",
   "noData": "Žádné data na zobrazení.",
   "chartUpdatedPrefix": "Aktualizováno o",
   "chartNeverUpdated": "Ještě neaktualizováno",
@@ -30,6 +29,10 @@
     "showPattern": "Dvoj-klik pro zobrazení patternu v grafu.",
     "showPatternCancel": "Dvoj-klik pro zrušení zobrazování patternu v grafu.",
     "save2dataWarehouse": "Uložit do Skladu strategií"
+  },
+  "errors": {
+    "dataError": "Omlouváme se, nejsme schopní získat data. Zkusíme to později...",
+    "unknownError": "Neznámá chyba."
   },
   "paging": {
     "previous": "Předchozí",
@@ -61,7 +64,6 @@
     "createAccount": "vytvořit konto ?",
     "register": "Registrovat se",
     "registrationSent": "Zkontrolujte email pro verifikaci registrace.",
-    "unknownError": "Neznámá chyba.",
     "alreadyAccount": "Již máte konto?",
     "registerSuccess": "Ověření registrace proběhlo úspěšně.",
     "registerFail": "Ověření registrace zlyhalo.",
@@ -82,6 +84,11 @@
     "performanceStatistics": "Výkon - statistiky",
     "liquidate": "Likvidace",
     "confirmLiquidate": "Jste si jistí, že chcete livkidaci?",
+    "tradeLog": {
+      "title": "Obchodní log",
+      "hide": "Skrýt",
+      "show": "Ukázat"
+    },
     "lastTradesTable": {
       "title": "Poslední obchody",
       "columns": [
@@ -395,7 +402,7 @@
         "title": "Genetika"
       }
     }, 
-    "tsmodeling": {
+    "fsengineering": {
       "selectBacktest":"Vyberte backtest", 
       "models": "Available Models",
       "basic": "Basic",
@@ -473,7 +480,7 @@
     "patternLab": "Pattern Lab",
     "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
-    "tsmodeling": "TS Modeling",
+    "fsengineering": "Features Engineering",
     "wareHouse": "Sklad Strategií",
     "notifications": "Notifikace",
     "userProfile": "Profil"

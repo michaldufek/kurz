@@ -45,7 +45,7 @@ export default {
         dataReload: 1000 * 60 * 10, // 10 minutes 
 
         // interval for checking whether we should play some orderStatus change sound
-        soundSignal: 1000 * 60, // minute
+        minute: 1000 * 60, // minute
 
         // time of shaking of login forms if unsuccessful
         shake: 500, // half second
@@ -54,7 +54,7 @@ export default {
         loginShow: 230,
 
         // time of checking whether Backtest patterns backtests are done
-        backtestsDone: 1000 * 3, // 3 seconds,
+        seconds3: 1000 * 3, // 3 seconds,
 
         // time of downloading optimization results
         featEngReload: 1000 * 5 // 5 seconds
@@ -65,13 +65,14 @@ export default {
             gateway: {
                 start: livedeplPartUrl + gwPartUrl + "Start/",
                 stop: livedeplPartUrl + gwPartUrl + "Stop/",
-                status: livedeplPartUrl + gwPartUrl + "Status",
-                logs: livedeplPartUrl + gwPartUrl + "Logs"
+                status: livedeplPartUrl + gwPartUrl + "Status/",
+                logs: livedeplPartUrl + gwPartUrl + "Logs/"
             },
             strategy: {
                 deploy: livedeplPartUrl + "/StrategyDeploy/",
                 stop: livedeplPartUrl + "/StrategyStop/"
             },
+            tradeLog: livedeplPartUrl + "/TradeLog/",
             report: livedeplPartUrl + "/Report/",
             liquidate: livedeplPartUrl + "/Liquidate/"
         },
@@ -130,7 +131,10 @@ export default {
     },
 
     strings: {
-        networkError: "Network Error",
+        errors: {
+            networkError: "Network Error",
+            CSRF: "CSRF Failed: CSRF token missing or incorrect."
+        },
         etc: "...",
         all: "all",
         bullish: "Bullish",

@@ -3,7 +3,6 @@
   "companyTitle": "CYRRUS ADVISORY, a.s.",
   "schoolTitle": "Mendel University in Brno",
   "loading": "Loading of",
-  "dataError": "We are sorry, at this moment we are unable to get the data. We'll try again later...",
   "noData": "No data to show.",
   "chartUpdatedPrefix": "Updated at",
   "chartNeverUpdated": "Never updated",
@@ -30,6 +29,10 @@
     "showPattern": "Double-click to show pattern in chart.",
     "showPatternCancel": "Double-click to cancel showing pattern in chart.",
     "save2dataWarehouse": "Save to Ware House"
+  },
+  "errors": {
+    "dataError": "We are sorry, at this moment we are unable to get the data. We'll try again later...",
+    "unknownError": "Unknown error."
   },
   "paging": {
     "previous": "Previous",
@@ -61,7 +64,6 @@
     "createAccount": "create an account ?",
     "register": "Register",
     "registrationSent": "Check your email for registration verification.",
-    "unknownError": "Unknown error.",
     "alreadyAccount": "Already have an account?",
     "registerSuccess": "Registration verification successful.",
     "registerFail": "Registration verification failed.",
@@ -81,6 +83,11 @@
     "performanceStatistics": "Performance statistics",
     "liquidate": "Liquidate",
     "confirmLiquidate": "Are you sure you want to liquidate?",
+    "tradeLog": {
+      "title": "Trade Log",
+      "hide": "Hide",
+      "show": "Show"
+    },
     "lastTradesTable": {
       "title": "Last trades",
       "columns": [
@@ -395,7 +402,7 @@
         "title": "Genetics"
       }
     },
-    "tsmodeling": {
+    "fsengineering": {
       "selectBacktest":"Select Backtest", 
       "models": "Available Models",
       "basic": "Basic",
@@ -473,7 +480,7 @@
     "patternLab": "Pattern Lab",
     "optimization": "Optimization",
     "relativeValuesLab": "RelativeValues Lab",
-    "tsmodeling": "TS Modeling",
+    "fsengineering": "Features Engineering",
     "wareHouse": "Ware House",
     "notifications": "Notifications",
     "userProfile": "User Profile"

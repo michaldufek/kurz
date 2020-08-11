@@ -16,6 +16,20 @@
       </div>
     </div>  
 
+    <div class="row" style="margin-top: -25px">
+      <div class="col-12">
+        <div style="text-align: right">
+          <base-button size="sm" icon @click="tradeLog.show = !tradeLog.show" style="height: 1rem;width: 1rem;min-width: 1rem;font-size: 0.5rem; margin-right: -15px; margin-top: -5px">
+            <i v-if="tradeLog.show" :title="$t('dashboard.tradeLog.hide') + ' ' + $t('dashboard.tradeLog.title')" class="tim-icons icon-minimal-up" style="width: 25px"></i>
+            <i v-if="!tradeLog.show" :title="$t('dashboard.tradeLog.show') + ' ' + $t('dashboard.tradeLog.title')" class="tim-icons icon-minimal-down" style="width: 25px"></i>
+          </base-button>       
+        </div>
+        <div v-if="connected && tradeLog.show" style="background: black; margin-bottom: 10px; margin-top: -20px; margin-left: 15px; white-space: pre; font-size: xx-small; width: 98%; padding: 5px">
+          {{ tradeLogParsed }}
+        </div>
+      </div>
+    </div>
+
      <div class="row">      
       <div class="col-xl-4 col-12">
         <fancy-table :title="$t('dashboard.lastTradesTable.title')"
@@ -83,6 +97,12 @@
         loading: false,
         updateKey: 0,
 
+        tradeLog: {
+          show: false,
+          timer: null,
+          text: ''
+        },
+
         chartUrls: [],
         statsUrls: [],
         heardOrders: {
@@ -99,11 +119,19 @@
       }
     },
 
+    computed: {
+      tradeLogParsed() {
+        let result = ""
+	      this.tradeLog.text.forEach(log => result += `[${log.timestamp}]: ${log.text}\n`)
+        return result
+      }
+    },
+
     methods: {
       initSoundSignals() {
         setInterval(() => { 
           // this.checkOrdersStatusChange();
-        }, constants.intervals.soundSignal );
+        }, constants.intervals.minute );
       },
 
       initIB() {
@@ -120,19 +148,22 @@
         this.loading = true
 
         this.$http
-        .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
+        .get(constants.urls.liveDepl.gateway.status + this.email)
         .then(response => {
           if ('error' in response.data) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')} - ${response.data.error}`)
           } else {
             this.connected = response.data.status
+            if (this.connected) {
+              helper.setInterval(this.tradeLog, 'timer', this.getTradeLog)
+            }
           }
         })
         .catch(error => {
           console.log(error)
           this.connected = false
 
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('login.IB.status')}`)
           }
         })
@@ -140,6 +171,43 @@
           this.loading = false
           this.setApiUrls()
         })
+      },
+
+      getTradeLog() {
+        this.$http
+        .get(constants.urls.liveDepl.tradeLog + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
+        .then(response => {
+          if ('error' in response.data) {      // currently not used in trade log response
+            this.error = true
+          } else {
+            this.tradeLog.text = response.data
+          }
+        })
+        .catch(error => {
+          console.log(error)
+
+          if (error.message === constants.strings.errors.networkError) {
+              helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} - ${this.$t('dashboard.tradeLog.title')}`)
+          } else {
+            if ('type' in error.response.data) {
+              var message = error.response.data.type + ' error'
+
+              if ('message' in error.response.data) {
+                  message += ': ' + error.response.data.message
+              } else {
+                  message += '.'
+              }
+            } else {
+                message = error.message
+            }
+
+            this.$notify({
+              type: 'warning', 
+              message: message
+            })
+          }
+        })
+        .finally(() => {})
       },
 
       setApiUrls() {
@@ -179,7 +247,7 @@
             console.log(error)
             this.error = true
 
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
                 this.message = error.message
             }
@@ -214,7 +282,7 @@
             console.log(error)
             this.error = true
 
-            if (error.message === constants.strings.networkError) {
+            if (error.message === constants.strings.errors.networkError) {
                 helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('dashboard.title')} ${this.$t('dashboard.liquidate')}`)
                 this.message = error.message
             }

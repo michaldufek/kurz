@@ -12,7 +12,7 @@
         <p style="padding-top: 50px">{{ noDataText ? noDataText : $t('noData') }}</p>
       </section>
       <section v-else-if="isError" style="text-align: center">
-        <p style="padding-top: 50px">{{ $t('dataError') }}</p>
+        <p style="padding-top: 50px">{{ $t('errors.dataError') }}</p>
       </section>
       <section v-else>
         <DualRingLoader v-if="loading" :color="'#54f1d2'" style="width: 80px; height: 80px; position: absolute; top: 40%; left: 45%;" />
@@ -241,7 +241,7 @@ export default {
             this.error = true
           }
 
-          if (error.message === constants.strings.networkError) {
+          if (error.message === constants.strings.errors.networkError) {
             helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', this.$t('notifications.beConnectionLost') + '(' + this.title + ' ' + this.$t('chart') + ')')
           }
         })

@@ -10,7 +10,7 @@
                     class="modal-sm animated landingCard"
                     :class="{ shake: isShaking }"
                     v-if="showLogin">
-                    <DualRingLoader v-if="loading || loadingStart || loadingStop" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
+                    <DualRingLoader v-if="loading.status || loading.start || loading.stop" :color="'#54f1d2'" :class="[ connected ? 'loader' : 'loaderDisconnected', 'loader' ]" />
                     <template>
                         <div v-if="!connected" class="text-center text-muted mb-4">
                             {{ `${$t('login.signIn')} ${$t('login.with')} ` }}<b>{{ `${$t('login.IB.title')} ` }}</b>{{ $t('login.IB.credentials') }}
@@ -49,8 +49,8 @@
             </SlideYUpTransition>
         </div>
 
-        <div class="row" style="margin-top: 20px">
-            <ul v-if="connected" style="list-style-type: none;">
+        <div class="row" v-if="connected" style="margin-top: 20px">
+            <ul style="list-style-type: none;">
                 <li v-for="log in logsParsed">
                     {{ log }}
                 </li>
@@ -77,12 +77,22 @@ export default {
     data() {
       return { 
         storeKey: constants.translationKeys.IBLogin,
-        GWLogsTimer: null,
         logs: [],
 
-        loading: false,        
-        loadingStart: false,
-        loadingStop: false,
+        timers: {
+            status: null,
+            startStatus: null,
+            stopStatus: null,
+            logs: null
+        },
+        defaultTimeout: constants.intervals.minute,
+        GWTimeoutStartTime: performance.now(),
+
+        loading: {
+            status: false,        
+            start: false,
+            stop: false
+        },
 
         connected: false,
         error: false,
@@ -112,6 +122,16 @@ export default {
             let data = this.$store.getItem(this.storeKey)
             if (data) {
                 this.email = data.email
+                if (data.loading) {
+                    this.loading = data.loading
+                    
+                    if (this.loading.start) {
+                        this.setGWStartStatusInterval(data.remainingGWTimeout)
+                    } else if (this.loading.stop) {
+                        this.setGWStopStatusInterval(data.remainingGWTimeout)
+                    }
+                }
+
                 this.setGWStatusInterval()
             }
 
@@ -119,31 +139,34 @@ export default {
         },
 
         checkGWrunning() {
-            this.loading = true
-            this.message = ''
+            this.loading.status = true
 
             this.$http
-            .get(constants.urls.liveDepl.gateway.status + '/' + this.email)
+            .get(constants.urls.liveDepl.gateway.status + this.email)
             .then(response => {
                 if ('error' in response.data) {
                     this.error = true
                     this.message = response.data.error
                 } else {
-                    this.error = false
-                    this.message = ''
                     this.connected = response.data.status
 
                     if (this.connected) {                        
                         this.setGWLogsInterval()
 
-                        if (this.loadingStart) {
-                            this.loadingStart = false
+                        if (this.loading.start) {
+                            this.loading.start = false
+                            this.storeLoading(this.loading)                                 // must store explicitly because redirect is faster than watcher
+
                             this.$router.replace(this.$route.query.redirect || '/')         // redirect to Dashboard
                         }
                     } else {
-                        this.loadingStop = false
-                        if (this.GWLogsTimer) {
-                            clearInterval(this.GWLogsTimer);
+                        if (this.loading.stop) {
+                            this.loading.stop = false
+                            clearInterval(this.timers.stopStatus)
+                        }
+
+                        if (this.timers.logs) {
+                            clearInterval(this.timers.logs);
                         }
                     }
                 }
@@ -155,11 +178,11 @@ export default {
                 this.connected = false
                 this.shakeModal()
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.status')}`)
                 }
             })
-            .finally(() => this.loading = false)
+            .finally(() => this.loading.status = false)
         },
 
         logIn () {
@@ -178,7 +201,7 @@ export default {
         }, 
 
         startGW() {
-            this.loadingStart = true
+            this.loading.start = true
 
             this.$http
             .post(constants.urls.liveDepl.gateway.start, {
@@ -191,17 +214,15 @@ export default {
                 this.message = response.data.message
                 this.pass = ''
 
-                setTimeout(() => { 
-                    this.loadingStart = false
-                }, constants.intervals.soundSignal );                
+                this.setGWStartStatusInterval()
             })
             .catch(error => {
                 console.log(error)
                 this.error = true
                 this.shakeModal()
-                this.loadingStart = false
+                this.loading.start = false
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.login')}`)
                     this.message = error.message
                 } else {
@@ -210,7 +231,7 @@ export default {
             })
         },
         stopGW() {
-            this.loadingStop = true
+            this.loading.stop = true
 
             this.$http
             .post(constants.urls.liveDepl.gateway.stop, { userid: this.email }, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
@@ -218,17 +239,15 @@ export default {
                 this.error = false
                 this.message = response.data.message
 
-                setTimeout(() => { 
-                    this.loadingStop = false
-                }, constants.intervals.soundSignal );                
+                this.setGWStopStatusInterval()                
             })
             .catch(error => {
                 console.log(error)
                 this.error = true
                 this.shakeModal()
-                this.loadingStop = false
+                this.loading.stop = false
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.disconnect')}`)
                     this.message = error.message
                 } else {
@@ -237,43 +256,66 @@ export default {
             })
         }, 
 
-        setInterval(timer, routine) {
-            routine()
-        
-            if (timer) {
-                clearInterval(timer)
-            }
+        setGWTimeout(action, timer, remainingTimeout) {
+            setTimeout(() => { 
+                this.error = true
+                this.message = 'Gateway ' + action + ' timeout.'
 
-            timer = setInterval(() => { 
-                routine()
-            }, constants.intervals.soundSignal )
-        },
+                clearInterval(timer)
+
+                if (action == 'start') {
+                    this.loading.start = false
+                } else if (action == 'stop') {
+                    this.loading.stop = false
+                }
+            }, remainingTimeout && remainingTimeout !== undefined ? remainingTimeout : this.defaultTimeout )
+
+            this.GWTimeoutStartTime = performance.now()
+        },      
         
-        setGWStatusInterval() {     // to-do: how to stop it?
-            this.setInterval(this.GWStatusTimer, this.checkGWrunning)
+        setGWStatusInterval() {
+            helper.setInterval(this.timers, 'status', this.checkGWrunning)
+        },
+        setGWStartStatusInterval(remainingTimeout=null) {
+            helper.setInterval(this.timers, 'startStatus', this.checkGWrunning, constants.intervals.seconds3)
+            this.setGWTimeout('start', this.timers.startStatus, remainingTimeout)
+        },
+        setGWStopStatusInterval(remainingTimeout=null) {
+            helper.setInterval(this.timers, 'stopStatus', this.checkGWrunning, constants.intervals.seconds3)
+            this.setGWTimeout('stop', this.timers.stopStatus, remainingTimeout)
         },
         setGWLogsInterval() {
-            this.setInterval(this.GWLogsTimer, this.getGWLogs)
+            helper.setInterval(this.timers, 'logs', this.getGWLogs)
         },
         destroyTimers() {
-            if (this.GWStatusTimer) {
-                clearInterval(this.GWStatusTimer)
+            if (this.timers.status) {
+                clearInterval(this.timers.status)
             }
-            if (this.GWLogsTimer) {
-                clearInterval(this.GWLogsTimer)
+
+            if (this.timers.startStatus) {
+                clearInterval(this.timers.startStatus)
+            }
+
+            if (this.timers.stopStatus) {
+                clearInterval(this.timers.stopStatus)
+            }
+
+            helper.updateStore(this.$store, "remainingGWTimeout", this.defaultTimeout - (performance.now() - this.GWTimeoutStartTime), this.storeKey)
+
+            if (this.timers.logs) {
+                clearInterval(this.timers.logs)
             }
         },
 
         getGWLogs() {
-            this.loading = true
+            this.loading.status = true
 
             this.$http
-            .get(constants.urls.liveDepl.gateway.logs + '/' + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
+            .get(constants.urls.liveDepl.gateway.logs + this.email, this.$store.getItem('headers'))   // authorized because GW doesn't need authorization
             .then(response => {
                 if ('error' in response.data) {      // currently not used in GW Logs response
                     this.error = true
                 } else {
-                    this.error = false
                     this.logs = response.data
                 }
             })
@@ -283,7 +325,7 @@ export default {
                 this.message = error.message
                 this.shakeModal()
 
-                if (error.message === constants.strings.networkError) {
+                if (error.message === constants.strings.errors.networkError) {
                     helper.notifyAudio(this, document.getElementById('connectionLost'), 'danger', `${this.$t('login.IB.title')} ${this.$t('login.IB.logs')}`)
                 }
 
@@ -297,7 +339,7 @@ export default {
                     }
                 }
             })
-            .finally(() => this.loading = false)
+            .finally(() => this.loading.status = false)
         },
 
         shakeModal(){
@@ -316,6 +358,11 @@ export default {
             setTimeout(() => {
                 this.showLogin = true  
             }, constants.intervals.loginShow );
+        },
+
+        storeLoading(val) {
+            let val2store = JSON.parse(JSON.stringify(val))
+            helper.updateStore(this.$store, 'loading', val2store, this.storeKey) 
         }
     },
 
@@ -324,15 +371,18 @@ export default {
     },
 
     beforeDestroy() {
-        this.destroyTimers()
+        this.destroyTimers()        
     },    
 
     watch: {
         email(val) {
             helper.updateStore(this.$store, 'email', val, this.storeKey)            
         },
-        connected(val) {
-            helper.updateStore(this.$store, 'connected', val, this.storeKey)
+        loading: {
+            handler(val){
+                this.storeLoading(val)
+            },
+            deep: true
         }
     }
 }
