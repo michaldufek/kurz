@@ -245,7 +245,7 @@ export default {
 
       if (errMsg.includes(constants.strings.errors.CSRF) && Number(localStorage.reloads) < 5) {
         localStorage.setItem('reloads', Number(localStorage.reloads) + 1)
-        console.log(errMsg + ' Trying request again..')
+        console.log(errMsg + ' Trying request again..')  // to-do: temporary !
         tryAgainMethod(arguments)
       } else {
         let origArguments = arguments[arguments.length - 1]
@@ -300,8 +300,9 @@ export default {
       if ("detail" in err.response.data) {
         if (err.response.data.detail === constants.strings.errors.CSRF) {
 	        this.setCSRFToken()
-          msg += err.response.data.detail + '\n'
         }
+
+        msg += err.response.data.detail + '\n'
       }
       if (!msg) {
         msg += i18n.t('errors.unknownError')
