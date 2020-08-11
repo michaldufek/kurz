@@ -13,16 +13,16 @@
                 v-if="cards.showLogin.value">
             <DualRingLoader v-if="loading" :color="'#54f1d2'" :class="'loader'" style="top: 150px" />
             <template>
-                <div class="text-muted text-center mb-3">
+            <!--    <div class="text-muted text-center mb-3">
                     {{$t('login.signIn') + " " + $t('login.with')}}
-                </div>
-                <div class="btn-wrapper text-center">
+                </div>-->
+<!--                <div class="btn-wrapper text-center">
                     <base-button type="secondary" style="width: 40%;">
-                        <img src="../assets/img/google-logo-oldschool.png" style="margin-left: -10px">
+                        <img src="../assets/img/google-logo-oldschool.png" style="margin-left: -10px">-->
                         <!-- slot="icon" -->
-                        &nbsp;&nbsp;Google
+<!--                        &nbsp;&nbsp;Google
                     </base-button>                
-                </div>
+                </div>-->
             </template>
             <br/>
             <template>
