@@ -163,7 +163,7 @@ export default {
     formatDateOnly(date) {
         // for RRRRMMDD formatted inputs
         // returns in RRRR-M-D format
-        return date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8)
+        return date ? (date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8)) : null
     },
 
     formatDateTimes(datetimes) {
@@ -255,12 +255,19 @@ export default {
 
         return data
     },
-    getPatternLabQueryData(assets, patterns, timeframe) {
+    getPatternLabQueryData(assets, patterns, timeframe, startDate, finishDate) {
         let data = {}
 
         data['symbols'] = assets.map(sa => sa.symbol)
         data['patterns'] = patterns.map(sp => sp.id)        
         data['timeframe'] = this.convertTimeframe(timeframe)
+
+        if (startDate) {
+            data['start_date'] = startDate
+        }
+        if (finishDate) {
+            data['finish_date'] = finishDate
+        }
         
         return data
     },
@@ -276,9 +283,9 @@ export default {
     getPatternLabChartUrl(asset, timeframe, range=null) {
         return constants.urls.patternLab.chart + this.encodeRouteParams([ asset.id, this.convertTimeframe(timeframe) ]) + this.encodeQueryData(range)
     },
-    getPatternLabHistoryUrl(assets, patterns, timeframe) {
+    getPatternLabHistoryUrl(assets, patterns, timeframe, startDate, finishDate) {
         return assets.length && patterns.length
-                ? [ constants.urls.patternLab.patternsHistory + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe)) ]
+                ? [ constants.urls.patternLab.patternsHistory + this.encodeQueryData(this.getPatternLabQueryData(assets, patterns, timeframe, this.formatDateOnly(startDate), this.formatDateOnly(finishDate))) ]
                 : []
     },
     encodeRouteParams(data) {

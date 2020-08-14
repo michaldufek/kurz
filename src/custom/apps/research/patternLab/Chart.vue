@@ -151,7 +151,7 @@
         this.patternsHistoryUrl = null
         if (this.patterns.length) {
           // load patterns history table
-          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl(this.asset ? [ this.asset ] : [], this.patterns, this.timeframe)     
+          this.patternsHistoryUrl = helper.getPatternLabHistoryUrl(this.asset ? [ this.asset ] : [], this.patterns, this.timeframe, this.range.from, this.range.to)     
         }
         this.patternLabels = []
         this.tableKey++ // force reload of fancy-table component
