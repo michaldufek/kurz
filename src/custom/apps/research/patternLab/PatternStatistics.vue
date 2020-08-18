@@ -132,7 +132,7 @@
         let data = helper.getAssetsPatternsPickerData(this.$store)
         if (data) {
           this.timeframe = data.timeframe
-          this.patternsUrl = helper.getPatternLabHistoryUrl(data.selectedAssets, data.checkedPatterns, this.timeframe)
+          this.patternsUrl = helper.getPatternLabHistoryUrl(data.selectedAssets, data.checkedPatterns, this.timeframe, data.range.from, data.range.to)
           this.tableKey++ // force reload of fancy-table component
 
           this.initPieCharts()
