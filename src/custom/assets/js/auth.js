@@ -210,8 +210,27 @@ export default {
     },
 
     register (email, pass1, pass2, cbf, cb) {
-      cbf = arguments[arguments.length - 2]
-      cb = arguments[arguments.length - 1]
+      console.log('register arguments:')
+      console.log(arguments)
+      console.log('register args:')
+      console.log(email+' '+pass1+' '+ pass2+' '+ cbf+' '+ cb)    
+      if (arguments.length < 5) {
+	let args = arguments[0]
+	email = args[0]
+	pass1 = args[1]
+	pass2 = args[2]
+	cbf = args[3]
+	cb = args[4]
+      } else {
+       cbf = arguments[arguments.length - 2]
+       cb = arguments[arguments.length - 1]
+      }
+      console.log('register arguments2:')
+      console.log(arguments)
+      console.log('register args2:')
+      console.log(email+' '+pass1+' '+ pass2+' '+ cbf+' '+ cb)
+
+
       registerRoutine(email, pass1, pass2)
       .then(res => {
         if (cb) cb(true, i18n.t('login.registrationSent'))
@@ -243,12 +262,15 @@ export default {
         localStorage.setItem('reloads', 0)
       }
 
+      let origArguments = arguments[arguments.length - 1]
+      console.log('args:')
+      console.log(origArguments)
+
       if (errMsg.includes(constants.strings.errors.CSRF) && Number(localStorage.reloads) < 5) {
         localStorage.setItem('reloads', Number(localStorage.reloads) + 1)
         console.log(errMsg + ' Trying request again..')  // to-do: temporary !
-        tryAgainMethod(arguments)
+        tryAgainMethod(origArguments)
       } else {
-        let origArguments = arguments[arguments.length - 1]
         let callback = origArguments[origArguments.length - 1]
         if (callback) callback(false, errMsg)
         this.onChange(false)        
