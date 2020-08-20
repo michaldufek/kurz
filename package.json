@@ -1,6 +1,6 @@
 {
   "name": "integral",
-  "version": "1.0.1-8",
+  "version": "1.0.1-9",
   "private": true,
   "description": "Financial Research Software",
   "author": "CYRRUS ADVISORY, a.s. <brno@cyrrusadvisory.cz>",
@@ -38,8 +38,8 @@
     "@vue/cli-plugin-eslint": "^4.2.3",
     "@vue/cli-plugin-pwa": "^3.4.0",
     "@vue/cli-service": "^4.2.3",
-    "bili": "^4.10.1",
-    "node-sass": "^4.13.1",
+    "bili": "^5.0.5",
+    "node-sass": "^4.14.1",
     "rollup-plugin-vue": "^5.0.0",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-i18n": "^0.5.1",

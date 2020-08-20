@@ -1,6 +1,7 @@
 Running locally (it will use https://dev.analyticalplatform.com for API calls):
-npm install
-npm run dev
+- npm config set '@bit:registry' https://node.bit.dev
+- npm install
+- npm run dev
 
 Running in docker (https://vuejs.org/v2/cookbook/dockerize-vuejs-app.html):
 - api url for production will be from localhost (for development it will be https://dev.analyticalplatform.com)
