@@ -106,6 +106,7 @@ export default {
         },
 
         auth: baseUrl + "/rest-auth",
+        reserved: baseUrl + "/api/reserved",
 
         stats: {
             "MF Report": statsPartUrl + mfPartUrl,

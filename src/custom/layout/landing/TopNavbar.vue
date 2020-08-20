@@ -13,6 +13,7 @@
             <span class="navbar-toggler-bar bar3"></span>
           </button>
         </div>
+        <i v-if="reserved" class="tim-icons icon-button-pause" style="margin-right: 10px"><small>{{' by ' + reserved}}</small></i>
         <router-link class="navbar-brand" to="/login">{{$t("landing.home")}}</router-link>
         <router-link class="navbar-brand" to="/about" style="margin-left: 140px;">{{$t("landing.about")}}</router-link>
       </div>
@@ -49,6 +50,7 @@
 <script>
   import { CollapseTransition } from 'vue2-transitions';
   import Modal from '@/components/Modal';
+  import constants from '@/custom/assets/js/constants'
 
   export default {
     components: {
@@ -69,10 +71,20 @@
         activeNotifications: false,
         showMenu: false,
         searchModalVisible: false,
-        searchQuery: ''
+        searchQuery: '',
+
+        reserved: ''
       };
     },
     methods: {
+      initReserved() {
+        this.$http
+        .get(constants.urls.reserved)
+        .then(response => this.reserved = response.data)
+        .catch(error => console.log(error))
+        .finally(() => {});
+      },
+      
       capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
       },
@@ -91,6 +103,10 @@
       toggleMenu() {
         this.showMenu = !this.showMenu;
       }
+    },
+
+    mounted() {
+      this.initReserved()      
     }
   };
 </script>

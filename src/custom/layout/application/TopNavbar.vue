@@ -15,7 +15,8 @@
         </div>
         
         <div>
-          <router-link class="navbar-brand" to="/" exact><img src="../../assets/img/logo2020_small.png" class="logo navbar-brand" :alt="$t('siteTitle')"/></router-link>
+          <router-link class="navbar-brand" to="/" exact><img src="../../assets/img/logo2020_small.png" class="logo navbar-brand" :alt="$t('siteTitle')"/></router-link>   
+          <i v-if="reserved" class="tim-icons icon-button-pause" style="margin-right: 10px"><small>{{' by ' + reserved}}</small></i>      
           <router-link class="navbar-brand" to="/dashboard" style="margin-top: 10px">{{$t("dashboard.title")}}</router-link>
           <router-link class="navbar-brand" to="/research">{{$t("research.title")}}</router-link>
         </div>
@@ -36,7 +37,7 @@
           <ul class="navbar-nav" :class="$rtl.isRTL ? 'mr-auto' : 'ml-auto'">
             <div class="search-bar input-group" @click="searchModalVisible = true">
               <!-- <input type="text" class="form-control" placeholder="Search...">
-              <div class="input-group-addon"><i class="tim-icons icon-zoom-split"></i></div> -->
+              <div class="input-group-addon"><i class="tim-icons icon-zoom-split"></i></div> -->              
               <button class="btn btn-link" id="search-button" data-toggle="modal" data-target="#searchModal">
                 <i class="tim-icons icon-zoom-split"></i>
               </button>
@@ -101,6 +102,7 @@
 <script>
   import { CollapseTransition } from 'vue2-transitions';
   import Modal from '@/components/Modal';
+  import constants from '@/custom/assets/js/constants'
 
   export default {
     components: {
@@ -121,10 +123,20 @@
         activeNotifications: false,
         showMenu: false,
         searchModalVisible: false,
-        searchQuery: ''
+        searchQuery: '',
+
+        reserved: ''
       };
     },
     methods: {
+      initReserved() {
+        this.$http
+        .get(constants.urls.reserved)
+        .then(response => this.reserved = response.data)
+        .catch(error => console.log(error))
+        .finally(() => {});
+      },
+
       capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
       },
@@ -143,6 +155,10 @@
       toggleMenu() {
         this.showMenu = !this.showMenu;
       }
+    },
+
+    mounted() {
+      this.initReserved()      
     }
   };
 </script>
