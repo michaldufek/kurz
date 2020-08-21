@@ -67,6 +67,7 @@
     "alreadyAccount": "Již máte konto?",
     "registerSuccess": "Ověření registrace proběhlo úspěšně.",
     "registerFail": "Ověření registrace zlyhalo.",
+    "tryingAgain": "Opakuji požadavek..",
     "login": "Přihlašte se.",
     "IB": {
       "title": "Interactive Brokers",
