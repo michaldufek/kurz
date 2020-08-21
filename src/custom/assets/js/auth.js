@@ -112,29 +112,34 @@ export default {
       }
     },
   
-    login (email, pass, cbf, cb) {
-      cbf = arguments[arguments.length - 2]
-      cb = arguments[arguments.length - 1]
+    login (email, pass, callbackFinally, callback) {
       if (localStorage.token) {
-        if (cb) cb(true)
-        this.onChange(true)
+        if (callback) callback(true)
         return
       }
       
+      let ignoreFinally = false
+
       loginRoutine(email, pass)
       .then(() => {
-        if (cb) cb(true)
-        this.onChange(true)
+        if (callback) callback(true)
       })
-      .catch(err => this.handleError(err, this.login, arguments))
-      .finally(() => cbf())
+      .catch(err => {
+        if (this.handleError(err, () => this.login(...arguments), callback)) {
+          ignoreFinally = true
+        }
+      })
+      .finally(() => {
+        if (!ignoreFinally) {
+          localStorage.removeItem('reloads')
+          callbackFinally()
+        }
+      })
     },
 
-    loginFacebook (cb) {
-      cb = arguments[arguments.length - 1]
+    loginFacebook (callback) {
       if (localStorage.token) {
-        if (cb) cb(true)
-        this.onChange(true)
+        if (callback) callback(true)
         return
       }
 
@@ -143,17 +148,14 @@ export default {
       // to-do: get token and code
       loginFacebookRoutine(token, code)
       .then(() => {
-        if (cb) cb(true)
-        this.onChange(true)
+        if (callback) callback(true)
       })
-      .catch(err => this.handleError(err, this.loginFacebook, arguments))
+      .catch(err => this.handleError(err, () => this.loginFacebook(...arguments), callback))
     },
 
-    loginTwitter (cb) {
-      cb = arguments[arguments.length - 1]
+    loginTwitter (callback) {
       if (localStorage.token) {
-        if (cb) cb(true)
-        this.onChange(true)
+        if (callback) callback(true)
         return
       }
 
@@ -162,23 +164,20 @@ export default {
       // to-do: get token and secret
       loginTwitterRoutine(token, secret)
       .then(() => {
-        if (cb) cb(true)
-        this.onChange(true)
+        if (callback) callback(true)
       })
-      .catch(err => this.handleError(err, this.loginTwitter, arguments))
+      .catch(err => this.handleError(err, () => this.loginTwitter(...arguments), callback))
     },
   
     getToken () {
       return localStorage.token
     },
   
-    logout (cb) {
-      cb = arguments[arguments.length - 1]
+    logout (callback) {
       if (this.loggedIn()) {
         logoutRoutine()
         .then(() => {
-          if (cb) cb()
-          this.onChange(true)
+          if (callback) callback()
         })
       }
     },
@@ -187,93 +186,98 @@ export default {
       return !!localStorage.token
     },
 
-    resetPass (email, cbf, cb) {
+    resetPass (email, callbackFinally, callback) {
+      let ignoreFinally = false
+
       resetPassRoutine(email)
       .then(res => {
-        if (cb) cb(true, res.data.detail)
-        this.onChange(true)
+        if (callback) callback(true, res.data.detail)
       })
-      .catch(err => this.handleError(err, this.resetPass, arguments))
-      .finally(() => cbf())
+      .catch(err => {
+        if (this.handleError(err, () => this.resetPass(...arguments), callback)) {
+          ignoreFinally = true
+        }
+      })
+      .finally(() => {
+        if (!ignoreFinally) {
+          localStorage.removeItem('reloads')
+          callbackFinally()
+        }
+      })
     },
 
-    verifyReset (uid, token, pass1, pass2, cbf, cb) {
-      cbf = arguments[arguments.length - 2]
-      cb = arguments[arguments.length - 1]
+    verifyReset (uid, token, pass1, pass2, callbackFinally, callback) {
+      let ignoreFinally = false
+
       verifyResetRoutine(uid, token, pass1, pass2)
       .then(res => {
-        if (cb) cb(true, res.data.detail)
-        this.onChange(true)
+        if (callback) callback(true, res.data.detail)
       })
-      .catch(err => this.handleError(err, this.verifyReset, arguments))
-      .finally(() => cbf())
+      .catch(err => {
+        if (this.handleError(err, () => this.verifyReset(...arguments), callback)) {
+          ignoreFinally = true
+        }
+      })
+      .finally(() => {
+        if (!ignoreFinally) {
+          localStorage.removeItem('reloads')
+          callbackFinally()
+        }
+      })
     },
 
-    register (email, pass1, pass2, cbf, cb) {
-      console.log('register arguments:')
-      console.log(arguments)
-      console.log('register args:')
-      console.log(email+' '+pass1+' '+ pass2+' '+ cbf+' '+ cb)    
-      if (arguments.length < 5) {
-	let args = arguments[0]
-	email = args[0]
-	pass1 = args[1]
-	pass2 = args[2]
-	cbf = args[3]
-	cb = args[4]
-      } else {
-       cbf = arguments[arguments.length - 2]
-       cb = arguments[arguments.length - 1]
-      }
-      console.log('register arguments2:')
-      console.log(arguments)
-      console.log('register args2:')
-      console.log(email+' '+pass1+' '+ pass2+' '+ cbf+' '+ cb)
-
+    register (email, pass1, pass2, callbackFinally, callback) {
+      let ignoreFinally = false
 
       registerRoutine(email, pass1, pass2)
       .then(res => {
-        if (cb) cb(true, i18n.t('login.registrationSent'))
-        this.onChange(true)
-      })
-      .catch(err => this.handleError(err, this.register, arguments))
-      .finally(() => cbf())
-    },
-
-    verifyRegister (key, cb, cbf) {
-      cbf = arguments[arguments.length - 1]
-      cb = arguments[arguments.length - 2]
-      verifyRegisterRoutine(key)
-      .then(res => {
-        if (cb) cb(true)
-        this.onChange(true)
+        if (callback) callback(true, i18n.t('login.registrationSent'))
       })
       .catch(err => {
-        if (cb) cb(false)
-        this.onChange(false)        
+        if (this.handleError(err, () => this.register(...arguments), callback)) {
+          ignoreFinally = true
+        }
       })
-      .finally(() => cbf())
+      .finally(() => {
+        if (!ignoreFinally) {
+          localStorage.removeItem('reloads')
+          callbackFinally()
+        }
+      })
+    },
+
+    verifyRegister (key, callback, callbackFinally) {
+      verifyRegisterRoutine(key)
+      .then(res => {
+        if (callback) callback(true)
+      })
+      .catch(err => {
+        if (this.handleError(err, () => this.verifyRegister(...arguments), callback)) {
+          ignoreFinally = true
+        }
+      })
+      .finally(() => {
+        if (!ignoreFinally) {
+          localStorage.removeItem('reloads')
+          callbackFinally()
+        }
+      })
     },
     
-    handleError(error, tryAgainMethod) {
+    handleError(error, callerMethod, callback){
       let errMsg = this.parseError(error)
 
       if (!('reloads' in localStorage)) {
         localStorage.setItem('reloads', 0)
       }
 
-      let origArguments = arguments[arguments.length - 1]
-      console.log('args:')
-      console.log(origArguments)
-
       if (errMsg.includes(constants.strings.errors.CSRF) && Number(localStorage.reloads) < 5) {
         localStorage.setItem('reloads', Number(localStorage.reloads) + 1)
-        console.log(errMsg + ' Trying request again..')  // to-do: temporary !
-        tryAgainMethod(origArguments)
+        console.log(errMsg + i18n.t('login.tryingAgain'))
+        callerMethod()
+        return true
       } else {
-        let callback = origArguments[origArguments.length - 1]
         if (callback) callback(false, errMsg)
-        this.onChange(false)        
       }
     },
 
@@ -331,7 +335,5 @@ export default {
       }
       
       return msg
-    },
-  
-    onChange () {}
+    }
   }  

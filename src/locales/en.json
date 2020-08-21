@@ -67,6 +67,7 @@
     "alreadyAccount": "Already have an account?",
     "registerSuccess": "Registration verification successful.",
     "registerFail": "Registration verification failed.",
+    "tryingAgain": "Trying request again..",
     "login": "Log in.",
     "IB": {
       "title": "Interactive Brokers",
