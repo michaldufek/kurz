@@ -1,6 +1,6 @@
 {
   "name": "integral",
-  "version": "1.0.2-1",
+  "version": "1.0.2-2",
   "private": true,
   "description": "Financial Research Software",
   "author": "CYRRUS ADVISORY, a.s. <brno@cyrrusadvisory.cz>",
@@ -34,6 +34,7 @@
     "xlsx": "^0.14.4"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-plugin-eslint": "^4.2.3",
     "@vue/cli-plugin-pwa": "^3.4.0",

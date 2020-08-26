@@ -32,7 +32,8 @@
   },
   "errors": {
     "dataError": "Omlouváme se, nejsme schopní získat data. Zkusíme to později...",
-    "unknownError": "Neznámá chyba."
+    "unknownError": "Neznámá chyba.",
+    "wipedOut": "Váš zůstatek byl vynulován!"
   },
   "paging": {
     "previous": "Předchozí",
@@ -285,6 +286,8 @@
         "runStrategy": "Spustit strategie",
         "performanceResults": {
           "title": "Výkonostní výsledky",
+          "problemsPrefix": "Výsledky patternů",
+          "problemsSuffix": "mají nějaké problémy:",
           "patterns": {
             "title": "Patterny",
             "bar": "bar",
@@ -345,8 +348,6 @@
             "cumulatedProfit": "Kumulovaný profit",
             "xLabel": "Time",
             "drawdown": "Drawdown",
-            "problemsPrefix": "Výsledky patternů",
-            "problemsSuffix": "mají nějaké problémy:",
             "tradeEntry": "Vstup do obchodu",
             "tradeStopLoss": "Stop Loss obchodu",
             "tradeExit": "Výstup z obchodu"

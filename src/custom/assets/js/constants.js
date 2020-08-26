@@ -1,5 +1,6 @@
 import i18n from "@/i18n"
 
+// base URLs
 const baseUrlLocal = "http://localhost"
 const baseUrlDev = "https://dev.analyticalplatform.com"
 const baseUrlProd = process.env.NODE_ENV === 'production' ? window.location.origin : baseUrlDev
@@ -7,6 +8,7 @@ const baseUrlProd = process.env.NODE_ENV === 'production' ? window.location.orig
 // const baseUrl = baseUrlDev
 const baseUrl = baseUrlProd
 
+// URLs parts
 const APIPartUrl = baseUrl + "/api"
 const optPartUrl = APIPartUrl + "/optimization"
 const dwhPartUrl = APIPartUrl + "/datawarehouse"
@@ -27,6 +29,10 @@ const statsPartUrl = reportPartUrl + "/last_report"
 const chartPartUrl = reportPartUrl + "/compute"
 const mfPartUrl = "/mf"
 const uvxyPartUrl = "/uvxy"
+
+// other
+const perfResults = "research.patternLab.backtestPatterns.performanceResults"
+
 
 export default {
     // maximum number of rows shown in fancy tables
@@ -125,9 +131,11 @@ export default {
     },
 
     translationKeys: {
-        patterns: 'research.patternLab.backtestPatterns.performanceResults.patterns',
-        trades: 'research.patternLab.backtestPatterns.performanceResults.trades',
-        performanceMetrics: 'research.patternLab.backtestPatterns.performanceResults.performanceMetrics',
+        performanceResults: perfResults,
+        patterns: perfResults + '.patterns',
+        trades: perfResults + '.trades',
+        performanceMetrics: perfResults + '.performanceMetrics',
+        chart: perfResults + '.chart',
         IBLogin: 'login.IB'
     },
 

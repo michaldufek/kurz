@@ -107,7 +107,7 @@ export default {
 
     data() {
         return {
-            storeKey: 'research.patternLab.backtestPatterns.performanceResults.chart',
+            storeKey: constants.translationKeys.chart,
 
             // assets-patterns-picker
             assetsPatterns: {

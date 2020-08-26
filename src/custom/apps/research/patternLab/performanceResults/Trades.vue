@@ -27,6 +27,7 @@ export default {
 
     data() {
         return {
+            perfResultsKey: constants.translationKeys.performanceResults,
             tradesKey: constants.translationKeys.trades,
 
             loading: true,
@@ -61,7 +62,7 @@ export default {
                 let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns'))
 
                 if (datum.error) {
-                    this.warningText += `Pattern results of '${base.name}' has some problems: ${datum.msg} `
+                    this.warningText += `${this.$t(this.perfResultsKey + '.problemsPrefix')} '${base.name}' ${this.$t(this.perfResultsKey + '.problemsSuffix')}: ${datum.msg} `
                 } else {
                     helper.createTradesRow(rows, datum, base)
                 }

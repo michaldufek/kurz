@@ -3,10 +3,10 @@
     <div class="container-fluid">
       <div class="navbar-wrapper">
         <div style="margin-top: -40px;">
-          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/patterns">{{$t("research.patternLab.backtestPatterns.performanceResults.patterns.title")}}</router-link>
-          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/trades">{{$t("research.patternLab.backtestPatterns.performanceResults.trades.title")}}</router-link>
-          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/performanceMetrics">{{$t("research.patternLab.backtestPatterns.performanceResults.performanceMetrics.title")}}</router-link>
-          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/chart">{{$t("research.patternLab.backtestPatterns.performanceResults.chart.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/patterns">{{$t(perfResultsKey + ".patterns.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/trades">{{$t(perfResultsKey + ".trades.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/performanceMetrics">{{$t(perfResultsKey + ".performanceMetrics.title")}}</router-link>
+          <router-link class="navbar-brand" to="/research/patternLab/backtestPatterns/performanceResults/chart">{{$t(perfResultsKey + ".chart.title")}}</router-link>
 
           <base-button native-type="submit" type="secondary" size="sm" @click="exportClick">{{ $t('research.patternLab.backtestPatterns.export') }}</base-button>
         </div>
@@ -21,6 +21,12 @@
 
 
   export default {
+    data() {
+      return {
+        perfResultsKey: constants.translationKeys.performanceResults
+      }
+    },
+
     methods: {
       exportClick() {
         let sheets = []
@@ -53,7 +59,7 @@
                 let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns'))
 
                 if (datum.error) {
-                    console.log(`Pattern results of '${base.name}' has some problems: ${datum.msg}`)
+                    console.log(`${this.$t(this.perfResultsKey + '.problemsPrefix')} '${base.name}' ${this.$t(this.perfResultsKey + '.problemsSuffix')}: ${datum.msg} `)
                 } else {
                   if (sheetKey === constants.translationKeys.trades) {
                     helper.createTradesRow(rows, datum, base)

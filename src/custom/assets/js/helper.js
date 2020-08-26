@@ -126,7 +126,7 @@ export default {
             `${datum.initial_capital} ${constants.defaultUnit}`,   // Initial capital
             `${datum.initial_capital + datum.output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`,   // End capital
             `${datum.output.stats["Cummulative pnl final"]} ${constants.defaultUnit}`,    // Cummulative PnL final
-            'CAGR',    // CAGR
+            datum.output.stats["cagr"] ?? '-',    // CAGR
             datum.output.stats["Sharpe ratio"],  // Sharpe ratio
             `${datum.profit_take_value} ${datum.profit_take_unit}`,   // PT
             `${datum.stop_loss_value} ${datum.stop_loss_unit}`,   // SL
