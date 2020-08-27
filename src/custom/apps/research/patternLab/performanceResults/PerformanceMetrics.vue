@@ -27,6 +27,7 @@ export default {
 
     data() {
         return {
+            perfResultsKey: constants.translationKeys.performanceResults,
             perfMetricsKey: constants.translationKeys.performanceMetrics,
 
             loading: true,
@@ -60,9 +61,14 @@ export default {
             data.forEach(datum => {
                 let base = helper.getBacktestPatternsTableBase(datum, this.$store, this.$t(constants.translationKeys.patterns + '.columns'))
 
+                let warningPrefix = `${this.$t(this.perfResultsKey + '.problemsPrefix')} '${base.name}' ${this.$t(this.perfResultsKey + '.problemsSuffix')}: `
                 if (datum.error) {
-                    this.warningText += `Pattern results of '${base.name}' has some problems: ${datum.msg} `
+                    this.warningText += warningPrefix + datum.msg + ' '
                 } else {
+                    if (!datum.output.stats["cagr"]) {
+                        this.warningText += warningPrefix + this.$t('errors.wipedOut') + ' '
+                    }
+
                     helper.createPerfMetricsRow(rows, datum, base)
                 }
             })

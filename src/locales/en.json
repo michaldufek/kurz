@@ -32,7 +32,8 @@
   },
   "errors": {
     "dataError": "We are sorry, at this moment we are unable to get the data. We'll try again later...",
-    "unknownError": "Unknown error."
+    "unknownError": "Unknown error.",
+    "wipedOut": "Your account has been wiped out!"
   },
   "paging": {
     "previous": "Previous",
@@ -285,6 +286,8 @@
         "runStrategy": "Run strategies",
         "performanceResults": {
           "title": "Performance results",
+          "problemsPrefix": "Pattern results of",
+          "problemsSuffix": "have some problems:",
           "patterns": {
             "title": "Patterns",
             "bar": "bar",
@@ -345,8 +348,6 @@
             "xLabel": "Time",
             "cumulatedProfit": "Cumulated profit",            
             "drawdown": "Drawdown",
-            "problemsPrefix": "Pattern results of",
-            "problemsSuffix": "have some problems:",
             "tradeEntry": "Trade entry",
             "tradeStopLoss": "Trade Stop Loss",
             "tradeExit": "Trade exit"
